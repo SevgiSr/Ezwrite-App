@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { FormRow } from "../components";
+import { FormRow, Alert } from "../components";
 import { AppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const initialUser = {
 function Register() {
   const navigate = useNavigate();
 
-  const { registerUser, loginUser } = useContext(AppContext);
+  const { registerUser, loginUser, reducerState } = useContext(AppContext);
   const [user, setUser] = useState(initialUser);
 
   const handleChange = (e) => {
@@ -39,16 +39,17 @@ function Register() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
+    if (reducerState.user) {
       setTimeout(() => {
         navigate("/writing");
-      }, 3000);
+      }, 1000);
     }
-  }, [user]);
+  }, [reducerState.user, navigate]);
 
   return (
     <div className="container">
       <h3>{user.isMember ? "Login" : "Register"}</h3>
+      {reducerState.showAlert && <Alert />}
       <form className="form" onSubmit={onSubmit}>
         <FormRow
           type="text"
