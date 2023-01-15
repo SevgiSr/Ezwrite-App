@@ -1,0 +1,53 @@
+body {}
+
+.pageContainer {
+    width: 100vw;
+    height: 100vh;
+}
+
+.storyContainer {
+    padding-top: 100px;
+    width: 100%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+#editTitle {
+    border: none;
+    width: 60%;
+    height: fit-content;
+    text-align: center;
+    font-size: 2rem;
+
+}
+
+#editStory {
+    width: 60%;
+    min-height: 100px;
+    margin-top: 30px;
+    border: none;
+    font-size: 18px;
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 3rem;
+}
+
+textarea {
+
+    /*     overflow: auto; */
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none;
+    /*remove the resize handle on the bottom right*/
+}

@@ -1,0 +1,21 @@
+{
+  "name": "wattpad-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd client && npm start\" "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "express-mongo-sanitize": "^2.2.0",
+    "helmet": "^6.0.1",
+    "xss-clean": "^0.1.1"
+  }
+}
