@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Writing, Landing, Register } from "./pages";
+import { Writing, Landing, Register, MyStories, NewStory } from "./pages";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
@@ -11,6 +11,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Writing />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/myStories"
+          element={
+            <ProtectedRoute>
+              <MyStories />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/newStory"
+          element={
+            <ProtectedRoute>
+              <NewStory />
             </ProtectedRoute>
           }
         />

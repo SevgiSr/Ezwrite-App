@@ -6,6 +6,11 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_BEGIN,
   LOGIN_USER_ERROR,
+  GET_MY_STORIES_SUCCESS,
+  LOGOUT_USER,
+  CREATE_STORY_BEGIN,
+  CREATE_STORY_SUCCESS,
+  CREATE_STORY_ERROR,
 } from "./actions";
 
 const reducer = (state, action) => {
@@ -65,6 +70,48 @@ const reducer = (state, action) => {
   }
 
   if (action.type === LOGIN_USER_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: "danger",
+      alertText: action.payload.msg,
+    };
+  }
+
+  if (action.type === LOGOUT_USER) {
+    return {
+      ...state,
+      user: null,
+      token: null,
+    };
+  }
+
+  if (action.type === GET_MY_STORIES_SUCCESS) {
+    return {
+      ...state,
+      myStories: action.payload.myStories,
+    };
+  }
+
+  if (action.type === CREATE_STORY_BEGIN) {
+    return {
+      ...state,
+      isLoading: true,
+    };
+  }
+
+  if (action.type === CREATE_STORY_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: "success",
+      alertText: "New Story Created!",
+    };
+  }
+
+  if (action.type === CREATE_STORY_ERROR) {
     return {
       ...state,
       isLoading: false,

@@ -30,6 +30,7 @@ import connectDB from "./db/connect.js";
 
 //routers
 import authRoutes from "./routes/authRoutes.js";
+import storyRoutes from "./routes/storyRoutes.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
@@ -56,7 +57,7 @@ app.use(mongoSanitize());
 ////  ROUTES  ////
 //  api route
 app.use("/auth", authRoutes);
-/* app.use("/myStories", jwtAuthentication, storiesRoute); */
+app.use("/myStories", jwtAuthentication, storyRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {

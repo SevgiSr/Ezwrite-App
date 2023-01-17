@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { FormRow, Alert } from "../components";
 import { AppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
+import "../assets/Register.css";
 
 const initialUser = {
   name: "",
@@ -64,10 +65,16 @@ function Register() {
           name="password"
           handleChange={handleChange}
         />
-        <button type="submit">submit</button>
+        <button className="btn submit-btn " type="submit">
+          submit
+        </button>
         <p>
           {user.isMember ? "Not a member yet?" : "Already a member?"}
-          <button type="button" onClick={toggleMember}>
+          <button
+            className="btn toggle-btn"
+            type="button"
+            onClick={toggleMember}
+          >
             {user.isMember ? "Register" : "Login"}
           </button>
         </p>
