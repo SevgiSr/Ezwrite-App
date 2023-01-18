@@ -5,12 +5,17 @@
 import React, { useReducer } from "react";
 import axios from "axios";
 import reducer from "./reducer";
+import { mongoose } from "mongoose";
 
 import {
+  ADD_STORY_SUCCESS,
   CLEAR_ALERT,
   CREATE_STORY_BEGIN,
   CREATE_STORY_ERROR,
   CREATE_STORY_SUCCESS,
+  EDIT_MY_CHAPTER_SUCCESS,
+  EDIT_STORY_SUCCESS,
+  GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
   LOGIN_USER_BEGIN,
   LOGIN_USER_ERROR,
@@ -19,6 +24,8 @@ import {
   REGISTER_USER_BEGIN,
   REGISTER_USER_ERROR,
   REGISTER_USER_SUCCESS,
+  SAVE_STORY_SUCCESS,
+  SET_EDIT_STORY,
 } from "./actions";
 
 // i want to save my login data to browser
@@ -38,6 +45,13 @@ export const initialState = {
 
   //all stories
   myStories: [],
+
+  //chapters
+  story: {},
+  chapters: [],
+
+  //chapter
+  chapter: {},
 };
 
 export const AppContext = React.createContext();
@@ -149,7 +163,6 @@ export const AppProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get("/myStories");
       const { myStories } = data;
-      console.log(myStories);
       dispatch({
         type: GET_MY_STORIES_SUCCESS,
         payload: {
@@ -177,6 +190,64 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const setEditStory = async (id) => {
+    dispatch({ type: SET_EDIT_STORY, payload: { id } });
+  };
+
+  const getMyChapters = async (id) => {
+    try {
+      setEditStory(id);
+      const { data } = await authFetch.get(`/myStories/${id}`);
+      const { story } = data;
+      dispatch({
+        type: GET_MY_CHAPTERS_SUCCESS,
+        payload: { story: story, chapters: story.chapters },
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const editChapter = async (story_id, chapter_id) => {
+    try {
+      const { data } = await authFetch.get(
+        `/myStories/${story_id}/${chapter_id}`
+      );
+      const { story, chapter } = data;
+
+      dispatch({ type: EDIT_MY_CHAPTER_SUCCESS, payload: { story, chapter } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const saveChapter = async (chapter, story_id, chapter_id) => {
+    try {
+      const { title, body } = chapter;
+      await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
+        title: title,
+        content: body,
+      });
+      dispatch({ type: EDIT_STORY_SUCCESS, payload: { chapter } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const addChapter = async (story_id) => {
+    try {
+      const { data } = await authFetch.post(`/myStories/${story_id}`);
+      const { chapter } = data;
+      return chapter._id;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -187,6 +258,11 @@ export const AppProvider = ({ children }) => {
         initialState,
         getMyStories,
         createStory,
+        getMyChapters,
+        setEditStory,
+        editChapter,
+        saveChapter,
+        addChapter,
       }}
     >
       {children}

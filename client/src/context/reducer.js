@@ -11,6 +11,12 @@ import {
   CREATE_STORY_BEGIN,
   CREATE_STORY_SUCCESS,
   CREATE_STORY_ERROR,
+  GET_MY_CHAPTERS_SUCCESS,
+  SET_EDIT_STORY,
+  EDIT_MY_CHAPTER_SUCCESS,
+  EDIT_STORY_SUCCESS,
+  SAVE_STORY_SUCCESS,
+  ADD_STORY_SUCCESS,
 } from "./actions";
 
 const reducer = (state, action) => {
@@ -118,6 +124,40 @@ const reducer = (state, action) => {
       showAlert: true,
       alertType: "danger",
       alertText: action.payload.msg,
+    };
+  }
+
+  if (action.type === GET_MY_CHAPTERS_SUCCESS) {
+    return {
+      ...state,
+      isLoading: false,
+      story: action.payload.story,
+      chapters: action.payload.chapters,
+    };
+  }
+
+  if (action.type === SET_EDIT_STORY) {
+    const story = state.myStories.find(
+      (story) => story._id === action.payload.id
+    );
+    return {
+      ...state,
+      story,
+    };
+  }
+
+  if (action.type === EDIT_MY_CHAPTER_SUCCESS) {
+    return {
+      ...state,
+      chapter: action.payload.chapter,
+      story: action.payload.story,
+    };
+  }
+
+  if (action.type === EDIT_STORY_SUCCESS) {
+    return {
+      ...state,
+      chapter: action.payload.chapter,
     };
   }
 };

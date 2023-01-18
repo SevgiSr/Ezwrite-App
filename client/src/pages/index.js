@@ -3,5 +3,6 @@ import Landing from "./Landing";
 import Register from "./Register";
 import MyStories from "./MyStories";
 import NewStory from "./NewStory";
+import MyStoryChapters from "./MyStoryChapters";
 
-export { Writing, Landing, Register, MyStories, NewStory };
+export { Writing, Landing, Register, MyStories, NewStory, MyStoryChapters };

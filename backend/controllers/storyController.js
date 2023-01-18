@@ -1,6 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import Story from "../db/models/Story.js";
+import Chapter from "../db/models/Chapter.js";
 import { BadRequestError } from "../errors/index.js";
+import mongoose from "mongoose";
 
 const getMyStories = async (req, res) => {
   // jwt-auth middleware coming before sending any myStory request
@@ -12,7 +14,6 @@ const getMyStories = async (req, res) => {
     path: "author",
     select: "name",
   });
-  console.log(myStories);
   res.status(StatusCodes.OK).json({ myStories });
 };
 
@@ -24,17 +25,69 @@ const createStory = async (req, res) => {
   }
 
   req.body.author = req.user.userId;
-  req.body.chapters = [];
+  req.body.chapters = [await Chapter.create({ content: "" })];
 
   const story = await Story.create(req.body);
 
   res.status(StatusCodes.CREATED).json({ story });
 };
 
-const createChapter = async (req, res) => {};
+const getMyChapters = async (req, res) => {
+  console.log(req.params.id);
+  const story = await Story.findById(req.params.id).populate({
+    path: "chapters",
+    select: "title",
+  });
+
+  res.status(StatusCodes.OK).json({ story });
+};
+
+const editChapter = async (req, res) => {
+  const story = await Story.findById(req.params.story_id).populate({
+    path: "chapters",
+    select: "title content",
+  });
+
+  const chapter = story.chapters.find(
+    (chapter) => String(chapter._id) === req.params.chapter_id
+  );
+  console.log(chapter);
+
+  res.status(StatusCodes.OK).json({ story, chapter });
+};
+
+const saveChapter = async (req, res) => {
+  const updatedChapter = await Chapter.findOneAndUpdate(
+    { _id: req.params.chapter_id },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(StatusCodes.OK).json({ updatedChapter });
+};
+
+const createChapter = async (req, res) => {
+  const chapter = await Chapter.create({ content: "" });
+  const newStory = await Story.findOneAndUpdate(
+    { _id: req.params.id },
+    { $push: { chapters: chapter._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+  console.log(newStory);
+  res.status(StatusCodes.OK).json({ newStory, chapter });
+};
 
 const updateStory = async (req, res) => {
   const { chapterTitle, chapterContent } = req.body;
 };
 
-export { getMyStories, createStory };
+export {
+  getMyStories,
+  createStory,
+  getMyChapters,
+  editChapter,
+  saveChapter,
+  createChapter,
+};
