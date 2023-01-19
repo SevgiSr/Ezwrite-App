@@ -42,7 +42,7 @@ function Register() {
   useEffect(() => {
     if (reducerState.user) {
       setTimeout(() => {
-        navigate("/writing");
+        navigate("/myStories");
       }, 1000);
     }
   }, [reducerState.user, navigate]);

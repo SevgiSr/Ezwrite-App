@@ -46,6 +46,7 @@ function Writing() {
           onChange={handleChange}
           value={chapter.body}
           onKeyDown={handleKeyDown}
+          style={{ height: "100vh" }}
           placeholder="Type your text..."
         />
       </div>

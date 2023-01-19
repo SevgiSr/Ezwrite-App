@@ -2,7 +2,13 @@ import { StatusCodes } from "http-status-codes";
 import Story from "../db/models/Story.js";
 import Chapter from "../db/models/Chapter.js";
 import { BadRequestError } from "../errors/index.js";
-import mongoose from "mongoose";
+
+import checkPermissions from "../utils/checkPermissions.js";
+
+//if you use req.user.userId - secure
+//if you don't, add checkPermissions()
+
+//before adding checkPermissions users could easily change each others stories by just knowing it's id
 
 const getMyStories = async (req, res) => {
   // jwt-auth middleware coming before sending any myStory request
@@ -33,11 +39,12 @@ const createStory = async (req, res) => {
 };
 
 const getMyChapters = async (req, res) => {
-  console.log(req.params.id);
   const story = await Story.findById(req.params.id).populate({
     path: "chapters",
     select: "title",
   });
+
+  checkPermissions(req.user.userId, story.author._id);
 
   res.status(StatusCodes.OK).json({ story });
 };
@@ -48,10 +55,11 @@ const editChapter = async (req, res) => {
     select: "title content",
   });
 
+  checkPermissions(req.user.userId, story.author._id);
+
   const chapter = story.chapters.find(
     (chapter) => String(chapter._id) === req.params.chapter_id
   );
-  console.log(chapter);
 
   res.status(StatusCodes.OK).json({ story, chapter });
 };
@@ -69,18 +77,16 @@ const saveChapter = async (req, res) => {
 };
 
 const createChapter = async (req, res) => {
+  const story = await Story.findById(req.params.id);
+  checkPermissions(req.user.userId, story.author._id);
+
   const chapter = await Chapter.create({ content: "" });
   const newStory = await Story.findOneAndUpdate(
     { _id: req.params.id },
     { $push: { chapters: chapter._id } },
     { upsert: true, new: true, runValidators: true }
   );
-  console.log(newStory);
   res.status(StatusCodes.OK).json({ newStory, chapter });
-};
-
-const updateStory = async (req, res) => {
-  const { chapterTitle, chapterContent } = req.body;
 };
 
 export {

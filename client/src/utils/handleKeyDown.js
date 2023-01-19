@@ -1,4 +1,7 @@
-export const handleKeyDown = (e) => {
+import { AppContext } from "../context/appContext";
+import { useContext } from "react";
+
+export const handleKeyDown = (e, reducerState) => {
   // Reset field height
   e.target.style.height = "inherit";
 
