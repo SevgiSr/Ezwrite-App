@@ -17,6 +17,7 @@ import {
   EDIT_STORY_SUCCESS,
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
+  GET_USER_SUCCESS,
   LOGIN_USER_BEGIN,
   LOGIN_USER_ERROR,
   LOGIN_USER_SUCCESS,
@@ -248,6 +249,18 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  ///////  PROFILE STUFF  ////////
+
+  const getUser = async (username) => {
+    try {
+      const { data } = await authFetch.get(`/user/${username}`);
+      const { user } = data;
+      dispatch({ type: GET_USER_SUCCESS, payload: { user } });
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -263,6 +276,7 @@ export const AppProvider = ({ children }) => {
         editChapter,
         saveChapter,
         addChapter,
+        getUser,
       }}
     >
       {children}

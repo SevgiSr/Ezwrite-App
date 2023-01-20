@@ -17,6 +17,7 @@ import {
   EDIT_STORY_SUCCESS,
   SAVE_STORY_SUCCESS,
   ADD_STORY_SUCCESS,
+  GET_USER_SUCCESS,
 } from "./actions";
 
 const reducer = (state, action) => {
@@ -158,6 +159,13 @@ const reducer = (state, action) => {
     return {
       ...state,
       chapter: action.payload.chapter,
+    };
+  }
+
+  if (action.type === GET_USER_SUCCESS) {
+    return {
+      ...state,
+      user: action.payload.user,
     };
   }
 };

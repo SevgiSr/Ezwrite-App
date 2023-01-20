@@ -9,10 +9,39 @@ import {
 } from "./pages";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
+import {
+  About,
+  Conversations,
+  Following,
+  ProfileLayout,
+} from "./pages/dashboard/profile";
+
+import { Home, SharedLayout } from "./pages/dashboard";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/*PROFILE */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <SharedLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="home" element={<Home />} />
+          <Route path="user/:username" element={<ProfileLayout />}>
+            <Route index element={<About />} />
+            <Route
+              path="user/:username/conversations"
+              element={<Conversations />}
+            />
+            <Route path="user/:username/following" element={<Following />} />
+          </Route>
+        </Route>
+
         <Route
           path="/:story_id/:chapter_id/writing"
           element={
