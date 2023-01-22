@@ -1,14 +1,16 @@
-import { Outlet } from "react-router-dom";
-
+import { NavLink, Outlet } from "react-router-dom";
+import "../../../assets/ProfileNavbar.css";
 import ProfileView from "./ProfileView";
 
+import { Link } from "react-router-dom";
+import { ProfileNavbar } from "../../../components";
 function SharedLayout() {
   return (
     <div className="container">
       <ProfileView />
-      <div>
-        <Outlet />
-      </div>
+      <ProfileNavbar />
+
+      <Outlet />
     </div>
   );
 }

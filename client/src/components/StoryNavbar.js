@@ -1,5 +1,5 @@
 //read from database
-import "../assets/Navbar.css";
+import "../assets/StoryNavbar.css";
 import { useContext } from "react";
 import { AppContext } from "../context/appContext";
 const Navbar = () => {

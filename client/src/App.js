@@ -34,11 +34,8 @@ function App() {
           <Route path="home" element={<Home />} />
           <Route path="user/:username" element={<ProfileLayout />}>
             <Route index element={<About />} />
-            <Route
-              path="user/:username/conversations"
-              element={<Conversations />}
-            />
-            <Route path="user/:username/following" element={<Following />} />
+            <Route path="conversations" element={<Conversations />} />
+            <Route path="following" element={<Following />} />
           </Route>
         </Route>
 

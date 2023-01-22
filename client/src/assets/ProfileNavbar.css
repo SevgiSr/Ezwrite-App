@@ -1,0 +1,17 @@
+#profile-navbar {
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+#profile-links {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-link {
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #222;
+    margin: 0 1em;
+}

@@ -4,7 +4,7 @@ import { AppContext } from "../../../context/appContext";
 function About() {
   const { reducerState } = useContext(AppContext);
   return (
-    <div className="container">
+    <div id="about">
       <h1>about</h1>
     </div>
   );
