@@ -11,11 +11,12 @@ const ChapterSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    /* story: {
-      type: mongoose.Types.ObjectId,
-      ref: "Story",
-      required: [true, "chapter must belong to a story"],
-    }, */
+    comments: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );

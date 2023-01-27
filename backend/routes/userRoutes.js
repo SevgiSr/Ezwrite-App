@@ -1,7 +1,18 @@
 import express from "express";
 const router = express.Router();
-import { getUser } from "../controllers/userController.js";
+import {
+  addProfileConv,
+  getProfile,
+  getProfileConv,
+  addConvComment,
+} from "../controllers/userController.js";
 
-router.route("/:username").get(getUser);
+router.route("/:username").get(getProfile);
+router
+  .route("/:username/conversations")
+  .get(getProfileConv)
+  .post(addProfileConv);
+
+router.route("/:conv_id").post(addConvComment);
 
 export default router;

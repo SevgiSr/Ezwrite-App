@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { FormRow, Alert } from "../components";
-import { AppContext } from "../context/appContext";
+import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import "../assets/Register.css";
 
@@ -13,7 +13,7 @@ const initialUser = {
 function Register() {
   const navigate = useNavigate();
 
-  const { registerUser, loginUser, reducerState } = useContext(AppContext);
+  const { registerUser, loginUser, userState } = useContext(UserContext);
   const [user, setUser] = useState(initialUser);
 
   const handleChange = (e) => {
@@ -40,17 +40,17 @@ function Register() {
   };
 
   useEffect(() => {
-    if (reducerState.user) {
+    if (userState.user) {
       setTimeout(() => {
         navigate("/myStories");
       }, 1000);
     }
-  }, [reducerState.user, navigate]);
+  }, [userState.user, navigate]);
 
   return (
     <div className="container">
       <h3>{user.isMember ? "Login" : "Register"}</h3>
-      {reducerState.showAlert && <Alert />}
+      {userState.showAlert && <Alert />}
       <form className="form" onSubmit={onSubmit}>
         <FormRow
           type="text"

@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { AppContext } from "../context/appContext";
+import { UserContext } from "../context/userContext";
 
 function Alert() {
-  const { reducerState } = useContext(AppContext);
+  const { alertState } = useContext(UserContext);
   return (
-    <div className={`alert alert-${reducerState.alertType}`}>
-      {reducerState.alertText}
+    <div className={`alert alert-${alertState.alertType}`}>
+      {alertState.alertText}
     </div>
   );
 }

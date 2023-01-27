@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../context/appContext";
+import { StoryContext } from "../context/storyContext";
 
 const Story = ({ _id, title, author }) => {
   const navigate = useNavigate();
-  const { setEditStory } = useContext(AppContext);
+  const { setEditStory } = useContext(StoryContext);
 
   const handleClick = () => {
     navigate(`/${_id}`);

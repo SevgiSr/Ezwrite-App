@@ -3,26 +3,28 @@ import { useEffect, useState } from "react";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { Navbar } from "../components";
 import { useContext } from "react";
-import { AppContext } from "../context/appContext";
+import { StoryContext } from "../context/storyContext";
 import { useParams } from "react-router-dom";
 
 function Writing() {
   const [chapter, setChapter] = useState({ body: "", title: "" });
-  const { reducerState, editChapter, saveChapter } = useContext(AppContext);
+  const { storyState, editChapter, saveChapter } = useContext(StoryContext);
   const { story_id, chapter_id } = useParams();
   const handleChange = (e) => {
     setChapter({ ...chapter, [e.target.name]: e.target.value });
   };
-
+  //as soon s u load, make get request to get chapther's title and content adn set it on reducer's chapter
   useEffect(() => {
     editChapter(story_id, chapter_id);
   }, []);
 
+  //after get request, chapter in reducer is set and setChapter sets title and content in frontend
   useEffect(() => {
-    const { chapter } = reducerState;
+    const { chapter } = storyState;
     setChapter({ title: chapter.title, body: chapter.content });
-  }, [reducerState.chapter]);
+  }, [storyState.chapter]);
 
+  //saves in the backend and also cuz reducer's chapter changed useeffect gonna set it on frontend
   const handleSubmit = (e) => {
     e.preventDefault();
     saveChapter(chapter, story_id, chapter_id);

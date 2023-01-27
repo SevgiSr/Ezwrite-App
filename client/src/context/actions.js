@@ -1,5 +1,9 @@
+///////ALERT//////
 export const DISPLAY_ALERT = "SHOW_ALERT";
 export const CLEAR_ALERT = "CLEAR_ALERT";
+export const BEGIN = "BEGIN";
+export const SUCCESS = "SUCCESS";
+export const ERROR = "ERROR";
 
 export const REGISTER_USER_BEGIN = "REGISTER_USER_BEGIN";
 export const REGISTER_USER_SUCCESS = "REGISTER_USER_SUCCESS";
@@ -50,3 +54,7 @@ export const CLEAR_FILTERS = "CLEAR_FILTERS";
 export const CHANGE_PAGE = "CHANGE_PAGE";
 
 export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
+
+export const GET_PROFILE_CONV_SUCCESS = "GET_PROFILE_CONV_SUCCESS";
+
+export const ADD_PROFILE_CONV_SUCCESS = "ADD_PROFILE_CONV_SUCCESS";

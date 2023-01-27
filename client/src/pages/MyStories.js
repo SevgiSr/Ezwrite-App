@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AppContext } from "../context/appContext";
+import { StoryContext } from "../context/storyContext";
 import { Story } from "../components";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function MyStories() {
   const navigate = useNavigate();
-  const { reducerState, getMyStories } = useContext(AppContext);
+  const { storyState, getMyStories } = useContext(StoryContext);
 
   useEffect(() => {
     getMyStories();
@@ -16,7 +16,7 @@ function MyStories() {
     <div className="container">
       <button onClick={() => navigate("/newStory")}>Create story</button>
       <div className="my-stories">
-        {reducerState.myStories.map((story) => {
+        {storyState.myStories.map((story) => {
           return <Story key={story._id} {...story} />;
         })}
       </div>

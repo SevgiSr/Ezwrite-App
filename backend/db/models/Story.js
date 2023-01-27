@@ -6,6 +6,17 @@ const StorySchema = new mongoose.Schema(
       type: String,
       required: [true, "please provide title"],
     },
+    description: {
+      type: String,
+    },
+    category: {
+      type: String,
+      required: [true, "please provide category"],
+    },
+    cover: {
+      data: Buffer,
+      contentType: String,
+    },
     chapters: [
       {
         type: mongoose.Types.ObjectId,

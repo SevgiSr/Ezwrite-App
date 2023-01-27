@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
-import { AppContext } from "../../../context/appContext";
+import { ProfileContext } from "../../../context/profileContext";
 import "../../../assets/ProfileView.css";
 
 function ProfileView() {
-  const { reducerState, getUser } = useContext(AppContext);
+  const { profileState, getProfile } = useContext(ProfileContext);
   const { username } = useParams();
 
   useEffect(() => {
-    getUser(username);
+    getProfile(username);
   }, []);
 
   return (
@@ -17,7 +17,7 @@ function ProfileView() {
       <div className="avatar">
         <img src="" alt="" />
       </div>
-      <h1 id="username">{reducerState.user.name}</h1>
+      <h1 id="username">{profileState.profile.name}</h1>
 
       <ul id="user-info">
         <li>

@@ -19,6 +19,7 @@ import morgan from "morgan";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
+import bodyParser from "body-parser";
 
 //SECURITY
 import helmet from "helmet";
@@ -54,6 +55,9 @@ app.use(express.json());
 app.use(helmet());
 app.use(xss());
 app.use(mongoSanitize());
+//for image
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 ////  ROUTES  ////
 //  api route

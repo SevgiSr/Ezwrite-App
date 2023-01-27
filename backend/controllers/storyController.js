@@ -1,7 +1,14 @@
 import { StatusCodes } from "http-status-codes";
 import Story from "../db/models/Story.js";
+import User from "../db/models/User.js";
 import Chapter from "../db/models/Chapter.js";
 import { BadRequestError } from "../errors/index.js";
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import checkPermissions from "../utils/checkPermissions.js";
 
@@ -13,7 +20,7 @@ import checkPermissions from "../utils/checkPermissions.js";
 const getMyStories = async (req, res) => {
   // jwt-auth middleware coming before sending any myStory request
   // sets userId inside req.user object if the token is verified
-  console.log(req.user.userId);
+  /*   console.log(req.user.userId); */
   //author field in story model only had ur user's id
   // now author is an object of id and name
   const myStories = await Story.find({ author: req.user.userId }).populate({
@@ -24,9 +31,9 @@ const getMyStories = async (req, res) => {
 };
 
 const createStory = async (req, res) => {
-  const { title } = req.body;
+  const { title, description, category } = req.body;
 
-  if (!title) {
+  if (!title || !category) {
     throw new BadRequestError("please provide all values");
   }
 
@@ -34,6 +41,12 @@ const createStory = async (req, res) => {
   req.body.chapters = [await Chapter.create({ content: "" })];
 
   const story = await Story.create(req.body);
+
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $push: { stories: story._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
 
   res.status(StatusCodes.CREATED).json({ story });
 };
