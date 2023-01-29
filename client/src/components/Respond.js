@@ -1,5 +1,6 @@
 import { useState } from "react";
 import StyledRespond from "./styles/Respond.styled";
+import ProfilePicture from "./ProfilePicture";
 
 function Respond({ dest, addComment }) {
   const [comment, setComment] = useState("");
@@ -16,16 +17,16 @@ function Respond({ dest, addComment }) {
 
   return (
     <StyledRespond>
+      <ProfilePicture width="40px" height="40px" />
       <form onSubmit={handleSubmit}>
         <textarea
           name="comment"
           value={comment}
           onChange={handleChange}
           cols="30"
-          onFocus={() => setActive(true)}
-          rows={active ? "3" : "0"}
+          rows="1"
         ></textarea>
-        {active && <button type="submit">Share</button>}
+        <button type="submit">Share</button>
       </form>
     </StyledRespond>
   );

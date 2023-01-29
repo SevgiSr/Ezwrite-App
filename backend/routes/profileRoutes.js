@@ -5,7 +5,7 @@ import {
   getProfile,
   getProfileConv,
   addConvComment,
-} from "../controllers/userController.js";
+} from "../controllers/profileController.js";
 
 router.route("/:username").get(getProfile);
 router

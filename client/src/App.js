@@ -16,6 +16,8 @@ import {
   ProfileLayout,
 } from "./pages/dashboard/profile";
 
+import { Stories } from "./pages/dashboard";
+
 import { Home, SharedLayout } from "./pages/dashboard";
 
 function App() {
@@ -37,6 +39,7 @@ function App() {
             <Route path="conversations" element={<Conversations />} />
             <Route path="following" element={<Following />} />
           </Route>
+          <Route path="/stories/:category" element={<Stories />} />
         </Route>
 
         <Route

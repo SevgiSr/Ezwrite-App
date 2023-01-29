@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { StoryContext } from "../context/storyContext";
+import { MyStoryContext } from "../context/myStoryContext";
 import { Alert, FormRow } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, createStory } = useContext(StoryContext);
+  const { storyState, createStory } = useContext(MyStoryContext);
   const [storyDetails, setStoryDetails] = useState({
     title: "",
     description: "",

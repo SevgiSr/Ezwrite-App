@@ -1,9 +1,9 @@
 //read from database
 import "../assets/StoryNavbar.css";
 import { useContext } from "react";
-import { StoryContext } from "../context/storyContext";
+import { MyStoryContext } from "../context/myStoryContext";
 const Navbar = () => {
-  const { storyState } = useContext(StoryContext);
+  const { storyState } = useContext(MyStoryContext);
   return (
     <nav className="navbarContainer">
       <div id="storyPreview">

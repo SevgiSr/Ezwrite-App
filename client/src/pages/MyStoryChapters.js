@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { StoryContext } from "../context/storyContext";
+import { MyStoryContext } from "../context/myStoryContext";
 
 function MyStoryChapters() {
   const navigate = useNavigate();
   const { storyState, getMyChapters, editChapter, addChapter } =
-    useContext(StoryContext);
+    useContext(MyStoryContext);
   const { story_id } = useParams();
 
   useEffect(() => {

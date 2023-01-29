@@ -4,7 +4,7 @@ const StyledConversation = styled.article`
   color: #6f6f6f;
 
   box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
-  padding: 20px 30px;
+  padding: 20px 20px;
   margin-top: 1.7rem;
 
   header {
@@ -34,6 +34,7 @@ const StyledConversation = styled.article`
   }
   main {
     overflow-wrap: break-word;
+    margin-bottom: 1rem;
   }
 `;
 

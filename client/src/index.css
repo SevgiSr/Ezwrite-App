@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+button {
+  background-color: white;
+}
+
 
 
 * {

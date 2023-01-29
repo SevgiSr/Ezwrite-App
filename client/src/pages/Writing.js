@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { Navbar } from "../components";
 import { useContext } from "react";
-import { StoryContext } from "../context/storyContext";
+import { MyStoryContext } from "../context/myStoryContext";
 import { useParams } from "react-router-dom";
 
 function Writing() {
   const [chapter, setChapter] = useState({ body: "", title: "" });
-  const { storyState, editChapter, saveChapter } = useContext(StoryContext);
+  const { storyState, editChapter, saveChapter } = useContext(MyStoryContext);
   const { story_id, chapter_id } = useParams();
   const handleChange = (e) => {
     setChapter({ ...chapter, [e.target.name]: e.target.value });

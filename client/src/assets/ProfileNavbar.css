@@ -2,6 +2,9 @@
     height: 50px;
     display: flex;
     align-items: center;
+    border-bottom: 2px solid #eee;
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem;
 }
 
 #profile-links {

@@ -31,8 +31,9 @@ import connectDB from "./db/connect.js";
 
 //routers
 import authRoutes from "./routes/authRoutes.js";
+import myStoryRoutes from "./routes/myStoryRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 import storyRoutes from "./routes/storyRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
@@ -62,8 +63,9 @@ app.use(bodyParser.json());
 ////  ROUTES  ////
 //  api route
 app.use("/auth", authRoutes);
-app.use("/myStories", jwtAuthentication, storyRoutes);
-app.use("/user", jwtAuthentication, userRoutes);
+app.use("/myStories", jwtAuthentication, myStoryRoutes);
+app.use("/user", jwtAuthentication, profileRoutes);
+app.use("/stories", storyRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {

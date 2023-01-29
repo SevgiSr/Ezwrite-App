@@ -7,8 +7,7 @@ const StyledConversations = styled.div`
   flex-direction: column;
   align-items: center;
   #parent {
-    width: 70%;
-    padding: 30px 10px;
+    width: 50%;
   }
 `;
 
