@@ -40,6 +40,7 @@ function App() {
             <Route path="following" element={<Following />} />
           </Route>
           <Route path="/stories/:category" element={<Stories />} />
+          <Route path="/myStories" element={<MyStories />} />
         </Route>
 
         <Route
@@ -59,14 +60,6 @@ function App() {
           }
         />
 
-        <Route
-          path="/myStories"
-          element={
-            <ProtectedRoute>
-              <MyStories />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/newStory"
           element={

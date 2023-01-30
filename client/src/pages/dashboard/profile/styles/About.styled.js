@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 const StyledAbout = styled.div`
   .container {
-    width: 70%;
+    width: 80%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 300px auto;
+    grid-template-columns: 1fr 3fr;
     grid-gap: 30px;
 
     .about {
