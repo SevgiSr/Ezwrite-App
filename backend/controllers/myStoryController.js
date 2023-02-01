@@ -24,8 +24,7 @@ const getMyStories = async (req, res) => {
   //author field in story model only had ur user's id
   // now author is an object of id and name
   const myStories = await Story.find({ author: req.user.userId }).populate({
-    path: "author",
-    select: "name",
+    path: "author chapters",
   });
   res.status(StatusCodes.OK).json({ myStories });
 };

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledMyStories = styled.div`
-  padding-top: 5rem;
+  padding: 5rem 0;
   > * {
     display: inline-block;
   }
@@ -12,6 +12,9 @@ const StyledMyStories = styled.div`
       flex-direction: row;
       justify-content: space-between;
       padding: 20px 30px;
+      button {
+        padding: 10px 20px;
+      }
     }
 
     .stories-container {

@@ -16,28 +16,31 @@ const StyledNavbar = styled.header`
     padding: 5px 10px;
     font-size: 15px;
     font-weight: 500;
-
     border: none;
+    cursor: pointer;
   }
 
-  .dropdown-menu-parent {
-    display: none;
+  button > * {
+    pointer-events: none;
   }
 
-  .dropdown-menu {
-    position: absolute;
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
+  .discover-dropdown-menu {
+    display: grid;
+    grid-template-columns: 100px auto;
+
+    .dropdown-items {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      column-gap: 20px;
+    }
   }
 
-  .dropdown-item {
-    text-decoration: none;
-    color: #222;
-  }
-
-  .show {
-    display: block;
+  .write-dropdown-menu {
+    width: 100px;
+    .dropdown-items {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   #discover {
@@ -98,9 +101,6 @@ const StyledNavbar = styled.header`
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-    }
-    button > * {
-      pointer-events: none;
     }
   }
 `;

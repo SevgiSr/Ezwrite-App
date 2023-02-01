@@ -16,7 +16,68 @@ button {
   background-color: white;
 }
 
+.link {
+  text-decoration: none;
+  color: black;
+}
 
+.dropdown-menu-parent {
+  opacity: 0;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.dropdown-menu {
+  position: absolute;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 0.75rem;
+  border: transparent;
+  border-radius: 0.25rem;
+  box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-item {
+  text-decoration: none;
+  color: #222;
+  font-size: 16px;
+  line-height: 21px;
+  padding: 6px 0;
+}
+
+.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.orange-button {
+  color: #fff;
+  background-color: #ff6122;
+  font-size: 15px;
+  line-height: 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.white-button {
+  border: 1px solid #222;
+  font-size: 15px;
+  line-height: 18px;
+  border-radius: 6px;
+  margin: 3px 5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
 
 * {
   margin: 0;

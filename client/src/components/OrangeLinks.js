@@ -8,7 +8,7 @@ const OrangeLinks = ({ links }) => {
       <div className="links">
         {links.map((link) => {
           return (
-            <NavLink to={link.to} className="link">
+            <NavLink key={link} to={link.to} className="link">
               {link.label}
             </NavLink>
           );

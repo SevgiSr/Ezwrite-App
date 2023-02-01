@@ -7,7 +7,7 @@ import StyledMyStories from "./styles/MyStories.styled";
 import Story from "../../components/Story";
 import OrangeLinks from "../../components/OrangeLinks";
 
-function MyStories() {
+function MyStories({ show }) {
   const navigate = useNavigate();
   const { storyState, getMyStories } = useContext(MyStoryContext);
 
@@ -20,13 +20,18 @@ function MyStories() {
       <div className="container">
         <header>
           <h2>My Stories</h2>
-          <button onClick={() => navigate("/newStory")}>Create story</button>
+          <button
+            className="orange-button"
+            onClick={() => navigate("/newStory")}
+          >
+            + Create story
+          </button>
         </header>
 
         <div className="stories-container">
           <OrangeLinks links={[{ to: "", label: "Tüm Hikayelerim" }]} />
           {storyState.myStories.map((story) => {
-            return <MyStory key={story._id} story={story} />;
+            return <MyStory key={story._id} story={story} show={show} />;
           })}
         </div>
       </div>
