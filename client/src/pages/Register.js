@@ -2,7 +2,9 @@ import { useState, useContext, useEffect } from "react";
 import { FormRow, Alert } from "../components";
 import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
-import "../assets/Register.css";
+import StyledRegister from "./styles/Register.styled";
+import { BsBookFill } from "react-icons/bs";
+import Blob from "../components/Blob";
 
 const initialUser = {
   name: "",
@@ -48,38 +50,48 @@ function Register() {
   }, [userState.user, navigate]);
 
   return (
-    <div className="container">
-      <h3>{user.isMember ? "Login" : "Register"}</h3>
-      {userState.showAlert && <Alert />}
-      <form className="form" onSubmit={onSubmit}>
-        <FormRow
-          type="text"
-          value={user.name}
-          name="name"
-          labelText="username"
-          handleChange={handleChange}
-        />
-        <FormRow
-          type="password"
-          value={user.password}
-          name="password"
-          handleChange={handleChange}
-        />
-        <button className="btn submit-btn " type="submit">
-          submit
-        </button>
-        <p>
-          {user.isMember ? "Not a member yet?" : "Already a member?"}
-          <button
-            className="btn toggle-btn"
-            type="button"
-            onClick={toggleMember}
-          >
-            {user.isMember ? "Register" : "Login"}
+    <StyledRegister>
+      <div className="container">
+        {userState.showAlert && <Alert />}
+        <form className="form glass" onSubmit={onSubmit}>
+          <h3 className="orange-text">
+            {user.isMember ? "Login" : "Register"}
+            <span>, to start writing!</span>
+            <div className="book-icon">
+              <BsBookFill style={{ color: "#d25e00", position: "relative" }} />
+            </div>
+          </h3>
+          <FormRow
+            type="text"
+            value={user.name}
+            name="name"
+            labelText="username"
+            handleChange={handleChange}
+          />
+          <FormRow
+            type="password"
+            value={user.password}
+            name="password"
+            handleChange={handleChange}
+          />
+          <button className="btn submit-btn " type="submit">
+            submit
           </button>
-        </p>
-      </form>
-    </div>
+          <p className="isMember">
+            {user.isMember ? "Not a member yet?" : "Already a member?"}
+            <button
+              className="btn toggle-btn"
+              type="button"
+              onClick={toggleMember}
+            >
+              {user.isMember ? "Register" : "Login"}
+            </button>
+          </p>
+        </form>
+        <Blob />
+        <div className="spacer layer1"></div>
+      </div>
+    </StyledRegister>
   );
 }
 
