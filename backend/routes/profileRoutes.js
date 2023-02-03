@@ -4,10 +4,11 @@ import {
   addProfileConv,
   getProfile,
   getProfileConv,
+  editProfile,
   addConvComment,
 } from "../controllers/profileController.js";
 
-router.route("/:username").get(getProfile);
+router.route("/:username").get(getProfile).patch(editProfile);
 router
   .route("/:username/conversations")
   .get(getProfileConv)

@@ -1,6 +1,7 @@
 //read from database
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import StyledOrangeLinks from "./styles/OrangeLinks.styled";
+import { FcSettings } from "react-icons/fc";
 
 const OrangeLinks = ({ links }) => {
   return (
@@ -8,7 +9,7 @@ const OrangeLinks = ({ links }) => {
       <div className="links">
         {links.map((link) => {
           return (
-            <NavLink key={link} to={link.to} className="link">
+            <NavLink key={links.indexOf(link)} to={link.to} className="link">
               {link.label}
             </NavLink>
           );

@@ -3,8 +3,11 @@ import axios from "axios";
 import profileReducer from "./reducers/profileReducer";
 import {
   ADD_PROFILE_CONV_SUCCESS,
+  CLOSE_EDIT_MODE,
+  EDIT_PROFILE_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
+  OPEN_EDIT_MODE,
 } from "./actions";
 import { UserContext } from "./userContext";
 
@@ -12,6 +15,9 @@ export const initialProfileState = {
   profile: {},
   stories: [],
   conv: [],
+
+  //edit
+  isEditMode: false,
 };
 
 export const ProfileContext = React.createContext();
@@ -68,6 +74,27 @@ export const ProfileProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  const openEditMode = () => {
+    dispatch({ type: OPEN_EDIT_MODE });
+  };
+
+  const closeEditMode = () => {
+    dispatch({ type: CLOSE_EDIT_MODE });
+  };
+
+  const editProfileInfo = async (profileInfo) => {
+    try {
+      const { data } = await authFetch.patch(
+        `/user/${profileState.profile.name}`,
+        { profileInfo }
+      );
+      const { newUser } = data;
+      dispatch({ type: EDIT_PROFILE_SUCCESS, payload: { newUser } });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ProfileContext.Provider
       value={{
@@ -76,6 +103,9 @@ export const ProfileProvider = ({ children }) => {
         getProfileConv,
         addProfileConv,
         addConvComment,
+        openEditMode,
+        closeEditMode,
+        editProfileInfo,
       }}
     >
       {children}

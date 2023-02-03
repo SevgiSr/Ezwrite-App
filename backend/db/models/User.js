@@ -28,6 +28,22 @@ const UserSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+  profileName: {
+    type: String,
+    default: "user",
+  },
+  pronouns: {
+    type: String,
+  },
+  about: {
+    type: String,
+  },
+  website: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
 });
 
 UserSchema.pre("save", async function () {

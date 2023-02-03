@@ -38,6 +38,16 @@ const addProfileConv = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
+const editProfile = async (req, res) => {
+  const { profileInfo } = req.body;
+  const newUser = await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { ...profileInfo },
+    { upsert: true, new: true, runValidators: true }
+  );
+  res.status(StatusCodes.OK).json({ newUser });
+};
+
 const addConvComment = async (req, res) => {
   const { comment_content } = req.body;
   const comment = await Comment.create({
@@ -54,4 +64,10 @@ const addConvComment = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
-export { getProfile, getProfileConv, addProfileConv, addConvComment };
+export {
+  getProfile,
+  getProfileConv,
+  addProfileConv,
+  addConvComment,
+  editProfile,
+};

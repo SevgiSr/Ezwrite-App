@@ -2,22 +2,50 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { ProfileContext } from "../../../context/profileContext";
-import "../../../assets/ProfileView.css";
+import StyledProfileView from "./styles/ProfileView.styled";
+import ProfilePicture from "../../../components/ProfilePicture";
 
-function ProfileView() {
-  const { profileState, getProfile } = useContext(ProfileContext);
+function ProfileView({ handleChange, state }) {
+  const { profileState, closeEditMode, getProfile } =
+    useContext(ProfileContext);
   const { username } = useParams();
-
-  useEffect(() => {
+  const handleClick = () => {
+    closeEditMode();
+    //you normally dont need that because if sharedLayout sets reducer on first render it affects all children too
+    //it's for bringing original fields back since u canceled them
     getProfile(username);
-  }, []);
-
+  };
   return (
-    <div id="profile-view">
-      <div className="avatar">
-        <img src="" alt="" />
-      </div>
-      <h1 id="username">{profileState.profile.name}</h1>
+    <StyledProfileView>
+      {profileState.isEditMode && (
+        <div className="edit-mode">
+          <nav>
+            <button className="orange-button" form="edit-profile" type="submit">
+              Save Changes
+            </button>
+            <button className="white-button" onClick={handleClick}>
+              Cancel Changes
+            </button>
+          </nav>
+          <div id="edit-overlay"></div>
+        </div>
+      )}
+
+      <ProfilePicture width="90px" />
+
+      <h1 className="profile-name">
+        <span>{profileState.profile.profileName}</span>
+        {profileState.isEditMode && (
+          <input
+            type="text"
+            name="profileName"
+            value={state.profileName}
+            onChange={handleChange}
+          />
+        )}
+      </h1>
+
+      <h2 id="username">@{profileState.profile.name}</h2>
 
       <ul id="user-info">
         <li>
@@ -33,7 +61,7 @@ function ProfileView() {
           <p>followers</p>
         </li>
       </ul>
-    </div>
+    </StyledProfileView>
   );
 }
 
