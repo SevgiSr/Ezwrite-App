@@ -4,5 +4,6 @@ import Alert from "./Alert";
 import MyStory from "./MyStory";
 import ProfileNavbar from "./ProfileNavbar";
 import Conversation from "./Conversation";
+import Story from "./Story";
 
-export { Navbar, FormRow, Alert, MyStory, ProfileNavbar, Conversation };
+export { Navbar, FormRow, Alert, MyStory, ProfileNavbar, Conversation, Story };

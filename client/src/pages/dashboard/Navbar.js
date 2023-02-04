@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StyledNavbar from "./styles/Navbar.styled";
 import src from "./logo.png";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -8,6 +8,7 @@ import { FiSearch } from "react-icons/fi";
 import { AiFillCaretDown } from "react-icons/ai";
 
 function Navbar() {
+  ///////for dropdowns///////
   const { userState } = useContext(UserContext);
   const initialState = { discover: "", profile: "", write: "", edit: "" };
   const [show, setShow] = useState(initialState);
@@ -51,6 +52,21 @@ function Navbar() {
     };
   }, []);
 
+  ///////for query///////
+
+  const navigate = useNavigate();
+
+  const [query, setQuery] = useState("");
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/stories/search/${query}`);
+  };
+
   return (
     <StyledNavbar>
       <nav id="discover">
@@ -93,11 +109,17 @@ function Navbar() {
         </ul>
       </nav>
 
-      <form className="search-form" action="/search/">
+      <form onSubmit={handleSubmit} className="search-form">
         <button type="submit">
           <FiSearch />
         </button>
-        <input name="q" placeholder="Ara" type="text" />
+        <input
+          onChange={handleChange}
+          name="query"
+          value={query}
+          placeholder="Search"
+          type="text"
+        />
       </form>
 
       <nav>

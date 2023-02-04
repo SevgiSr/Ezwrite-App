@@ -1,17 +1,20 @@
 import StyledStory from "./styles/Story.styled";
-import src from "./cover.jpg";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { AiOutlineBars } from "react-icons/ai";
+import { Link } from "react-router-dom";
+import Cover from "./Cover";
 
 const Story = ({ story }) => {
   return (
     <StyledStory>
       <div className="cover">
-        <img src={src} alt="" />
+        <Cover />
       </div>
       <div className="content">
-        <h3>{story.title}</h3>
+        <Link to={`/story/${story._id}`}>
+          <h3>{story.title}</h3>
+        </Link>
         <div className="author">{story.author.name} tarafından</div>
         <div className="meta-data">
           <div className="read-count">
