@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledRespond = styled.div`
-  width: 100%;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -10,18 +10,19 @@ const StyledRespond = styled.div`
   box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
 
   form {
-    width: 85%;
-    padding: 20px 0px;
+    width: 500px;
+    padding: 20px 10px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 
     textarea {
       font-size: 16px;
       font-weight: 300;
       line-height: 24px;
       color: #6f6f6f;
-      width: 100%;
+      width: 85%;
       height: 30px;
       border: none;
       padding: 0.5rem;
@@ -29,20 +30,23 @@ const StyledRespond = styled.div`
     }
 
     button {
+      cursor: pointer;
       display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
       border: none;
       padding: 10px 10px;
-      margin-top: 1rem;
     }
-    button:hover,
-    button:focus {
+    .share-show {
       display: block;
     }
 
-    textarea:focus {
+    .comment-show {
       height: 80px;
+      margin-bottom: 40px;
     }
-    textarea:focus ~ button {
+    .comment-show ~ button {
       display: block;
     }
   }

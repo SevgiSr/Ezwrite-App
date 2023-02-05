@@ -7,7 +7,7 @@ const Comment = ({ comment }) => {
       <StyledComment>
         <ProfilePicture id="avatar" width="30px" height="30px" />
         <div className="content">
-          <span>{comment.author.name}</span>
+          <span>{comment?.author?.name}</span>
           {comment.content}
         </div>
       </StyledComment>

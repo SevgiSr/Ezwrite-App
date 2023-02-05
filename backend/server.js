@@ -34,7 +34,7 @@ import authRoutes from "./routes/authRoutes.js";
 import myStoryRoutes from "./routes/myStoryRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import storyRoutes from "./routes/storyRoutes.js";
-
+import convRoutes from "./routes/convRoutes.js";
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
@@ -65,7 +65,8 @@ app.use(bodyParser.json());
 app.use("/auth", authRoutes);
 app.use("/myStories", jwtAuthentication, myStoryRoutes);
 app.use("/user", jwtAuthentication, profileRoutes);
-app.use("/stories", storyRoutes);
+app.use("/stories", jwtAuthentication, storyRoutes);
+app.use("/conversations", jwtAuthentication, convRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {

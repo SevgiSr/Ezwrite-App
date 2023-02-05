@@ -40,6 +40,7 @@ const addProfileConv = async (req, res) => {
 
 const editProfile = async (req, res) => {
   const { profileInfo } = req.body;
+
   const newUser = await User.findOneAndUpdate(
     { _id: req.user.userId },
     { ...profileInfo },
@@ -48,26 +49,4 @@ const editProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ newUser });
 };
 
-const addConvComment = async (req, res) => {
-  const { comment_content } = req.body;
-  const comment = await Comment.create({
-    author: req.user.userId,
-    content: comment_content,
-    subcomments: [],
-  });
-  await Comment.findOneAndUpdate(
-    { _id: req.params.conv_id },
-    { $push: { subcomments: comment._id } },
-    { upsert: true, new: true, runValidators: true }
-  );
-
-  res.status(StatusCodes.OK);
-};
-
-export {
-  getProfile,
-  getProfileConv,
-  addProfileConv,
-  addConvComment,
-  editProfile,
-};
+export { getProfile, getProfileConv, addProfileConv, editProfile };

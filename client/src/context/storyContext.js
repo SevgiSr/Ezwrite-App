@@ -51,7 +51,6 @@ export const StoryProvider = ({ children }) => {
       const { data } = await authFetch.get(`/stories/story/${id}`);
       const { story } = data;
       dispatch({ type: GET_STORY_SUCCESS, payload: { story } });
-      console.log(state.story);
     } catch (error) {
       console.log(error);
     }
@@ -69,9 +68,27 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const addChapterConv = async (chapter_id, comment_content) => {
+    try {
+      await authFetch.post(`/stories/chapter/${chapter_id}`, {
+        comment_content,
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   return (
     <StoryContext.Provider
-      value={{ state, getByCategory, getByQuery, getStory, getChapter }}
+      value={{
+        state,
+        getByCategory,
+        getByQuery,
+        getStory,
+        getChapter,
+        addChapterConv,
+      }}
     >
       {children}
     </StoryContext.Provider>

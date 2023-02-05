@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledChapter = styled.div`
   margin-top: 4rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   .chapter {
@@ -22,6 +23,9 @@ const StyledChapter = styled.div`
       font-size: 18px;
       line-height: 27px;
     }
+  }
+  .comments {
+    margin: 2rem 0;
   }
 `;
 

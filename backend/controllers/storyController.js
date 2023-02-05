@@ -1,4 +1,6 @@
 import Story from "../db/models/Story.js";
+import Comment from "../db/models/Comment.js";
+import Chapter from "../db/models/Chapter.js";
 import { StatusCodes } from "http-status-codes";
 
 const getByCategory = async (req, res) => {
@@ -22,13 +24,33 @@ const getStory = async (req, res) => {
 
 const getChapter = async (req, res) => {
   const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id).populate("chapters author");
+  const story = await Story.findById(story_id).populate({
+    path: "chapters author",
+    populate: { path: "comments", populate: "subcomments" },
+  });
   const author = story.author;
   const chapter = story.chapters.find(
     (chapter) => String(chapter._id) === chapter_id
   );
-  console.log(chapter);
   res.status(StatusCodes.OK).json({ chapter, author });
 };
 
-export { getByCategory, getByQuery, getStory, getChapter };
+const addChapterConv = async (req, res) => {
+  console.log(req.user.userId);
+  const { comment_content } = req.body;
+  const comment = await Comment.create({
+    author: req.user.userId,
+    content: comment_content,
+    subcomments: [],
+  });
+
+  await Chapter.findOneAndUpdate(
+    { _id: req.params.chapter_id },
+    { $push: { comments: comment._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.OK);
+};
+
+export { getByCategory, getByQuery, getStory, getChapter, addChapterConv };

@@ -67,7 +67,7 @@ export const ProfileProvider = ({ children }) => {
 
   const addConvComment = async (conv_id, comment_content) => {
     try {
-      await authFetch.post(`/user/${conv_id}`, {
+      await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
       });
     } catch (error) {
