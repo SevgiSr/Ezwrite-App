@@ -1,15 +1,22 @@
 import styled from "styled-components";
 
 const StyledProfileNavbar = styled.div`
+  width: 100%;
   height: 50px;
   border-bottom: 2px solid #eee;
   padding: 0.5rem 0;
   margin-bottom: 1.5rem;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   position: relative;
+  .parent {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
   .navbar-overlay {
     background-color: #fff;
     opacity: 0.75;

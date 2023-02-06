@@ -13,15 +13,17 @@ const ProfileNavbar = ({ links }) => {
   return (
     <StyledProfileNavbar>
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
-      <OrangeLinks links={links} className="orange-links" />
-      <button className="edit-profile-btn" onClick={handleClick}>
-        <Link to="">
-          <span className="icon">
-            <FcSettings />
-          </span>
-          <span className="btn-text">Edit Profile</span>
-        </Link>
-      </button>
+      <div className="parent">
+        <OrangeLinks links={links} className="orange-links" />
+        <button className="edit-profile-btn" onClick={handleClick}>
+          <Link to="">
+            <span className="icon">
+              <FcSettings />
+            </span>
+            <span className="btn-text">Edit Profile</span>
+          </Link>
+        </button>
+      </div>
     </StyledProfileNavbar>
   );
 };

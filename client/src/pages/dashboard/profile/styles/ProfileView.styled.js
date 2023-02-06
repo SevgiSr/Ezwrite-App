@@ -4,6 +4,7 @@ const StyledProfileView = styled.header`
   height: 500px;
   width: 100%;
   background-color: #5c5d56;
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;

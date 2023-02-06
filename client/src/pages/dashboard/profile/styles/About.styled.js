@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 const StyledAbout = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  box-sizing: border-box;
   padding: 0 2rem;
   padding-bottom: 3rem;
   display: flex;
@@ -22,7 +25,7 @@ const StyledAbout = styled.div`
     font-size: 15px;
     color: #222;
     width: 25%;
-    padding: 2rem 1rem;
+    padding: 1rem;
     height: fit-content;
     box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);
     .location {
@@ -36,7 +39,7 @@ const StyledAbout = styled.div`
   }
   .stories {
     width: 65%;
-    padding: 2rem 1rem;
+    padding: 1rem;
     box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);
     .stories-header {
       margin-bottom: 1.5rem;
