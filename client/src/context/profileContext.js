@@ -12,6 +12,7 @@ import {
 import { UserContext } from "./userContext";
 
 export const initialProfileState = {
+  isMainUser: false,
   profile: {},
   stories: [],
   conv: [],
@@ -33,10 +34,14 @@ export const ProfileProvider = ({ children }) => {
   const getProfile = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}`);
-      const { user } = data;
+      const { user, isMainUser } = data;
       dispatch({
         type: GET_USER_SUCCESS,
-        payload: { profile: user, stories: user.stories },
+        payload: {
+          profile: user,
+          stories: user.stories,
+          isMainUser: isMainUser,
+        },
       });
     } catch (error) {
       console.log(error.response.data.msg);
@@ -95,6 +100,13 @@ export const ProfileProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  const getInbox = async () => {};
+
+  const openMessages = async () => {};
+
+  const sendMessage = async () => {};
+
   return (
     <ProfileContext.Provider
       value={{
@@ -106,6 +118,8 @@ export const ProfileProvider = ({ children }) => {
         openEditMode,
         closeEditMode,
         editProfileInfo,
+        openMessages,
+        sendMessage,
       }}
     >
       {children}

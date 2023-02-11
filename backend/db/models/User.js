@@ -2,49 +2,58 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please provide username"],
-    minlength: 3,
-    maxlength: 20,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide password"],
-    minlength: 3,
-    select: false,
-  },
-  stories: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: "Story",
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Please provide username"],
+      minlength: 3,
+      maxlength: 20,
+      trim: true,
     },
-  ],
-  comments: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: "Comment",
+    password: {
+      type: String,
+      required: [true, "Please provide password"],
+      minlength: 3,
+      select: false,
     },
-  ],
-  profileName: {
-    type: String,
-    default: "user",
+    stories: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Story",
+      },
+    ],
+    comments: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    profileName: {
+      type: String,
+      default: "user",
+    },
+    pronouns: {
+      type: String,
+    },
+    about: {
+      type: String,
+    },
+    website: {
+      type: String,
+    },
+    location: {
+      type: String,
+    },
+    privateConvs: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "PrivateConv",
+      },
+    ],
   },
-  pronouns: {
-    type: String,
-  },
-  about: {
-    type: String,
-  },
-  website: {
-    type: String,
-  },
-  location: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;

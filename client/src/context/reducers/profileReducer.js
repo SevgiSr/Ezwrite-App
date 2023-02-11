@@ -13,6 +13,7 @@ const profileReducer = (state, action) => {
       ...state,
       profile: action.payload.profile,
       stories: action.payload.stories,
+      isMainUser: action.payload.isMainUser,
     };
   }
   if (action.type === GET_PROFILE_CONV_SUCCESS) {

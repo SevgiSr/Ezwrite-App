@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNavbar = styled.header`
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -10,7 +10,7 @@ const StyledNavbar = styled.header`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
-  background-color: white;
+  background-color: #fff;
 
   button {
     padding: 5px 10px;

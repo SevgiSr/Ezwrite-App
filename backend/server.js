@@ -15,11 +15,15 @@ dotenv.config();
 import "express-async-errors";
 import morgan from "morgan";
 
+import { createServer } from "http";
+import { Server } from "socket.io";
+
 //PRODUCTION
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 //SECURITY
 import helmet from "helmet";
@@ -35,10 +39,13 @@ import myStoryRoutes from "./routes/myStoryRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import storyRoutes from "./routes/storyRoutes.js";
 import convRoutes from "./routes/convRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
 import jwtAuthentication from "./middleware/jwt-auth.js";
+import { UnauthenticatedError } from "./errors/index.js";
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -67,6 +74,7 @@ app.use("/myStories", jwtAuthentication, myStoryRoutes);
 app.use("/user", jwtAuthentication, profileRoutes);
 app.use("/stories", jwtAuthentication, storyRoutes);
 app.use("/conversations", jwtAuthentication, convRoutes);
+app.use("/messages", jwtAuthentication, messageRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {
@@ -80,15 +88,49 @@ app.use("/conversations", jwtAuthentication, convRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
+const httpServer = createServer(app);
+export const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+const listener = (socket) => {
+  console.log(socket.id + " user is connected");
+  socket.on("join room", (room) => {
+    socket.join(room);
+    console.log(room);
+  });
+  //from the send button i have to send room name and messago to the server
+  //so that server can broadcast it to all clients
+  socket.on("send message", ({ message, room }) => {
+    console.log(room);
+    socket.to(room).emit("receive message", message);
+  });
+};
+
+/* io.use((socket, next) => {
+  if (!socket.handshake.auth)
+    return next(new UnauthenticatedError("invalid credentials"));
+  const user = socket.handshake.auth.user;
+  socket.user = user;
+  next();
+}); */
+
 const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
-    app.listen(port, () => {
+    /* app.listen(port, () => {
       console.log(`Server is listening on port ${port}...`);
-    });
-  } catch (error) {}
+    }); */
+
+    httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
+    io.on("connection", listener);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 start();

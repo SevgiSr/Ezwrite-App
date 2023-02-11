@@ -26,22 +26,27 @@ const StyledProfileNavbar = styled.div`
     left: 0;
     right: 0;
   }
-  .edit-profile-btn {
-    cursor: pointer;
-    height: 40px;
-    padding: 5px 10px;
-    margin: 0 2rem;
-    color: #6f6f6f;
-    font-size: 16px;
-    border: solid 2px #eee;
+  .buttons {
     display: flex;
-    align-items: center;
-    a {
-      text-decoration: none;
-      color: #6f6f6f;
+    .follow {
+      svg {
+        color: #00b2b2;
+      }
     }
-    .icon {
-      margin-right: 5px;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    button {
+      margin: 0 1rem;
+      .btn-text {
+        display: none;
+      }
+      .icon {
+        font-size: 20px;
+      }
+    }
+    .parent {
+      width: 100%;
     }
   }
 `;

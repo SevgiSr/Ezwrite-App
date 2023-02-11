@@ -15,6 +15,13 @@ const StyledOrangeLinks = styled.nav`
       margin: 0 2rem;
     }
 
+    @media only screen and (max-width: 1000px) {
+      .link {
+        margin: 0 1rem;
+        font-size: 17px;
+      }
+    }
+
     .link:hover {
       font-weight: 700;
     }

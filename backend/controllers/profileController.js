@@ -8,7 +8,12 @@ const getProfile = async (req, res) => {
     "stories"
   );
 
-  res.status(StatusCodes.OK).json({ user });
+  let isMainUser = false;
+  if (String(user._id) === req.user.userId) {
+    isMainUser = true;
+  }
+
+  res.status(StatusCodes.OK).json({ user, isMainUser });
 };
 
 const getProfileConv = async (req, res) => {

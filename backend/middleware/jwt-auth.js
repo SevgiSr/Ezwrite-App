@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { UnauthenticatedError } from "../errors/index.js";
+import { io } from "../server.js";
 
 //////////  ONLY THE TOKEN   ////////////
 const auth = async (req, res, next) => {

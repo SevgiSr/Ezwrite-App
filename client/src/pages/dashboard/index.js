@@ -3,4 +3,7 @@ import SharedLayout from "./SharedLayout";
 import Stories from "./Stories";
 import Story from "./Story";
 import Chapter from "./Chapter";
-export { Home, SharedLayout, Stories, Story, Chapter };
+import Messages from "./Messages";
+import Inbox from "./Inbox";
+
+export { Home, SharedLayout, Stories, Story, Chapter, Messages, Inbox };

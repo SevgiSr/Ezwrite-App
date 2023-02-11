@@ -83,6 +83,29 @@ button {
   cursor: pointer;
 }
 
+.profile-button {
+  cursor: pointer;
+  height: 40px;
+  padding: 5px 10px;
+  margin: 0 2rem;
+  color: #6f6f6f;
+  font-size: 16px;
+  border: solid 2px #eee;
+  display: flex;
+  align-items: center;
+
+
+}
+
+.profile-button a {
+  text-decoration: none;
+  color: #6f6f6f;
+}
+
+.profile-button .icon {
+  margin-right: 5px;
+}
+
 * {
   margin: 0;
   padding: 0;

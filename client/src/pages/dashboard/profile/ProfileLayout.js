@@ -53,8 +53,12 @@ function SharedLayout() {
           { to: "following", label: "Following" },
         ]}
       />
-      {profileState.isEditMode ? (
-        <EditProfile handleChange={handleChange} state={profileInfo} />
+      {profileState.isMainUser ? (
+        profileState.isEditMode ? (
+          <EditProfile handleChange={handleChange} state={profileInfo} />
+        ) : (
+          <Outlet />
+        )
       ) : (
         <Outlet />
       )}
