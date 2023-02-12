@@ -8,6 +8,7 @@ import {
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
+  OPEN_MESSAGES_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
 
@@ -19,6 +20,9 @@ export const initialProfileState = {
 
   //edit
   isEditMode: false,
+
+  //messaging
+  messages: [],
 };
 
 export const ProfileContext = React.createContext();
@@ -103,9 +107,28 @@ export const ProfileProvider = ({ children }) => {
 
   const getInbox = async () => {};
 
-  const openMessages = async () => {};
+  const openMessages = async (username) => {
+    try {
+      const { data } = await authFetch.get(`/messages/${username}`);
+      const { conv } = data;
+      dispatch({
+        type: OPEN_MESSAGES_SUCCESS,
+        payload: { messages: conv.messages },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const sendMessage = async () => {};
+  const sendMessage = async (username, message_content) => {
+    try {
+      await authFetch.post(`/messages/${username}`, {
+        message_content,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <ProfileContext.Provider

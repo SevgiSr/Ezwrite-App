@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import StyledSendMessage from "./styles/SendMessage.styled";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
+import { ProfileContext } from "../context/profileContext";
 
-const SendMessage = ({ message, setMessage }) => {
+const SendMessage = ({ messageContent, setMessageContent }) => {
+  const { sendMessage } = useContext(ProfileContext);
+
   const socket = io("http://localhost:5000");
 
-  const initialState = { message: "", send: "" };
+  const initialState = { msgBox: "", sendBtn: "" };
   const [show, setShow] = useState(initialState);
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const stateRef = useRef(show);
 
@@ -40,37 +42,45 @@ const SendMessage = ({ message, setMessage }) => {
   }, []);
 
   const handleChange = (e) => {
-    setMessage(e.target.value);
+    setMessageContent(e.target.value);
   };
   const { username } = useParams();
-
+  const user = JSON.parse(localStorage.getItem("user"));
   const room = JSON.stringify([user.name, username].sort());
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setMessageContent("");
+    const message = {
+      author: {
+        name: user.name,
+      },
+      content: messageContent,
+    };
     socket.emit("send message", {
       message,
       room,
     });
+    sendMessage(username, message.content);
   };
   return (
     <StyledSendMessage>
       <form onSubmit={handleSubmit}>
         <ProfilePicture width="10%" height="10%" />
         <textarea
-          className={show.message}
+          className={show.msgBox}
           ref={texareaRef}
-          value={message}
+          value={messageContent}
           onChange={handleChange}
-          name="message"
+          name="msgBox"
           id=""
           cols="30"
           rows="10"
         ></textarea>
         <button
-          className={`${show.send} orange-button`}
+          className={`${show.sendBtn} orange-button`}
           ref={buttonRef}
-          name="send"
+          name="sendBtn"
           type="submit"
         >
           Submit

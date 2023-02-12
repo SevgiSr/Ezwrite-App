@@ -26,10 +26,15 @@ const StyledMessages = styled.div`
       border-radius: 15px;
       height: 65%;
       width: 100%;
+      box-sizing: border-box;
+      padding: 1rem;
       font-size: 16px;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 24px;
       color: #6f6f6f;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
     }
   }
 `;

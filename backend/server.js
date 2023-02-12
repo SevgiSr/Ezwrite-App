@@ -101,21 +101,12 @@ const listener = (socket) => {
     socket.join(room);
     console.log(room);
   });
-  //from the send button i have to send room name and messago to the server
-  //so that server can broadcast it to all clients
+  //from the send button i emit send room name and messago to the server
+  //so that server can broadcast it to all clients in that room
   socket.on("send message", ({ message, room }) => {
-    console.log(room);
     socket.to(room).emit("receive message", message);
   });
 };
-
-/* io.use((socket, next) => {
-  if (!socket.handshake.auth)
-    return next(new UnauthenticatedError("invalid credentials"));
-  const user = socket.handshake.auth.user;
-  socket.user = user;
-  next();
-}); */
 
 const port = process.env.PORT || 5000;
 

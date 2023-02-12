@@ -5,6 +5,7 @@ import {
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
+  OPEN_MESSAGES_SUCCESS,
 } from "../actions";
 
 const profileReducer = (state, action) => {
@@ -45,6 +46,12 @@ const profileReducer = (state, action) => {
     return {
       ...state,
       profile: action.payload.newUser,
+    };
+  }
+  if (action.type === OPEN_MESSAGES_SUCCESS) {
+    return {
+      ...state,
+      messages: action.payload.messages,
     };
   }
 };

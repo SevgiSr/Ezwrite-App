@@ -36,15 +36,15 @@ const StyledSendMessage = styled.div`
       border: none;
       padding: 10px 10px;
     }
-    .send-show {
+    .sendBtn-show {
       display: block;
     }
 
-    .message-show {
+    .msgBox-show {
       height: 80px;
       margin-bottom: 40px;
     }
-    .message-show ~ button {
+    .msgBox-show ~ button {
       display: block;
     }
   }
