@@ -23,9 +23,9 @@ const getProfileConv = async (req, res) => {
     _id: { $in: user.comments },
   })
     .populate("author")
-    .populate({ path: "subcomments", populate: { path: "author" } });
+    .populate({ path: "subcomments", populate: "author" });
 
-  res.status(StatusCodes.OK).json({ conv: comments });
+  res.status(StatusCodes.OK).json({ convs: comments });
 };
 
 const addProfileConv = async (req, res) => {
@@ -35,14 +35,18 @@ const addProfileConv = async (req, res) => {
     content: comment_content,
     subcomments: [],
   });
+  const newConv = await Comment.findById(comment._id)
+    .populate("author")
+    .populate({ path: "subcomments", populate: "author" });
 
+  console.log(newConv);
   await User.findOneAndUpdate(
     { name: req.params.username },
     { $push: { comments: comment._id } },
     { upsert: true, new: true, runValidators: true }
   );
 
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json({ newConv: newConv });
 };
 
 const editProfile = async (req, res) => {

@@ -10,11 +10,9 @@ function Conversations() {
   const { profileState, addProfileConv, getProfileConv } =
     useContext(ProfileContext);
 
-  // if you called addProfileConv func get conversations again
-  //useeffect calls a lot of times, is it bad?
   useEffect(() => {
     getProfileConv(username);
-  }, [addProfileConv]);
+  }, []);
 
   return (
     <StyledConversations>
@@ -25,14 +23,8 @@ function Conversations() {
           dest={username}
           addComment={addProfileConv}
         />
-        {profileState.conv.map((comment) => {
-          return (
-            <Conversation
-              key={comment._id}
-              author={comment?.author?.name}
-              comment={comment}
-            />
-          );
+        {profileState?.convs?.map((conv) => {
+          return <Conversation key={conv._id} conv={conv} />;
         })}
       </div>
     </StyledConversations>

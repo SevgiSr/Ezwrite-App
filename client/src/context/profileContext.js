@@ -2,6 +2,7 @@ import React, { useContext, useReducer } from "react";
 import axios from "axios";
 import profileReducer from "./reducers/profileReducer";
 import {
+  ADD_CONV_COMMENT_SUCCESS,
   ADD_PROFILE_CONV_SUCCESS,
   CLOSE_EDIT_MODE,
   EDIT_PROFILE_SUCCESS,
@@ -18,8 +19,8 @@ export const initialProfileState = {
   isMainUser: false,
   profile: {},
   stories: [],
-  conv: [],
-
+  convs: [],
+  conv: {},
   //edit
   isEditMode: false,
 
@@ -60,8 +61,8 @@ export const ProfileProvider = ({ children }) => {
   const getProfileConv = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}/conversations`);
-      const { conv } = data;
-      dispatch({ type: GET_PROFILE_CONV_SUCCESS, payload: { conv } });
+      const { convs } = data;
+      dispatch({ type: GET_PROFILE_CONV_SUCCESS, payload: { convs } });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -70,9 +71,14 @@ export const ProfileProvider = ({ children }) => {
 
   const addProfileConv = async (profile_name, comment_content) => {
     try {
-      await authFetch.post(`/user/${profile_name}/conversations`, {
-        comment_content,
-      });
+      const { data } = await authFetch.post(
+        `/user/${profile_name}/conversations`,
+        {
+          comment_content,
+        }
+      );
+      const { newConv } = data;
+      dispatch({ type: ADD_PROFILE_CONV_SUCCESS, payload: { newConv } });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -81,9 +87,11 @@ export const ProfileProvider = ({ children }) => {
 
   const addConvComment = async (conv_id, comment_content) => {
     try {
-      await authFetch.post(`/conversations/${conv_id}`, {
+      const { data } = await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
       });
+      const { newConv } = data;
+      dispatch({ type: ADD_CONV_COMMENT_SUCCESS, payload: { newConv } });
     } catch (error) {
       console.log(error);
     }

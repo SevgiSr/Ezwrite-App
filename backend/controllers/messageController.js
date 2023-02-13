@@ -42,7 +42,6 @@ const sendMessage = async (req, res) => {
       users: [req.user.userId, receiver._id].sort(),
       messages: [message],
     });
-    console.log(newPC);
   }
   res.status(StatusCodes.OK);
 };
@@ -56,9 +55,7 @@ const openNotifications = async (req, res) => {
 };
 
 const sendNotification = async (req, res) => {
-  console.log("inn!");
   const { nt } = req.body;
-  console.log(nt);
   const sender = await User.findById(req.user.userId);
   const notification = await Notification.create({
     type: nt.type,
@@ -70,7 +67,6 @@ const sendNotification = async (req, res) => {
     { $push: { notifications: notification._id } },
     { upsert: true, new: true, runValidators: true }
   );
-  console.log(user);
   res.status(StatusCodes.OK);
 };
 

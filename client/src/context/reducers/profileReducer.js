@@ -1,4 +1,5 @@
 import {
+  ADD_CONV_COMMENT_SUCCESS,
   ADD_PROFILE_CONV_SUCCESS,
   CLOSE_EDIT_MODE,
   EDIT_PROFILE_SUCCESS,
@@ -21,13 +22,25 @@ const profileReducer = (state, action) => {
   if (action.type === GET_PROFILE_CONV_SUCCESS) {
     return {
       ...state,
-      conv: action.payload.conv,
+      convs: action.payload.convs,
     };
   }
   if (action.type === ADD_PROFILE_CONV_SUCCESS) {
     return {
       ...state,
-      conv: action.payload.conv,
+      convs: [...state.convs, action.payload.newConv],
+    };
+  }
+  if (action.type === ADD_CONV_COMMENT_SUCCESS) {
+    //conversation with new subcomments
+    const newConv = action.payload.newConv;
+    const index = state.convs.findIndex((c) => c._id === newConv._id);
+    const newConvs = [...state.convs];
+    newConvs[index] = newConv;
+
+    return {
+      ...state,
+      convs: newConvs,
     };
   }
 

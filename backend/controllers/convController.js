@@ -8,13 +8,16 @@ const addConvComment = async (req, res) => {
     content: comment_content,
     subcomments: [],
   });
-  await Comment.findOneAndUpdate(
+  console.log(req.params.conv_id);
+  const newConv = await Comment.findOneAndUpdate(
     { _id: req.params.conv_id },
     { $push: { subcomments: comment._id } },
     { upsert: true, new: true, runValidators: true }
-  );
+  )
+    .populate("author")
+    .populate({ path: "subcomments", populate: "author" });
 
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json({ newConv });
 };
 
 export { addConvComment };
