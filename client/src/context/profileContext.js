@@ -9,6 +9,8 @@ import {
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
   OPEN_MESSAGES_SUCCESS,
+  OPEN_NOTIFICATIONS_SUCCESS,
+  SEND_NOTIFICATION_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
 
@@ -23,6 +25,9 @@ export const initialProfileState = {
 
   //messaging
   messages: [],
+
+  //notification
+  notifications: [],
 };
 
 export const ProfileContext = React.createContext();
@@ -130,6 +135,31 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  const sendNotification = async (username, notification) => {
+    try {
+      await authFetch.post(`/messages/notifications/${username}`, {
+        nt: notification,
+      });
+      console.log(notification);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const openNotifications = async () => {
+    try {
+      const { data } = await authFetch.get(`/messages/notifications`);
+      const { notifications } = data;
+      console.log(notifications);
+      dispatch({
+        type: OPEN_NOTIFICATIONS_SUCCESS,
+        payload: { notifications },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -143,6 +173,8 @@ export const ProfileProvider = ({ children }) => {
         editProfileInfo,
         openMessages,
         sendMessage,
+        openNotifications,
+        sendNotification,
       }}
     >
       {children}

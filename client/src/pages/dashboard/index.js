@@ -5,5 +5,15 @@ import Story from "./Story";
 import Chapter from "./Chapter";
 import Messages from "./Messages";
 import Inbox from "./Inbox";
+import Notifications from "./Notifications";
 
-export { Home, SharedLayout, Stories, Story, Chapter, Messages, Inbox };
+export {
+  Home,
+  SharedLayout,
+  Stories,
+  Story,
+  Chapter,
+  Messages,
+  Inbox,
+  Notifications,
+};

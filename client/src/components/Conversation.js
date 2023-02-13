@@ -3,11 +3,12 @@ import ProfilePicture from "./ProfilePicture";
 import StyledConversation from "./styles/Conversation.styled";
 import Respond from "./Respond";
 import { ProfileContext } from "../context/profileContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Comment from "./Comment";
 
 const Conversation = ({ author, comment }) => {
   const { addConvComment } = useContext(ProfileContext);
+
   return (
     <>
       <StyledConversation>
@@ -27,7 +28,12 @@ const Conversation = ({ author, comment }) => {
         })}
       </StyledConversation>
 
-      <Respond dest={comment._id} addComment={addConvComment} />
+      <Respond
+        type="your comment got response"
+        to={author}
+        dest={comment._id}
+        addComment={addConvComment}
+      />
     </>
   );
 };

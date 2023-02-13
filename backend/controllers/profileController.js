@@ -21,7 +21,9 @@ const getProfileConv = async (req, res) => {
   const user = await User.findOne({ name: username });
   const comments = await Comment.find({
     _id: { $in: user.comments },
-  }).populate({ path: "subcomments", populate: { path: "author" } });
+  })
+    .populate("author")
+    .populate({ path: "subcomments", populate: { path: "author" } });
 
   res.status(StatusCodes.OK).json({ conv: comments });
 };

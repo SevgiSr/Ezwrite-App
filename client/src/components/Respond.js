@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import StyledRespond from "./styles/Respond.styled";
 import ProfilePicture from "./ProfilePicture";
 import { useRef } from "react";
 import { useEffect } from "react";
+import socket from "../socket.js";
+import { ProfileContext } from "../context/profileContext";
 
-function Respond({ dest, addComment }) {
+function Respond({ type, to, dest, addComment }) {
+  const { sendNotification } = useContext(ProfileContext);
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
   const [show, setShow] = useState(initialState);
@@ -14,18 +17,6 @@ function Respond({ dest, addComment }) {
   const setShowState = (state) => {
     stateRef.current = state;
     setShow(state);
-  };
-
-  const handleChange = (e) => {
-    setComment(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!comment) return;
-    setShow(initialState);
-    addComment(dest, comment);
-    setComment("");
   };
 
   const texareaRef = useRef();
@@ -47,6 +38,27 @@ function Respond({ dest, addComment }) {
       window.removeEventListener("click", listener);
     };
   }, []);
+
+  const handleChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!comment) return;
+    setShow(initialState);
+    addComment(dest, comment);
+    setComment("");
+    const notification = {
+      type: type,
+      content: comment,
+    };
+    socket.emit("send notification", {
+      notification,
+      room: to,
+    });
+    sendNotification(to, notification);
+  };
 
   return (
     <StyledRespond>

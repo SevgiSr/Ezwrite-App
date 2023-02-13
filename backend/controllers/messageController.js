@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import Message from "../db/models/Message.js";
 import PrivateConv from "../db/models/PrivateConv.js";
 import User from "../db/models/User.js";
-
+import Notification from "../db/models/Notification.js";
 const getPrivateConvs = async (req, res) => {
   const user = await User.findById(req.user.userId).populate({
     path: "privateConvs",
@@ -47,4 +47,37 @@ const sendMessage = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
-export { getPrivateConvs, openPrivateConv, sendMessage };
+const openNotifications = async (req, res) => {
+  const user = await User.findById(req.user.userId).populate({
+    path: "notifications",
+    populate: "sender",
+  });
+  res.status(StatusCodes.OK).json({ notifications: user.notifications });
+};
+
+const sendNotification = async (req, res) => {
+  console.log("inn!");
+  const { nt } = req.body;
+  console.log(nt);
+  const sender = await User.findById(req.user.userId);
+  const notification = await Notification.create({
+    type: nt.type,
+    sender: sender._id,
+    content: nt.content,
+  });
+  const user = await User.findOneAndUpdate(
+    { name: req.params.username },
+    { $push: { notifications: notification._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+  console.log(user);
+  res.status(StatusCodes.OK);
+};
+
+export {
+  getPrivateConvs,
+  openPrivateConv,
+  sendMessage,
+  openNotifications,
+  sendNotification,
+};

@@ -16,7 +16,14 @@ import {
   ProfileLayout,
 } from "./pages/dashboard/profile";
 
-import { Stories, Story, Chapter, Inbox, Messages } from "./pages/dashboard";
+import {
+  Stories,
+  Story,
+  Chapter,
+  Inbox,
+  Messages,
+  Notifications,
+} from "./pages/dashboard";
 
 import { Home, SharedLayout } from "./pages/dashboard";
 
@@ -46,6 +53,7 @@ function App() {
           <Route path="/:story_id/:chapter_id" element={<Chapter />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:username" element={<Messages />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Route>
 
         <Route

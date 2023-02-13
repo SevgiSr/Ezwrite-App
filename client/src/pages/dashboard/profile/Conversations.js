@@ -19,12 +19,17 @@ function Conversations() {
   return (
     <StyledConversations>
       <div id="parent">
-        <Respond dest={username} addComment={addProfileConv} />
+        <Respond
+          type="someone commented on your profile"
+          to={username}
+          dest={username}
+          addComment={addProfileConv}
+        />
         {profileState.conv.map((comment) => {
           return (
             <Conversation
               key={comment._id}
-              author={comment.author}
+              author={comment?.author?.name}
               comment={comment}
             />
           );

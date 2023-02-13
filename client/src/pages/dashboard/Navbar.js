@@ -6,12 +6,18 @@ import ProfilePicture from "../../components/ProfilePicture";
 import { UserContext } from "../../context/userContext";
 import { FiSearch } from "react-icons/fi";
 import { AiFillCaretDown } from "react-icons/ai";
+import socket from "../../socket.js";
+import { useLocation } from "react-router-dom";
 
 function Navbar() {
   ///////for dropdowns///////
   const { userState } = useContext(UserContext);
   const initialState = { discover: "", profile: "", write: "", edit: "" };
   const [show, setShow] = useState(initialState);
+
+  //for notifications
+  const [ntCount, setNtCount] = useState(0);
+  const location = useLocation();
 
   //because event listener cannot acces current state
   const stateRef = useRef(show);
@@ -66,6 +72,41 @@ function Navbar() {
     e.preventDefault();
     navigate(`/stories/search/${query}`);
   };
+
+  //for notification
+  useEffect(() => {
+    socket.connect();
+    const user = JSON.parse(localStorage.getItem("user"));
+    socket.on("connect", () => {
+      console.log("navbar connected");
+    });
+    const room = user.name;
+    socket.emit("join room navbar", room);
+
+    socket.on("connect_error", (err) => {
+      if (err.message !== "invalid credentials") {
+        socket.connect();
+      }
+    });
+
+    socket.on("receive notification", (notification) => {
+      console.log(notification);
+      setNtCount((prev) => prev + 1);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.off("receive notification");
+      console.log("navbar disconnected!");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (location.pathname === "/notifications") {
+      setNtCount(0);
+    }
+  }, [location.pathname]);
 
   return (
     <StyledNavbar>
@@ -146,7 +187,10 @@ function Navbar() {
 
       <div className="profile-dropdown">
         <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
-          <ProfilePicture width="40px" height="40px" />{" "}
+          <div className="pp">
+            <ProfilePicture width="40px" height="40px" />
+            {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+          </div>
           <AiFillCaretDown style={{ marginLeft: "10px" }} />
         </button>
         <div
@@ -159,7 +203,13 @@ function Navbar() {
                 to={`/user/${userState.user.name}`}
                 className="dropdown-item"
               >
-                My Profile
+                <span>My Profile</span>
+              </Link>
+              <Link to={`/notifications`} className="dropdown-item">
+                <span>
+                  {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+                  Notifications
+                </span>
               </Link>
             </div>
           </div>

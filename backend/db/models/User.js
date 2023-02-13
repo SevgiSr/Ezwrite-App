@@ -51,7 +51,14 @@ const UserSchema = new mongoose.Schema(
         ref: "PrivateConv",
       },
     ],
+    notifications: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
+
   { timestamps: true }
 );
 

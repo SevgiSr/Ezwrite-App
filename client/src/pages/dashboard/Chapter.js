@@ -144,7 +144,12 @@ function Chapter() {
         </div>
       </section>
       <div className="comments">
-        <Respond dest={chapter_id} addComment={addChapterConv} />
+        <Respond
+          type="someone commented on your story"
+          to={state.story.author.name}
+          dest={chapter_id}
+          addComment={addChapterConv}
+        />
         {state.chapter?.comments?.map((comment) => {
           return (
             <Conversation

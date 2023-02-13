@@ -94,6 +94,45 @@ const StyledNavbar = styled.header`
   }
 
   .profile-dropdown {
+    position: relative;
+    .nt-count {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: #ff6122;
+      width: 17px;
+      height: 17px;
+      color: #fff;
+      border-radius: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropdown-items {
+      display: flex;
+      flex-direction: column;
+
+      .dropdown-item {
+        margin: 5px 0;
+
+        span {
+          margin-bottom: 0.5rem;
+          position: relative;
+          padding: 15px 5px;
+
+          .nt-count {
+            position: absolute;
+            top: 4px;
+            left: -4px;
+          }
+        }
+      }
+    }
+
+    .dropdown-menu {
+      right: 10px;
+    }
     button {
       border: none;
       padding-right: 10px;

@@ -97,14 +97,30 @@ export const io = new Server(httpServer, {
 
 const listener = (socket) => {
   console.log(socket.id + " user is connected");
-  socket.on("join room", (room) => {
-    socket.join(room);
-    console.log(room);
+  let rooms = [];
+  socket.on("join room navbar", (room2) => {
+    rooms.push(room2);
+    socket.join(rooms);
   });
+
+  socket.on("join room", (room1) => {
+    rooms.push(room1);
+    socket.join(rooms);
+  });
+
   //from the send button i emit send room name and messago to the server
   //so that server can broadcast it to all clients in that room
   socket.on("send message", ({ message, room }) => {
     socket.to(room).emit("receive message", message);
+  });
+
+  socket.on("send notification", ({ notification, room }) => {
+    console.log(notification, room);
+    socket.to(room).emit("receive notification", notification);
+  });
+
+  socket.on("disconnect", () => {
+    rooms = [];
   });
 };
 

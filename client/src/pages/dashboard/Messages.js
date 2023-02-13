@@ -32,9 +32,9 @@ function Messages() {
     socket.on("connect", () => {
       console.log("frontend connected");
       //if you sort, sevgi and sevgi3 users will be in the same room and broadcast messages to each other
-      const room = JSON.stringify([user.name, username].sort());
-      socket.emit("join room", room);
     });
+    const room = JSON.stringify([user.name, username].sort());
+    socket.emit("join room", room);
 
     socket.on("connect_error", (err) => {
       if (err.message !== "invalid credentials") {
