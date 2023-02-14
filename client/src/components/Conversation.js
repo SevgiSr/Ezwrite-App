@@ -6,9 +6,7 @@ import { ProfileContext } from "../context/profileContext";
 import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 
-const Conversation = ({ conv }) => {
-  const { addConvComment } = useContext(ProfileContext);
-
+const Conversation = ({ conv, addConvComment }) => {
   return (
     <>
       <StyledConversation>

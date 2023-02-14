@@ -24,15 +24,18 @@ const getStory = async (req, res) => {
 
 const getChapter = async (req, res) => {
   const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id).populate({
-    path: "chapters author",
-    populate: { path: "comments", populate: "subcomments" },
-  });
+  const story = await Story.findById(story_id).populate("author");
+  const chapter = await Chapter.findById(chapter_id)
+    .populate({
+      path: "comments",
+      populate: { path: "subcomments", populate: "author" },
+    })
+    .populate({ path: "comments", populate: { path: "author" } });
+  //dumb mongoose
+  /*   console.log(chapter.comments[0].subcomments); */
   const author = story.author;
-  const chapter = story.chapters.find(
-    (chapter) => String(chapter._id) === chapter_id
-  );
-  res.status(StatusCodes.OK).json({ chapter, author });
+  const chapterConvs = chapter.comments;
+  res.status(StatusCodes.OK).json({ chapter, author, chapterConvs });
 };
 
 const addChapterConv = async (req, res) => {
@@ -44,13 +47,17 @@ const addChapterConv = async (req, res) => {
     subcomments: [],
   });
 
+  const newConv = await Comment.findById(comment._id)
+    .populate("author")
+    .populate({ path: "subcomments", populate: "author" });
+
   await Chapter.findOneAndUpdate(
     { _id: req.params.chapter_id },
     { $push: { comments: comment._id } },
     { upsert: true, new: true, runValidators: true }
   );
 
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json({ newConv });
 };
 
 export { getByCategory, getByQuery, getStory, getChapter, addChapterConv };

@@ -7,7 +7,7 @@ import Respond from "../../../components/Respond";
 
 function Conversations() {
   const { username } = useParams();
-  const { profileState, addProfileConv, getProfileConv } =
+  const { profileState, addProfileConv, getProfileConv, addConvComment } =
     useContext(ProfileContext);
 
   useEffect(() => {
@@ -24,7 +24,13 @@ function Conversations() {
           addComment={addProfileConv}
         />
         {profileState?.convs?.map((conv) => {
-          return <Conversation key={conv._id} conv={conv} />;
+          return (
+            <Conversation
+              key={conv._id}
+              conv={conv}
+              addConvComment={addConvComment}
+            />
+          );
         })}
       </div>
     </StyledConversations>

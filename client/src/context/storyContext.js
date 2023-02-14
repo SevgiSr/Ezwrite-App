@@ -3,6 +3,8 @@ import storyReducer from "./reducers/storyReducer";
 import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 
 import {
+  ADD_CHAPTER_CONV_SUCCESS,
+  ADD_CONV_COMMENT_SUCCESS,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
@@ -14,6 +16,7 @@ const initialState = {
   story: {},
   chapter: {},
   author: {},
+  chapterConvs: [],
 };
 
 export const StoryContext = React.createContext();
@@ -61,8 +64,11 @@ export const StoryProvider = ({ children }) => {
       const { data } = await authFetch.get(
         `/stories/story/${story_id}/${chapter_id}`
       );
-      const { chapter, author } = data;
-      dispatch({ type: GET_CHAPTER_SUCCESS, payload: { chapter, author } });
+      const { chapter, author, chapterConvs } = data;
+      dispatch({
+        type: GET_CHAPTER_SUCCESS,
+        payload: { chapter, author, chapterConvs },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -70,12 +76,26 @@ export const StoryProvider = ({ children }) => {
 
   const addChapterConv = async (chapter_id, comment_content) => {
     try {
-      await authFetch.post(`/stories/chapter/${chapter_id}`, {
+      const { data } = await authFetch.post(`/stories/chapter/${chapter_id}`, {
         comment_content,
       });
+      const { newConv } = data;
+      dispatch({ type: ADD_CHAPTER_CONV_SUCCESS, payload: { newConv } });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
+    }
+  };
+
+  const addConvComment = async (conv_id, comment_content) => {
+    try {
+      const { data } = await authFetch.post(`/conversations/${conv_id}`, {
+        comment_content,
+      });
+      const { newConv } = data;
+      dispatch({ type: ADD_CONV_COMMENT_SUCCESS, payload: { newConv } });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -88,6 +108,7 @@ export const StoryProvider = ({ children }) => {
         getStory,
         getChapter,
         addChapterConv,
+        addConvComment,
       }}
     >
       {children}
