@@ -5,7 +5,7 @@ import Comment from "../db/models/Comment.js";
 
 const getProfile = async (req, res) => {
   const user = await User.findOne({ name: req.params.username }).populate(
-    "stories"
+    "stories profilePicture followers"
   );
 
   let isMainUser = false;
@@ -13,7 +13,42 @@ const getProfile = async (req, res) => {
     isMainUser = true;
   }
 
-  res.status(StatusCodes.OK).json({ user, isMainUser });
+  let isFollowing = false;
+  user.followers.map((follower) => {
+    if (String(follower._id) === req.user.userId) {
+      isFollowing = true;
+    }
+  });
+
+  res.status(StatusCodes.OK).json({ user, isMainUser, isFollowing });
+};
+
+const followProfile = async (req, res) => {
+  console.log("backend: following...");
+  const isFollowing = await User.find({
+    name: req.params.username,
+    followers: { $elemMatch: { $eq: req.user.userId } },
+  });
+
+  if (isFollowing.length > 0) return;
+
+  const user = await User.findOneAndUpdate(
+    { name: req.params.username },
+    { $push: { followers: req.user.userId } },
+    { upsert: true, new: true, runValidators: true }
+  );
+  res.status(StatusCodes.OK).json({ followers: user.followers });
+};
+
+const unfollowProfile = async (req, res) => {
+  console.log("backend: unfollowing...");
+  const user = await User.findOneAndUpdate(
+    { name: req.params.username },
+    { $pull: { followers: req.user.userId } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({ followers: user.followers });
 };
 
 const getProfileConv = async (req, res) => {
@@ -60,4 +95,11 @@ const editProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ newUser });
 };
 
-export { getProfile, getProfileConv, addProfileConv, editProfile };
+export {
+  getProfile,
+  followProfile,
+  unfollowProfile,
+  getProfileConv,
+  addProfileConv,
+  editProfile,
+};

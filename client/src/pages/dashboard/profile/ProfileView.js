@@ -15,6 +15,7 @@ function ProfileView({ handleChange, state }) {
     //it's for bringing original fields back since u canceled them
     getProfile(username);
   };
+
   return (
     <StyledProfileView>
       {profileState.isEditMode && (
@@ -49,16 +50,22 @@ function ProfileView({ handleChange, state }) {
 
       <ul id="user-info">
         <li>
-          <p>0</p>
-          <p>works</p>
+          <button className="info-btn">
+            <p>0</p>
+            <p>works</p>
+          </button>
         </li>
         <li>
-          <p>1</p>
-          <p>reading lists</p>
+          <button className="info-btn">
+            <p>1</p>
+            <p>reading lists</p>
+          </button>
         </li>
         <li>
-          <p>0</p>
-          <p>followers</p>
+          <button className="info-btn">
+            <p>{profileState.profile.followers?.length}</p>
+            <p>followers</p>
+          </button>
         </li>
       </ul>
     </StyledProfileView>

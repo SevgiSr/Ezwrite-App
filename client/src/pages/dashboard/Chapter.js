@@ -23,20 +23,24 @@ function Chapter() {
 
       <div className="comments">
         <Respond
-          type="someone commented on your story"
+          type={` commented on ${state.chapter.title}`}
           to={state.author.name}
           dest={chapter_id}
           addComment={addChapterConv}
         />
-        {state.chapterConvs?.map((comment) => {
-          return (
-            <Conversation
-              key={comment._id}
-              conv={comment}
-              addConvComment={addConvComment}
-            />
-          );
-        })}
+        <div className="column-reverse">
+          {state.chapterConvs?.map((comment) => {
+            return (
+              <div className="conv">
+                <Conversation
+                  key={comment._id}
+                  conv={comment}
+                  addConvComment={addConvComment}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </StyledChapter>
   );

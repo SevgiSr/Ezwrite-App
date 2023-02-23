@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
       minlength: 3,
       select: false,
     },
+    profilePicture: {
+      type: mongoose.Types.ObjectId,
+      ref: "ProfilePicture",
+    },
     stories: [
       {
         type: mongoose.Types.ObjectId,
@@ -55,6 +59,12 @@ const UserSchema = new mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Notification",
+      },
+    ],
+    followers: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
       },
     ],
   },

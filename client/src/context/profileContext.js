@@ -5,18 +5,25 @@ import {
   ADD_CONV_COMMENT_SUCCESS,
   ADD_PROFILE_CONV_SUCCESS,
   CLOSE_EDIT_MODE,
+  DELETE_NOTIFICATIONS_SUCCESS,
   EDIT_PROFILE_SUCCESS,
+  FOLLOW_PROFILE_BEGIN,
+  FOLLOW_PROFILE_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
   OPEN_MESSAGES_SUCCESS,
   OPEN_NOTIFICATIONS_SUCCESS,
   SEND_NOTIFICATION_SUCCESS,
+  UNFOLLOW_PROFILE_BEGIN,
+  UNFOLLOW_PROFILE_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
 
 export const initialProfileState = {
   isMainUser: false,
+  isFollowing: false,
+  isDisabled: false,
   profile: {},
   stories: [],
   convs: [],
@@ -44,17 +51,52 @@ export const ProfileProvider = ({ children }) => {
   const getProfile = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}`);
-      const { user, isMainUser } = data;
+      const { user, isMainUser, isFollowing } = data;
       dispatch({
         type: GET_USER_SUCCESS,
         payload: {
           profile: user,
           stories: user.stories,
           isMainUser: isMainUser,
+          isFollowing: isFollowing,
         },
       });
     } catch (error) {
+      console.log(error);
       console.log(error.response.data.msg);
+    }
+  };
+
+  const followProfile = async (username) => {
+    try {
+      dispatch({
+        type: FOLLOW_PROFILE_BEGIN,
+      });
+      const { data } = await authFetch.get(`/user/${username}/follow`);
+      const { followers } = data;
+      dispatch({
+        type: FOLLOW_PROFILE_SUCCESS,
+        payload: { followers },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const unfollowProfile = async (username) => {
+    try {
+      dispatch({
+        type: UNFOLLOW_PROFILE_BEGIN,
+      });
+      const { data } = await authFetch.get(`/user/${username}/unfollow`);
+
+      const { followers } = data;
+      dispatch({
+        type: UNFOLLOW_PROFILE_SUCCESS,
+        payload: { followers },
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -168,11 +210,25 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  const deleteNotifications = async () => {
+    try {
+      await authFetch.delete(`/messages/notifications`);
+
+      dispatch({
+        type: DELETE_NOTIFICATIONS_SUCCESS,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ProfileContext.Provider
       value={{
         profileState,
         getProfile,
+        followProfile,
+        unfollowProfile,
         getProfileConv,
         addProfileConv,
         addConvComment,
@@ -183,6 +239,7 @@ export const ProfileProvider = ({ children }) => {
         sendMessage,
         openNotifications,
         sendNotification,
+        deleteNotifications,
       }}
     >
       {children}

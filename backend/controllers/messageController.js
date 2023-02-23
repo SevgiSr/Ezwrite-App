@@ -70,10 +70,23 @@ const sendNotification = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
+const deleteNotifications = async (req, res) => {
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $unset: { notifications: [] } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  await Notification.deleteMany({});
+
+  res.status(StatusCodes.OK);
+};
+
 export {
   getPrivateConvs,
   openPrivateConv,
   sendMessage,
   openNotifications,
   sendNotification,
+  deleteNotifications,
 };

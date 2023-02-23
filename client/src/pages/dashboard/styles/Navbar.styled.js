@@ -20,10 +20,6 @@ const StyledNavbar = styled.header`
     cursor: pointer;
   }
 
-  button > * {
-    pointer-events: none;
-  }
-
   .discover-dropdown-menu {
     display: grid;
     grid-template-columns: 100px auto;
@@ -95,6 +91,15 @@ const StyledNavbar = styled.header`
 
   .profile-dropdown {
     position: relative;
+    .pp {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .username {
+        margin: 0 5px;
+        font-weight: 500;
+      }
+    }
     .nt-count {
       position: absolute;
       top: 0;

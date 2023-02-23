@@ -9,7 +9,7 @@ function Conversations() {
   const { username } = useParams();
   const { profileState, addProfileConv, getProfileConv, addConvComment } =
     useContext(ProfileContext);
-
+  const user = localStorage.getItem("user");
   useEffect(() => {
     getProfileConv(username);
   }, []);
@@ -18,20 +18,20 @@ function Conversations() {
     <StyledConversations>
       <div id="parent">
         <Respond
-          type="someone commented on your profile"
+          type={`${user.name} posted a message to your feed`}
           to={username}
           dest={username}
           addComment={addProfileConv}
         />
-        {profileState?.convs?.map((conv) => {
-          return (
-            <Conversation
-              key={conv._id}
-              conv={conv}
-              addConvComment={addConvComment}
-            />
-          );
-        })}
+        <div className="column-reverse">
+          {profileState?.convs?.map((conv) => {
+            return (
+              <div key={conv._id} className="conv">
+                <Conversation conv={conv} addConvComment={addConvComment} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </StyledConversations>
   );

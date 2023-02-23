@@ -59,6 +59,7 @@ function Navbar() {
   }, []);
 
   ///////for query///////
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const navigate = useNavigate();
 
@@ -76,7 +77,7 @@ function Navbar() {
   //for notification
   useEffect(() => {
     socket.connect();
-    const user = JSON.parse(localStorage.getItem("user"));
+
     socket.on("connect", () => {
       console.log("navbar connected");
     });
@@ -189,9 +190,12 @@ function Navbar() {
         <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
           <div className="pp">
             <ProfilePicture width="40px" height="40px" />
+            <div className="username">{user.name}</div>
             {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
           </div>
-          <AiFillCaretDown style={{ marginLeft: "10px" }} />
+          <div className="icon">
+            <AiFillCaretDown style={{ marginLeft: "10px" }} />
+          </div>
         </button>
         <div
           ref={(e) => (menuRef.current[0] = e)}

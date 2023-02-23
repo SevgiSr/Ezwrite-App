@@ -2,12 +2,17 @@ import {
   ADD_CONV_COMMENT_SUCCESS,
   ADD_PROFILE_CONV_SUCCESS,
   CLOSE_EDIT_MODE,
+  DELETE_NOTIFICATIONS_SUCCESS,
   EDIT_PROFILE_SUCCESS,
+  FOLLOW_PROFILE_BEGIN,
+  FOLLOW_PROFILE_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
   OPEN_MESSAGES_SUCCESS,
   OPEN_NOTIFICATIONS_SUCCESS,
+  UNFOLLOW_PROFILE_BEGIN,
+  UNFOLLOW_PROFILE_SUCCESS,
 } from "../actions";
 
 const profileReducer = (state, action) => {
@@ -17,6 +22,42 @@ const profileReducer = (state, action) => {
       profile: action.payload.profile,
       stories: action.payload.stories,
       isMainUser: action.payload.isMainUser,
+      isFollowing: action.payload.isFollowing,
+    };
+  }
+
+  if (action.type === FOLLOW_PROFILE_BEGIN) {
+    return {
+      ...state,
+      isDisabled: true,
+    };
+  }
+  if (action.type === UNFOLLOW_PROFILE_BEGIN) {
+    return {
+      ...state,
+      isDisabled: true,
+    };
+  }
+  if (action.type === FOLLOW_PROFILE_SUCCESS) {
+    const newFollowers = [...action.payload.followers];
+    const profile = { ...state.profile };
+    profile.followers = [...newFollowers];
+    return {
+      ...state,
+      profile: profile,
+      isFollowing: true,
+      isDisabled: false,
+    };
+  }
+  if (action.type === UNFOLLOW_PROFILE_SUCCESS) {
+    const newFollowers = [...action.payload.followers];
+    const profile = { ...state.profile };
+    profile.followers = [...newFollowers];
+    return {
+      ...state,
+      profile: profile,
+      isFollowing: false,
+      isDisabled: false,
     };
   }
   if (action.type === GET_PROFILE_CONV_SUCCESS) {
@@ -72,6 +113,12 @@ const profileReducer = (state, action) => {
     return {
       ...state,
       notifications: action.payload.notifications,
+    };
+  }
+  if (action.type === DELETE_NOTIFICATIONS_SUCCESS) {
+    return {
+      ...state,
+      notifications: [],
     };
   }
 };

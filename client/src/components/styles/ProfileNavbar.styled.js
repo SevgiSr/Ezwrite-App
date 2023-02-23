@@ -28,10 +28,13 @@ const StyledProfileNavbar = styled.div`
   }
   .buttons {
     display: flex;
+    .following {
+      background-color: #fff;
+      color: #00b2b2;
+    }
     .follow {
-      svg {
-        color: #00b2b2;
-      }
+      background-color: #00b2b2;
+      color: #fff;
     }
   }
 

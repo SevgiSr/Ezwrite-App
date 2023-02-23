@@ -59,6 +59,7 @@ const StyledProfileView = styled.header`
     }
   }
   #user-info {
+    margin-top: 1rem;
     padding: 0;
     list-style: none;
     display: inline-grid;
@@ -66,9 +67,18 @@ const StyledProfileView = styled.header`
     li {
       text-align: center;
       margin: 0 1em;
-      p {
-        padding: 0;
-        margin: 0;
+      .info-btn {
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        background-color: transparent;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        p {
+          padding: 0;
+          margin: 0;
+        }
       }
     }
   }
