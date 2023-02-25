@@ -4,16 +4,31 @@ import { useParams } from "react-router-dom";
 import { ProfileContext } from "../../../context/profileContext";
 import StyledProfileView from "./styles/ProfileView.styled";
 import ProfilePicture from "../../../components/ProfilePicture";
+import { FaCamera } from "react-icons/fa";
+import { useRef } from "react";
+import { useState } from "react";
 
 function ProfileView({ handleChange, state }) {
-  const { profileState, closeEditMode, getProfile } =
+  const { profileState, closeEditMode, getProfile, uploadImage, displayImage } =
     useContext(ProfileContext);
   const { username } = useParams();
+
+  const [file, setFile] = useState("");
+
   const handleClick = () => {
     closeEditMode();
     //you normally dont need that because if sharedLayout sets reducer on first render it affects all children too
     //it's for bringing original fields back since u canceled them
     getProfile(username);
+  };
+
+  const handleUploadChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    uploadImage(file);
   };
 
   return (
@@ -32,7 +47,26 @@ function ProfileView({ handleChange, state }) {
         </div>
       )}
 
-      <ProfilePicture width="90px" />
+      <div className="profile-picture">
+        {profileState.isEditMode && (
+          <label htmlFor="upload" className="upload-picture">
+            <div className="icon">
+              <FaCamera />
+            </div>
+            <form onSubmit={handleSubmit}>
+              <input
+                id="upload"
+                type="file"
+                accept="image/png, image/jpg, image/gif, image/jpeg"
+                name="file"
+                onChange={handleUploadChange}
+              />
+              <button type="submit">submit</button>
+            </form>
+          </label>
+        )}
+        <ProfilePicture filename={profileState.profile._id} width="90px" />
+      </div>
 
       <h1 className="profile-name">
         <span>{profileState.profile.profileName}</span>

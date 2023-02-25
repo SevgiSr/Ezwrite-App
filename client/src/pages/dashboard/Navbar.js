@@ -189,7 +189,7 @@ function Navbar() {
       <div className="profile-dropdown">
         <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
           <div className="pp">
-            <ProfilePicture width="40px" height="40px" />
+            <ProfilePicture filename={user._id} width="40px" height="40px" />
             <div className="username">{user.name}</div>
             {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
           </div>

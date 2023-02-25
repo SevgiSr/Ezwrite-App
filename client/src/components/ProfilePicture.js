@@ -1,10 +1,11 @@
-import src from "../assets/pp.png";
+import { useContext, useEffect, useState } from "react";
+import src0 from "../assets/pp.png";
 import StyledProfilePicture from "./styles/ProfilePicture.styled";
 
-const ProfilePicture = ({ width, height }) => {
+const ProfilePicture = ({ width, height, filename }) => {
   return (
     <StyledProfilePicture width={width} height={height}>
-      <img src={src} alt="profile" />
+      <img src={`/images/${filename}`} alt="profile" />
     </StyledProfilePicture>
   );
 };

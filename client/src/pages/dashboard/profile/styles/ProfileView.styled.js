@@ -38,6 +38,32 @@ const StyledProfileView = styled.header`
       background: #099;
     }
   }
+  .profile-picture {
+    position: relative;
+    margin-bottom: 1rem;
+    .icon {
+      font-size: 60px;
+      color: #fff;
+      opacity: 0.5;
+    }
+    input {
+      display: none;
+    }
+    .upload-picture {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      background-color: transparent;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+    }
+  }
+
   .profile-name {
     position: relative;
     input {

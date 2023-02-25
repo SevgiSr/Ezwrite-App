@@ -9,6 +9,7 @@ import {
   EDIT_PROFILE_SUCCESS,
   FOLLOW_PROFILE_BEGIN,
   FOLLOW_PROFILE_SUCCESS,
+  GET_IMAGE_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
@@ -65,6 +66,27 @@ export const ProfileProvider = ({ children }) => {
       console.log(error);
       console.log(error.response.data.msg);
     }
+  };
+
+  const uploadImage = async (file) => {
+    try {
+      let fileData = new FormData();
+      fileData.append("file", file);
+      const { data } = await authFetch.post("/upload/profilePicture", fileData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const displayImage = async (filename) => {
+    /*     try {
+      console.log(filename);
+      const { data } = await authFetch.get(`/images/${filename}`);
+      const { file } = data;
+      dispatch({ type: GET_IMAGE_SUCCESS, payload: { profilePicture: file } });
+    } catch (error) {
+      console.log(error);
+    } */
   };
 
   const followProfile = async (username) => {
@@ -149,6 +171,7 @@ export const ProfileProvider = ({ children }) => {
 
   const editProfileInfo = async (profileInfo) => {
     try {
+      console.log(profileInfo);
       const { data } = await authFetch.patch(
         `/user/${profileState.profile.name}`,
         { profileInfo }
@@ -227,6 +250,8 @@ export const ProfileProvider = ({ children }) => {
       value={{
         profileState,
         getProfile,
+        uploadImage,
+        displayImage,
         followProfile,
         unfollowProfile,
         getProfileConv,

@@ -18,8 +18,7 @@ const UserSchema = new mongoose.Schema(
       select: false,
     },
     profilePicture: {
-      type: mongoose.Types.ObjectId,
-      ref: "ProfilePicture",
+      type: Object,
     },
     stories: [
       {

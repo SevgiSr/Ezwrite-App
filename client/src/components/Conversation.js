@@ -14,7 +14,7 @@ const Conversation = ({ conv, addConvComment }) => {
       <StyledConversation>
         <header>
           <div id="info">
-            <ProfilePicture width="42px" height="42px" />
+            <ProfilePicture filename={user._id} width="42px" height="42px" />
             <div>
               <h3>{conv.author.name}</h3>
               <p>time</p>

@@ -40,12 +40,15 @@ import profileRoutes from "./routes/profileRoutes.js";
 import storyRoutes from "./routes/storyRoutes.js";
 import convRoutes from "./routes/convRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import imageRoutes from "./routes/imageRoutes.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
 import jwtAuthentication from "./middleware/jwt-auth.js";
 import { UnauthenticatedError } from "./errors/index.js";
+import mongoose from "mongoose";
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -59,6 +62,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 //now -node server and I can access app in localhost:5000
 
 app.use(express.json());
+app.use(cors());
 
 app.use(helmet());
 app.use(xss());
@@ -75,6 +79,8 @@ app.use("/user", jwtAuthentication, profileRoutes);
 app.use("/stories", jwtAuthentication, storyRoutes);
 app.use("/conversations", jwtAuthentication, convRoutes);
 app.use("/messages", jwtAuthentication, messageRoutes);
+app.use("/upload", jwtAuthentication, uploadRoutes);
+app.use("/images", imageRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {
@@ -128,7 +134,19 @@ const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URL);
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    const conn = mongoose.connection;
+
+    let gfs;
+
+    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: "uploads",
+    });
+
     /* app.listen(port, () => {
       console.log(`Server is listening on port ${port}...`);
     }); */

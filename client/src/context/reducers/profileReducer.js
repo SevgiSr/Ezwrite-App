@@ -6,6 +6,7 @@ import {
   EDIT_PROFILE_SUCCESS,
   FOLLOW_PROFILE_BEGIN,
   FOLLOW_PROFILE_SUCCESS,
+  GET_IMAGE_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
@@ -23,6 +24,13 @@ const profileReducer = (state, action) => {
       stories: action.payload.stories,
       isMainUser: action.payload.isMainUser,
       isFollowing: action.payload.isFollowing,
+    };
+  }
+
+  if (action.type === GET_IMAGE_SUCCESS) {
+    return {
+      ...state,
+      profilePicture: action.payload.profilePicture,
     };
   }
 

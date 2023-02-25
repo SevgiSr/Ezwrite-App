@@ -6,7 +6,7 @@ import ProfileNavbar from "./ProfileNavbar";
 import Conversation from "./Conversation";
 import Story from "./Story";
 import Message from "./Message";
-
+import UserCard from "./UserCard";
 export {
   Navbar,
   FormRow,
@@ -16,4 +16,5 @@ export {
   Conversation,
   Story,
   Message,
+  UserCard,
 };

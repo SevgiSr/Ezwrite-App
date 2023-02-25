@@ -11,7 +11,7 @@ function Respond({ type, to, dest, addComment }) {
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
   const [show, setShow] = useState(initialState);
-
+  const user = localStorage.getItem("user");
   const stateRef = useRef(show);
 
   const setShowState = (state) => {

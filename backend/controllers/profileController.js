@@ -2,10 +2,21 @@ import { StatusCodes } from "http-status-codes";
 import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
 import Comment from "../db/models/Comment.js";
+import mongoose from "mongoose";
+
+const conn = mongoose.connection;
+
+let gfs;
+conn.once("open", () => {
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads",
+  });
+  console.log("connected");
+});
 
 const getProfile = async (req, res) => {
   const user = await User.findOne({ name: req.params.username }).populate(
-    "stories profilePicture followers"
+    "stories followers"
   );
 
   let isMainUser = false;
@@ -92,6 +103,7 @@ const editProfile = async (req, res) => {
     { ...profileInfo },
     { upsert: true, new: true, runValidators: true }
   );
+
   res.status(StatusCodes.OK).json({ newUser });
 };
 
