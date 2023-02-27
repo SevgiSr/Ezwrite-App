@@ -8,6 +8,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { StatusCodes } from "http-status-codes";
 import User from "../db/models/User.js";
+import Story from "../db/models/Story.js";
 import mongoose from "mongoose";
 dotenv.config();
 
@@ -21,7 +22,7 @@ conn.once("open", () => {
   console.log("connected");
 });
 
-const storage = new GridFsStorage({
+const userStorage = new GridFsStorage({
   url: process.env.MONGO_URL,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
@@ -36,8 +37,8 @@ const storage = new GridFsStorage({
   },
 });
 
-const upload = multer({
-  storage,
+const userUpload = multer({
+  storage: userStorage,
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   },
@@ -53,14 +54,7 @@ const checkFileType = (file, cb) => {
 
 router
   .route("/profilePicture")
-  .post(upload.single("file"), async (req, res) => {
-    console.log("almost");
-
-    if (req.file) {
-      console.log("in");
-      console.log(req.file.filename);
-    }
-
+  .post(userUpload.single("file"), async (req, res) => {
     const newUser = await User.findOneAndUpdate(
       { _id: req.user.userId },
       {
@@ -77,8 +71,34 @@ router
     res.status(StatusCodes.OK).json({ file: req.file.id });
   });
 
+/* router
+  .route("/:story_id/cover")
+  .post(storyUpload.single("file"), async (req, res) => {
+    console.log("almost");
+
+    if (req.file) {
+      console.log("in");
+      console.log(req.file);
+    }
+
+    const newStory = await Story.findOneAndUpdate(
+      { _id: req.params.story_id },
+      {
+        cover: {
+          filename: req.file.filename,
+          fileId: req.file.id,
+        },
+      },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    deleteImage(req.body.story_id);
+
+    res.status(StatusCodes.OK).json({ file: req.file.id });
+  }); */
+
 const deleteImage = (filename) => {
-  if (!filename) return res.status(400).send("no image filename");
+  if (!filename) return console.log("no image filename");
   gfs.delete({ filename: filename }, (err) => {
     if (err) {
       console.log("couldnt delete image");

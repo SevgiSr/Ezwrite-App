@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledProfileView = styled.header`
-  height: 500px;
+  height: 430px;
   width: 100%;
   background-color: #5c5d56;
   color: #fff;
@@ -12,6 +12,7 @@ const StyledProfileView = styled.header`
   text-align: center;
   .edit-mode {
     width: 100vw;
+    z-index: 999;
     nav {
       display: flex;
       align-items: center;
@@ -34,13 +35,14 @@ const StyledProfileView = styled.header`
       z-index: 1;
       opacity: 0.5;
       width: 100%;
-      height: 500px;
+      height: 480px;
       background: #099;
     }
   }
   .profile-picture {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+
     .icon {
       font-size: 60px;
       color: #fff;

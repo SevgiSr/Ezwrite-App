@@ -1,13 +1,15 @@
 import src from "./cover.jpg";
 
-function Cover({ width, height }) {
+function Cover({ width, height, filename }) {
   return (
     <img
       style={{
-        width: "100%",
+        width: width,
+        height: height,
+        objectFit: "cover",
         boxShadow: "0 8px 12px rgb(18 18 18 / 16%)",
       }}
-      src={src}
+      src={`/images/cover/${filename}`}
       alt=""
     />
   );

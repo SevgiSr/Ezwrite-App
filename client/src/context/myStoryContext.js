@@ -56,10 +56,18 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const createStory = async (storyDetails) => {
+  const createStory = async (file, storyDetails) => {
     alertDispatch({ type: BEGIN });
     try {
-      await authFetch.post("/myStories", storyDetails);
+      let fileData = new FormData();
+      fileData.append("file", file);
+      const { data } = await authFetch.post("/myStories", storyDetails);
+      const { story } = data;
+      console.log(story);
+      const { data1 } = await authFetch.post(
+        `/myStories/cover/${story._id}`,
+        fileData
+      );
       alertDispatch({ type: SUCCESS, payload: { msg: "New Story Created!" } });
     } catch (error) {
       if (error.response.status === 401) return;

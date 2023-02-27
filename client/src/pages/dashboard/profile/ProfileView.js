@@ -65,7 +65,11 @@ function ProfileView({ handleChange, state }) {
             </form>
           </label>
         )}
-        <ProfilePicture filename={profileState.profile._id} width="90px" />
+        <ProfilePicture
+          filename={profileState.profile._id}
+          width="90px"
+          height="90px"
+        />
       </div>
 
       <h1 className="profile-name">

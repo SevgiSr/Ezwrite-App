@@ -5,7 +5,12 @@ const Comment = ({ comment }) => {
   return (
     <>
       <StyledComment>
-        <ProfilePicture id="avatar" width="30px" height="30px" />
+        <ProfilePicture
+          filename={comment?.author?._id}
+          id="avatar"
+          width="30px"
+          height="30px"
+        />
         <div className="content">
           <span>{comment?.author?.name}</span>
           {comment.content}

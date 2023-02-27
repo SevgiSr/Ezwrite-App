@@ -9,7 +9,7 @@ const Story = ({ story }) => {
   return (
     <StyledStory>
       <div className="cover">
-        <Cover />
+        <Cover filename={story._id} width="80px" height="125px" />
       </div>
       <div className="content">
         <Link to={`/story/${story._id}`}>

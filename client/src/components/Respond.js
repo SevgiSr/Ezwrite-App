@@ -5,13 +5,15 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
+import { UserContext } from "../context/userContext";
 
 function Respond({ type, to, dest, addComment }) {
-  const { sendNotification } = useContext(ProfileContext);
+  const { sendNotification, profileState } = useContext(ProfileContext);
+  const { userState } = useContext(UserContext);
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
   const [show, setShow] = useState(initialState);
-  const user = localStorage.getItem("user");
+
   const stateRef = useRef(show);
 
   const setShowState = (state) => {
@@ -63,7 +65,11 @@ function Respond({ type, to, dest, addComment }) {
   return (
     <StyledRespond>
       <form onSubmit={handleSubmit}>
-        <ProfilePicture width="10%" height="10%" />
+        <ProfilePicture
+          filename={userState.user._id}
+          width="10%"
+          height="10%"
+        />
         <textarea
           className={show.comment}
           ref={texareaRef}

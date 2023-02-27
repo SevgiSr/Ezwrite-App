@@ -9,10 +9,12 @@ const StyledOrangeLinks = styled.nav`
 
     .link {
       line-height: 66px;
-      font-size: 20px;
+      font-size: 18px;
+      font-weight: 500;
       color: #222;
       border-bottom-width: 4px;
-      margin: 0 2rem;
+      margin: 0 1.3rem;
+      padding: 0.3rem 0;
     }
 
     @media only screen and (max-width: 1000px) {
@@ -28,7 +30,7 @@ const StyledOrangeLinks = styled.nav`
 
     .link:focus {
       font-weight: 700;
-      border-bottom: 5px solid #ff6122;
+      border-bottom: 3px solid #ff6122;
     }
   }
 `;

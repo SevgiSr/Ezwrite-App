@@ -55,7 +55,7 @@ const MyStory = ({ story }) => {
   return (
     <StyledMyStory>
       <div className="cover">
-        <Cover width="80px" height="125px" />
+        <Cover filename={story._id} width="80px" height="125px" />
       </div>
       <div className="info">
         <h3 className="story-title" onClick={handleClick}>

@@ -20,7 +20,7 @@ function SharedLayout() {
   //make backend request on first render
   useEffect(() => {
     getProfile(username);
-  }, []);
+  }, [username]);
 
   const { profileName, pronouns, about, website, location } =
     profileState.profile;

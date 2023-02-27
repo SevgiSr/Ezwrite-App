@@ -5,6 +5,15 @@ const StyledStory = styled.div`
   display: flex;
   flex-direction: row;
 
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
   .content {
     margin-left: 10px;
     word-wrap: break-word;

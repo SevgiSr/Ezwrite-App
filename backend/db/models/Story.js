@@ -14,8 +14,7 @@ const StorySchema = new mongoose.Schema(
       required: [true, "please provide category"],
     },
     cover: {
-      data: Buffer,
-      contentType: String,
+      type: Object,
     },
     chapters: [
       {

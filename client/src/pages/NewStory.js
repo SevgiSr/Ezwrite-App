@@ -5,15 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import StyledNewStory from "./styles/NewStory.styled";
 import OrangeLinks from "../components/OrangeLinks";
+import { ProfileContext } from "../context/profileContext";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, createStory } = useContext(MyStoryContext);
+  const { storyState, createStory, uploadCover } = useContext(MyStoryContext);
+
   const [storyDetails, setStoryDetails] = useState({
     title: "",
     description: "",
     category: "",
   });
+  const [cover, setCover] = useState("");
 
   const handleChange = (e) => {
     setStoryDetails({ ...storyDetails, [e.target.name]: e.target.value });
@@ -21,18 +24,34 @@ function NewStory() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createStory(storyDetails);
+    createStory(cover, storyDetails);
+
     navigate("/myStories");
+  };
+
+  const handleCoverChange = (e) => {
+    setCover(e.target.files[0]);
   };
 
   return (
     <StyledNewStory>
       {storyState.showAlert && <Alert />}
+
       <form
         className="form"
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
+        <label htmlFor="upload" className="upload-picture">
+          <div className="label">Add a cover</div>
+          <input
+            id="upload"
+            type="file"
+            accept="image/png, image/jpg, image/gif, image/jpeg"
+            name="file"
+            onChange={handleCoverChange}
+          />
+        </label>
         {/* <label htmlFor="cover">Upload Image</label>
         <input id="cover" type="file" name="cover" /> */}
         <OrangeLinks links={[{ label: "Story Details", to: "" }]} />

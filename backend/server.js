@@ -141,10 +141,12 @@ const start = async () => {
 
     const conn = mongoose.connection;
 
-    let gfs;
-
-    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    const gfs_images = new mongoose.mongo.GridFSBucket(conn.db, {
       bucketName: "uploads",
+    });
+
+    const gfs_covers = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: "covers",
     });
 
     /* app.listen(port, () => {

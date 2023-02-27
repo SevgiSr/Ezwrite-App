@@ -4,15 +4,20 @@ import { useParams } from "react-router-dom";
 import Story from "../../components/Story";
 import StyledStories from "./styles/Stories.styled";
 
-function Option({ id, label }) {
-  const [isChecked, setIsChecked] = useState(false);
-  const handleChange = (e) => {
-    console.log(e.target.value);
-    setIsChecked(!isChecked);
+function Option({ id, label, selectedValue, onChange }) {
+  const isSelected = selectedValue === id;
+  const handleChange = () => {
+    onChange(id);
   };
   return (
     <div className="option">
-      <input value={isChecked} onChange={handleChange} id={id} type="radio" />
+      <input
+        value={isSelected}
+        onChange={handleChange}
+        id={id}
+        type="radio"
+        checked={isSelected}
+      />
       <label htmlFor={id}>{label}</label>
     </div>
   );
@@ -21,6 +26,8 @@ function Option({ id, label }) {
 function Stories() {
   const { state, getByCategory, getByQuery } = useContext(StoryContext);
   const params = useParams();
+  const [selectedLength, setSelectedLength] = useState("any");
+
   useEffect(() => {
     if (params.query) {
       getByQuery(params.query);
@@ -29,16 +36,45 @@ function Stories() {
     }
   }, [params]);
 
+  const handleLengthChange = (length) => {
+    setSelectedLength(length);
+  };
+
   return (
     <StyledStories>
       <div className="filters">
         <div className="filter">
           <h4 className="title">Length</h4>
-          <Option id="any" label="Any Lenght" />
-          <Option id="1-10" label="1-10 Parts" />
-          <Option id="10-20" label="10-20 Parts" />
-          <Option id="20-50" label="20-50 Parts" />
-          <Option id="50-more" label="50 Parts or more" />
+          <Option
+            id="any"
+            label="Any Length"
+            selectedValue={selectedLength}
+            onChange={handleLengthChange}
+          />
+          <Option
+            id="1-10"
+            label="1-10 Parts"
+            selectedValue={selectedLength}
+            onChange={handleLengthChange}
+          />
+          <Option
+            id="10-20"
+            label="10-20 Parts"
+            selectedValue={selectedLength}
+            onChange={handleLengthChange}
+          />
+          <Option
+            id="20-50"
+            label="20-50 Parts"
+            selectedValue={selectedLength}
+            onChange={handleLengthChange}
+          />
+          <Option
+            id="50-more"
+            label="50 Parts or more"
+            selectedValue={selectedLength}
+            onChange={handleLengthChange}
+          />
         </div>
       </div>
       <div className="stories">

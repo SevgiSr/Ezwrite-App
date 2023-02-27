@@ -23,7 +23,11 @@ function Story() {
       <StoryCard story={story} />
       <div className="story-info">
         <div className="author">
-          <ProfilePicture width="30px" />
+          <ProfilePicture
+            filename={story.author?._id}
+            width="30px"
+            height="30px"
+          />
           <span className="username">{story?.author?.name}</span>
         </div>
         <div className="status">Ongoing</div>
@@ -49,7 +53,7 @@ const StoryCard = ({ story }) => {
   return (
     <div className="story-card">
       <div className="cover">
-        <Cover />
+        <Cover filename={story._id} width="184px" height="250px" />
       </div>
       <div className="info">
         <h3>{story.title}</h3>

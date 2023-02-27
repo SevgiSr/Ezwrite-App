@@ -7,14 +7,16 @@ import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 
 const Conversation = ({ conv, addConvComment }) => {
-  const user = localStorage.getItem("user");
-
   return (
     <>
       <StyledConversation>
         <header>
           <div id="info">
-            <ProfilePicture filename={user._id} width="42px" height="42px" />
+            <ProfilePicture
+              filename={conv.author._id}
+              width="42px"
+              height="42px"
+            />
             <div>
               <h3>{conv.author.name}</h3>
               <p>time</p>

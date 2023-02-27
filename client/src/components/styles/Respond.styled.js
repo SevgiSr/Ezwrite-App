@@ -22,7 +22,7 @@ const StyledRespond = styled.div`
       font-weight: 300;
       line-height: 24px;
       color: #6f6f6f;
-      width: 85%;
+      width: 84%;
       height: 30px;
       border: none;
       padding: 0.5rem;

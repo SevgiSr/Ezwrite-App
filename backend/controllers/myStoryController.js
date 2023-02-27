@@ -4,6 +4,7 @@ import User from "../db/models/User.js";
 import Chapter from "../db/models/Chapter.js";
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
+import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -16,6 +17,19 @@ import checkPermissions from "../utils/checkPermissions.js";
 //if you don't, add checkPermissions()
 
 //before adding checkPermissions users could easily change each others stories by just knowing it's id
+
+import mongoose from "mongoose";
+dotenv.config();
+
+const conn = mongoose.connection;
+
+let gfs;
+conn.once("open", () => {
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads",
+  });
+  console.log("connected");
+});
 
 const getMyStories = async (req, res) => {
   // jwt-auth middleware coming before sending any myStory request
@@ -30,6 +44,8 @@ const getMyStories = async (req, res) => {
 };
 
 const createStory = async (req, res) => {
+  console.log("creating");
+
   const { title, description, category } = req.body;
 
   if (!title || !category) {
