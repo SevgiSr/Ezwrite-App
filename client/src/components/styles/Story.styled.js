@@ -4,41 +4,52 @@ const StyledStory = styled.div`
   color: #222;
   display: flex;
   flex-direction: row;
-
   padding: 1rem;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  transition: box-shadow 0.2s ease-in-out;
-
-  &:hover {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
 
   .content {
     margin-left: 10px;
     word-wrap: break-word;
 
-    h3 {
-      font-size: 18px;
-      line-height: 28px;
-      font-weight: 600;
+    .title {
+      color: #222;
+      text-decoration: none;
+      h3 {
+        font-size: 18px;
+        line-height: 28px;
+        font-weight: 600;
+        width: fit-content;
+        border-bottom: 2px solid transparent;
+      }
+      h3:hover {
+        border-bottom: 2px solid #222;
+      }
+    }
+
+    .author {
+      margin-bottom: 5px;
     }
 
     .meta-data {
       color: #6f6f6f;
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       font-size: 12px;
-
-      div {
-        margin-right: 7px;
+      width: fit-content;
+      > * {
+        display: flex;
+        margin-right: 10px;
+        .icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 3px;
+        }
       }
     }
 
     .description {
       color: #6f6f6f;
-      font-size: 15px;
+      font-size: 12px;
       line-height: 21px;
     }
   }

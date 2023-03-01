@@ -1,10 +1,9 @@
 import styled from "styled-components";
 
 const StyledAbout = styled.div`
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
   box-sizing: border-box;
-  padding: 0 2rem;
   padding-bottom: 3rem;
   display: flex;
   justify-content: space-between;

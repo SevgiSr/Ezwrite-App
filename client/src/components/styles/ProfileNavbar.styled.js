@@ -2,16 +2,14 @@ import styled from "styled-components";
 
 const StyledProfileNavbar = styled.div`
   width: 100%;
-  height: 50px;
+  height: 100%;
   border-bottom: 2px solid #eee;
-  padding: 0.5rem 0;
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
   position: relative;
   .parent {
-    width: 80%;
-    height: 100%;
+    width: 70%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -40,7 +38,6 @@ const StyledProfileNavbar = styled.div`
 
   @media only screen and (max-width: 1000px) {
     button {
-      margin: 0 1rem;
       .btn-text {
         display: none;
       }
@@ -49,7 +46,7 @@ const StyledProfileNavbar = styled.div`
       }
     }
     .parent {
-      width: 100%;
+      width: 95%;
     }
   }
 `;

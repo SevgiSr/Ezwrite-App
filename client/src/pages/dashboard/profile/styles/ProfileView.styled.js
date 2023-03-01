@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledProfileView = styled.header`
-  height: 430px;
+  height: 400px;
   width: 100%;
   background-color: #5c5d56;
   color: #fff;
@@ -35,7 +35,7 @@ const StyledProfileView = styled.header`
       z-index: 1;
       opacity: 0.5;
       width: 100%;
-      height: 480px;
+      height: 450px;
       background: #099;
     }
   }

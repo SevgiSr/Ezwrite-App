@@ -1,11 +1,12 @@
 import src from "./cover.jpg";
 
-function Cover({ width, height, filename }) {
+function Cover({ width, filename }) {
+  const numericWidth = parseFloat(width);
   return (
     <img
       style={{
         width: width,
-        height: height,
+        height: numericWidth * (125 / 80) + "px",
         objectFit: "cover",
         boxShadow: "0 8px 12px rgb(18 18 18 / 16%)",
       }}

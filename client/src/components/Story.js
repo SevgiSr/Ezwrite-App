@@ -9,27 +9,37 @@ const Story = ({ story }) => {
   return (
     <StyledStory>
       <div className="cover">
-        <Cover filename={story._id} width="80px" height="125px" />
+        <Cover filename={story._id} width="140px" />
       </div>
       <div className="content">
-        <Link to={`/story/${story._id}`}>
+        <Link className="title" to={`/story/${story._id}`}>
           <h3>{story.title}</h3>
         </Link>
-        <div className="author">{story.author.name} tarafından</div>
+        <div className="author">{story.author.name}sevgi tarafından</div>
         <div className="meta-data">
-          <div className="read-count">
-            <GoEye />
-            1.6K
+          <div>
+            <div className="icon">
+              <GoEye />
+            </div>
+            <div className="count"> 1.6K</div>
           </div>
-          <div className="vote-count">
-            <BsFillStarFill />
-            103
+          <div>
+            <div className="icon">
+              <BsFillStarFill />
+            </div>
+            <div className="count">103</div>
           </div>
-          <div className="part-count">
-            <AiOutlineBars />9
+          <div>
+            <div className="icon">
+              <AiOutlineBars />
+            </div>
+            <div className="count">9</div>
           </div>
         </div>
-        <div className="description">{story.description}</div>
+        <div className="description">
+          {story.description.slice(0, 100)}
+          {story.description.length > 100 && "..."}
+        </div>
       </div>
     </StyledStory>
   );

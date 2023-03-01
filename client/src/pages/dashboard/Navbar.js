@@ -111,47 +111,53 @@ function Navbar() {
 
   return (
     <StyledNavbar>
-      <nav id="discover">
-        <ul>
-          <li className="logo">
-            <img src={src} alt="" />
-          </li>
-          <li className="dropdown">
-            <button
-              ref={(e) => (buttonRef.current[0] = e)}
-              name="discover"
-              className="dropdown-toggle"
-            >
-              Göz at
-              <AiFillCaretDown
-                style={{ marginLeft: "8px", fontSize: "10px" }}
-              />
-            </button>
-            <div
-              ref={(e) => (menuRef.current[0] = e)}
-              className={"dropdown-menu-parent" + show.discover}
-            >
-              <div className="dropdown-menu discover-dropdown-menu">
-                <h3 className="dropdown-title">Göz At</h3>
-                <div className="dropdown-items">
-                  <Link className="dropdown-item">Fantasy</Link>
-                  <Link className="dropdown-item">Romance</Link>
-                  <Link className="dropdown-item">Fantasy</Link>
-                  <Link className="dropdown-item">Romance</Link>
-                  <Link className="dropdown-item">Fantasy</Link>
-                  <Link className="dropdown-item">Romance</Link>
-                  <Link className="dropdown-item">Fantasy</Link>
-                  <Link className="dropdown-item">Romance</Link>
-                  <Link className="dropdown-item">Fantasy</Link>
-                  <Link className="dropdown-item">Romance</Link>
+      <div className="section">
+        <div className="logo">
+          <img src={src} alt="" />
+        </div>
+        <nav id="discover-dropdown">
+          <button
+            ref={(e) => (buttonRef.current[0] = e)}
+            name="discover"
+            className="dropdown-toggle"
+          >
+            Göz at
+            <AiFillCaretDown style={{ marginLeft: "8px", fontSize: "10px" }} />
+          </button>
+          <div
+            ref={(e) => (menuRef.current[0] = e)}
+            className={"dropdown-menu-parent" + show.discover}
+          >
+            <div className="dropdown-menu discover-dropdown-menu">
+              <div className="dropdown-items">
+                <div className="dropdown-item">
+                  <div className="symbol">😍</div>
+                  <Link to={"/stories/fantasy"}>Fantasy</Link>
+                  <Link to={"/stories/romance"}>Romance</Link>
+                  <Link to={"/stories/action"}>Action</Link>
+                  <Link to={"/stories/fanfiction"}>Fanfinction</Link>
+                </div>
+                <div className="dropdown-item">
+                  <div className="symbol">💀</div>
+                  <Link to={"/stories/horror"}>Horror</Link>
+                  <Link to={"/stories/mystery"}>Mystery</Link>
+                  <Link to={"/stories/paranormal"}>Paranormal</Link>
+                  <Link to={"/stories/vampire"}>Vampire/Werewolf</Link>
+                </div>
+                <div className="dropdown-item">
+                  <div className="symbol">🤓</div>
+                  <Link to={"/stories/educational"}>Educational</Link>
+                  <Link to={"/stories/debate"}>Debate</Link>
+                  <Link to={"/stories/humor"}>Humor</Link>
+                  <Link to={"/stories/nonFiction"}>Non-fiction</Link>
                 </div>
               </div>
             </div>
-          </li>
-        </ul>
-      </nav>
+          </div>
+        </nav>
+      </div>
 
-      <form onSubmit={handleSubmit} className="search-form">
+      <form onSubmit={handleSubmit} id="search-form">
         <button type="submit">
           <FiSearch />
         </button>
@@ -164,64 +170,68 @@ function Navbar() {
         />
       </form>
 
-      <nav>
-        <button ref={(e) => (buttonRef.current[1] = e)} name="write">
-          Yaz
-          <AiFillCaretDown style={{ marginLeft: "8px", fontSize: "10px" }} />
-        </button>
-        <div
-          ref={(e) => (menuRef.current[1] = e)}
-          className={"dropdown-menu-parent" + show.write}
-        >
-          <div className="dropdown-menu write-dropdown-menu">
-            <div className="dropdown-items">
-              <Link to={`/newStory`} className="dropdown-item">
-                New Story
-              </Link>
-              <Link to={`/myStories`} className="dropdown-item">
-                My Stories
-              </Link>
+      <div className="section">
+        <nav id="write-dropdown">
+          <button
+            ref={(e) => (buttonRef.current[1] = e)}
+            name="write"
+            className="dropdown-toggle"
+          >
+            Yaz
+            <AiFillCaretDown style={{ marginLeft: "8px", fontSize: "10px" }} />
+          </button>
+          <div
+            ref={(e) => (menuRef.current[1] = e)}
+            className={"dropdown-menu-parent" + show.write}
+          >
+            <div className="dropdown-menu">
+              <div className="dropdown-items">
+                <Link to={`/newStory`} className="dropdown-item">
+                  New Story
+                </Link>
+                <Link to={`/myStories`} className="dropdown-item">
+                  My Stories
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      <div className="profile-dropdown">
-        <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
-          <div className="pp">
-            <ProfilePicture filename={user._id} width="40px" height="40px" />
-            <div className="username">{user.name}</div>
-            {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
-          </div>
-          <div className="icon">
-            <AiFillCaretDown style={{ marginLeft: "10px" }} />
-          </div>
-        </button>
-        <div
-          ref={(e) => (menuRef.current[0] = e)}
-          className={"dropdown-menu-parent" + show.profile}
-        >
-          <div className="dropdown-menu">
-            <div className="dropdown-items">
-              <Link
-                to={`/user/${userState.user.name}`}
-                className="dropdown-item"
-                style={{ borderBottom: "1px solid #6f6f6f" }}
-              >
-                <span>My Profile</span>
-              </Link>
-              <Link to={`/inbox`} className="dropdown-item">
-                <span>Inbox</span>
-              </Link>
-              <Link to={`/notifications`} className="dropdown-item">
-                <span>
-                  {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
-                  Notifications
-                </span>
-              </Link>
+        <nav id="profile-dropdown">
+          <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
+            <div className="pp">
+              <ProfilePicture filename={user._id} width="40px" height="40px" />
+              <div className="username">{user.name}</div>
+              {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+            </div>
+            <AiFillCaretDown style={{ fontSize: "10px" }} />
+          </button>
+          <div
+            ref={(e) => (menuRef.current[0] = e)}
+            className={"dropdown-menu-parent" + show.profile}
+          >
+            <div className="dropdown-menu">
+              <div className="dropdown-items">
+                <Link
+                  to={`/user/${userState.user.name}`}
+                  className="dropdown-item"
+                  style={{ borderBottom: "1px solid #eee" }}
+                >
+                  <span>My Profile</span>
+                </Link>
+                <Link to={`/inbox`} className="dropdown-item">
+                  <span>Inbox</span>
+                </Link>
+                <Link to={`/notifications`} className="dropdown-item">
+                  <span>
+                    {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+                    Notifications
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </nav>
       </div>
     </StyledNavbar>
   );

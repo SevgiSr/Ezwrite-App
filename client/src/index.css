@@ -34,22 +34,25 @@ button {
 
 .dropdown-menu {
   position: absolute;
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
   background-color: white;
-  padding: 0.5rem;
+  padding: 12px 3px;
   border: transparent;
   border-radius: 0.25rem;
   box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .dropdown-item {
   text-decoration: none;
   color: #222;
   font-size: 16px;
-  line-height: 21px;
-  padding: 6px 0;
+  padding: 10px 5px;
+
 }
 
 .show {
@@ -95,16 +98,13 @@ button {
 
 .profile-button {
   cursor: pointer;
-  height: 40px;
-  padding: 5px 10px;
-  margin: 0 2rem;
+  padding: 10px;
+  margin-left: 2rem;
   color: #6f6f6f;
   font-size: 16px;
   border: solid 2px #eee;
   display: flex;
   align-items: center;
-
-
 }
 
 .profile-button a {
@@ -140,7 +140,7 @@ button {
 }
 
 html {
-  font-size: 100%;
+  font-size: 14px;
   color: #6f6f6f;
 
 
