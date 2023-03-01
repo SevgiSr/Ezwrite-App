@@ -68,7 +68,7 @@ router
 
     deleteImage(req.user.userId);
 
-    res.status(StatusCodes.OK).json({ file: req.file.id });
+    res.status(StatusCodes.OK).json({ profilePicture: req.file.filename });
   });
 
 /* router

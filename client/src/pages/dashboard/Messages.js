@@ -62,13 +62,13 @@ function Messages() {
     <StyledMessages>
       <div className="parent">
         <h1 className="title">Inbox</h1>
-        <div className="messages">
+        <div className="messages card">
           {messages?.map((msg) => {
             i++;
             return (
               <Message
                 key={i}
-                content={msg.content}
+                msg={msg}
                 isSelf={mainUser === msg.author.name}
               />
             );

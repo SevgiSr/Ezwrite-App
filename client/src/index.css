@@ -18,8 +18,10 @@ button {
 
 .link {
   text-decoration: none;
-  color: black;
+  color: #222;
 }
+
+/*    DROPDOWN-MENU    */
 
 .dropdown-menu-parent {
   opacity: 0;
@@ -55,6 +57,9 @@ button {
   transform: translateY(0);
   pointer-events: auto;
 }
+
+
+/* ///////////////// */
 
 .orange-button {
   color: #fff;
@@ -117,9 +122,12 @@ button {
   flex-direction: column-reverse;
 }
 
-/* ///////////////////// */
+/*          CARD            */
 
-
+.card {
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
+}
 
 
 /* //////////////////// */

@@ -206,8 +206,12 @@ function Navbar() {
               <Link
                 to={`/user/${userState.user.name}`}
                 className="dropdown-item"
+                style={{ borderBottom: "1px solid #6f6f6f" }}
               >
                 <span>My Profile</span>
+              </Link>
+              <Link to={`/inbox`} className="dropdown-item">
+                <span>Inbox</span>
               </Link>
               <Link to={`/notifications`} className="dropdown-item">
                 <span>

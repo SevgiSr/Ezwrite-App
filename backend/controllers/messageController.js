@@ -6,8 +6,10 @@ import Notification from "../db/models/Notification.js";
 const getPrivateConvs = async (req, res) => {
   const user = await User.findById(req.user.userId).populate({
     path: "privateConvs",
-    populate: "messages partner",
+    populate: "messages users",
   });
+
+  console.log(user.privateConvs);
 
   res.status(StatusCodes.OK).json({ inbox: user.privateConvs });
 };
@@ -38,10 +40,14 @@ const sendMessage = async (req, res) => {
     await privateConv.save();
     console.log(privateConv);
   } else {
-    const newPC = await PrivateConv.create({
+    const newPrivateConv = await PrivateConv.create({
       users: [req.user.userId, receiver._id].sort(),
       messages: [message],
     });
+    await User.updateMany(
+      { _id: { $in: [req.user.userId, receiver._id] } },
+      { $push: { privateConvs: newPrivateConv._id } }
+    );
   }
   res.status(StatusCodes.OK);
 };

@@ -21,8 +21,6 @@ const StyledMessages = styled.div`
     justify-content: center;
 
     .messages {
-      border: 1px solid #eee;
-      box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
       border-radius: 15px;
       height: 65%;
       width: 100%;

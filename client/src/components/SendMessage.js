@@ -53,6 +53,7 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
     setMessageContent("");
     const message = {
       author: {
+        _id: user._id,
         name: user.name,
       },
       content: messageContent,
@@ -66,7 +67,7 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
   return (
     <StyledSendMessage>
       <form onSubmit={handleSubmit}>
-        <ProfilePicture width="10%" height="10%" />
+        <ProfilePicture filename={user._id} width="10%" height="10%" />
         <textarea
           className={show.msgBox}
           ref={texareaRef}

@@ -12,7 +12,7 @@ const StyledProfileView = styled.header`
   text-align: center;
   .edit-mode {
     width: 100vw;
-    z-index: 999;
+    z-index: 2;
     nav {
       display: flex;
       align-items: center;
@@ -55,7 +55,7 @@ const StyledProfileView = styled.header`
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
+      z-index: 2;
       background-color: transparent;
       cursor: pointer;
       top: 0;

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getPrivateConvs,
   sendMessage,
   openPrivateConv,
   openNotifications,
@@ -15,6 +16,7 @@ router
   .get(openNotifications)
   .delete(deleteNotifications);
 
+router.route("/inbox").get(getPrivateConvs);
 router.route("/:username").post(sendMessage).get(openPrivateConv);
 
 export default router;

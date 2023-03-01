@@ -1,11 +1,15 @@
 import ProfilePicture from "./ProfilePicture";
 import StyledMessage from "./styles/Message.styled";
 
-const Message = ({ content, isSelf }) => {
+const Message = ({ msg, isSelf }) => {
   return (
     <StyledMessage isSelf={isSelf}>
-      <ProfilePicture width={"30px"} height={"30px"} />
-      <div className="content">{content}</div>
+      <ProfilePicture
+        filename={msg.author._id}
+        width={"30px"}
+        height={"30px"}
+      />
+      <div className="content">{msg.content}</div>
     </StyledMessage>
   );
 };

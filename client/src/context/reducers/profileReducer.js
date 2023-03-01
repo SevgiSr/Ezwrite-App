@@ -10,10 +10,12 @@ import {
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
+  OPEN_INBOX_SUCCESS,
   OPEN_MESSAGES_SUCCESS,
   OPEN_NOTIFICATIONS_SUCCESS,
   UNFOLLOW_PROFILE_BEGIN,
   UNFOLLOW_PROFILE_SUCCESS,
+  UPLOAD_IMAGE_SUCCESS,
 } from "../actions";
 
 const profileReducer = (state, action) => {
@@ -111,6 +113,12 @@ const profileReducer = (state, action) => {
       profile: action.payload.newUser,
     };
   }
+  if (action.type === OPEN_INBOX_SUCCESS) {
+    return {
+      ...state,
+      inbox: action.payload.inbox,
+    };
+  }
   if (action.type === OPEN_MESSAGES_SUCCESS) {
     return {
       ...state,
@@ -127,6 +135,12 @@ const profileReducer = (state, action) => {
     return {
       ...state,
       notifications: [],
+    };
+  }
+  if (action.type === UPLOAD_IMAGE_SUCCESS) {
+    return {
+      ...state,
+      profilePicture: action.payload.profilePicture,
     };
   }
 };

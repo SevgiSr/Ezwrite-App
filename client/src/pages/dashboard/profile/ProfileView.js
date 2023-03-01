@@ -7,13 +7,18 @@ import ProfilePicture from "../../../components/ProfilePicture";
 import { FaCamera } from "react-icons/fa";
 import { useRef } from "react";
 import { useState } from "react";
+import { PulseLoader } from "react-spinners";
 
 function ProfileView({ handleChange, state }) {
-  const { profileState, closeEditMode, getProfile, uploadImage, displayImage } =
-    useContext(ProfileContext);
+  const {
+    profileState,
+    alertState,
+    closeEditMode,
+    getProfile,
+    uploadImage,
+    displayImage,
+  } = useContext(ProfileContext);
   const { username } = useParams();
-
-  const [file, setFile] = useState("");
 
   const handleClick = () => {
     closeEditMode();
@@ -23,12 +28,7 @@ function ProfileView({ handleChange, state }) {
   };
 
   const handleUploadChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    uploadImage(file);
+    uploadImage(e.target.files[0]);
   };
 
   return (
@@ -53,23 +53,24 @@ function ProfileView({ handleChange, state }) {
             <div className="icon">
               <FaCamera />
             </div>
-            <form onSubmit={handleSubmit}>
-              <input
-                id="upload"
-                type="file"
-                accept="image/png, image/jpg, image/gif, image/jpeg"
-                name="file"
-                onChange={handleUploadChange}
-              />
-              <button type="submit">submit</button>
-            </form>
+            <input
+              id="upload"
+              type="file"
+              accept="image/png, image/jpg, image/gif, image/jpeg"
+              name="file"
+              onChange={handleUploadChange}
+            />
           </label>
         )}
-        <ProfilePicture
-          filename={profileState.profile._id}
-          width="90px"
-          height="90px"
-        />
+        {alertState.isLoading ? (
+          <PulseLoader />
+        ) : (
+          <ProfilePicture
+            filename={profileState.profile._id}
+            width="90px"
+            height="90px"
+          />
+        )}
       </div>
 
       <h1 className="profile-name">
