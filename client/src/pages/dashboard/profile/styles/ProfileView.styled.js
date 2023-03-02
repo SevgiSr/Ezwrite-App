@@ -71,10 +71,11 @@ const StyledProfileView = styled.header`
     input {
       padding: 6px 15px;
       position: absolute;
-      left: 0;
-      bottom: 0;
+      left: -10px;
       top: 0;
       right: 0;
+      bottom: 0;
+      width: 100%;
       z-index: 2;
       background: rgba(255, 255, 255, 0.667);
       border-radius: 5px;

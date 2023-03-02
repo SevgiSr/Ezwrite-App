@@ -31,6 +31,16 @@ function ProfileView({ handleChange, state }) {
     uploadImage(e.target.files[0]);
   };
 
+  const inputRef = useRef(null);
+
+  const editedHandleChange = (e) => {
+    //handle change as component parameter, from profile layout
+    handleChange(e);
+    const inputText = e.target.value;
+    const textWidth = inputText.length * 12; // adjust the factor as needed
+    inputRef.current.style.width = textWidth + "px";
+  };
+
   return (
     <StyledProfileView>
       {profileState.isEditMode && (
@@ -77,10 +87,11 @@ function ProfileView({ handleChange, state }) {
         <span>{profileState.profile.profileName}</span>
         {profileState.isEditMode && (
           <input
+            ref={inputRef}
             type="text"
             name="profileName"
             value={state.profileName}
-            onChange={handleChange}
+            onChange={editedHandleChange}
           />
         )}
       </h1>

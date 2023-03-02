@@ -4,7 +4,6 @@ const StyledNavbar = styled.header`
   position: sticky;
   top: 0;
   left: 0;
-  right: 0;
   z-index: 2;
   display: flex;
   flex-direction: row;
@@ -30,7 +29,19 @@ const StyledNavbar = styled.header`
 
   #write-dropdown,
   #discover-dropdown {
-    margin: 0 100px;
+    margin: 0 3em;
+  }
+
+  @media only screen and (max-width: 680px) {
+    padding: 0;
+    #write-dropdown,
+    #discover-dropdown {
+      margin: 0;
+    }
+
+    .username {
+      display: none;
+    }
   }
 
   #discover-dropdown {
