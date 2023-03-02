@@ -15,11 +15,15 @@ dotenv.config();
 const conn = mongoose.connection;
 
 let gfs;
+let gfs_bc;
 conn.once("open", () => {
   gfs = new mongoose.mongo.GridFSBucket(conn.db, {
     bucketName: "uploads",
   });
-  console.log("connected");
+
+  gfs_bc = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "backgrounds",
+  });
 });
 
 const userStorage = new GridFsStorage({
@@ -39,6 +43,28 @@ const userStorage = new GridFsStorage({
 
 const userUpload = multer({
   storage: userStorage,
+  fileFilter: (req, file, cb) => {
+    checkFileType(file, cb);
+  },
+});
+
+const userBcStorage = new GridFsStorage({
+  url: process.env.MONGO_URL,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      console.log("heyoooooooooo");
+      const filename = req.user.userId;
+      const fileInfo = {
+        filename: filename,
+        bucketName: "backgrounds",
+      };
+      return resolve(fileInfo);
+    });
+  },
+});
+
+const userBcUpload = multer({
+  storage: userBcStorage,
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   },
@@ -71,20 +97,13 @@ router
     res.status(StatusCodes.OK).json({ profilePicture: req.file.filename });
   });
 
-/* router
-  .route("/:story_id/cover")
-  .post(storyUpload.single("file"), async (req, res) => {
-    console.log("almost");
-
-    if (req.file) {
-      console.log("in");
-      console.log(req.file);
-    }
-
-    const newStory = await Story.findOneAndUpdate(
-      { _id: req.params.story_id },
+router
+  .route("/backgroundPicture")
+  .post(userBcUpload.single("file"), async (req, res) => {
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user.userId },
       {
-        cover: {
+        backgroundPicture: {
           filename: req.file.filename,
           fileId: req.file.id,
         },
@@ -92,10 +111,10 @@ router
       { upsert: true, new: true, runValidators: true }
     );
 
-    deleteImage(req.body.story_id);
+    deleteImage(req.user.userId);
 
-    res.status(StatusCodes.OK).json({ file: req.file.id });
-  }); */
+    res.status(StatusCodes.OK).json({ backgroundPicture: req.file.filename });
+  });
 
 const deleteImage = (filename) => {
   if (!filename) return console.log("no image filename");

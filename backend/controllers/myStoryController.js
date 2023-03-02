@@ -18,19 +18,6 @@ import checkPermissions from "../utils/checkPermissions.js";
 
 //before adding checkPermissions users could easily change each others stories by just knowing it's id
 
-import mongoose from "mongoose";
-dotenv.config();
-
-const conn = mongoose.connection;
-
-let gfs;
-conn.once("open", () => {
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads",
-  });
-  console.log("connected");
-});
-
 const getMyStories = async (req, res) => {
   // jwt-auth middleware coming before sending any myStory request
   // sets userId inside req.user object if the token is verified

@@ -139,16 +139,6 @@ const start = async () => {
       useUnifiedTopology: true,
     });
 
-    const conn = mongoose.connection;
-
-    const gfs_images = new mongoose.mongo.GridFSBucket(conn.db, {
-      bucketName: "uploads",
-    });
-
-    const gfs_covers = new mongoose.mongo.GridFSBucket(conn.db, {
-      bucketName: "covers",
-    });
-
     /* app.listen(port, () => {
       console.log(`Server is listening on port ${port}...`);
     }); */

@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema(
     profilePicture: {
       type: Object,
     },
+    backgroundPicture: {
+      type: Object,
+    },
     stories: [
       {
         type: mongoose.Types.ObjectId,

@@ -16,6 +16,7 @@ function ProfileView({ handleChange, state }) {
     closeEditMode,
     getProfile,
     uploadImage,
+    uploadBcImage,
     displayImage,
   } = useContext(ProfileContext);
   const { username } = useParams();
@@ -29,6 +30,10 @@ function ProfileView({ handleChange, state }) {
 
   const handleUploadChange = (e) => {
     uploadImage(e.target.files[0]);
+  };
+
+  const handleBcUploadChange = (e) => {
+    uploadBcImage(e.target.files[0]);
   };
 
   const inputRef = useRef(null);
@@ -55,6 +60,30 @@ function ProfileView({ handleChange, state }) {
           </nav>
           <div id="edit-overlay"></div>
         </div>
+      )}
+
+      <div className="bc-overlay"></div>
+
+      <div className="background">
+        <img src={`/images/background/${profileState.profile._id}`} alt="" />
+      </div>
+
+      {profileState.isEditMode && (
+        <label htmlFor="upload" className="upload-background">
+          <div className="upload-button">
+            <div className="icon">
+              <FaCamera />
+            </div>
+            Change Background Image
+          </div>
+          <input
+            id="upload"
+            type="file"
+            accept="image/png, image/jpg, image/gif, image/jpeg"
+            name="file"
+            onChange={handleBcUploadChange}
+          />
+        </label>
       )}
 
       <div className="profile-picture">

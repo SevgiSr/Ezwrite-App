@@ -1,5 +1,3 @@
-import src from "./cover.jpg";
-
 function Cover({ width, filename }) {
   const numericWidth = parseFloat(width);
   return (

@@ -99,6 +99,27 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  const uploadBcImage = async (file) => {
+    try {
+      alertDispatch({ type: BEGIN });
+      let fileData = new FormData();
+      fileData.append("file", file);
+      const { data } = await authFetch.post(
+        "/upload/backgroundPicture",
+        fileData
+      );
+      const { backgroundPicture } = data;
+      dispatch({ type: UPLOAD_IMAGE_SUCCESS, payload: { backgroundPicture } });
+      alertDispatch({
+        type: SUCCESS,
+        payload: { msg: "successfully updated the profile picture" },
+      });
+    } catch (error) {
+      console.log(error);
+      alertDispatch({ type: ERROR });
+    }
+  };
+
   const displayImage = async (filename) => {
     /*     try {
       console.log(filename);
@@ -282,6 +303,7 @@ export const ProfileProvider = ({ children }) => {
         alertState,
         getProfile,
         uploadImage,
+        uploadBcImage,
         displayImage,
         followProfile,
         unfollowProfile,

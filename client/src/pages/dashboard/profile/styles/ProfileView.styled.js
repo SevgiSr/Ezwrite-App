@@ -3,13 +3,42 @@ import styled from "styled-components";
 const StyledProfileView = styled.header`
   height: 400px;
   width: 100%;
-  background-color: #5c5d56;
+  background-color: transparent;
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+
+  .bc-overlay {
+    position: absolute;
+    z-index: -9;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: #5c5d56;
+    opacity: 0.3;
+  }
+
+  .background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    overflow: hidden;
+    z-index: -10;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+  }
+
   .edit-mode {
     width: 100vw;
     z-index: 2;
@@ -35,7 +64,7 @@ const StyledProfileView = styled.header`
       z-index: 1;
       opacity: 0.5;
       width: 100%;
-      height: 450px;
+      height: 400px;
       background: #099;
     }
   }
@@ -63,6 +92,32 @@ const StyledProfileView = styled.header`
       bottom: 0;
       right: 0;
       position: absolute;
+    }
+  }
+
+  .upload-background {
+    margin-bottom: 10px;
+    z-index: 2;
+    input {
+      display: none;
+    }
+
+    .upload-button {
+      display: flex;
+      align-items: center;
+      background-color: #000;
+      color: #fff;
+      font-size: 15px;
+      border: 2px solid #fff;
+      padding: 10px;
+      border-radius: 1rem;
+      cursor: pointer;
+    }
+
+    .icon {
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
     }
   }
 
