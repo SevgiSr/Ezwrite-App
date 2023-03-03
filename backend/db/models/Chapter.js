@@ -2,6 +2,16 @@ import mongoose from "mongoose";
 
 const ChapterSchema = new mongoose.Schema(
   {
+    story: {
+      type: mongoose.Types.ObjectId,
+      ref: "Story",
+      required: true,
+    },
+    author: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: [true, "please provide user"],
+    },
     title: {
       type: String,
       default: "Unnamed Chapter",
@@ -15,6 +25,12 @@ const ChapterSchema = new mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Comment",
+      },
+    ],
+    votes: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Vote",
       },
     ],
   },

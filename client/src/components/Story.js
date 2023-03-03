@@ -37,7 +37,7 @@ const Story = ({ story }) => {
           </div>
         </div>
         <div className="description">
-          {story.description.slice(0, 100)}
+          {story.description.slice(0, 486)}
           {story.description.length > 100 && "..."}
         </div>
       </div>

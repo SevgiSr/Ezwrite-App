@@ -125,7 +125,7 @@ function ProfileView({ handleChange, state }) {
         )}
       </h1>
 
-      <h2 id="username">@{profileState.profile.name}</h2>
+      <h2 className="username">@{profileState.profile.name}</h2>
 
       <ul id="user-info">
         <li>

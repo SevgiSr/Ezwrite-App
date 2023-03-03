@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledProfileView = styled.header`
-  height: 400px;
+  height: 370px;
   width: 100%;
   background-color: transparent;
   color: #fff;
@@ -64,7 +64,7 @@ const StyledProfileView = styled.header`
       z-index: 1;
       opacity: 0.5;
       width: 100%;
-      height: 400px;
+      height: 370px;
       background: #099;
     }
   }
@@ -123,6 +123,8 @@ const StyledProfileView = styled.header`
 
   .profile-name {
     position: relative;
+    font-size: 28px;
+    margin-bottom: 5px;
     input {
       padding: 6px 15px;
       position: absolute;
@@ -141,6 +143,11 @@ const StyledProfileView = styled.header`
       line-height: 31px;
       text-align: center;
     }
+  }
+
+  .username {
+    font-size: 19px;
+    margin-bottom: 10px;
   }
   #user-info {
     margin-top: 1rem;

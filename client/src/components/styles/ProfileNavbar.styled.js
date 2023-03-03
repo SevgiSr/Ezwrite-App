@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledProfileNavbar = styled.div`
   width: 100%;
   height: 100%;
-  border-bottom: 2px solid #eee;
+  box-shadow: 0 2px 5px rgb(120 120 120 / 50%);
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;

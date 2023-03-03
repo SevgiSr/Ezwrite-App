@@ -5,9 +5,14 @@ import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 import {
   ADD_CHAPTER_CONV_SUCCESS,
   ADD_CONV_COMMENT_SUCCESS,
+  BEGIN,
+  ERROR,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
+  SUCCESS,
+  UNVOTE_CHAPTER_SUCCESS,
+  VOTE_CHAPTER_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
 
@@ -16,6 +21,8 @@ const initialState = {
   story: {},
   chapter: {},
   author: {},
+  votes: {},
+  myVote: {},
   chapterConvs: [],
 };
 
@@ -64,10 +71,11 @@ export const StoryProvider = ({ children }) => {
       const { data } = await authFetch.get(
         `/stories/story/${story_id}/${chapter_id}`
       );
-      const { chapter, author, chapterConvs } = data;
+      const { chapter, story, votes, myVote, author, chapterConvs } = data;
+
       dispatch({
         type: GET_CHAPTER_SUCCESS,
-        payload: { chapter, author, chapterConvs },
+        payload: { chapter, story, votes, myVote, author, chapterConvs },
       });
     } catch (error) {
       console.log(error);
@@ -87,6 +95,36 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const voteChapter = async (chapter_id, vote_value) => {
+    alertDispatch({ type: BEGIN });
+    try {
+      dispatch({ type: VOTE_CHAPTER_SUCCESS, payload: { vote_value } });
+      const { data } = await authFetch.patch(`/stories/chapter/${chapter_id}`, {
+        vote_value,
+      });
+
+      alertDispatch({ type: SUCCESS, payload: { msg: "voted!" } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+      alertDispatch({ type: ERROR });
+    }
+  };
+
+  const unvoteChapter = async (chapter_id, vote_value) => {
+    alertDispatch({ type: BEGIN });
+    try {
+      dispatch({ type: UNVOTE_CHAPTER_SUCCESS, payload: { vote_value } });
+      const { data } = await authFetch.delete(`/stories/chapter/${chapter_id}`);
+
+      alertDispatch({ type: SUCCESS, payload: { msg: "unvoted!" } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+      alertDispatch({ type: ERROR });
+    }
+  };
+
   const addConvComment = async (conv_id, comment_content) => {
     try {
       const { data } = await authFetch.post(`/conversations/${conv_id}`, {
@@ -103,11 +141,14 @@ export const StoryProvider = ({ children }) => {
     <StoryContext.Provider
       value={{
         state,
+        alertState,
         getByCategory,
         getByQuery,
         getStory,
         getChapter,
         addChapterConv,
+        voteChapter,
+        unvoteChapter,
         addConvComment,
       }}
     >

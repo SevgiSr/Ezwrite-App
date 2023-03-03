@@ -4,6 +4,8 @@ import {
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
+  UNVOTE_CHAPTER_SUCCESS,
+  VOTE_CHAPTER_SUCCESS,
 } from "../actions";
 
 const storyReducer = (state, action) => {
@@ -26,12 +28,52 @@ const storyReducer = (state, action) => {
       chapter: action.payload.chapter,
       author: action.payload.author,
       chapterConvs: action.payload.chapterConvs,
+      story: action.payload.story,
+      votes: action.payload.votes,
+      myVote: action.payload.myVote,
     };
   }
   if (action.type === ADD_CHAPTER_CONV_SUCCESS) {
     return {
       ...state,
       chapterConvs: [...state.chapterConvs, action.payload.newConv],
+    };
+  }
+
+  if (action.type === VOTE_CHAPTER_SUCCESS) {
+    const value = Number(action.payload.vote_value);
+    const votes = { ...state.votes };
+    console.log(state.votes);
+    if (value === 1) {
+      votes.upvotes = state.votes.upvotes + 1;
+      if (state.myVote === -1) {
+        votes.downvotes = state.votes.downvotes - 1;
+      }
+    } else if (value === -1) {
+      votes.downvotes = state.votes.downvotes + 1;
+      if (state.myVote === 1) {
+        votes.upvotes = state.votes.upvotes - 1;
+      }
+    }
+    return {
+      ...state,
+      votes: votes,
+      myVote: value,
+    };
+  }
+  if (action.type === UNVOTE_CHAPTER_SUCCESS) {
+    const value = Number(action.payload.vote_value);
+    const votes = { ...state.votes };
+    console.log(state.votes);
+    if (value === 1) {
+      votes.upvotes = state.votes.upvotes - 1;
+    } else if (value === -1) {
+      votes.downvotes = state.votes.downvotes - 1;
+    }
+    return {
+      ...state,
+      votes: votes,
+      myVote: 0,
     };
   }
   if (action.type === ADD_CONV_COMMENT_SUCCESS) {

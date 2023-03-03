@@ -40,9 +40,17 @@ const createStory = async (req, res) => {
   }
 
   req.body.author = req.user.userId;
-  req.body.chapters = [await Chapter.create({ content: "" })];
 
   const story = await Story.create(req.body);
+
+  const chapter = await Chapter.create({
+    content: "",
+    story: story._id,
+    author: req.user.userId,
+  });
+
+  story.chapters.push(chapter._id);
+  await story.save();
 
   await User.findOneAndUpdate(
     { _id: req.user.userId },

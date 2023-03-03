@@ -13,7 +13,6 @@ const StyledOrangeLinks = styled.nav`
       line-height: 58px;
       font-size: 17px;
       font-weight: 500;
-      border-bottom-width: 4px;
       margin-right: 2rem;
       border-bottom: 4px solid transparent;
     }
