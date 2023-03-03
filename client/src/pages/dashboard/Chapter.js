@@ -6,8 +6,11 @@ import { Conversation } from "../../components";
 import Respond from "../../components/Respond";
 import { FiChevronDown } from "react-icons/fi";
 import Cover from "../../components/Cover";
-import { AiFillStar } from "react-icons/ai";
-import { BiDownvote } from "react-icons/bi";
+import { AiFillDislike, AiFillStar } from "react-icons/ai";
+import { GoEye } from "react-icons/go";
+import { BsFillStarFill } from "react-icons/bs";
+import { FaComment } from "react-icons/fa";
+
 function Chapter() {
   const { state, getChapter, addChapterConv, addConvComment } =
     useContext(StoryContext);
@@ -21,8 +24,36 @@ function Chapter() {
   return (
     <StyledChapter>
       <ChapterHeader story={state.story} />
+
       <section className="chapter">
         <h1>{state.chapter.title}</h1>
+        <div className="metadata">
+          <div>
+            <div className="icon">
+              <GoEye />
+            </div>
+            <div className="count"> 0</div>
+          </div>
+          <div>
+            <div className="icon">
+              <BsFillStarFill />
+            </div>
+            <div className="count">{state.votes.upvotes}</div>
+          </div>
+          <div>
+            <div className="icon">
+              <AiFillDislike />
+            </div>
+            <div className="count">{state.votes.downvotes}</div>
+          </div>
+
+          <div>
+            <div className="icon">
+              <FaComment />
+            </div>
+            <div className="count">{state.chapterConvs.length}</div>
+          </div>
+        </div>
         <div className="content">{state.chapter.content}</div>
       </section>
 
@@ -78,7 +109,7 @@ function ChapterHeader() {
   //if its == -1 display downwoted
 
   return (
-    <header>
+    <header className="chapter-header">
       <div className="dropdown">
         <StoryDropdown story={state.story} />
       </div>
@@ -116,7 +147,7 @@ function ChapterHeader() {
           disabled={alertState.isLoading}
         >
           <div className={`icon active-${String(active.downvote)}`}>
-            <BiDownvote />
+            <AiFillDislike />
           </div>
           <div className="text">Downvote</div>
         </button>

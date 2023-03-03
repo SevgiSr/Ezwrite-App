@@ -5,7 +5,7 @@ const StyledChapter = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  header {
+  .chapter-header {
     box-shadow: 0 2px 2px rgb(120 120 120 / 50%);
     position: sticky;
     top: 0;
@@ -99,18 +99,30 @@ const StyledChapter = styled.div`
     overflow: scroll;
     max-height: 500px;
   }
+
   .chapter {
     width: 600px;
-
+    .metadata {
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid #eee;
+      margin: 1rem 0;
+      padding-bottom: 2rem;
+      > * {
+        display: flex;
+        margin: 0 1rem;
+        .icon {
+          margin-right: 5px;
+        }
+      }
+    }
     h1 {
       text-align: center;
-      padding-bottom: 2rem;
-      margin-bottom: 2rem;
+
       font-weight: 700;
       font-size: 32px;
       line-height: 40px;
       color: #121212;
-      border-bottom: 1px solid #eee;
     }
     .content {
       font-weight: 400;
