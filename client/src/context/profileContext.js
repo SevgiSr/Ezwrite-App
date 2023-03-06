@@ -133,34 +133,38 @@ export const ProfileProvider = ({ children }) => {
 
   const followProfile = async (username) => {
     try {
-      dispatch({
-        type: FOLLOW_PROFILE_BEGIN,
+      alertDispatch({
+        type: BEGIN,
       });
       const { data } = await authFetch.get(`/user/${username}/follow`);
       const { followers } = data;
+      alertDispatch({ type: SUCCESS, payload: { msg: "followed" } });
       dispatch({
         type: FOLLOW_PROFILE_SUCCESS,
         payload: { followers },
       });
     } catch (error) {
       console.log(error);
+      alertDispatch({ type: ERROR });
     }
   };
 
   const unfollowProfile = async (username) => {
     try {
-      dispatch({
-        type: UNFOLLOW_PROFILE_BEGIN,
+      alertDispatch({
+        type: BEGIN,
       });
       const { data } = await authFetch.get(`/user/${username}/unfollow`);
-
       const { followers } = data;
+
+      alertDispatch({ type: SUCCESS, payload: { msg: "unfollowed" } });
       dispatch({
         type: UNFOLLOW_PROFILE_SUCCESS,
         payload: { followers },
       });
     } catch (error) {
       console.log(error);
+      alertDispatch({ type: ERROR });
     }
   };
 

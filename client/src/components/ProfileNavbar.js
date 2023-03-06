@@ -13,6 +13,7 @@ const ProfileNavbar = ({ links }) => {
   const socket = io("http://localhost:5000");
 
   const {
+    alertState,
     profileState,
     openEditMode,
     followProfile,
@@ -82,7 +83,7 @@ const ProfileNavbar = ({ links }) => {
             ) : (
               <button
                 onClick={handleFollowClick}
-                disabled={profileState.isDisabled}
+                disabled={alertState.isLoading}
                 className="follow profile-button"
               >
                 <span className="icon">

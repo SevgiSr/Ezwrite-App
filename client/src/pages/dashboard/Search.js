@@ -3,6 +3,8 @@ import { StoryContext } from "../../context/storyContext";
 import { useParams } from "react-router-dom";
 import Story from "../../components/Story";
 import StyledStories from "./styles/Stories.styled";
+import ProfilePicture from "../../components/ProfilePicture";
+import { UserCard } from "../../components";
 
 function Option({ id, label, selectedValue, onChange }) {
   const isSelected = selectedValue === id;
@@ -23,25 +25,63 @@ function Option({ id, label, selectedValue, onChange }) {
   );
 }
 
-function Stories() {
+function Search() {
+  const [search, setSearch] = useState("");
   const { state, getByCategory, getByQuery } = useContext(StoryContext);
   const params = useParams();
-  const [selectedLength, setSelectedLength] = useState("any");
 
   useEffect(() => {
     if (params.query) {
       getByQuery(params.query);
+      setSearch("stories");
     } else if (params.category) {
       getByCategory(params.category);
+      setSearch("stories");
     }
   }, [params]);
+
+  return (
+    <StyledStories>
+      <header className="search-header">
+        <button
+          className={`${search === "stories" && "active"}`}
+          onClick={(e) => setSearch("stories")}
+        >
+          Stories
+        </button>
+        <button
+          className={`${search === "users" && "active"}`}
+          onClick={(e) => setSearch("users")}
+        >
+          Users
+        </button>
+      </header>
+      {search === "users" ? <Users /> : <Stories />}
+    </StyledStories>
+  );
+}
+
+function Users() {
+  const { state } = useContext(StoryContext);
+  return (
+    <div className="users-parent">
+      {state.users.map((user) => {
+        return <UserCard user={user} key={user._id} />;
+      })}
+    </div>
+  );
+}
+
+function Stories() {
+  const { state } = useContext(StoryContext);
+
+  const [selectedLength, setSelectedLength] = useState("any");
 
   const handleLengthChange = (length) => {
     setSelectedLength(length);
   };
-
   return (
-    <StyledStories>
+    <div className="stories-parent">
       <div className="filters">
         <div className="filter">
           <h4 className="title">Length</h4>
@@ -82,8 +122,8 @@ function Stories() {
           return <Story key={story._id} story={story} />;
         })}
       </div>
-    </StyledStories>
+    </div>
   );
 }
 
-export default Stories;
+export default Search;

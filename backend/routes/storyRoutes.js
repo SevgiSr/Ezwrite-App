@@ -8,6 +8,7 @@ import {
   addChapterConv,
   voteChapter,
   unvoteChapter,
+  incrementViewCount,
 } from "../controllers/storyController.js";
 
 router.route("/:category").get(getByCategory);
@@ -20,5 +21,7 @@ router
   .post(addChapterConv)
   .patch(voteChapter)
   .delete(unvoteChapter);
+
+router.route("/chapter/:chapter_id/view").post(incrementViewCount);
 
 export default router;

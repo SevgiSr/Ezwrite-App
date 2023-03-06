@@ -1,10 +1,11 @@
 import Story from "../db/models/Story.js";
 import Comment from "../db/models/Comment.js";
 import Chapter from "../db/models/Chapter.js";
+import User from "../db/models/User.js";
 import { StatusCodes } from "http-status-codes";
 import Vote from "../db/models/Vote.js";
 
-async function countChapterVotes(chapter_id) {
+export async function countChapterVotes(chapter_id) {
   const result = await Vote.aggregate([
     { $match: { chapter: chapter_id } }, // match votes for the specified chapter
     { $group: { _id: "$value", count: { $sum: 1 } } }, // group by value and count votes
@@ -33,12 +34,18 @@ const getByCategory = async (req, res) => {
 const getByQuery = async (req, res) => {
   const { query } = req.params;
   const stories = await Story.find({ title: { $regex: query, $options: "i" } });
-  res.status(StatusCodes.OK).json({ stories });
+  const users = await User.find({ name: { $regex: query, $options: "i" } });
+  res.status(StatusCodes.OK).json({ stories, users });
 };
 
 const getStory = async (req, res) => {
   const { id } = req.params;
   const story = await Story.findById(id).populate("author chapters");
+  story.chapters.map((c) => {
+    const votes = countChapterVotes(c._id);
+    c.votes = votes;
+  });
+
   res.status(StatusCodes.OK).json({ story });
 };
 
@@ -98,12 +105,12 @@ const addChapterConv = async (req, res) => {
 };
 
 const voteChapter = async (req, res) => {
-  console.log("voting");
   let vote = await Vote.findOne({
     user: req.user.userId,
     chapter: req.params.chapter_id,
   });
 
+  //if vote exists, no need to create new one, just change the value
   if (vote) {
     vote.value = Number(req.body.vote_value); // update the vote value
     await vote.save(); // save the updated vote document
@@ -113,7 +120,7 @@ const voteChapter = async (req, res) => {
       chapter: req.params.chapter_id,
       value: Number(req.body.vote_value),
     }); // create a new vote document if one does not exist
-    //save the vote ONLY if you created a new one
+    //save the vote to CHapter ONLY if you created a new one
     await Chapter.findOneAndUpdate(
       { _id: req.params.chapter_id },
       { $push: { votes: vote._id } },
@@ -125,12 +132,14 @@ const voteChapter = async (req, res) => {
 };
 
 const unvoteChapter = async (req, res) => {
+  //find your vote no matter what value it has
   const vote = await Vote.findOne({
     user: req.user.userId,
     chapter: req.params.chapter_id,
   });
+
   let newChapter;
-  console.log(vote);
+  //take the vote back from chapter and delete vote object
   if (vote) {
     newChapter = await Chapter.findOneAndUpdate(
       { _id: req.params.chapter_id },
@@ -143,6 +152,16 @@ const unvoteChapter = async (req, res) => {
   res.status(StatusCodes.OK).json({ newChapter });
 };
 
+const incrementViewCount = async (req, res) => {
+  console.log("incremeting view");
+  await Chapter.findOneAndUpdate(
+    { _id: req.params.chapter_id },
+    { $inc: { views: 1 } }
+  );
+  console.log("success");
+  res.status(StatusCodes.OK);
+};
+
 export {
   getByCategory,
   getByQuery,
@@ -151,4 +170,5 @@ export {
   addChapterConv,
   voteChapter,
   unvoteChapter,
+  incrementViewCount,
 };

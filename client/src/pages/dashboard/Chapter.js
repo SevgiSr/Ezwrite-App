@@ -12,9 +12,27 @@ import { BsFillStarFill } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 
 function Chapter() {
-  const { state, getChapter, addChapterConv, addConvComment } =
-    useContext(StoryContext);
+  const {
+    state,
+    incrementViewCount,
+    getChapter,
+    addChapterConv,
+    addConvComment,
+  } = useContext(StoryContext);
   const { story_id, chapter_id } = useParams();
+
+  //for incrementing view count
+  const [viewTimer, setViewTimer] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log("incrementing view");
+      incrementViewCount(chapter_id); // Send a request to the backend to increment the view count
+    }, 30000); // Change the time interval as needed
+    setViewTimer(timer);
+
+    return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
+  }, []);
 
   //u dont need getChapterConv as it seems!
   useEffect(() => {
@@ -32,7 +50,7 @@ function Chapter() {
             <div className="icon">
               <GoEye />
             </div>
-            <div className="count"> 0</div>
+            <div className="count">{state.chapter.views}</div>
           </div>
           <div>
             <div className="icon">

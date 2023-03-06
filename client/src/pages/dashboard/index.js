@@ -1,6 +1,6 @@
 import Home from "./Home";
 import SharedLayout from "./SharedLayout";
-import Stories from "./Stories";
+import Search from "./Search";
 import Story from "./Story";
 import Chapter from "./Chapter";
 import Messages from "./Messages";
@@ -10,7 +10,7 @@ import Notifications from "./Notifications";
 export {
   Home,
   SharedLayout,
-  Stories,
+  Search,
   Story,
   Chapter,
   Messages,

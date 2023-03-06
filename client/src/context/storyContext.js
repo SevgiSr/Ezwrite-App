@@ -17,6 +17,7 @@ import {
 import { UserContext } from "./userContext";
 
 const initialState = {
+  users: [],
   stories: [],
   story: {},
   chapter: {},
@@ -49,8 +50,8 @@ export const StoryProvider = ({ children }) => {
   const getByQuery = async (query) => {
     try {
       const { data } = await authFetch.get(`/stories/search/${query}`);
-      const { stories } = data;
-      dispatch({ type: GET_STORIES_SUCCESS, payload: { stories } });
+      const { stories, users } = data;
+      dispatch({ type: GET_STORIES_SUCCESS, payload: { stories, users } });
     } catch (error) {
       console.log(error);
     }
@@ -95,6 +96,7 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  //you need to call dispatch before making backend request to change UI faster
   const voteChapter = async (chapter_id, vote_value) => {
     alertDispatch({ type: BEGIN });
     try {
@@ -125,6 +127,16 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const incrementViewCount = async (chapter_id) => {
+    try {
+      const { data } = await authFetch.post(
+        `/stories/chapter/${chapter_id}/view`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addConvComment = async (conv_id, comment_content) => {
     try {
       const { data } = await authFetch.post(`/conversations/${conv_id}`, {
@@ -150,6 +162,7 @@ export const StoryProvider = ({ children }) => {
         voteChapter,
         unvoteChapter,
         addConvComment,
+        incrementViewCount,
       }}
     >
       {children}

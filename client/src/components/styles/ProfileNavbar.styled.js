@@ -26,14 +26,6 @@ const StyledProfileNavbar = styled.div`
   }
   .buttons {
     display: flex;
-    .following {
-      background-color: #fff;
-      color: #00b2b2;
-    }
-    .follow {
-      background-color: #00b2b2;
-      color: #fff;
-    }
   }
 
   @media only screen and (max-width: 1000px) {

@@ -35,39 +35,26 @@ const profileReducer = (state, action) => {
       profilePicture: action.payload.profilePicture,
     };
   }
-
-  if (action.type === FOLLOW_PROFILE_BEGIN) {
-    return {
-      ...state,
-      isDisabled: true,
-    };
-  }
-  if (action.type === UNFOLLOW_PROFILE_BEGIN) {
-    return {
-      ...state,
-      isDisabled: true,
-    };
-  }
   if (action.type === FOLLOW_PROFILE_SUCCESS) {
     const newFollowers = [...action.payload.followers];
+    if (!state || !state.profile) return;
     const profile = { ...state.profile };
     profile.followers = [...newFollowers];
     return {
       ...state,
       profile: profile,
       isFollowing: true,
-      isDisabled: false,
     };
   }
   if (action.type === UNFOLLOW_PROFILE_SUCCESS) {
     const newFollowers = [...action.payload.followers];
+    if (!state || !state.profile) return;
     const profile = { ...state.profile };
     profile.followers = [...newFollowers];
     return {
       ...state,
       profile: profile,
       isFollowing: false,
-      isDisabled: false,
     };
   }
   if (action.type === GET_PROFILE_CONV_SUCCESS) {

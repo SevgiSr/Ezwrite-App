@@ -69,7 +69,7 @@ function ProfileView({ handleChange, state }) {
       </div>
 
       {profileState.isEditMode && (
-        <label htmlFor="upload" className="upload-background">
+        <label htmlFor="upload_background" className="upload-background">
           <div className="upload-button">
             <div className="icon">
               <FaCamera />
@@ -77,7 +77,7 @@ function ProfileView({ handleChange, state }) {
             Change Background Image
           </div>
           <input
-            id="upload"
+            id="upload_background"
             type="file"
             accept="image/png, image/jpg, image/gif, image/jpeg"
             name="file"
@@ -88,12 +88,12 @@ function ProfileView({ handleChange, state }) {
 
       <div className="profile-picture">
         {profileState.isEditMode && (
-          <label htmlFor="upload" className="upload-picture">
+          <label htmlFor="upload_profile" className="upload-picture">
             <div className="icon">
               <FaCamera />
             </div>
             <input
-              id="upload"
+              id="upload_profile"
               type="file"
               accept="image/png, image/jpg, image/gif, image/jpeg"
               name="file"

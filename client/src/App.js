@@ -17,15 +17,15 @@ import {
 } from "./pages/dashboard/profile";
 
 import {
-  Stories,
+  Home,
+  SharedLayout,
+  Search,
   Story,
   Chapter,
   Inbox,
   Messages,
   Notifications,
 } from "./pages/dashboard";
-
-import { Home, SharedLayout } from "./pages/dashboard";
 
 function App() {
   return (
@@ -47,8 +47,8 @@ function App() {
             <Route path="following" element={<Following />} />
           </Route>
           <Route path="/myStories" element={<MyStories />} />
-          <Route path="/stories/:category" element={<Stories />} />
-          <Route path="/stories/search/:query" element={<Stories />} />
+          <Route path="/stories/:category" element={<Search />} />
+          <Route path="/stories/search/:query" element={<Search />} />
           <Route path="/story/:story_id" element={<Story />} />
           <Route path="/:story_id/:chapter_id" element={<Chapter />} />
           <Route path="/inbox" element={<Inbox />} />

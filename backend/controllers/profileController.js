@@ -5,7 +5,7 @@ import Comment from "../db/models/Comment.js";
 
 const getProfile = async (req, res) => {
   const user = await User.findOne({ name: req.params.username }).populate(
-    "stories followers"
+    "stories followers following"
   );
 
   let isMainUser = false;
@@ -37,6 +37,11 @@ const followProfile = async (req, res) => {
     { $push: { followers: req.user.userId } },
     { upsert: true, new: true, runValidators: true }
   );
+
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $push: { following: user._id } }
+  );
   res.status(StatusCodes.OK).json({ followers: user.followers });
 };
 
@@ -46,6 +51,11 @@ const unfollowProfile = async (req, res) => {
     { name: req.params.username },
     { $pull: { followers: req.user.userId } },
     { upsert: true, new: true, runValidators: true }
+  );
+
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $pull: { following: user._id } }
   );
 
   res.status(StatusCodes.OK).json({ followers: user.followers });

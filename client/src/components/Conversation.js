@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 
 const Conversation = ({ conv, addConvComment }) => {
+  if (!conv) return null;
+  if (!conv.content) return null;
   return (
     <>
       <StyledConversation>

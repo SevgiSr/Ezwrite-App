@@ -13,6 +13,7 @@ const storyReducer = (state, action) => {
     return {
       ...state,
       stories: action.payload.stories,
+      users: action.payload.users,
     };
   }
   if (action.type === GET_STORY_SUCCESS) {

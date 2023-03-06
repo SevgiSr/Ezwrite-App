@@ -1,10 +1,33 @@
 import styled from "styled-components";
 
 const StyledStories = styled.div`
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  grid-gap: 2rem;
   padding: 2rem;
+
+  .search-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    button {
+      font-size: 35px;
+      color: #6f6f6f;
+      margin-right: 1rem;
+      border: none;
+    }
+
+    .active {
+      color: #000;
+      border-bottom: 5px solid #ff6122;
+    }
+  }
+
+  .stories-parent {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-gap: 2rem;
+  }
 
   .filters {
     display: flex;

@@ -33,6 +33,10 @@ const ChapterSchema = new mongoose.Schema(
         ref: "Vote",
       },
     ],
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
