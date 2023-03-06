@@ -27,6 +27,13 @@ const StyledStories = styled.div`
     display: grid;
     grid-template-columns: 250px 1fr;
     grid-gap: 2rem;
+    h1 {
+      color: #000;
+      font-size: 30px;
+    }
+    .results {
+      font-size: 15px;
+    }
   }
 
   .filters {
@@ -38,9 +45,10 @@ const StyledStories = styled.div`
     margin-bottom: 2rem;
 
     h4 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
+      color: #000;
+      font-size: 18px;
       font-weight: bold;
+      margin-top: 30px;
     }
 
     .option {
@@ -48,31 +56,21 @@ const StyledStories = styled.div`
       align-items: center;
       padding: 0.5rem;
       cursor: pointer;
+      margin: 1rem 0;
+      color: #000;
 
       &:hover {
-        background-color: #f2f2f2;
+        background-color: #fff6f2;
       }
 
       input[type="radio"] {
         appearance: none;
-        border: 1px solid #ccc;
-        border-radius: 0;
-
-        width: 16px;
-        height: 16px;
+        border: 1px solid #000;
+        border-radius: 3px;
+        width: 18px;
+        height: 18px;
         position: relative;
         margin-right: 8px;
-
-        &::before {
-          content: "";
-          position: absolute;
-          top: -1px;
-          left: -1px;
-          width: 18px;
-          height: 18px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
 
         &::after {
           content: "";
@@ -82,7 +80,7 @@ const StyledStories = styled.div`
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background-color: #ccc;
+          background-color: #ff500a;
           opacity: 0;
           transition: opacity 0.2s ease-in-out;
         }
@@ -91,17 +89,13 @@ const StyledStories = styled.div`
           opacity: 1;
         }
 
-        &:hover::before {
-          border-color: #888;
-        }
-
         &:hover::after {
-          background-color: #888;
+          background-color: #ff500a;
         }
       }
 
       label {
-        font-size: 1rem;
+        font-size: 18px;
       }
     }
   }
@@ -110,6 +104,16 @@ const StyledStories = styled.div`
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 2rem;
+
+    .card {
+      width: 700px;
+      background-color: #fff;
+      transition: background-color 180ms ease;
+    }
+
+    .card:hover {
+      background-color: #eee;
+    }
   }
 `;
 

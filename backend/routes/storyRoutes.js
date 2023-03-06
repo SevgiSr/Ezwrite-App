@@ -4,6 +4,8 @@ import {
   getByCategory,
   getByQuery,
   getStory,
+  getByDate,
+  getByLength,
   getChapter,
   addChapterConv,
   voteChapter,
@@ -13,6 +15,8 @@ import {
 
 router.route("/:category").get(getByCategory);
 router.route("/search/:query").get(getByQuery);
+router.route("/length/:length").get(getByLength);
+router.route("/date/:date").get(getByDate);
 router.route("/story/:id").get(getStory);
 router.route("/story/:story_id/:chapter_id").get(getChapter);
 

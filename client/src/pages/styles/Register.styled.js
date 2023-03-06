@@ -47,6 +47,7 @@ const StyledRegister = styled.div`
   .form {
     height: 370px;
     width: 500px;
+    margin: 3rem auto;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -5,6 +5,7 @@ import Story from "../../components/Story";
 import StyledStories from "./styles/Stories.styled";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserCard } from "../../components";
+import StoryDetailed from "../../components/StoryDetailed";
 
 function Option({ id, label, selectedValue, onChange }) {
   const isSelected = selectedValue === id;
@@ -12,7 +13,7 @@ function Option({ id, label, selectedValue, onChange }) {
     onChange(id);
   };
   return (
-    <div className="option">
+    <div className="option" onClick={handleChange}>
       <input
         value={isSelected}
         onChange={handleChange}
@@ -76,50 +77,59 @@ function Stories() {
   const { state } = useContext(StoryContext);
 
   const [selectedLength, setSelectedLength] = useState("any");
-
+  const { query } = useParams();
   const handleLengthChange = (length) => {
     setSelectedLength(length);
+    console.log(length);
   };
   return (
     <div className="stories-parent">
-      <div className="filters">
-        <div className="filter">
-          <h4 className="title">Length</h4>
-          <Option
-            id="any"
-            label="Any Length"
-            selectedValue={selectedLength}
-            onChange={handleLengthChange}
-          />
-          <Option
-            id="1-10"
-            label="1-10 Parts"
-            selectedValue={selectedLength}
-            onChange={handleLengthChange}
-          />
-          <Option
-            id="10-20"
-            label="10-20 Parts"
-            selectedValue={selectedLength}
-            onChange={handleLengthChange}
-          />
-          <Option
-            id="20-50"
-            label="20-50 Parts"
-            selectedValue={selectedLength}
-            onChange={handleLengthChange}
-          />
-          <Option
-            id="50-more"
-            label="50 Parts or more"
-            selectedValue={selectedLength}
-            onChange={handleLengthChange}
-          />
+      <div>
+        <h1>"{query}"</h1>
+        <span className="results">{state.stories.length} results</span>
+        <div className="filters">
+          <div className="filter">
+            <h4 className="title">Length</h4>
+            <Option
+              id="any"
+              label="Any Length"
+              selectedValue={selectedLength}
+              onChange={handleLengthChange}
+            />
+            <Option
+              id="1-10"
+              label="1-10 Parts"
+              selectedValue={selectedLength}
+              onChange={handleLengthChange}
+            />
+            <Option
+              id="10-20"
+              label="10-20 Parts"
+              selectedValue={selectedLength}
+              onChange={handleLengthChange}
+            />
+            <Option
+              id="20-50"
+              label="20-50 Parts"
+              selectedValue={selectedLength}
+              onChange={handleLengthChange}
+            />
+            <Option
+              id="50-more"
+              label="50 Parts or more"
+              selectedValue={selectedLength}
+              onChange={handleLengthChange}
+            />
+          </div>
         </div>
       </div>
       <div className="stories">
         {state.stories.map((story) => {
-          return <Story key={story._id} story={story} />;
+          return (
+            <div className="card">
+              <StoryDetailed key={story._id} story={story} />
+            </div>
+          );
         })}
       </div>
     </div>

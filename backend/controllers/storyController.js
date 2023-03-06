@@ -38,6 +38,46 @@ const getByQuery = async (req, res) => {
   res.status(StatusCodes.OK).json({ stories, users });
 };
 
+const getByLength = async (req, res) => {
+  const { length } = req.params;
+  const stories = await Story.find({ chapters: { $size: length } }).populate(
+    "author"
+  );
+
+  res.status(StatusCodes.OK).json({ stories });
+};
+
+const getByDate = async (req, res) => {
+  let query = Story.find();
+
+  // Set the time range for the query based on the input parameter
+  switch (req.params.date) {
+    case "today":
+      query.where("updatedAt").gte(new Date().setHours(0, 0, 0, 0));
+      break;
+    case "this week":
+      query
+        .where("updatedAt")
+        .gte(new Date(new Date().setDate(new Date().getDate() - 7)));
+      break;
+    case "this month":
+      query
+        .where("updatedAt")
+        .gte(new Date(new Date().setMonth(new Date().getMonth() - 1)));
+      break;
+    case "this year":
+      query
+        .where("updatedAt")
+        .gte(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
+      break;
+    default:
+      return Promise.reject(new Error(`Invalid time range: ${timeRange}`));
+  }
+
+  const stories = await query.exec();
+  res.status(StatusCodes.OK).json({ stories });
+};
+
 const getStory = async (req, res) => {
   const { id } = req.params;
   const story = await Story.findById(id).populate("author chapters");
@@ -166,6 +206,8 @@ export {
   getByCategory,
   getByQuery,
   getStory,
+  getByDate,
+  getByLength,
   getChapter,
   addChapterConv,
   voteChapter,

@@ -6,6 +6,7 @@ import { useState } from "react";
 import StyledNewStory from "./styles/NewStory.styled";
 import OrangeLinks from "../components/OrangeLinks";
 import { ProfileContext } from "../context/profileContext";
+import { AiFillPicture } from "react-icons/ai";
 
 function NewStory() {
   const navigate = useNavigate();
@@ -37,24 +38,27 @@ function NewStory() {
     <StyledNewStory>
       {storyState.showAlert && <Alert />}
 
+      <label htmlFor="upload" className="upload-picture">
+        <div className="label">
+          <AiFillPicture />
+          <span>Add a cover</span>
+        </div>
+        <input
+          id="upload"
+          type="file"
+          accept="image/png, image/jpg, image/gif, image/jpeg"
+          name="file"
+          onChange={handleCoverChange}
+        />
+      </label>
       <form
         className="form"
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
-        <label htmlFor="upload" className="upload-picture">
-          <div className="label">Add a cover</div>
-          <input
-            id="upload"
-            type="file"
-            accept="image/png, image/jpg, image/gif, image/jpeg"
-            name="file"
-            onChange={handleCoverChange}
-          />
-        </label>
         {/* <label htmlFor="cover">Upload Image</label>
         <input id="cover" type="file" name="cover" /> */}
-        <OrangeLinks links={[{ label: "Story Details", to: "" }]} />
+        <h1>Story Details</h1>
 
         <label htmlFor="title">Title</label>
         <input

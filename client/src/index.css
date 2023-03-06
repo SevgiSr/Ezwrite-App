@@ -200,7 +200,6 @@ button>* {
 .form {
   border-radius: var(--borderRadius);
   padding: 2rem 2.5rem;
-  margin: 3rem auto;
   box-shadow: var(--shadow-2);
   transition: var(--transition);
 
