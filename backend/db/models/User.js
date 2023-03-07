@@ -75,6 +75,12 @@ const UserSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    displayLanguage: {
+      type: String,
+    },
+    storyLanguage: {
+      type: String,
+    },
   },
 
   { timestamps: true }

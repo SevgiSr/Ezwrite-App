@@ -31,12 +31,24 @@ const StyledStoryDetailed = styled.div`
       margin: 10px 0;
     }
 
+    .tags {
+      margin: 17px 0;
+      .tag {
+        font-size: 12px;
+        background-color: #222;
+        color: #fff;
+        margin-right: 5px;
+        padding: 4px 7px;
+        border-radius: 10px;
+      }
+    }
+
     .meta-data {
       color: #6f6f6f;
       display: flex;
       font-size: 12px;
       width: fit-content;
-      margin: 15px 0;
+      margin: 10px 0;
       > * {
         display: flex;
         flex-direction: column;

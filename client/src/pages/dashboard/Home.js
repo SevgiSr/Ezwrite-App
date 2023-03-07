@@ -1,5 +1,7 @@
+import StyledHome from "./styles/Home.styled";
+
 function Home() {
-  return <div className="container"></div>;
+  return <StyledHome>SEEEEEEEEEEEEEEEEEEEEEEX</StyledHome>;
 }
 
 export default Home;

@@ -46,6 +46,16 @@ function ProfileView({ handleChange, state }) {
     inputRef.current.style.width = textWidth + "px";
   };
 
+  const [showModal, setShowModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
   return (
     <StyledProfileView>
       {profileState.isEditMode && (
@@ -141,13 +151,29 @@ function ProfileView({ handleChange, state }) {
           </button>
         </li>
         <li>
-          <button className="info-btn">
+          <button onClick={handleShowModal} className="info-btn">
             <p>{profileState.profile.followers?.length}</p>
             <p>followers</p>
+            {/* <Modal show={showModal} handleClose={handleCloseModal}>
+              <h2>sevgi abla</h2>
+              <p>dekldmeçödleförlefmrk</p>
+            </Modal> */}
           </button>
         </li>
       </ul>
     </StyledProfileView>
+  );
+}
+
+function Modal({ handleClose, show, children }) {
+  const showHideClassName = show ? "modal display-block" : "modal display-none";
+  return (
+    <div className={showHideClassName}>
+      <section className="modal-main">
+        {children}
+        <button onClick={handleClose}>Close</button>
+      </section>
+    </div>
   );
 }
 

@@ -61,6 +61,11 @@ button {
   pointer-events: auto;
 }
 
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ///////////////// */
 

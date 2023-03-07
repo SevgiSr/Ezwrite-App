@@ -13,6 +13,13 @@ const StorySchema = new mongoose.Schema(
       type: String,
       required: [true, "please provide category"],
     },
+    tags: {
+      type: Array,
+      validate: [arrayLimit, "{PATH} exceeds the limit of 10"],
+    },
+    language: {
+      type: String,
+    },
     cover: {
       type: Object,
     },
@@ -34,5 +41,9 @@ const StorySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+function arrayLimit(val) {
+  return val.length <= 15;
+}
 
 export default mongoose.model("Story", StorySchema);

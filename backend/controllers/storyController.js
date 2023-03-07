@@ -4,6 +4,7 @@ import Chapter from "../db/models/Chapter.js";
 import User from "../db/models/User.js";
 import { StatusCodes } from "http-status-codes";
 import Vote from "../db/models/Vote.js";
+import Progress from "../db/models/Progress.js";
 
 export async function countChapterVotes(chapter_id) {
   const result = await Vote.aggregate([
@@ -87,6 +88,15 @@ const getStory = async (req, res) => {
   });
 
   res.status(StatusCodes.OK).json({ story });
+};
+
+const getProgress = async (req, res) => {
+  const progress = await Progress.findOne({
+    user: req.user.userId,
+    story: req.params.story_id,
+  });
+
+  res.status(StatusCodes.OK).json({ chapter_id: progress.chapter });
 };
 
 const getChapter = async (req, res) => {

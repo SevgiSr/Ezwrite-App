@@ -40,7 +40,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="home" element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="user/:username" element={<ProfileLayout />}>
             <Route index element={<About />} />
             <Route path="conversations" element={<Conversations />} />
