@@ -97,6 +97,22 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const updateCover = async (file, story_id) => {
+    alertDispatch({ type: BEGIN });
+    try {
+      let fileData = new FormData();
+      fileData.append("file", file);
+      const { data } = await authFetch.post(
+        `/myStories/cover/${story_id}`,
+        fileData
+      );
+      alertDispatch({ type: SUCCESS });
+    } catch (error) {
+      console.log(error);
+      alertDispatch({ type: ERROR });
+    }
+  };
+
   const setEditStory = async (id) => {
     dispatch({ type: SET_EDIT_STORY, payload: { id } });
   };
@@ -150,7 +166,7 @@ export const MyStoryProvider = ({ children }) => {
   const addChapter = async (story_id) => {
     try {
       const { data } = await authFetch.post(`/myStories/${story_id}`);
-      const { chapter } = data;
+      const { newStory, chapter } = data;
       return chapter._id;
     } catch (error) {
       console.log(error);
@@ -162,9 +178,11 @@ export const MyStoryProvider = ({ children }) => {
     <MyStoryContext.Provider
       value={{
         storyState,
+        alertState,
         getMyStories,
         getMyStory,
         createStory,
+        updateCover,
         getMyChapters,
         setEditStory,
         editChapter,

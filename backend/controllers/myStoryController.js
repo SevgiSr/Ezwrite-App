@@ -109,16 +109,19 @@ const saveChapter = async (req, res) => {
 };
 
 const createChapter = async (req, res) => {
-  const story = await Story.findById(req.params.id);
+  const story = await Story.findById(req.params.story_id);
   checkPermissions(req.user.userId, story.author._id);
 
-  const chapter = await Chapter.create({ content: "" });
-  const newStory = await Story.findOneAndUpdate(
-    { _id: req.params.id },
-    { $push: { chapters: chapter._id } },
-    { upsert: true, new: true, runValidators: true }
-  );
-  res.status(StatusCodes.OK).json({ newStory, chapter });
+  const chapter = await Chapter.create({
+    content: "",
+    author: req.user.userId,
+    story: story._id,
+  });
+
+  story.chapters.push(chapter._id);
+  await story.save();
+
+  res.status(StatusCodes.OK).json({ newStory: story, chapter });
 };
 
 export {

@@ -1,18 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillDislike } from "react-icons/ai";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaBars, FaComment } from "react-icons/fa";
 import { GoEye } from "react-icons/go";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Cover from "../components/Cover";
 import OrangeLinks from "../components/OrangeLinks";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledEditStoryDetails from "./styles/EditStoryDetails.styled";
+import { PulseLoader } from "react-spinners";
 
 function EditStoryDetails() {
-  const { storyState, getMyStory } = useContext(MyStoryContext);
+  const { storyState, alertState, addChapter, getMyStory, updateCover } =
+    useContext(MyStoryContext);
   const { story_id } = useParams();
-  const { myStory } = storyState;
+  const navigate = useNavigate();
+
   useEffect(() => {
     getMyStory(story_id);
     console.log(storyState.myStory);
@@ -31,17 +34,41 @@ function EditStoryDetails() {
     return formattedDate;
   };
 
+  const handleCoverChange = (e) => {
+    updateCover(e.target.files[0], story_id);
+  };
+
+  const handleNewPartClick = async () => {
+    const newChapter_id = await addChapter(story_id);
+    navigate(`/${story_id}/${newChapter_id}/writing`);
+  };
+
   return (
     <StyledEditStoryDetails>
       <div className="story-manage">
         <div className="cover">
           <div className="cover-overlay">
-            <Cover filename={story_id} width="280px" />
+            {alertState.isLoading ? (
+              <PulseLoader />
+            ) : (
+              <Cover filename={story_id} width="280px" />
+            )}
           </div>
           <h1 className="title">{storyState.myStory.title}</h1>
-          <button className="edit-cover-btn">Edit Your Cover</button>
+          <label htmlFor="upload" className="upload-picture">
+            <div className="edit-cover-btn">Edit Your Cover</div>
+            <input
+              id="upload"
+              type="file"
+              accept="image/png, image/jpg, image/gif, image/jpeg"
+              name="file"
+              onChange={handleCoverChange}
+            />
+          </label>
         </div>
-        <button className="orange-button view-btn">View as reader</button>
+        <Link to={`/story/${story_id}/`} className="orange-button view-btn">
+          View as reader
+        </Link>
       </div>
       <div className="chapters-main card">
         <header>
@@ -52,7 +79,9 @@ function EditStoryDetails() {
             ]}
           />
         </header>
-        <button className="orange-button">New Part</button>
+        <button onClick={handleNewPartClick} className="orange-button">
+          New Part
+        </button>
         {storyState.myStory?.chapters?.map((chapter) => {
           return (
             <div className="row">

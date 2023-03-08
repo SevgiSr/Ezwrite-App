@@ -12,7 +12,9 @@ const StyledEditStoryDetails = styled.div`
 
     .view-btn {
       padding: 10px 20px;
-      width: 100%;
+      width: 70%;
+      text-decoration: none;
+      margin: 0 auto;
     }
     .cover {
       margin-bottom: 1rem;
@@ -27,16 +29,24 @@ const StyledEditStoryDetails = styled.div`
         text-align: center;
         color: #fff;
       }
-      .edit-cover-btn {
+
+      .upload-picture {
         position: absolute;
         bottom: 0;
         width: 100%;
-        padding: 14px 0;
-        background-color: #00b2b2;
-        font-size: 16px;
-        font-weight: 700;
-        border: none;
-        cursor: pointer;
+        input {
+          display: none;
+        }
+        .edit-cover-btn {
+          padding: 14px 0;
+          background-color: #00b2b2;
+          font-size: 16px;
+          font-weight: 700;
+          border: none;
+          cursor: pointer;
+          color: #fff;
+          text-align: center;
+        }
       }
     }
   }
