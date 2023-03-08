@@ -26,6 +26,7 @@ import {
   Messages,
   Notifications,
 } from "./pages/dashboard";
+import EditStoryDetails from "./pages/EditStoryDetails";
 
 function App() {
   return (
@@ -68,7 +69,7 @@ function App() {
           path="/:story_id"
           element={
             <ProtectedRoute>
-              <MyStoryChapters />
+              <EditStoryDetails />
             </ProtectedRoute>
           }
         />

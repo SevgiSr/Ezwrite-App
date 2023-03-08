@@ -6,6 +6,7 @@ import {
   EDIT_STORY_SUCCESS,
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
+  GET_MY_STORY_SUCCESS,
   SET_EDIT_STORY,
 } from "../actions";
 
@@ -14,6 +15,12 @@ const myStoryReducer = (state, action) => {
     return {
       ...state,
       myStories: action.payload.myStories,
+    };
+  }
+  if (action.type === GET_MY_STORY_SUCCESS) {
+    return {
+      ...state,
+      myStory: action.payload.myStory,
     };
   }
 

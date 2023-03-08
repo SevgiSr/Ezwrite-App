@@ -12,6 +12,7 @@ import {
   ERROR,
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
+  GET_MY_STORY_SUCCESS,
   SET_EDIT_STORY,
   SUCCESS,
 } from "./actions";
@@ -21,6 +22,8 @@ import { UserContext } from "./userContext";
 const initialStoryState = {
   //all stories
   myStories: [],
+
+  myStory: {},
 
   //chapters
   story: {},
@@ -49,6 +52,22 @@ export const MyStoryProvider = ({ children }) => {
         type: GET_MY_STORIES_SUCCESS,
         payload: {
           myStories,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMyStory = async (story_id) => {
+    try {
+      const { data } = await authFetch.get(`/myStories/edit/${story_id}`);
+      const { myStory } = data;
+      console.log(myStory);
+      dispatch({
+        type: GET_MY_STORY_SUCCESS,
+        payload: {
+          myStory,
         },
       });
     } catch (error) {
@@ -144,6 +163,7 @@ export const MyStoryProvider = ({ children }) => {
       value={{
         storyState,
         getMyStories,
+        getMyStory,
         createStory,
         getMyChapters,
         setEditStory,

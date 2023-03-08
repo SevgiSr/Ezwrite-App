@@ -7,6 +7,7 @@ import {
   editChapter,
   saveChapter,
   createChapter,
+  getMyStory,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -75,6 +76,7 @@ router
     res.status(StatusCodes.OK).json({ file: req.file.id });
   });
 
+router.route("/edit/:story_id").get(getMyStory);
 router.route("/:story_id/:chapter_id").get(editChapter).patch(saveChapter);
 router.route("/:id").get(getMyChapters).post(createChapter);
 router.route("/").post(createStory).get(getMyStories);

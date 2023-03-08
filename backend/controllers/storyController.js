@@ -114,7 +114,7 @@ const getChapter = async (req, res) => {
   const chapterConvs = chapter.comments;
 
   const votes = await countChapterVotes(chapter._id);
-  console.log(votes);
+
   const vote = await Vote.findOne({
     user: req.user.userId,
     chapter: chapter._id,
@@ -160,6 +160,8 @@ const voteChapter = async (req, res) => {
     chapter: req.params.chapter_id,
   });
 
+  const chapter = await Chapter.findById(req.params.chapter_id);
+
   //if vote exists, no need to create new one, just change the value
   if (vote) {
     vote.value = Number(req.body.vote_value); // update the vote value
@@ -171,12 +173,11 @@ const voteChapter = async (req, res) => {
       value: Number(req.body.vote_value),
     }); // create a new vote document if one does not exist
     //save the vote to CHapter ONLY if you created a new one
-    await Chapter.findOneAndUpdate(
-      { _id: req.params.chapter_id },
-      { $push: { votes: vote._id } },
-      { upsert: true, new: true, runValidators: true }
-    );
+    await chapter.votes.push(vote._id);
   }
+
+  chapter.votesCount = await countChapterVotes(chapter._id);
+  await chapter.save();
 
   res.status(StatusCodes.OK).json({ value: Number(req.body.vote_value) });
 };
@@ -188,18 +189,18 @@ const unvoteChapter = async (req, res) => {
     chapter: req.params.chapter_id,
   });
 
-  let newChapter;
+  const chapter = await Chapter.findById(req.params.chapter_id);
+
   //take the vote back from chapter and delete vote object
   if (vote) {
-    newChapter = await Chapter.findOneAndUpdate(
-      { _id: req.params.chapter_id },
-      { $pull: { votes: vote._id } },
-      { upsert: true, new: true, runValidators: true }
-    );
+    await chapter.votes.pull(vote._id);
     await vote.remove();
+    chapter.votesCount = await countChapterVotes(chapter._id);
   }
 
-  res.status(StatusCodes.OK).json({ newChapter });
+  await chapter.save();
+
+  res.status(StatusCodes.OK).json({ newChapter: chapter });
 };
 
 const incrementViewCount = async (req, res) => {

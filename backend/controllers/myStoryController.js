@@ -7,6 +7,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import { countChapterVotes } from "./storyController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,6 +29,14 @@ const getMyStories = async (req, res) => {
     path: "author chapters",
   });
   res.status(StatusCodes.OK).json({ myStories });
+};
+
+const getMyStory = async (req, res) => {
+  const myStory = await Story.findById(req.params.story_id).populate({
+    path: "author chapters",
+  });
+
+  res.status(StatusCodes.OK).json({ myStory });
 };
 
 const createStory = async (req, res) => {
@@ -119,4 +128,5 @@ export {
   editChapter,
   saveChapter,
   createChapter,
+  getMyStory,
 };
