@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
+import Notification from "../db/models/Notification.js";
 import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
 
@@ -60,6 +61,18 @@ const unfollowProfile = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json({ followers: user.followers });
+};
+
+const getProfileActivity = async (req, res) => {
+  const { username } = req.params;
+
+  const user = await User.findOne({ name: username });
+
+  const activity = await Notification.find({ sender: user._id }).populate(
+    "sender location"
+  );
+
+  res.status(StatusCodes.OK).json({ activity });
 };
 
 const getProfileConv = async (req, res) => {
@@ -127,4 +140,5 @@ export {
   addProfileConv,
   editProfile,
   addReadingList,
+  getProfileActivity,
 };

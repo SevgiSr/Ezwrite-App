@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import Message from "../db/models/Message.js";
+import Comment from "../db/models/Comment.js";
 import PrivateConv from "../db/models/PrivateConv.js";
 import User from "../db/models/User.js";
 import Notification from "../db/models/Notification.js";
@@ -66,12 +67,9 @@ const sendNotification = async (req, res) => {
   const { nt } = req.body;
 
   const notification = await Notification.create({
-    text: nt.text,
-    type: nt.type,
+    ...nt,
     location: mongoose.Types.ObjectId(nt.location),
     sender: mongoose.Types.ObjectId(nt.sender),
-    route: nt.route,
-    content: nt.content,
   });
 
   const user = await User.findOneAndUpdate(

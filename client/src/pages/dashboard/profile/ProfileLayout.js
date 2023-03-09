@@ -51,6 +51,7 @@ function SharedLayout() {
           { to: "", label: "About" },
           { to: "conversations", label: "Conversations" },
           { to: "following", label: "Following" },
+          { to: "activity", label: "Activity" },
         ]}
       />
       {profileState.isMainUser ? (

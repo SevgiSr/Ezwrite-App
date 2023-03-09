@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 import { UserContext } from "../context/userContext";
 import { useLocation } from "react-router-dom";
+import getDate from "../utils/getDate";
 
 const Conversation = ({ conv, addConvComment }) => {
   const { userState } = useContext(UserContext);
@@ -25,9 +26,9 @@ const Conversation = ({ conv, addConvComment }) => {
               width="42px"
               height="42px"
             />
-            <div>
+            <div style={{ marginLeft: "10px" }}>
               <h3>{conv.author.name}</h3>
-              <p>time</p>
+              <p>{getDate(conv.createdAt)}</p>
             </div>
           </div>
           <div id="options">...</div>
@@ -42,6 +43,14 @@ const Conversation = ({ conv, addConvComment }) => {
         text={`<strong>${
           userState.user.name
         }</strong> responded to your comment in <strong>${conv.content.slice(
+          0,
+          20
+        )}...</strong>`}
+        activity={`<strong>${
+          userState.user.name
+        }</strong> responded to <strong>${
+          conv.author.name
+        }</strong>'s comment in <strong>${conv.content.slice(
           0,
           20
         )}...</strong>`}

@@ -60,6 +60,7 @@ const ProfileNavbar = ({ links }) => {
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
       <div className="parent">
         <OrangeLinks links={links} className="orange-links" />
+
         {profileState.isMainUser ? (
           <button className="profile-button" onClick={handleEditClick}>
             <span className="icon">

@@ -13,6 +13,7 @@ import {
   About,
   Conversations,
   Following,
+  Activity,
   ProfileLayout,
 } from "./pages/dashboard/profile";
 
@@ -46,6 +47,7 @@ function App() {
             <Route index element={<About />} />
             <Route path="conversations" element={<Conversations />} />
             <Route path="following" element={<Following />} />
+            <Route path="activity" element={<Activity />} />
           </Route>
           <Route path="/myStories" element={<MyStories />} />
           <Route path="/stories/:category" element={<Search />} />

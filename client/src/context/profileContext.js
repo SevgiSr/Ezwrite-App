@@ -14,6 +14,7 @@ import {
   FOLLOW_PROFILE_BEGIN,
   FOLLOW_PROFILE_SUCCESS,
   GET_IMAGE_SUCCESS,
+  GET_PROFILE_ACTIVITY_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
@@ -37,6 +38,7 @@ export const initialProfileState = {
   stories: [],
   convs: [],
   conv: {},
+  activity: [],
   //edit
   isEditMode: false,
 
@@ -168,6 +170,16 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  const getProfileActivity = async (username) => {
+    try {
+      const { data } = await authFetch.get(`/user/${username}/activity`);
+      const { activity } = data;
+      dispatch({ type: GET_PROFILE_ACTIVITY_SUCCESS, payload: { activity } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
   const getProfileConv = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}/conversations`);
@@ -323,6 +335,7 @@ export const ProfileProvider = ({ children }) => {
         openNotifications,
         sendNotification,
         deleteNotifications,
+        getProfileActivity,
       }}
     >
       {children}

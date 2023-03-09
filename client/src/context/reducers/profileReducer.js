@@ -7,6 +7,7 @@ import {
   FOLLOW_PROFILE_BEGIN,
   FOLLOW_PROFILE_SUCCESS,
   GET_IMAGE_SUCCESS,
+  GET_PROFILE_ACTIVITY_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
@@ -55,6 +56,12 @@ const profileReducer = (state, action) => {
       ...state,
       profile: profile,
       isFollowing: false,
+    };
+  }
+  if (action.type === GET_PROFILE_ACTIVITY_SUCCESS) {
+    return {
+      ...state,
+      activity: action.payload.activity,
     };
   }
   if (action.type === GET_PROFILE_CONV_SUCCESS) {

@@ -80,10 +80,11 @@ function Chapter() {
 
       <div className="comments">
         <Respond
-          text={`<span>${userState.user.name}</span> commented on <span>${state.story.title} - ${state.chapter.title}</span>`}
+          text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+          activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
           type="chapter"
           sender={userState.user._id}
-          location={state.chapter._id}
+          location={state.story._id}
           route={location.pathname}
           dest={chapter_id}
           to={state.author.name}

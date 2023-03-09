@@ -16,7 +16,6 @@ const StyledConversation = styled.article`
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      width: 95px;
 
       div {
         h3 {

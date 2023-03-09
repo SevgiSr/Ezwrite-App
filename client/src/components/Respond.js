@@ -9,6 +9,7 @@ import { UserContext } from "../context/userContext";
 
 function Respond({
   text,
+  activity,
   type,
   sender,
   location,
@@ -62,6 +63,7 @@ function Respond({
     setComment("");
     const notification = {
       text: text,
+      activity: activity,
       type: type,
       sender: sender,
       location: location,
