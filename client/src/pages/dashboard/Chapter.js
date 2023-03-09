@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { StoryContext } from "../../context/storyContext";
 import StyledChapter from "./styles/Chapter.styled";
 import { Conversation } from "../../components";
@@ -23,7 +23,7 @@ function Chapter() {
   const { story_id, chapter_id } = useParams();
 
   const { userState } = useContext(UserContext);
-
+  const location = useLocation();
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
 
@@ -84,6 +84,7 @@ function Chapter() {
           type="chapter"
           sender={userState.user._id}
           location={state.chapter._id}
+          route={location.pathname}
           dest={chapter_id}
           to={state.author.name}
           addComment={addChapterConv}

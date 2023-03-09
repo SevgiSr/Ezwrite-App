@@ -3,6 +3,9 @@ import ProfilePicture from "../../components/ProfilePicture";
 import { ProfileContext } from "../../context/profileContext";
 import StyledNotifications from "./styles/Notifications.styled";
 import he from "he";
+import { FaComment, FaEnvelope } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import getDate from "../../utils/getDate";
 
 function Notifications() {
   const { profileState, openNotifications, deleteNotifications } =
@@ -10,7 +13,6 @@ function Notifications() {
   useEffect(() => {
     openNotifications();
   }, []);
-  const htmlString = "<h1>Hello World!</h1><p>This is a paragraph.</p>";
 
   return (
     <StyledNotifications>
@@ -24,20 +26,41 @@ function Notifications() {
         <div className="column-reverse">
           {profileState?.notifications?.map((nt) => {
             return (
-              <div key={nt._id} className="notification">
-                <ProfilePicture
-                  filename={nt.sender._id}
-                  width="30px"
-                  height="30px"
-                />
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<div>${he.decode(nt.text)}</div>`,
-                  }}
-                  className="nt-header"
-                ></div>
-                <div className="nt-content">{nt.content}</div>
-              </div>
+              <Link
+                key={nt._id}
+                to={nt.route}
+                style={{ textDecoration: "none" }}
+                className="notification"
+              >
+                <div className="profilePicture">
+                  <ProfilePicture
+                    filename={nt.sender._id}
+                    width="35px"
+                    height="35px"
+                  />
+                </div>
+                <div>
+                  <header
+                    dangerouslySetInnerHTML={{
+                      __html: `<div>${he.decode(nt.text)}</div>`,
+                    }}
+                  ></header>
+                  <div className="row">
+                    {(nt.type === "conversation" || nt.type === "chapter") && (
+                      <div className="icon">
+                        <FaComment />
+                      </div>
+                    )}
+                    {nt.type === "profile" && (
+                      <div className="icon">
+                        <FaEnvelope />
+                      </div>
+                    )}
+                    <div className="date">{getDate(nt.createdAt)}</div>
+                  </div>
+                  <div className="content">{nt.content}</div>
+                </div>
+              </Link>
             );
           })}
         </div>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Story from "../../components/Story";
 import StyledStories from "./styles/Stories.styled";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -67,7 +67,14 @@ function Users() {
   return (
     <div className="users-parent">
       {state.users.map((user) => {
-        return <UserCard user={user} key={user._id} />;
+        return (
+          <Link
+            style={{ textDecoration: "none", color: "#6f6f6f" }}
+            to={`/user/${user.name}`}
+          >
+            <UserCard user={user} key={user._id} />
+          </Link>
+        );
       })}
     </div>
   );

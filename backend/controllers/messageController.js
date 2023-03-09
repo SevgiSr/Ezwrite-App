@@ -70,6 +70,7 @@ const sendNotification = async (req, res) => {
     type: nt.type,
     location: mongoose.Types.ObjectId(nt.location),
     sender: mongoose.Types.ObjectId(nt.sender),
+    route: nt.route,
     content: nt.content,
   });
 

@@ -11,6 +11,9 @@ const NotificationSchema = new mongoose.Schema(
     location: {
       type: String,
     },
+    route: {
+      type: String,
+    },
     sender: {
       type: mongoose.Types.ObjectId,
       ref: "User",

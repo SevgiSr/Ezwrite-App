@@ -6,11 +6,16 @@ const StyledNotifications = styled.div`
   justify-content: center;
   padding: 2rem 0;
   color: #222;
+  .row {
+    display: flex;
+    align-items: center;
+  }
   span {
     font-weight: 700;
   }
   .nt-parent {
-    width: 60%;
+    width: fit-content;
+    width: 60vw;
     .header {
       display: flex;
       justify-content: space-between;
@@ -24,9 +29,35 @@ const StyledNotifications = styled.div`
     }
 
     .notification {
+      color: #6f6f6f;
       box-shadow: 0 8px 12px rgb(18 18 18 / 16%);
       margin-top: 1.5rem;
       padding: 10px 20px;
+      display: flex;
+      align-items: start;
+
+      &:hover {
+        background-color: #eee;
+      }
+
+      header {
+        margin-bottom: 5px;
+      }
+
+      .icon {
+        margin-right: 5px;
+      }
+      .date {
+        font-size: 13px;
+        line-height: 18px;
+      }
+      .profilePicture {
+        margin-right: 10px;
+        margin-top: 6px;
+      }
+      .content {
+        font-size: 14px;
+      }
     }
   }
 `;

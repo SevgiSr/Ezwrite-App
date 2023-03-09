@@ -4,6 +4,7 @@ import { UserContext } from "../../context/userContext";
 import StyledInbox from "./styles/Inbox.styled";
 import ProfilePicture from "../../components/ProfilePicture";
 import { Link } from "react-router-dom";
+import getDate from "../../utils/getDate";
 
 function Inbox() {
   const { getInbox, profileState } = useContext(ProfileContext);
@@ -21,15 +22,6 @@ function Inbox() {
 
         const last_msg = privateConv.messages[privateConv.messages.length - 1];
 
-        const date = new Date(last_msg.createdAt);
-        const formattedDate = date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: false,
-        });
         return (
           <Link className="privateConv" to={`/inbox/${partner.name}`}>
             <div className="main">
@@ -43,7 +35,7 @@ function Inbox() {
                 <span className="first-msg">{last_msg.content}</span>
               </div>
             </div>
-            <div className="time">{formattedDate}</div>
+            <div className="time">{getDate(last_msg.createdAt)}</div>
           </Link>
         );
       })}

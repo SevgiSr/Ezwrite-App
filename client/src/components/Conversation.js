@@ -5,9 +5,13 @@ import Respond from "./Respond";
 import { ProfileContext } from "../context/profileContext";
 import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
+import { UserContext } from "../context/userContext";
+import { useLocation } from "react-router-dom";
 
 const Conversation = ({ conv, addConvComment }) => {
-  const user = localStorage.getItem("user");
+  const { userState } = useContext(UserContext);
+
+  const location = useLocation();
 
   if (!conv) return null;
   if (!conv.content) return null;
@@ -36,14 +40,15 @@ const Conversation = ({ conv, addConvComment }) => {
 
       <Respond
         text={`<strong>${
-          user.name
+          userState.user.name
         }</strong> responded to your comment in <strong>${conv.content.slice(
           0,
           20
         )}...</strong>`}
         type="conversation"
-        sender={user._id}
+        sender={userState.user._id}
         location={conv._id}
+        route={location.pathname}
         to={conv.author.name}
         dest={conv._id}
         addComment={addConvComment}
