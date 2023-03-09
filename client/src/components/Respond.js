@@ -7,7 +7,7 @@ import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
 
-function Respond({ type, to, dest, addComment }) {
+function Respond({ text, type, sender, location, to, dest, addComment }) {
   const { sendNotification, profileState } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const [comment, setComment] = useState("");
@@ -52,9 +52,13 @@ function Respond({ type, to, dest, addComment }) {
     addComment(dest, comment);
     setComment("");
     const notification = {
+      text: text,
       type: type,
+      sender: sender,
+      location: location,
       content: comment,
     };
+    console.log(notification.text);
     socket.emit("send notification", {
       notification,
       room: to,

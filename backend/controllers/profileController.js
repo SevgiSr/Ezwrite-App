@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
 import Comment from "../db/models/Comment.js";
+import ReadingList from "../db/models/ReadingList.js";
 
 const getProfile = async (req, res) => {
   const user = await User.findOne({ name: req.params.username }).populate(
@@ -106,6 +107,18 @@ const editProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ newUser });
 };
 
+const addReadingList = async (req, res) => {
+  const readingList = await ReadingList.create({ title: req.params.title });
+
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $push: { readingLists: readingList._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({ readingList });
+};
+
 export {
   getProfile,
   followProfile,
@@ -113,4 +126,5 @@ export {
   getProfileConv,
   addProfileConv,
   editProfile,
+  addReadingList,
 };

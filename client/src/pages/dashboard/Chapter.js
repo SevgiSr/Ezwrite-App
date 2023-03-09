@@ -10,6 +10,7 @@ import { AiFillDislike, AiFillStar } from "react-icons/ai";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
+import { UserContext } from "../../context/userContext";
 
 function Chapter() {
   const {
@@ -20,6 +21,8 @@ function Chapter() {
     addConvComment,
   } = useContext(StoryContext);
   const { story_id, chapter_id } = useParams();
+
+  const { userState } = useContext(UserContext);
 
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
@@ -77,9 +80,12 @@ function Chapter() {
 
       <div className="comments">
         <Respond
-          type={` commented on ${state.chapter.title}`}
-          to={state.author.name}
+          text={`<span>${userState.user.name}</span> commented on <span>${state.story.title} - ${state.chapter.title}</span>`}
+          type="chapter"
+          sender={userState.user._id}
+          location={state.chapter._id}
           dest={chapter_id}
+          to={state.author.name}
           addComment={addChapterConv}
         />
         <div className="column-reverse">

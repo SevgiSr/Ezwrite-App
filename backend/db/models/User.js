@@ -51,6 +51,12 @@ const UserSchema = new mongoose.Schema(
     location: {
       type: String,
     },
+    readingLists: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "ReadingList",
+      },
+    ],
     privateConvs: [
       {
         type: mongoose.Types.ObjectId,

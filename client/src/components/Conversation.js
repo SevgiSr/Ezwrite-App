@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 
 const Conversation = ({ conv, addConvComment }) => {
+  const user = localStorage.getItem("user");
+
   if (!conv) return null;
   if (!conv.content) return null;
   return (
@@ -33,10 +35,15 @@ const Conversation = ({ conv, addConvComment }) => {
       </StyledConversation>
 
       <Respond
-        type={` responded to your comment in "${conv.content.substr(
+        text={`<strong>${
+          user.name
+        }</strong> responded to your comment in <strong>${conv.content.slice(
           0,
-          10
-        )}..."`}
+          20
+        )}...</strong>`}
+        type="conversation"
+        sender={user._id}
+        location={conv._id}
         to={conv.author.name}
         dest={conv._id}
         addComment={addConvComment}

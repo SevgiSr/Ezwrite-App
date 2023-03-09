@@ -2,8 +2,14 @@ import mongoose from "mongoose";
 
 const NotificationSchema = new mongoose.Schema(
   {
+    text: {
+      type: String, //commented on, mentioned you in a comment on, mentioned you on your feed
+    },
     type: {
-      type: String, //profile_comment, chapter_comment, conv_comment, follow, message
+      type: String, //conversation, story, profile
+    },
+    location: {
+      type: String,
     },
     sender: {
       type: mongoose.Types.ObjectId,

@@ -5,6 +5,10 @@ const StyledNotifications = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem 0;
+  color: #222;
+  span {
+    font-weight: 700;
+  }
   .nt-parent {
     width: 60%;
     .header {

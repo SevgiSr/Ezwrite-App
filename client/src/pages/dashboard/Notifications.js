@@ -1,6 +1,8 @@
 import { useContext, useEffect } from "react";
+import ProfilePicture from "../../components/ProfilePicture";
 import { ProfileContext } from "../../context/profileContext";
 import StyledNotifications from "./styles/Notifications.styled";
+import he from "he";
 
 function Notifications() {
   const { profileState, openNotifications, deleteNotifications } =
@@ -8,6 +10,7 @@ function Notifications() {
   useEffect(() => {
     openNotifications();
   }, []);
+  const htmlString = "<h1>Hello World!</h1><p>This is a paragraph.</p>";
 
   return (
     <StyledNotifications>
@@ -22,10 +25,17 @@ function Notifications() {
           {profileState?.notifications?.map((nt) => {
             return (
               <div key={nt._id} className="notification">
-                <div className="nt-header">
-                  <span style={{ fontWeight: "900" }}>{nt.sender.name}</span>
-                  <span>{nt.type}</span>
-                </div>
+                <ProfilePicture
+                  filename={nt.sender._id}
+                  width="30px"
+                  height="30px"
+                />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: `<div>${he.decode(nt.text)}</div>`,
+                  }}
+                  className="nt-header"
+                ></div>
                 <div className="nt-content">{nt.content}</div>
               </div>
             );

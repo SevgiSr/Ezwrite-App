@@ -18,7 +18,10 @@ function Conversations() {
     <StyledConversations>
       <div id="parent">
         <Respond
-          type={`${user.name} posted a message to your feed`}
+          text={`<strong>${user.name}</strong> posted a message to your feed`}
+          type="profile"
+          sender={user._id}
+          location={profileState.profile._id}
           to={username}
           dest={username}
           addComment={addProfileConv}

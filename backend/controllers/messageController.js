@@ -3,6 +3,7 @@ import Message from "../db/models/Message.js";
 import PrivateConv from "../db/models/PrivateConv.js";
 import User from "../db/models/User.js";
 import Notification from "../db/models/Notification.js";
+import mongoose from "mongoose";
 const getPrivateConvs = async (req, res) => {
   const user = await User.findById(req.user.userId).populate({
     path: "privateConvs",
@@ -55,19 +56,23 @@ const sendMessage = async (req, res) => {
 const openNotifications = async (req, res) => {
   const user = await User.findById(req.user.userId).populate({
     path: "notifications",
-    populate: "sender",
+    populate: "sender location",
   });
+  console.log(user.notifications);
   res.status(StatusCodes.OK).json({ notifications: user.notifications });
 };
 
 const sendNotification = async (req, res) => {
   const { nt } = req.body;
-  const sender = await User.findById(req.user.userId);
+
   const notification = await Notification.create({
+    text: nt.text,
     type: nt.type,
-    sender: sender._id,
+    location: mongoose.Types.ObjectId(nt.location),
+    sender: mongoose.Types.ObjectId(nt.sender),
     content: nt.content,
   });
+
   const user = await User.findOneAndUpdate(
     { name: req.params.username },
     { $push: { notifications: notification._id } },
