@@ -11,10 +11,7 @@ import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
 
 function Navbar() {
-  ///////for dropdowns///////
   const { userState } = useContext(UserContext);
-  const initialState = { discover: "", profile: "", write: "", edit: "" };
-  const [show, setShow] = useState(initialState);
 
   //for notifications
   const [ntCount, setNtCount] = useState(0);
@@ -81,7 +78,7 @@ function Navbar() {
           <DropdownMenu
             button={
               <>
-                Göz at
+                Browse
                 <AiFillCaretDown
                   style={{ marginLeft: "8px", fontSize: "10px" }}
                 />
@@ -134,7 +131,7 @@ function Navbar() {
           <DropdownMenu
             button={
               <>
-                Yaz
+                Write
                 <AiFillCaretDown
                   style={{ marginLeft: "8px", fontSize: "10px" }}
                 />

@@ -40,8 +40,6 @@ const getMyStory = async (req, res) => {
 };
 
 const createStory = async (req, res) => {
-  console.log("creating");
-
   const { title, description, category } = req.body;
 
   if (!title || !category) {
@@ -64,6 +62,22 @@ const createStory = async (req, res) => {
   await User.findOneAndUpdate(
     { _id: req.user.userId },
     { $push: { stories: story._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.CREATED).json({ story });
+};
+
+const updateStory = async (req, res) => {
+  const { title, category } = req.body;
+
+  if (!title || !category) {
+    throw new BadRequestError("please provide all values");
+  }
+
+  const story = await Story.findOneAndUpdate(
+    { _id: req.params.story_id },
+    { ...req.body },
     { upsert: true, new: true, runValidators: true }
   );
 
@@ -132,4 +146,5 @@ export {
   saveChapter,
   createChapter,
   getMyStory,
+  updateStory,
 };

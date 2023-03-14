@@ -29,13 +29,8 @@ function DropdownMenu(props) {
   };
 
   useEffect(() => {
-    console.log("Adding event listener for dropdown menu with id:", props.id);
     window.addEventListener("click", listener);
     return () => {
-      console.log(
-        "Removing event listener for dropdown menu with id:",
-        props.id
-      );
       window.removeEventListener("click", listener);
     };
   }, []);

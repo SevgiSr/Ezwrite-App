@@ -9,7 +9,12 @@ const OrangeLinks = ({ links }) => {
       <div className="links">
         {links.map((link) => {
           return (
-            <NavLink key={links.indexOf(link)} to={link.to} className="link">
+            <NavLink
+              key={links.indexOf(link)}
+              to={link.to}
+              className="link"
+              onClick={link.handleClick}
+            >
               {link.label}
             </NavLink>
           );

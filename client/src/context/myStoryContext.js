@@ -82,12 +82,29 @@ export const MyStoryProvider = ({ children }) => {
       fileData.append("file", file);
       const { data } = await authFetch.post("/myStories", storyDetails);
       const { story } = data;
-      console.log(story);
       const { data1 } = await authFetch.post(
         `/myStories/cover/${story._id}`,
         fileData
       );
       alertDispatch({ type: SUCCESS, payload: { msg: "New Story Created!" } });
+    } catch (error) {
+      if (error.response.status === 401) return;
+      alertDispatch({
+        type: ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+  };
+
+  const updateStory = async (story_id, storyDetails) => {
+    alertDispatch({ type: BEGIN });
+    try {
+      const { data } = await authFetch.patch(
+        `/myStories/update/${story_id}`,
+        storyDetails
+      );
+      const { story } = data;
+      alertDispatch({ type: SUCCESS, payload: { msg: "Updated Story!" } });
     } catch (error) {
       if (error.response.status === 401) return;
       alertDispatch({
@@ -188,6 +205,7 @@ export const MyStoryProvider = ({ children }) => {
         editChapter,
         saveChapter,
         addChapter,
+        updateStory,
       }}
     >
       {children}

@@ -3,8 +3,46 @@ import styled from "styled-components";
 const StyledEditStoryDetails = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding-top: 3rem;
+  align-items: start;
+  padding: 7rem 0;
+  box-sizing: border-box;
+  .story-navbar {
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    height: auto;
+    padding: 15px 8px;
+    header {
+      display: flex;
+      .back-btn {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        .icon {
+          font-size: 30px;
+          margin-right: 10px;
+        }
+      }
+    }
+    .story {
+      .title {
+        font-size: 21px;
+        font-weight: 600;
+        color: #000;
+      }
+    }
+    button {
+      margin-right: 20px;
+      padding: 7px 13px;
+    }
+  }
+
   .story-manage {
     display: flex;
     flex-direction: column;
@@ -51,6 +89,7 @@ const StyledEditStoryDetails = styled.div`
     }
   }
   .chapters-main {
+    width: 600px;
     header {
       border-bottom: 1px solid #eee;
       padding: 10px 20px;
@@ -101,6 +140,16 @@ const StyledEditStoryDetails = styled.div`
           }
         }
       }
+    }
+  }
+
+  @media only screen and (max-width: 1000px) {
+    flex-direction: column;
+    align-items: center;
+
+    .chapters-main {
+      width: 90vw;
+      margin-top: 2rem;
     }
   }
 `;

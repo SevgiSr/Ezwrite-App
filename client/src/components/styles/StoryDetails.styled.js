@@ -1,42 +1,8 @@
 import styled from "styled-components";
 
-const StyledNewStory = styled.div`
-  color: #6f6f6f;
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  padding: 3rem 0;
-  button {
-    > * {
-      pointer-events: none;
-    }
-  }
-
-  .cover {
-    margin-right: 4rem;
-    .label {
-      width: 300px;
-      height: 468px;
-      background-color: #eee;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-
-      svg {
-        width: 50%;
-        height: 86px;
-        margin: 0 auto;
-      }
-    }
-
-    input {
-      display: none;
-    }
-  }
-  .details {
-    width: 50%;
+const StyledStoryDetails = styled.div`
+  form {
+    width: inherit;
     display: flex;
     flex-direction: column;
     .item {
@@ -135,22 +101,6 @@ const StyledNewStory = styled.div`
       padding: 10px;
     }
   }
-
-  @media only screen and (max-width: 1000px) {
-    flex-direction: column;
-    align-items: center;
-    .upload-picture {
-      .label {
-        width: 195px;
-        height: 304px;
-        margin-bottom: 1rem;
-      }
-    }
-
-    .details {
-      width: 85%;
-    }
-  }
 `;
 
-export default StyledNewStory;
+export default StyledStoryDetails;

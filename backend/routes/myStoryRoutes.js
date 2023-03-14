@@ -8,6 +8,7 @@ import {
   saveChapter,
   createChapter,
   getMyStory,
+  updateStory,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -77,6 +78,7 @@ router
   });
 
 router.route("/").post(createStory).get(getMyStories);
+router.route("/update/:story_id").patch(updateStory);
 router.route("/edit/:story_id").get(getMyStory);
 router.route("/:story_id").get(getMyChapters).post(createChapter);
 router.route("/:story_id/:chapter_id").get(editChapter).patch(saveChapter);
