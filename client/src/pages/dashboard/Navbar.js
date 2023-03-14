@@ -8,6 +8,7 @@ import { FiSearch } from "react-icons/fi";
 import { AiFillCaretDown } from "react-icons/ai";
 import socket from "../../socket.js";
 import { useLocation } from "react-router-dom";
+import DropdownMenu from "../../components/DropdownMenu";
 
 function Navbar() {
   ///////for dropdowns///////
@@ -18,45 +19,6 @@ function Navbar() {
   //for notifications
   const [ntCount, setNtCount] = useState(0);
   const location = useLocation();
-
-  //because event listener cannot acces current state
-  const stateRef = useRef(show);
-
-  const setShowState = (state) => {
-    stateRef.current = state;
-    setShow(state);
-  };
-
-  const menuRef = useRef([]);
-  const buttonRef = useRef([]);
-
-  const listener = (e) => {
-    if (
-      !menuRef.current.includes(e.target) &&
-      !buttonRef.current.includes(e.target)
-    ) {
-      setShowState({ ...initialState });
-    } else if (buttonRef.current.includes(e.target)) {
-      let name = e.target.name;
-      let value;
-      if (stateRef.current[name] === "") {
-        value = "show";
-      } else {
-        value = "";
-      }
-
-      setShowState({ ...initialState, [name]: value });
-    }
-  };
-
-  // we sont want to create multiple listeners
-  // even if component gonna mount/unmount
-  useEffect(() => {
-    window.addEventListener("click", listener);
-    return () => {
-      window.removeEventListener("click", listener);
-    };
-  }, []);
 
   ///////for query///////
   const user = JSON.parse(localStorage.getItem("user"));
@@ -116,20 +78,17 @@ function Navbar() {
           <img src={src} alt="" />
         </div>
         <nav id="discover-dropdown">
-          <button
-            ref={(e) => (buttonRef.current[0] = e)}
-            name="discover"
-            className="dropdown-toggle"
-          >
-            Göz at
-            <AiFillCaretDown style={{ marginLeft: "8px", fontSize: "10px" }} />
-          </button>
-          <div
-            ref={(e) => (menuRef.current[0] = e)}
-            className={"dropdown-menu-parent" + show.discover}
-          >
-            <div className="dropdown-menu discover-dropdown-menu">
-              <div className="dropdown-items">
+          <DropdownMenu
+            button={
+              <>
+                Göz at
+                <AiFillCaretDown
+                  style={{ marginLeft: "8px", fontSize: "10px" }}
+                />
+              </>
+            }
+            menu={
+              <>
                 <div className="dropdown-item">
                   <div className="symbol">😍</div>
                   <Link to={"/stories/fantasy"}>Fantasy</Link>
@@ -151,9 +110,9 @@ function Navbar() {
                   <Link to={"/stories/humor"}>Humor</Link>
                   <Link to={"/stories/nonFiction"}>Non-fiction</Link>
                 </div>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
         </nav>
       </div>
 
@@ -172,46 +131,44 @@ function Navbar() {
 
       <div className="section">
         <nav id="write-dropdown">
-          <button
-            ref={(e) => (buttonRef.current[1] = e)}
-            name="write"
-            className="dropdown-toggle"
-          >
-            Yaz
-            <AiFillCaretDown style={{ marginLeft: "8px", fontSize: "10px" }} />
-          </button>
-          <div
-            ref={(e) => (menuRef.current[1] = e)}
-            className={"dropdown-menu-parent" + show.write}
-          >
-            <div className="dropdown-menu">
-              <div className="dropdown-items">
+          <DropdownMenu
+            button={
+              <>
+                Yaz
+                <AiFillCaretDown
+                  style={{ marginLeft: "8px", fontSize: "10px" }}
+                />
+              </>
+            }
+            menu={
+              <>
                 <Link to={`/newStory`} className="dropdown-item">
                   New Story
                 </Link>
                 <Link to={`/myStories`} className="dropdown-item">
                   My Stories
                 </Link>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
         </nav>
 
         <nav id="profile-dropdown">
-          <button ref={(e) => (buttonRef.current[2] = e)} name="profile">
-            <div className="pp">
-              <ProfilePicture filename={user._id} width="40px" height="40px" />
-              <div className="username">{user.name}</div>
-              {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
-            </div>
-            <AiFillCaretDown style={{ fontSize: "10px" }} />
-          </button>
-          <div
-            ref={(e) => (menuRef.current[0] = e)}
-            className={"dropdown-menu-parent" + show.profile}
-          >
-            <div className="dropdown-menu">
-              <div className="dropdown-items">
+          <DropdownMenu
+            button={
+              <div className="pp">
+                <ProfilePicture
+                  filename={user._id}
+                  width="40px"
+                  height="40px"
+                />
+                <div className="username">{user.name}</div>
+                {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+                <AiFillCaretDown style={{ fontSize: "10px" }} />
+              </div>
+            }
+            menu={
+              <>
                 <Link
                   to={`/user/${userState.user.name}`}
                   className="dropdown-item"
@@ -228,9 +185,9 @@ function Navbar() {
                     Notifications
                   </span>
                 </Link>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
         </nav>
       </div>
     </StyledNavbar>

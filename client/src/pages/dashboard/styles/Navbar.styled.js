@@ -45,25 +45,23 @@ const StyledNavbar = styled.header`
   }
 
   #discover-dropdown {
-    .discover-dropdown-menu {
-      .dropdown-items {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 20px;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        .dropdown-item {
-          display: flex;
-          flex-direction: column;
-          > * {
-            text-decoration: none;
-            color: #222;
-            padding: 10px 0;
-          }
-          .symbol {
-            font-size: 20px;
-          }
+    .dropdown-items {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 20px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      .dropdown-item {
+        display: flex;
+        flex-direction: column;
+        > * {
+          text-decoration: none;
+          color: #222;
+          padding: 10px 0;
+        }
+        .symbol {
+          font-size: 20px;
         }
       }
     }

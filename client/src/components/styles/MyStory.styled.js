@@ -12,17 +12,15 @@ const StyledMyStory = styled.div`
     border-bottom: 2px solid black;
     cursor: pointer;
   }
-  button > * {
-    pointer-events: none;
-  }
 
-  .edit-dropdown-menu {
+  .dropdown-menu {
     display: block;
     padding: 0.75rem 0;
-    width: 100%;
+    width: 250px;
     border-radius: 0;
     overflow: scroll;
     max-height: 200px;
+    z-index: 999;
     .dropdown-items {
       display: flex;
       flex-direction: column;

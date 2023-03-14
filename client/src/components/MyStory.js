@@ -4,53 +4,16 @@ import { MyStoryContext } from "../context/myStoryContext";
 import StyledMyStory from "./styles/MyStory.styled";
 import Cover from "./Cover";
 import { FiChevronDown } from "react-icons/fi";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
+import DropdownMenu from "./DropdownMenu";
 
 const MyStory = ({ story }) => {
   const navigate = useNavigate();
   const { setEditStory } = useContext(MyStoryContext);
 
-  const [edit, setEdit] = useState("");
-
-  const stateRef = useRef(edit);
-
-  const setEditState = (state) => {
-    stateRef.current = state;
-    setEdit(state);
-  };
-
   const handleClick = () => {
     navigate(`/${story._id}`);
     setEditStory(story._id);
   };
-
-  const listener = (e) => {
-    if (
-      e.target !== storyMenuRef.current &&
-      e.target !== storyButtonRef.current
-    ) {
-      setEditState("");
-    } else if (e.target === storyButtonRef.current) {
-      if (stateRef.current === "") {
-        setEditState("show");
-      } else {
-        setEditState("");
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("click", listener);
-
-    return () => {
-      window.removeEventListener("click", listener);
-    };
-  }, []);
-
-  const storyMenuRef = useRef();
-  const storyButtonRef = useRef();
 
   return (
     <StyledMyStory>
@@ -70,33 +33,32 @@ const MyStory = ({ story }) => {
       </div>
       <div className="buttons">
         <div>
-          <button ref={storyButtonRef} name="edit" className="orange-button">
-            <span className="text">Edit Story</span>
-            <span className="down-icon">
-              <FiChevronDown />
-            </span>
-          </button>
-          <div ref={storyMenuRef} className={"dropdown-menu-parent " + edit}>
-            <div className="dropdown-menu edit-dropdown-menu">
-              <div className="dropdown-items">
-                {story.chapters.map((chapter) => {
-                  return (
-                    <Link
-                      className="link"
-                      key={chapter._id}
-                      to={`/${story._id}/${chapter._id}/writing`}
-                    >
-                      <div className="dropdown-item">
-                        {chapter.title}
+          <DropdownMenu
+            buttonClass="orange-button"
+            button={
+              <>
+                <span className="text">Edit Story</span>
+                <span className="down-icon">
+                  <FiChevronDown />
+                </span>
+              </>
+            }
+            menu={story.chapters.map((chapter) => {
+              return (
+                <Link
+                  className="link"
+                  key={chapter._id}
+                  to={`/${story._id}/${chapter._id}/writing`}
+                >
+                  <div className="dropdown-item">
+                    {chapter.title}
 
-                        <p>Taslak - Ocak 11, 2023</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+                    <p>Taslak - Ocak 11, 2023</p>
+                  </div>
+                </Link>
+              );
+            })}
+          />
         </div>
 
         <button className="white-button">
