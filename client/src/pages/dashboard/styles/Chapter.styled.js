@@ -16,6 +16,25 @@ const StyledChapter = styled.div`
     display: flex;
     justify-content: space-between;
 
+    .dropdown-menu-parent {
+      margin: 0 1rem;
+      box-sizing: border-box;
+    }
+    .dropdown-menu {
+      width: 100%;
+      border-radius: 1px;
+    }
+    .dropdown-item {
+      border-top: 1px solid #eee;
+    }
+
+    .active {
+      border-left: 3px solid #ff6122;
+      div {
+        color: #ff6122;
+      }
+    }
+
     .story-dropdown-btn {
       width: 300px;
       height: 100%;
@@ -93,11 +112,6 @@ const StyledChapter = styled.div`
         color: #6f6f6f;
       }
     }
-  }
-
-  .dropdown-menu {
-    overflow: scroll;
-    max-height: 500px;
   }
 
   .chapter {

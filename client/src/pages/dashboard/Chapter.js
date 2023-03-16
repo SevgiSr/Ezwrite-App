@@ -11,6 +11,7 @@ import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
+import DropdownMenu from "../../components/DropdownMenu";
 
 function Chapter() {
   const {
@@ -40,7 +41,9 @@ function Chapter() {
   //u dont need getChapterConv as it seems!
   useEffect(() => {
     getChapter(story_id, chapter_id);
-  }, []);
+  }, [location]);
+
+  const formattedChapterText = state.chapter.content?.replace(/\n/g, "<br>");
 
   return (
     <StyledChapter>
@@ -75,7 +78,10 @@ function Chapter() {
             <div className="count">{state.chapterConvs.length}</div>
           </div>
         </div>
-        <div className="content">{state.chapter.content}</div>
+        <div
+          className="content"
+          dangerouslySetInnerHTML={{ __html: formattedChapterText }}
+        />
       </section>
 
       <div className="comments">
@@ -137,7 +143,7 @@ function ChapterHeader() {
   return (
     <header className="chapter-header">
       <div className="dropdown">
-        <StoryDropdown story={state.story} />
+        <StoryDropdown />
       </div>
       <div className="actions">
         <button className="add-list-btn orange-button">+</button>
@@ -184,72 +190,49 @@ function ChapterHeader() {
 
 function StoryDropdown() {
   const { state } = useContext(StoryContext);
-  const [menu, setMenu] = useState("");
 
-  const stateRef = useRef(menu);
-
-  const setMenuState = (state) => {
-    stateRef.current = state;
-    setMenu(state);
-  };
-
-  const listener = (e) => {
-    if (
-      e.target !== storyMenuRef.current &&
-      e.target !== storyButtonRef.current
-    ) {
-      setMenuState("");
-    } else if (e.target === storyButtonRef.current) {
-      if (stateRef.current === "") {
-        setMenuState("show");
-      } else {
-        setMenuState("");
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("click", listener);
-
-    return () => {
-      window.removeEventListener("click", listener);
-    };
-  }, []);
-
-  const storyMenuRef = useRef();
-  const storyButtonRef = useRef();
   return (
     <>
-      <button ref={storyButtonRef} className="story-dropdown-btn">
-        <div className="story-card">
-          <Cover width="30px" filename={state.story._id} />
-          <div className="info">
-            <span className="title">{state.story.title}</span>
-            <span className="author">by {state.story?.author?.name}</span>
-          </div>
-        </div>
-        <span className="down-icon">
-          <FiChevronDown />
-        </span>
-      </button>
-      <div ref={storyMenuRef} className={"dropdown-menu-parent " + menu}>
-        <div className="dropdown-menu">
-          <div className="dropdown-items">
+      <DropdownMenu
+        buttonClass="story-dropdown-btn"
+        button={
+          <>
+            <div className="story-card">
+              <Cover width="30px" filename={state.story._id} />
+              <div className="info">
+                <span className="title">{state.story.title}</span>
+                <span className="author">by {state.story?.author?.name}</span>
+              </div>
+            </div>
+            <span className="down-icon">
+              <FiChevronDown />
+            </span>
+          </>
+        }
+        menu={
+          <>
+            <div>Table of contents</div>
             {state.story.chapters?.map((chapter) => {
               return (
-                <div key={chapter._id}>
+                <div
+                  key={chapter._id}
+                  className={
+                    `dropdown-item ` +
+                    (chapter._id === state.chapter._id && `active`)
+                  }
+                >
                   <Link
                     className="link"
                     to={`/${state.story._id}/${chapter._id}`}
                   >
-                    <div className="dropdown-item">{chapter.title}</div>
+                    <div>{chapter.title}</div>
                   </Link>
                 </div>
               );
             })}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
     </>
   );
 }

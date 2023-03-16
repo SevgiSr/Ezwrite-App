@@ -102,7 +102,7 @@ const getProgress = async (req, res) => {
 const getChapter = async (req, res) => {
   console.log("getting chapter");
   const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id).populate("author");
+  const story = await Story.findById(story_id).populate("author chapters");
   const chapter = await Chapter.findById(chapter_id)
     .populate({
       path: "comments",

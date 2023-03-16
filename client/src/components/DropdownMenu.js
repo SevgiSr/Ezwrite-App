@@ -44,7 +44,7 @@ function DropdownMenu(props) {
       >
         {props.button}
       </button>
-      <div ref={menuRef} className={"dropdown-menu-parent" + show}>
+      <div ref={menuRef} className={"dropdown-menu-parent " + show}>
         <div className="dropdown-menu">
           <div className="dropdown-items">{props.menu}</div>
         </div>
