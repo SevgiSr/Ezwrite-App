@@ -1,5 +1,6 @@
-function Cover({ width, filename }) {
+function Cover({ width, filename, timestamp }) {
   const numericWidth = parseFloat(width);
+  const imageUrl = `/images/cover/${filename}?t=${timestamp}`;
   return (
     <img
       style={{
@@ -8,7 +9,7 @@ function Cover({ width, filename }) {
         objectFit: "cover",
         boxShadow: "0 8px 12px rgb(18 18 18 / 16%)",
       }}
-      src={`/images/cover/${filename}`}
+      src={imageUrl}
       alt=""
     />
   );

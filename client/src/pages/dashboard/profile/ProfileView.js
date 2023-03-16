@@ -7,7 +7,8 @@ import ProfilePicture from "../../../components/ProfilePicture";
 import { FaCamera } from "react-icons/fa";
 import { useRef } from "react";
 import { useState } from "react";
-import { PulseLoader } from "react-spinners";
+import { PulseLoader, SyncLoader } from "react-spinners";
+import BackgroundPicture from "../../../components/BackgroundPicture";
 
 function ProfileView({ handleChange, state }) {
   const {
@@ -21,6 +22,9 @@ function ProfileView({ handleChange, state }) {
   } = useContext(ProfileContext);
   const { username } = useParams();
 
+  const [bcTimestamp, setBcTimestamp] = useState(Date.now());
+  const [timestamp, setTimestamp] = useState(Date.now());
+
   const handleClick = () => {
     closeEditMode();
     //you normally dont need that because if sharedLayout sets reducer on first render it affects all children too
@@ -30,10 +34,12 @@ function ProfileView({ handleChange, state }) {
 
   const handleUploadChange = (e) => {
     uploadImage(e.target.files[0]);
+    setTimestamp(Date.now());
   };
 
   const handleBcUploadChange = (e) => {
     uploadBcImage(e.target.files[0]);
+    setBcTimestamp(Date.now());
   };
 
   const inputRef = useRef(null);
@@ -73,10 +79,14 @@ function ProfileView({ handleChange, state }) {
       )}
 
       <div className="bc-overlay"></div>
-
-      <div className="background">
-        <img src={`/images/background/${profileState.profile._id}`} alt="" />
-      </div>
+      {alertState.isLoading && alertState.id === "background" ? (
+        <SyncLoader />
+      ) : (
+        <BackgroundPicture
+          filename={profileState.profile._id}
+          timestamp={bcTimestamp}
+        />
+      )}
 
       {profileState.isEditMode && (
         <label htmlFor="upload_background" className="upload-background">
@@ -111,13 +121,14 @@ function ProfileView({ handleChange, state }) {
             />
           </label>
         )}
-        {alertState.isLoading ? (
-          <PulseLoader />
+        {alertState.isLoading && alertState.id === "profile" ? (
+          <SyncLoader />
         ) : (
           <ProfilePicture
             filename={profileState.profile._id}
             width="90px"
             height="90px"
+            timestamp={timestamp}
           />
         )}
       </div>

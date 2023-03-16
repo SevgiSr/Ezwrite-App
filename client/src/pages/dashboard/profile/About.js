@@ -4,6 +4,7 @@ import { ProfileContext } from "../../../context/profileContext";
 import StyledAbout from "./styles/About.styled";
 import { HiLocationMarker } from "react-icons/hi";
 import { MdSettings } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function About() {
   const { profileState } = useContext(ProfileContext);
@@ -25,7 +26,9 @@ function About() {
           <h3>
             <span>Stories by {profileState.profile.profileName}</span>
             <span className="edit-icon">
-              <MdSettings />
+              <Link to="/myStories">
+                <MdSettings />
+              </Link>
             </span>
           </h3>
 

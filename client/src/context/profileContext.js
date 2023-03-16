@@ -84,8 +84,8 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const uploadImage = async (file) => {
+    alertDispatch({ type: BEGIN, payload: { id: "profile" } });
     try {
-      alertDispatch({ type: BEGIN });
       let fileData = new FormData();
       fileData.append("file", file);
       const { data } = await authFetch.post("/upload/profilePicture", fileData);
@@ -102,8 +102,8 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const uploadBcImage = async (file) => {
+    alertDispatch({ type: BEGIN, payload: { id: "background" } });
     try {
-      alertDispatch({ type: BEGIN });
       let fileData = new FormData();
       fileData.append("file", file);
       const { data } = await authFetch.post(

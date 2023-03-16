@@ -5,6 +5,7 @@ const initialAlertState = {
   showAlert: false,
   alertType: "",
   alertText: "",
+  id: "",
 };
 
 const alertReducer = (state, action) => {
@@ -15,12 +16,14 @@ const alertReducer = (state, action) => {
       showAlert: false,
       alertType: "",
       alertText: "",
+      id: "",
     };
   }
   if (action.type === BEGIN) {
     return {
       ...state,
       isLoading: true,
+      id: action.payload?.id,
     };
   }
   if (action.type === SUCCESS) {
@@ -29,7 +32,7 @@ const alertReducer = (state, action) => {
       isLoading: false,
       showAlert: true,
       alertType: "success",
-      alertText: action.payload.msg,
+      alertText: action.payload?.msg,
     };
   }
 
@@ -39,7 +42,7 @@ const alertReducer = (state, action) => {
       isLoading: false,
       showAlert: true,
       alertType: "danger",
-      alertText: action.payload.msg,
+      alertText: action.payload?.msg,
     };
   }
 };

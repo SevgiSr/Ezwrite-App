@@ -123,7 +123,7 @@ export const MyStoryProvider = ({ children }) => {
         `/myStories/cover/${story_id}`,
         fileData
       );
-      alertDispatch({ type: SUCCESS });
+      alertDispatch({ type: SUCCESS, payload: { msg: "updated cover!" } });
     } catch (error) {
       console.log(error);
       alertDispatch({ type: ERROR });

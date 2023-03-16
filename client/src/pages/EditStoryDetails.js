@@ -8,7 +8,7 @@ import Cover from "../components/Cover";
 import OrangeLinks from "../components/OrangeLinks";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledEditStoryDetails from "./styles/EditStoryDetails.styled";
-import { PulseLoader } from "react-spinners";
+import { PulseLoader, RotateLoader, SyncLoader } from "react-spinners";
 import getDate from "../utils/getDate";
 import StoryDetails from "../components/StoryDetails";
 import { IoIosArrowBack } from "react-icons/io";
@@ -37,6 +37,8 @@ function EditStoryDetails() {
 
   const [tags, setTags] = useState([]);
 
+  const [timestamp, setTimestamp] = useState(Date.now());
+
   useEffect(() => {
     getMyStory(story_id);
   }, [story_id]);
@@ -55,6 +57,7 @@ function EditStoryDetails() {
 
   const handleCoverChange = (e) => {
     updateCover(e.target.files[0], story_id);
+    setTimestamp(Date.now());
   };
 
   const handleCancel = () => {
@@ -81,9 +84,11 @@ function EditStoryDetails() {
         <div className="cover">
           <div className="cover-overlay">
             {alertState.isLoading ? (
-              <PulseLoader />
+              <div className="pulse-loader">
+                <SyncLoader />
+              </div>
             ) : (
-              <Cover filename={story_id} width="280px" />
+              <Cover filename={story_id} width="280px" timestamp={timestamp} />
             )}
           </div>
           <h1 className="title">{storyState.myStory.title}</h1>
