@@ -29,6 +29,21 @@ select:focus {
 
 }
 
+.active-paragraph {
+    position: relative;
+}
+
+.active-paragraph::before {
+    content: "";
+    background-color: red;
+    width: 10px;
+    height: 10px;
+    display: block;
+    position: absolute;
+    left: -30px;
+    top: 40%;
+}
+
 #editStory {
     width: 60%;
     min-height: 100px;

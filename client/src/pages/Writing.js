@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import he from "he";
 
 function Writing() {
+  //dont change chapterBody at each typed character or cursor gets messed up - no onInput(aka. onChange)
+  //just use it for saving and first loading times
   const [chapterBody, setChapterBody] = useState("Type the text...");
   const [chapterTitle, setChapterTitle] = useState("");
   const { storyState, editChapter, saveChapter } = useContext(MyStoryContext);
@@ -15,23 +17,8 @@ function Writing() {
 
   const contentEditableRef = useRef(null);
 
-  useEffect(() => {
-    // Set the focus to the end of the contentEditable div
-    contentEditableRef.current.focus();
-    const range = document.createRange();
-    range.selectNodeContents(contentEditableRef.current);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }, [chapterBody]);
-
   const handleChange = (e) => {
     setChapterTitle(e.target.value);
-  };
-
-  const handleInput = (e) => {
-    setChapterBody(e.target.innerHTML);
   };
 
   //as soon s u load, make get request to get chapther's title and content adn set it on reducer's chapter
@@ -58,6 +45,41 @@ function Writing() {
     saveChapter(chapter, story_id, chapter_id);
   };
 
+  /*   const handleClick = (e) => {
+    console.log("clicked");
+    const selection = window.getSelection();
+    console.log(selection);
+    const lineNumber =
+      selection.anchorNode.parentElement.getAttribute("data-line-number");
+    console.log(selection.anchorNode.parentElement);
+    setSelectedLine(lineNumber);
+  }; */
+
+  const listener = (e) => {
+    const editStory = document.getElementById("editStory");
+    const divs = document.getElementsByTagName("div");
+    const filteredDivs = Array.from(divs).filter((div) =>
+      editStory.contains(div)
+    );
+    if (e.key === "Enter") {
+      console.log("enter");
+    } else {
+      filteredDivs.map((div) => (div.className = ""));
+      if (filteredDivs.includes(e.target)) {
+        e.target.className = "active-paragraph";
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", listener);
+    window.addEventListener("keypress", listener);
+    return () => {
+      window.removeEventListener("click", listener);
+      window.removeEventListener("keypress", listener);
+    };
+  }, []);
+
   return (
     <form onSubmit={handleSubmit} className="pageContainer">
       <Navbar />
@@ -83,9 +105,8 @@ function Writing() {
           ref={contentEditableRef}
           id="editStory"
           contentEditable
-          onInput={handleInput}
           onKeyDown={handleKeyDown}
-          style={{ minHeight: "100vh", outline: "none" }}
+          style={{ minHeight: "100vh", outline: "none", position: "relative" }}
           dangerouslySetInnerHTML={{
             __html: he.decode(chapterBody ? chapterBody : ""),
           }}
