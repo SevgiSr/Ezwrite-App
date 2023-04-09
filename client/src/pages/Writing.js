@@ -44,16 +44,6 @@ function Writing() {
     saveChapter(chapter, story_id, chapter_id);
   };
 
-  /*   const handleClick = (e) => {
-    console.log("clicked");
-    const selection = window.getSelection();
-    console.log(selection);
-    const lineNumber =
-      selection.anchorNode.parentElement.getAttribute("data-line-number");
-    console.log(selection.anchorNode.parentElement);
-    setSelectedLine(lineNumber);
-  }; */
-
   const handleInput = (e) => {
     const div = contentEditableRef.current;
     const firstLine = div.innerText.split("\n")[0];
@@ -69,16 +59,17 @@ function Writing() {
   const listener = (e) => {
     const editStory = document.getElementById("editStory");
     const divs = document.getElementsByTagName("div");
+    // get editStory's childs but not itself
     const filteredDivs = Array.from(divs).filter(
       (div) => editStory.contains(div) && div !== editStory
     );
+    // whenever you click or enter, reset all the previous ones
     filteredDivs.map((div) => (div.className = ""));
     if (e.key === "Enter") {
+      // wait so that it recognizes the last element cursor is at
       setTimeout(() => {
         const selection = window.getSelection();
         const currentNode = selection.focusNode;
-        console.log(currentNode);
-
         currentNode.classList.add("active-paragraph");
       }, 10);
     } else {
