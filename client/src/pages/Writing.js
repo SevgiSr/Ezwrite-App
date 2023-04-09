@@ -6,6 +6,9 @@ import { useContext } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
 import { useParams } from "react-router-dom";
 import he from "he";
+import { BsFillPencilFill } from "react-icons/bs";
+import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 
 function Writing() {
   //dont change chapterBody at each typed character or cursor gets messed up - no onInput(aka. onChange)
@@ -44,6 +47,7 @@ function Writing() {
     saveChapter(chapter, story_id, chapter_id);
   };
 
+  //wrap first line of contentEditable div into a div
   const handleInput = (e) => {
     const div = contentEditableRef.current;
     const firstLine = div.innerText.split("\n")[0];
@@ -64,17 +68,36 @@ function Writing() {
       (div) => editStory.contains(div) && div !== editStory
     );
     // whenever you click or enter, reset all the previous ones
+    filteredDivs.map((div) => {
+      const icon = div.querySelector(".icon");
+      if (icon) icon.parentNode.removeChild(icon);
+    });
     filteredDivs.map((div) => (div.className = ""));
+
     if (e.key === "Enter") {
       // wait so that it recognizes the last element cursor is at
       setTimeout(() => {
         const selection = window.getSelection();
         const currentNode = selection.focusNode;
         currentNode.classList.add("active-paragraph");
+
+        // Add the icon element to the currentNode
+        const icon = document.createElement("div");
+        icon.classList.add("icon");
+        // Render the icon component into the div element using ReactDOM.render()
+        createRoot(icon).render(<BsFillPencilFill />);
+        currentNode.appendChild(icon);
       }, 10);
     } else {
       if (filteredDivs.includes(e.target)) {
         e.target.className = "active-paragraph";
+
+        // Add the icon element to the activeNode
+        const icon = document.createElement("div");
+        icon.classList.add("icon");
+        // Render the icon component into the span element using ReactDOM.render()
+        createRoot(icon).render(<BsFillPencilFill />);
+        e.target.appendChild(icon);
       }
     }
   };

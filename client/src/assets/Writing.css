@@ -33,15 +33,12 @@ select:focus {
     position: relative;
 }
 
-.active-paragraph::before {
-    content: "";
-    background-color: red;
-    width: 10px;
-    height: 10px;
-    display: block;
+.icon {
     position: absolute;
-    left: -30px;
-    top: 40%;
+    left: -40px;
+    top: 0;
+    bottom: 0;
+    cursor: pointer;
 }
 
 #editStory {
