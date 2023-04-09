@@ -60,6 +60,30 @@ function Writing() {
     }
   };
 
+  const handleWriteClick = (currentNode) => {
+    // Get the parent node of the icon
+    const icon = document.querySelector(".icon");
+    const parentNode = icon.parentNode;
+
+    // Create the wrapper div element
+    const wrapper = document.createElement("div");
+
+    // Render the AIForm component into the wrapper div element
+    ReactDOM.render(<AIForm />, wrapper);
+
+    // Insert the wrapper element before the parentNode
+    parentNode.insertAdjacentElement("beforebegin", wrapper);
+
+    const input = wrapper.querySelector("input");
+    input.value = parentNode.textContent.trim();
+
+    // Hide the parentNode
+    parentNode.style.display = "none";
+
+    // Set the focus on the input element
+    wrapper.querySelector("input").focus();
+  };
+
   const listener = (e) => {
     const editStory = document.getElementById("editStory");
     const divs = document.getElementsByTagName("div");
@@ -85,7 +109,9 @@ function Writing() {
         const icon = document.createElement("div");
         icon.classList.add("icon");
         // Render the icon component into the div element using ReactDOM.render()
-        createRoot(icon).render(<BsFillPencilFill />);
+        createRoot(icon).render(
+          <BsFillPencilFill onClick={() => handleWriteClick(currentNode)} />
+        );
         currentNode.appendChild(icon);
       }, 10);
     } else {
@@ -96,16 +122,38 @@ function Writing() {
         const icon = document.createElement("div");
         icon.classList.add("icon");
         // Render the icon component into the span element using ReactDOM.render()
-        createRoot(icon).render(<BsFillPencilFill />);
+        createRoot(icon).render(
+          <BsFillPencilFill onClick={() => handleWriteClick(e.target)} />
+        );
         e.target.appendChild(icon);
       }
     }
   };
 
+  const inputListener = (e) => {
+    const formContainer = document.querySelector(".ai-form-container");
+    const icon = document.querySelector(".icon");
+
+    if (icon && icon.includes(e.target)) {
+      return;
+    }
+
+    if (formContainer && !formContainer.contains(e.target)) {
+      const prevNode = formContainer.parentNode.nextElementSibling;
+      console.log(prevNode);
+      console.log(formContainer.parentNode);
+      const formWrapper = formContainer.parentNode;
+      formWrapper.parentNode.removeChild(formWrapper);
+      prevNode.style.display = "block";
+    }
+  };
+
   useEffect(() => {
+    document.addEventListener("click", inputListener);
     window.addEventListener("click", listener);
     window.addEventListener("keypress", listener);
     return () => {
+      document.removeEventListener("click", inputListener);
       window.removeEventListener("click", listener);
       window.removeEventListener("keypress", listener);
     };
@@ -144,6 +192,27 @@ function Writing() {
           }}
         />
       </div>
+    </form>
+  );
+}
+
+function AIForm() {
+  const [prompt, setPrompt] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submitted!");
+    const prevNode = e.target.parentNode.nextElementSibling;
+    prevNode.parentNode.removeChild(prevNode);
+    e.target.parentNode.innerHTML = "Hello World";
+  };
+  return (
+    <form onSubmit={handleSubmit} className="ai-form-container">
+      <input
+        type="text"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        className="edit-input"
+      />
     </form>
   );
 }
