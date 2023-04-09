@@ -29,7 +29,6 @@ function Writing() {
   //after get request, chapter in reducer is set and setChapter sets title and content in frontend
   useEffect(() => {
     const { chapter } = storyState;
-    console.log(chapter);
     setChapterTitle(chapter.title);
     setChapterBody(chapter.content);
   }, [storyState.chapter]);
@@ -55,16 +54,34 @@ function Writing() {
     setSelectedLine(lineNumber);
   }; */
 
+  const handleInput = (e) => {
+    const div = contentEditableRef.current;
+    const firstLine = div.innerText.split("\n")[0];
+
+    if (firstLine && !div.querySelector("div")) {
+      const newDiv = document.createElement("div");
+      newDiv.innerText = firstLine;
+      div.innerHTML = div.innerHTML.replace(firstLine, "");
+      div.insertBefore(newDiv, div.firstChild);
+    }
+  };
+
   const listener = (e) => {
     const editStory = document.getElementById("editStory");
     const divs = document.getElementsByTagName("div");
-    const filteredDivs = Array.from(divs).filter((div) =>
-      editStory.contains(div)
+    const filteredDivs = Array.from(divs).filter(
+      (div) => editStory.contains(div) && div !== editStory
     );
+    filteredDivs.map((div) => (div.className = ""));
     if (e.key === "Enter") {
-      console.log("enter");
+      setTimeout(() => {
+        const selection = window.getSelection();
+        const currentNode = selection.focusNode;
+        console.log(currentNode);
+
+        currentNode.classList.add("active-paragraph");
+      }, 10);
     } else {
-      filteredDivs.map((div) => (div.className = ""));
       if (filteredDivs.includes(e.target)) {
         e.target.className = "active-paragraph";
       }
@@ -106,6 +123,7 @@ function Writing() {
           id="editStory"
           contentEditable
           onKeyDown={handleKeyDown}
+          onInput={handleInput}
           style={{ minHeight: "100vh", outline: "none", position: "relative" }}
           dangerouslySetInnerHTML={{
             __html: he.decode(chapterBody ? chapterBody : ""),
