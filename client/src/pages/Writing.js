@@ -198,6 +198,7 @@ function Writing() {
 
 function AIForm() {
   const [prompt, setPrompt] = useState("");
+  const [style, setStyle] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("submitted!");
@@ -205,6 +206,7 @@ function AIForm() {
     prevNode.parentNode.removeChild(prevNode);
     e.target.parentNode.innerHTML = "Hello World";
   };
+
   return (
     <form onSubmit={handleSubmit} className="ai-form-container">
       <input
@@ -213,6 +215,17 @@ function AIForm() {
         onChange={(e) => setPrompt(e.target.value)}
         className="edit-input"
       />
+      <div className="style">
+        <label htmlFor="language">Writing Style</label>
+        <div id="language" style={{ width: "200px" }}>
+          <select onChange={(e) => setStyle(e.target.value)} name="style">
+            <option value="comedic">Comedic</option>
+            <option value="descriptive">Descriptive</option>
+            <option value="emotional">Emotional</option>
+            <option value="persuasive">Persuasive</option>
+          </select>
+        </div>
+      </div>
     </form>
   );
 }
