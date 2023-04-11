@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
       minlength: 3,
       select: false,
     },
+    AIKey: {
+      type: String,
+      select: false,
+    },
     profilePicture: {
       type: Object,
     },

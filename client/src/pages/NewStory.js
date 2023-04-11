@@ -24,6 +24,8 @@ function NewStory() {
 
   const [cover, setCover] = useState("");
 
+  const [imageUrl, setImageUrl] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     storyDetails.tags = tags;
@@ -33,26 +35,41 @@ function NewStory() {
   };
 
   const handleCoverChange = (e) => {
-    setCover(e.target.files[0]);
+    const file = e.target.files[0];
+    setCover(file);
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      setImageUrl(e.target.result);
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
     <StyledNewStory>
       {storyState.showAlert && <Alert />}
       <div className="cover">
-        <label htmlFor="upload" className="upload-picture">
-          <div className="label">
-            <AiFillPicture />
-            <span>Add a cover</span>
-          </div>
-          <input
-            id="upload"
-            type="file"
-            accept="image/png, image/jpg, image/gif, image/jpeg"
-            name="file"
-            onChange={handleCoverChange}
-          />
-        </label>
+        {imageUrl ? (
+          <div
+            className="cover-img"
+            style={{ backgroundImage: `url(${imageUrl})` }}
+          ></div>
+        ) : (
+          <label htmlFor="upload" className="upload-picture">
+            <div className="label">
+              <AiFillPicture />
+              <span>Add a cover</span>
+            </div>
+            <input
+              id="upload"
+              type="file"
+              accept="image/png, image/jpg, image/gif, image/jpeg"
+              name="file"
+              onChange={handleCoverChange}
+            />
+          </label>
+        )}
       </div>
       <div className="details">
         <StoryDetails
@@ -63,7 +80,7 @@ function NewStory() {
           handleSubmit={handleSubmit}
           title={<h1>Story Details</h1>}
           submitButton={
-            <button className="create-btn btn" type="submit">
+            <button className="create-btn orange-button btn" type="submit">
               Create
             </button>
           }

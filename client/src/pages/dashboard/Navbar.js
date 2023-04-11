@@ -182,6 +182,9 @@ function Navbar() {
                     Notifications
                   </span>
                 </Link>
+                <Link to={`/settings`} className="dropdown-item">
+                  <span>Settings</span>
+                </Link>
               </>
             }
           />

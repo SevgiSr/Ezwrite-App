@@ -14,15 +14,17 @@ const StyledNewStory = styled.div`
 
   .cover {
     margin-right: 4rem;
+    width: 300px;
+    height: 468px;
     .label {
-      width: 300px;
-      height: 468px;
       background-color: #eee;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      width: 100%;
+      height: 100%;
 
       svg {
         width: 50%;
@@ -33,6 +35,14 @@ const StyledNewStory = styled.div`
 
     input {
       display: none;
+    }
+
+    .cover-img {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
   }
   .details {
@@ -132,6 +142,7 @@ const StyledNewStory = styled.div`
     }
     /* submit */
     .create-btn {
+      margin: 0;
       padding: 10px;
     }
   }

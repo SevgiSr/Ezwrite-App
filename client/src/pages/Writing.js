@@ -1,4 +1,3 @@
-import "../assets/Writing.css";
 import { useEffect, useRef, useState } from "react";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { Navbar } from "../components";
@@ -7,8 +6,10 @@ import { MyStoryContext } from "../context/myStoryContext";
 import { useParams } from "react-router-dom";
 import he from "he";
 import { BsFillPencilFill } from "react-icons/bs";
+import { FaRegPaperPlane } from "react-icons/fa";
 import { createRoot } from "react-dom/client";
 import ReactDOM from "react-dom";
+import StyledWriting from "./styles/Writing.styled";
 
 function Writing() {
   //dont change chapterBody at each typed character or cursor gets messed up - no onInput(aka. onChange)
@@ -160,18 +161,19 @@ function Writing() {
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="pageContainer">
-      <Navbar />
-      <div className="storyContainer">
-        <input
-          id="editTitle"
-          name="title"
-          onChange={handleChange}
-          value={chapterTitle}
-          placeholder="story title..."
-        />
-        <hr style={{ color: "gray", width: "60%" }} />
-        {/* <textarea
+    <StyledWriting>
+      <form onSubmit={handleSubmit} className="pageContainer">
+        <Navbar />
+        <div className="storyContainer">
+          <input
+            id="editTitle"
+            name="title"
+            onChange={handleChange}
+            value={chapterTitle}
+            placeholder="story title..."
+          />
+          <hr style={{ color: "gray", width: "60%" }} />
+          {/* <textarea
           id="editStory"
           name="body"
           onChange={handleChange}
@@ -180,19 +182,24 @@ function Writing() {
           style={{ height: "100vh" }}
           placeholder="Type your text..."
         /> */}
-        <div
-          ref={contentEditableRef}
-          id="editStory"
-          contentEditable
-          onKeyDown={handleKeyDown}
-          onInput={handleInput}
-          style={{ minHeight: "100vh", outline: "none", position: "relative" }}
-          dangerouslySetInnerHTML={{
-            __html: he.decode(chapterBody ? chapterBody : ""),
-          }}
-        />
-      </div>
-    </form>
+          <div
+            ref={contentEditableRef}
+            id="editStory"
+            contentEditable
+            onKeyDown={handleKeyDown}
+            onInput={handleInput}
+            style={{
+              minHeight: "100vh",
+              outline: "none",
+              position: "relative",
+            }}
+            dangerouslySetInnerHTML={{
+              __html: he.decode(chapterBody ? chapterBody : ""),
+            }}
+          />
+        </div>
+      </form>
+    </StyledWriting>
   );
 }
 
@@ -208,13 +215,19 @@ function AIForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="ai-form-container">
-      <input
-        type="text"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        className="edit-input"
-      />
+    <form onSubmit={handleSubmit} className="ai-form-container ai">
+      <div className="flex-row">
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={(e) => e.preventDefault()}
+          className="edit-input"
+        />
+        <button type="submit">
+          <FaRegPaperPlane />
+        </button>
+      </div>
       <div className="style">
         <label htmlFor="language">Writing Style</label>
         <div id="language" style={{ width: "200px" }}>

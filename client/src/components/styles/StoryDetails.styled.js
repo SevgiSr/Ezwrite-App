@@ -90,6 +90,10 @@ const StyledStoryDetails = styled.div`
       font-size: 17px;
     }
 
+    .tag-input:focus {
+      outline: none;
+    }
+
     /* language */
     .language {
       select {

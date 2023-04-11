@@ -8,8 +8,10 @@ import {
   getProfileConv,
   editProfile,
   getProfileActivity,
+  getProfileSettings,
 } from "../controllers/profileController.js";
 
+router.route("/settings").get(getProfileSettings);
 router.route("/:username").get(getProfile).patch(editProfile);
 router.route("/:username/follow").get(followProfile);
 router.route("/:username/unfollow").get(unfollowProfile);

@@ -132,6 +132,13 @@ const addReadingList = async (req, res) => {
   res.status(StatusCodes.OK).json({ readingList });
 };
 
+const getProfileSettings = async (req, res) => {
+  const profileSettings = await User.findById(req.user.userId).select(
+    "name AIKey"
+  );
+  res.status(StatusCodes.OK).json({ profileSettings });
+};
+
 export {
   getProfile,
   followProfile,
@@ -141,4 +148,5 @@ export {
   editProfile,
   addReadingList,
   getProfileActivity,
+  getProfileSettings,
 };

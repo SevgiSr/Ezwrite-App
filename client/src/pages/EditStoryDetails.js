@@ -103,7 +103,7 @@ function EditStoryDetails() {
             />
           </label>
         </div>
-        <Link to={`/story/${story_id}/`} className="orange-button view-btn">
+        <Link to={`/story/${story_id}/`} className="orange-button view-btn btn">
           View as reader
         </Link>
       </div>
@@ -156,10 +156,10 @@ function Navbar({ handleCancel }) {
         </div>
       </header>
       <div className="buttons">
-        <button onClick={handleCancel} className="white-button">
+        <button onClick={handleCancel} className="white-button btn">
           Cancel
         </button>
-        <button form="story-details" className="orange-button">
+        <button form="story-details" className="orange-button btn">
           Save
         </button>
       </div>
@@ -179,7 +179,7 @@ function Contents() {
 
   return (
     <div id="contents">
-      <button onClick={handleNewPartClick} className="orange-button">
+      <button onClick={handleNewPartClick} className="orange-button btn">
         New Part
       </button>
       {storyState.myStory?.chapters?.map((chapter) => {

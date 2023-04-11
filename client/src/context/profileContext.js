@@ -16,6 +16,7 @@ import {
   GET_IMAGE_SUCCESS,
   GET_PROFILE_ACTIVITY_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
+  GET_PROFILE_SETTINGS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
   OPEN_INBOX_SUCCESS,
@@ -34,6 +35,7 @@ export const initialProfileState = {
   isFollowing: false,
   isDisabled: false,
   profile: {},
+  profileSettings: {},
   profilePicture: "",
   stories: [],
   convs: [],
@@ -229,13 +231,22 @@ export const ProfileProvider = ({ children }) => {
 
   const editProfileInfo = async (profileInfo) => {
     try {
-      console.log(profileInfo);
       const { data } = await authFetch.patch(
         `/user/${profileState.profile.name}`,
         { profileInfo }
       );
       const { newUser } = data;
       dispatch({ type: EDIT_PROFILE_SUCCESS, payload: { newUser } });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getProfileSettings = async () => {
+    try {
+      const { data } = await authFetch.get("/user/settings");
+      const { profileSettings } = data;
+      dispatch({ type: GET_PROFILE_SETTINGS, payload: { profileSettings } });
     } catch (error) {
       console.log(error);
     }
@@ -329,6 +340,7 @@ export const ProfileProvider = ({ children }) => {
         openEditMode,
         closeEditMode,
         editProfileInfo,
+        getProfileSettings,
         getInbox,
         openMessages,
         sendMessage,

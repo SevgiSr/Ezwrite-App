@@ -63,7 +63,6 @@ export const MyStoryProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get(`/myStories/edit/${story_id}`);
       const { myStory } = data;
-      console.log(myStory);
       dispatch({
         type: GET_MY_STORY_SUCCESS,
         payload: {
@@ -89,6 +88,22 @@ export const MyStoryProvider = ({ children }) => {
       alertDispatch({ type: SUCCESS, payload: { msg: "New Story Created!" } });
     } catch (error) {
       if (error.response.status === 401) return;
+      alertDispatch({
+        type: ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+  };
+
+  const deleteStory = async (story_id) => {
+    alertDispatch({ type: BEGIN });
+    try {
+      await authFetch.delete(`/myStories/delete/${story_id}`);
+      alertDispatch({
+        type: SUCCESS,
+        payload: { msg: "Your Story Was Deleted!" },
+      });
+    } catch (error) {
       alertDispatch({
         type: ERROR,
         payload: { msg: error.response.data.msg },
@@ -199,6 +214,7 @@ export const MyStoryProvider = ({ children }) => {
         getMyStories,
         getMyStory,
         createStory,
+        deleteStory,
         updateCover,
         getMyChapters,
         setEditStory,

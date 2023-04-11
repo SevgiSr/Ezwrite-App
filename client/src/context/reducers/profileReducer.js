@@ -9,6 +9,7 @@ import {
   GET_IMAGE_SUCCESS,
   GET_PROFILE_ACTIVITY_SUCCESS,
   GET_PROFILE_CONV_SUCCESS,
+  GET_PROFILE_SETTINGS,
   GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
   OPEN_INBOX_SUCCESS,
@@ -105,6 +106,12 @@ const profileReducer = (state, action) => {
     return {
       ...state,
       profile: action.payload.newUser,
+    };
+  }
+  if (action.type === GET_PROFILE_SETTINGS) {
+    return {
+      ...state,
+      profileSettings: { ...action.payload.profileSettings },
     };
   }
   if (action.type === OPEN_INBOX_SUCCESS) {

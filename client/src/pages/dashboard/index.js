@@ -6,6 +6,7 @@ import Chapter from "./Chapter";
 import Messages from "./Messages";
 import Inbox from "./Inbox";
 import Notifications from "./Notifications";
+import Settings from "./Settings";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   Messages,
   Inbox,
   Notifications,
+  Settings,
 };

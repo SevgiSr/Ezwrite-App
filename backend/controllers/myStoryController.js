@@ -28,7 +28,22 @@ const getMyStories = async (req, res) => {
   const myStories = await Story.find({ author: req.user.userId }).populate({
     path: "author chapters",
   });
-  res.status(StatusCodes.OK).json({ myStories });
+  // Sort stories based on creation or update time in descending order (from farthest to nearest)
+  const sortedStories = myStories.sort((a, b) => {
+    const aTime = new Date(a.updatedAt);
+    const bTime = new Date(b.updatedAt);
+
+    // Compare the time values to sort in descending order
+    if (aTime > bTime) {
+      return -1;
+    } else if (aTime < bTime) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  res.status(StatusCodes.OK).json({ myStories: sortedStories });
 };
 
 const getMyStory = async (req, res) => {
@@ -66,6 +81,13 @@ const createStory = async (req, res) => {
   );
 
   res.status(StatusCodes.CREATED).json({ story });
+};
+
+const deleteStory = async (req, res) => {
+  const story = await Story.findOne({ _id: req.params.story_id });
+  checkPermissions(req.user.userId, story.author._id);
+  await story.delete();
+  res.status(StatusCodes.OK);
 };
 
 const updateStory = async (req, res) => {
@@ -141,6 +163,7 @@ const createChapter = async (req, res) => {
 export {
   getMyStories,
   createStory,
+  deleteStory,
   getMyChapters,
   editChapter,
   saveChapter,

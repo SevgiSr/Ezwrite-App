@@ -26,6 +26,7 @@ import {
   Inbox,
   Messages,
   Notifications,
+  Settings,
 } from "./pages/dashboard";
 import EditStoryDetails from "./pages/EditStoryDetails";
 
@@ -57,6 +58,7 @@ function App() {
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:username" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
         <Route

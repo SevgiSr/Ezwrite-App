@@ -33,37 +33,9 @@ button {
 
 /* ///////////////// */
 
-.orange-button {
-  color: #fff;
-  background-color: #ff6122;
-  font-size: 15px;
-  line-height: 18px;
-  border-radius: 6px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
 
-.orange-button:hover {
-  background-color: #fff;
-  color: #ff6122;
-}
 
-.white-button {
-  border: 1px solid #222;
-  font-size: 15px;
-  line-height: 18px;
-  border-radius: 6px;
-  margin: 3px 5px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-}
 
-.white-button:hover {
-  border-color: #fff;
-}
 
 .profile-button {
   cursor: pointer;
@@ -143,6 +115,8 @@ button>* {
   --text-main-orange: #ff6122;
   --button-main: #ff6122;
   --button-secondary: rgb(255, 195, 113);
+
+  --green-ai-main: #47d147;
   /* rest of the colors */
   --black: #222;
   --white: #fff;
@@ -150,6 +124,8 @@ button>* {
   --red-dark: #842029;
   --green-light: #d1e7dd;
   --green-dark: #0f5132;
+
+
 
   /* box shadow */
   --shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -160,6 +136,17 @@ button>* {
   /* */
   --borderRadius: 0.25rem;
   --transition: 0.3s ease-in-out all;
+}
+
+/* FLEXXXXX */
+
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.ai {
+  background-color: var(--green-ai-main);
 }
 
 .form p {
@@ -201,7 +188,7 @@ button>* {
 }
 
 /*btn*/
-.btn {
+/* .btn {
   cursor: pointer;
   color: white;
   background: var(--button-main);
@@ -212,15 +199,64 @@ button>* {
   transition: var(--transition);
   text-transform: capitalize;
   border: transparent;
+} */
+
+
+
+.btn {
+  padding: 5px 15px;
+  font-size: 15px;
+  line-height: 18px;
+  border-radius: 6px;
+  margin: 3px 5px;
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 2px solid transparent;
+  white-space: nowrap;
+  -webkit-transition: all .1s ease-in-out;
+  transition: all .1s ease-in-out;
+}
+
+.orange-button {
+  color: #fff;
+  background-color: #ff6122;
+}
+
+.orange-button:hover {
+  background-color: #fff;
+  color: #ff6122;
+}
+
+.white-button {
+  border: 1px solid #222;
+  font-size: 15px;
+  line-height: 18px;
+  border-radius: 6px;
+  margin: 3px 5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.white-button:hover {
+  border-color: #fff;
+}
+
+.btn-grey {
+  color: #222;
+  background-color: #eee;
+}
+
+.btn-grey:hover {
+  color: #222;
+  background-color: #e1e1e1;
 }
 
 .btn-secondary {
   background: var(--button-secondary);
-}
-
-.btn:hover {
-  background: var(--dark-orange);
-  box-shadow: var(--shadow-3);
 }
 
 .btn-block {
