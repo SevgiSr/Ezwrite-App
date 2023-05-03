@@ -8,6 +8,8 @@ import Story from "./Story";
 import Message from "./Message";
 import UserCard from "./UserCard";
 import ReadingList from "./ReadingList";
+import StoryDetailed from "./StoryDetailed";
+
 export {
   Navbar,
   FormRow,
@@ -19,4 +21,5 @@ export {
   Message,
   UserCard,
   ReadingList,
+  StoryDetailed,
 };

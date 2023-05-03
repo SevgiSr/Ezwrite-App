@@ -34,11 +34,6 @@ const StorySchema = new mongoose.Schema(
       ref: "User",
       required: [true, "please provide user"],
     },
-    visibility: {
-      type: String,
-      enum: ["public", "private"],
-      default: "private",
-    },
   },
   { timestamps: true }
 );

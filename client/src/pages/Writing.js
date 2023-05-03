@@ -48,6 +48,15 @@ function Writing() {
     saveChapter(chapter, story_id, chapter_id);
   };
 
+  const handlePublishClick = () => {
+    const content = document.getElementById("editStory").innerHTML;
+    const chapter = {
+      title: chapterTitle,
+      body: content,
+    };
+    saveChapter(chapter, story_id, chapter_id);
+  };
+
   //wrap first line of contentEditable div into a div
   const handleInput = (e) => {
     const div = contentEditableRef.current;
