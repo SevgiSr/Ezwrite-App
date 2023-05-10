@@ -17,6 +17,7 @@ function Respond({
   to,
   dest,
   addComment,
+  updatedParagraph,
 }) {
   const { sendNotification, profileState } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
@@ -59,7 +60,7 @@ function Respond({
     e.preventDefault();
     if (!comment) return;
     setShow(initialState);
-    addComment(dest, comment);
+    addComment(dest, comment, updatedParagraph);
     setComment("");
     const notification = {
       text: text,

@@ -5,6 +5,7 @@ import User from "../db/models/User.js";
 import { StatusCodes } from "http-status-codes";
 import Vote from "../db/models/Vote.js";
 import Progress from "../db/models/Progress.js";
+import Paragraph from "../db/models/Paragraph.js";
 
 export async function countChapterVotes(chapter_id) {
   const result = await Vote.aggregate([
@@ -100,15 +101,26 @@ const getProgress = async (req, res) => {
 };
 
 const getChapter = async (req, res) => {
-  console.log("getting chapter");
   const { story_id, chapter_id } = req.params;
   const story = await Story.findById(story_id).populate("author chapters");
   const chapter = await Chapter.findById(chapter_id)
     .populate({
       path: "comments",
-      populate: { path: "subcomments", populate: "author" },
+      populate: [
+        { path: "author", model: "User" },
+        { path: "subcomments", populate: { path: "author", model: "User" } },
+      ],
     })
-    .populate({ path: "comments", populate: { path: "author" } });
+    .populate({
+      path: "paragraphs",
+      populate: {
+        path: "comments",
+        populate: [
+          { path: "author", model: "User" },
+          { path: "subcomments", populate: { path: "author", model: "User" } },
+        ],
+      },
+    });
 
   const author = story.author;
   const chapterConvs = chapter.comments;
@@ -133,7 +145,6 @@ const getChapter = async (req, res) => {
 };
 
 const addChapterConv = async (req, res) => {
-  console.log(req.user.userId);
   const { comment_content } = req.body;
   const comment = await Comment.create({
     author: req.user.userId,
@@ -152,6 +163,35 @@ const addChapterConv = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json({ newConv });
+};
+
+const addParagraphConv = async (req, res) => {
+  const { comment_content } = req.body;
+  const comment = await Comment.create({
+    author: req.user.userId,
+    content: comment_content,
+    subcomments: [],
+  });
+
+  const newConv = await Comment.findById(comment._id)
+    .populate("author")
+    .populate({ path: "subcomments", populate: "author" });
+
+  const updatedParagraph = await Paragraph.findOneAndUpdate(
+    { _id: req.params.paragraph_id },
+    { $push: { comments: comment._id } },
+    { upsert: true, new: true, runValidators: true }
+  ).populate({
+    path: "comments",
+    populate: [
+      { path: "author", model: "User" },
+      { path: "subcomments", populate: { path: "author", model: "User" } },
+    ],
+  });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ updatedParagraph, newConvs: updatedParagraph.comments });
 };
 
 const voteChapter = async (req, res) => {
@@ -221,6 +261,7 @@ export {
   getByLength,
   getChapter,
   addChapterConv,
+  addParagraphConv,
   voteChapter,
   unvoteChapter,
   incrementViewCount,

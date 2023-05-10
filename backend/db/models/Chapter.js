@@ -21,6 +21,12 @@ const ChapterSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    paragraphs: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Paragraph",
+      },
+    ],
     comments: [
       {
         type: mongoose.Types.ObjectId,

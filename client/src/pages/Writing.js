@@ -41,11 +41,20 @@ function Writing() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const content = document.getElementById("editStory").innerHTML;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, "text/html");
+
+    const divElements = Array.from(doc.querySelectorAll("div"));
+
+    const divArray = divElements.map((div) => he.decode(div.outerHTML));
+
+    console.log(divArray);
+
     const chapter = {
       title: chapterTitle,
-      body: content,
+      content: content,
     };
-    saveChapter(chapter, story_id, chapter_id);
+    saveChapter(chapter, divArray, story_id, chapter_id);
   };
 
   const handlePublishClick = () => {

@@ -9,7 +9,7 @@ import { UserContext } from "../context/userContext";
 import { useLocation } from "react-router-dom";
 import getDate from "../utils/getDate";
 
-const Conversation = ({ conv, addConvComment }) => {
+const Conversation = ({ conv, addConvComment, updatedParagraph }) => {
   const { userState } = useContext(UserContext);
 
   const location = useLocation();
@@ -61,6 +61,7 @@ const Conversation = ({ conv, addConvComment }) => {
         to={conv.author.name}
         dest={conv._id}
         addComment={addConvComment}
+        updatedParagraph={updatedParagraph}
       />
     </>
   );

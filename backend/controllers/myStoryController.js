@@ -13,6 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import checkPermissions from "../utils/checkPermissions.js";
+import Paragraph from "../db/models/Paragraph.js";
 
 //if you use req.user.userId - secure
 //if you don't, add checkPermissions()
@@ -133,15 +134,22 @@ const editChapter = async (req, res) => {
 };
 
 const saveChapter = async (req, res) => {
-  const updatedChapter = await Chapter.findOneAndUpdate(
-    { _id: req.params.chapter_id },
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  res.status(StatusCodes.OK).json({ updatedChapter });
+  const { chapter, divArray } = req.body;
+
+  const chapterObj = await Chapter.findById(req.params.chapter_id);
+  for (let i = 0; i < chapterObj.paragraphs.length; i++) {
+    await Paragraph.findByIdAndDelete(chapterObj.paragraphs[i]._id);
+  }
+
+  const paragraphs = divArray.map((div) => new Paragraph({ content: div }));
+  paragraphs.forEach((div) => div.save());
+
+  chapterObj.title = chapter.title;
+  chapterObj.content = chapter.content;
+  chapterObj.paragraphs = paragraphs;
+  chapterObj.save();
+
+  res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
 };
 
 const createChapter = async (req, res) => {

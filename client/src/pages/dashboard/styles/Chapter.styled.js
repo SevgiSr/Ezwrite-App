@@ -138,10 +138,66 @@ const StyledChapter = styled.div`
       line-height: 40px;
       color: #121212;
     }
-    .content {
-      font-weight: 400;
-      font-size: 18px;
-      line-height: 27px;
+    .paragraph {
+      position: relative;
+      padding-right: 50px;
+      box-sizing: content-box;
+      .content {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 27px;
+      }
+      .comment-btn {
+        display: none;
+        position: absolute;
+        bottom: 3px;
+        right: 0;
+        border: none;
+        font-size: 23px;
+        cursor: pointer;
+        .icon {
+          color: #6f6f6f;
+        }
+        .count {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          top: 0;
+          bottom: 5px;
+          left: 0;
+          right: 0;
+          color: #fff;
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+      .comment-btn:hover {
+        .icon {
+          color: #bfbfbf;
+        }
+      }
+      .btn-visible {
+        display: block;
+      }
+    }
+    .comments-modal {
+      overflow-y: scroll;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      max-width: 500px;
+      z-index: 1000;
+      background-color: white;
+      border-radius: 5px;
+      padding: 30px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .open-modal {
+      display: block;
     }
   }
   .comments {

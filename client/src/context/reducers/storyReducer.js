@@ -1,6 +1,7 @@
 import {
   ADD_CHAPTER_CONV_SUCCESS,
   ADD_CONV_COMMENT_SUCCESS,
+  ADD_PARAGRAPH_CONV_SUCCESS,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
@@ -41,6 +42,22 @@ const storyReducer = (state, action) => {
     };
   }
 
+  if (action.type === ADD_PARAGRAPH_CONV_SUCCESS) {
+    const updatedParagraphs = state.chapter.paragraphs.map((paragraph) => {
+      if (paragraph._id === action.payload.updatedParagraph._id) {
+        return {
+          ...paragraph,
+          comments: action.payload.newConvs,
+        };
+      }
+      return paragraph;
+    });
+    return {
+      ...state,
+      chapter: { ...state.chapter, paragraphs: updatedParagraphs },
+    };
+  }
+
   if (action.type === VOTE_CHAPTER_SUCCESS) {
     const value = Number(action.payload.vote_value);
     const votes = { ...state.votes };
@@ -78,16 +95,39 @@ const storyReducer = (state, action) => {
     };
   }
   if (action.type === ADD_CONV_COMMENT_SUCCESS) {
-    //conversation with new subcomments
     const newConv = action.payload.newConv;
-    const index = state.chapterConvs.findIndex((c) => c._id === newConv._id);
-    const newConvs = [...state.chapterConvs];
-    newConvs[index] = newConv;
 
-    return {
-      ...state,
-      chapterConvs: newConvs,
-    };
+    if (action.payload.type === "paragraph") {
+      const updatedParagraphs = state.chapter.paragraphs.map((paragraph) => {
+        if (paragraph._id === action.payload.updatedParagraph) {
+          const index = paragraph.comments.findIndex(
+            (c) => c._id === newConv._id
+          );
+          const newConvs = [...paragraph.comments];
+          newConvs[index] = newConv;
+          return {
+            ...paragraph,
+            comments: [...newConvs],
+          };
+        }
+        return paragraph;
+      });
+      return {
+        ...state,
+        chapter: { ...state.chapter, paragraphs: updatedParagraphs },
+      };
+    }
+
+    if (action.payload.type === "chapter") {
+      const index = state.chapterConvs.findIndex((c) => c._id === newConv._id);
+      const newConvs = [...state.chapterConvs];
+      newConvs[index] = newConv;
+
+      return {
+        ...state,
+        chapterConvs: newConvs,
+      };
+    }
   }
 };
 

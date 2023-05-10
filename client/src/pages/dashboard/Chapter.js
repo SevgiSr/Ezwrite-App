@@ -9,9 +9,10 @@ import Cover from "../../components/Cover";
 import { AiFillDislike, AiFillStar } from "react-icons/ai";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
-import { FaComment } from "react-icons/fa";
+import { FaComment, FaCommentAlt } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 import DropdownMenu from "../../components/DropdownMenu";
+import he from "he";
 
 function Chapter() {
   const {
@@ -42,8 +43,6 @@ function Chapter() {
   useEffect(() => {
     getChapter(story_id, chapter_id);
   }, [location]);
-
-  const formattedChapterText = state.chapter.content?.replace(/\n/g, "<br>");
 
   return (
     <StyledChapter>
@@ -78,14 +77,20 @@ function Chapter() {
             <div className="count">{state.chapterConvs.length}</div>
           </div>
         </div>
-        <div
-          className="content"
-          dangerouslySetInnerHTML={{ __html: formattedChapterText }}
-        />
+        {state.chapter.paragraphs?.map((paragraph, index) => {
+          return (
+            <Paragraph
+              key={`comments-${index}`}
+              paragraph={paragraph}
+              index={index}
+            />
+          );
+        })}
       </section>
 
       <div className="comments">
         <Respond
+          id={chapter_id}
           text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
           activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
           type="chapter"
@@ -99,12 +104,8 @@ function Chapter() {
         <div className="column-reverse">
           {state.chapterConvs?.map((comment) => {
             return (
-              <div className="conv">
-                <Conversation
-                  key={comment._id}
-                  conv={comment}
-                  addConvComment={addConvComment}
-                />
+              <div key={comment._id}>
+                <Conversation conv={comment} addConvComment={addConvComment} />
               </div>
             );
           })}
@@ -112,6 +113,88 @@ function Chapter() {
       </div>
     </StyledChapter>
   );
+}
+
+function Paragraph({ paragraph, index }) {
+  const [openModal, setOpenModal] = useState(false);
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const { userState } = useContext(UserContext);
+  const location = useLocation();
+  const { state, addConvComment, addParagraphConv } = useContext(StoryContext);
+
+  return (
+    <div
+      className="paragraph"
+      onMouseEnter={() => setIsButtonVisible(true)}
+      onMouseLeave={() => setIsButtonVisible(false)}
+    >
+      <div
+        className="content"
+        dangerouslySetInnerHTML={{
+          __html: he.decode(paragraph.content ? paragraph.content : ""),
+        }}
+      ></div>
+      <button
+        className={
+          "comment-btn " +
+          (paragraph.comments.length > 0
+            ? "btn-visible"
+            : isButtonVisible
+            ? "btn-visible"
+            : "")
+        }
+        onClick={() => setOpenModal(true)}
+      >
+        <div className="icon">
+          <FaCommentAlt />
+        </div>
+        <div className="count">
+          {paragraph.comments.length === 0 ? "+" : paragraph.comments.length}
+        </div>
+      </button>
+
+      {openModal && (
+        <div
+          key={"modal-" + paragraph._id}
+          className={"comments-modal " + (openModal ? "open-modal" : "")}
+        >
+          <Respond
+            key={"paragraph-" + paragraph._id}
+            text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            type="chapter"
+            sender={userState.user._id}
+            location={state.story._id}
+            route={location.pathname}
+            dest={paragraph._id}
+            to={state.author.name}
+            addComment={addParagraphConv}
+          />
+          <div className="column-reverse">
+            {paragraph.comments?.map((comment) => {
+              if (!comment) {
+                return null;
+              }
+              return (
+                <div key={"paragraph-" + comment._id}>
+                  <Conversation
+                    id={comment._id}
+                    conv={comment}
+                    addConvComment={addConvComment}
+                    updatedParagraph={paragraph._id}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ParagraphComments({ comments, paragraph_id, openModal }) {
+  const { userState } = useContext(UserContext);
 }
 
 function ChapterHeader() {

@@ -181,12 +181,11 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const saveChapter = async (chapter, story_id, chapter_id) => {
+  const saveChapter = async (chapter, divArray, story_id, chapter_id) => {
     try {
-      const { title, body } = chapter;
       await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
-        title: title,
-        content: body,
+        chapter,
+        divArray,
       });
       dispatch({ type: EDIT_STORY_SUCCESS, payload: { chapter } });
     } catch (error) {

@@ -5,6 +5,7 @@ import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 import {
   ADD_CHAPTER_CONV_SUCCESS,
   ADD_CONV_COMMENT_SUCCESS,
+  ADD_PARAGRAPH_CONV_SUCCESS,
   BEGIN,
   ERROR,
   GET_CHAPTER_SUCCESS,
@@ -25,6 +26,7 @@ const initialState = {
   votes: {},
   myVote: {},
   chapterConvs: [],
+  paragraphConv: [],
 };
 
 export const StoryContext = React.createContext();
@@ -96,6 +98,25 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const addParagraphConv = async (paragraph_id, comment_content) => {
+    try {
+      const { data } = await authFetch.post(
+        `/stories/chapter/comments/${paragraph_id}`,
+        {
+          comment_content,
+        }
+      );
+      const { updatedParagraph, newConvs } = data;
+      dispatch({
+        type: ADD_PARAGRAPH_CONV_SUCCESS,
+        payload: { updatedParagraph, newConvs },
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   //you need to call dispatch before making backend request to change UI faster
   const voteChapter = async (chapter_id, vote_value) => {
     alertDispatch({ type: BEGIN });
@@ -137,13 +158,27 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const addConvComment = async (conv_id, comment_content) => {
+  const addConvComment = async (conv_id, comment_content, updatedParagraph) => {
     try {
       const { data } = await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
       });
       const { newConv } = data;
-      dispatch({ type: ADD_CONV_COMMENT_SUCCESS, payload: { newConv } });
+      if (!updatedParagraph) {
+        dispatch({
+          type: ADD_CONV_COMMENT_SUCCESS,
+          payload: { newConv, type: "chapter" },
+        });
+      } else {
+        dispatch({
+          type: ADD_CONV_COMMENT_SUCCESS,
+          payload: {
+            newConv,
+            type: "paragraph",
+            updatedParagraph,
+          },
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -159,6 +194,7 @@ export const StoryProvider = ({ children }) => {
         getStory,
         getChapter,
         addChapterConv,
+        addParagraphConv,
         voteChapter,
         unvoteChapter,
         addConvComment,
