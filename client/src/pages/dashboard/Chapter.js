@@ -122,6 +122,25 @@ function Paragraph({ paragraph, index }) {
   const location = useLocation();
   const { state, addConvComment, addParagraphConv } = useContext(StoryContext);
 
+  const modalRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  const listener = (e) => {
+    if (
+      e.target !== buttonRef.current &&
+      !modalRef.current?.contains(e.target)
+    ) {
+      setOpenModal(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", listener);
+    return () => {
+      window.removeEventListener("click", listener);
+    };
+  }, []);
+
   return (
     <div
       className="paragraph"
@@ -135,6 +154,7 @@ function Paragraph({ paragraph, index }) {
         }}
       ></div>
       <button
+        ref={buttonRef}
         className={
           "comment-btn " +
           (paragraph.comments.length > 0
@@ -155,6 +175,7 @@ function Paragraph({ paragraph, index }) {
 
       {openModal && (
         <div
+          ref={modalRef}
           key={"modal-" + paragraph._id}
           className={"comments-modal " + (openModal ? "open-modal" : "")}
         >

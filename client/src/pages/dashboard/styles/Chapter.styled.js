@@ -116,6 +116,7 @@ const StyledChapter = styled.div`
 
   .chapter {
     width: 600px;
+    word-wrap: break-word;
     .metadata {
       display: flex;
       justify-content: center;
@@ -150,7 +151,7 @@ const StyledChapter = styled.div`
       .comment-btn {
         display: none;
         position: absolute;
-        bottom: 3px;
+        bottom: 2px;
         right: 0;
         border: none;
         font-size: 23px;
