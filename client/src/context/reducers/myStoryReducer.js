@@ -7,6 +7,7 @@ import {
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
   GET_MY_STORY_SUCCESS,
+  SEND_GPT_PROMPT,
   SET_EDIT_STORY,
 } from "../actions";
 
@@ -60,6 +61,13 @@ const myStoryReducer = (state, action) => {
     return {
       ...state,
       chapter: action.payload.chapter,
+    };
+  }
+
+  if (action.type === SEND_GPT_PROMPT) {
+    return {
+      ...state,
+      gptResponse: action.payload.GPTresponse,
     };
   }
 };

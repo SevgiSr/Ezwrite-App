@@ -22,9 +22,10 @@ const StyledConversation = styled.article`
           font-weight: 600;
           font-size: 16px;
           line-height: 16px;
+          color: #000;
         }
         p {
-          font-size: 14px;
+          font-size: 13px;
           line-height: 18px;
         }
       }
@@ -33,6 +34,8 @@ const StyledConversation = styled.article`
   main {
     overflow-wrap: break-word;
     margin-bottom: 1rem;
+    font-size: 16px;
+    line-height: 21px;
   }
 `;
 

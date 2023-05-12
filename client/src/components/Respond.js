@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
+import { RiSendPlaneFill } from "react-icons/ri";
 
 function Respond({
   text,
@@ -95,6 +96,7 @@ function Respond({
           onChange={handleChange}
           cols="30"
           rows="1"
+          placeholder="Type your comment..."
         ></textarea>
         <button
           className={`${show.share} orange-button`}

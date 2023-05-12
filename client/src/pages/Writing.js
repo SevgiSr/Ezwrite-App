@@ -16,7 +16,8 @@ function Writing() {
   //just use it for saving and first loading times
   const [chapterBody, setChapterBody] = useState("Type the text...");
   const [chapterTitle, setChapterTitle] = useState("");
-  const { storyState, editChapter, saveChapter } = useContext(MyStoryContext);
+  const { storyState, editChapter, saveChapter, sendGptPrompt } =
+    useContext(MyStoryContext);
   const { story_id, chapter_id } = useParams();
 
   const contentEditableRef = useRef(null);
@@ -36,6 +37,16 @@ function Writing() {
     setChapterTitle(chapter.title);
     setChapterBody(chapter.content);
   }, [storyState.chapter]);
+
+  useEffect(() => {
+    const updateForm = async () => {
+      const form = document.querySelector(".ai-form-container");
+      const prevNode = form.parentNode.nextElementSibling;
+      prevNode.parentNode.removeChild(prevNode);
+      form.parentNode.innerHTML = storyState.gptResponse;
+    };
+    updateForm();
+  }, [storyState.gptResponse]);
 
   //saves in the backend and also cuz reducer's chapter changed useeffect gonna set it on frontend
   const handleSubmit = (e) => {
@@ -83,24 +94,18 @@ function Writing() {
     // Get the parent node of the icon
     const icon = document.querySelector(".icon");
     const parentNode = icon.parentNode;
+    console.log(parentNode);
 
     // Create the wrapper div element
     const wrapper = document.createElement("div");
 
     // Render the AIForm component into the wrapper div element
-    ReactDOM.render(<AIForm />, wrapper);
+    createRoot(wrapper).render(
+      <AIForm storyState={storyState} sendGptPrompt={sendGptPrompt} />
+    );
 
     // Insert the wrapper element before the parentNode
     parentNode.insertAdjacentElement("beforebegin", wrapper);
-
-    const input = wrapper.querySelector("input");
-    input.value = parentNode.textContent.trim();
-
-    // Hide the parentNode
-    parentNode.style.display = "none";
-
-    // Set the focus on the input element
-    wrapper.querySelector("input").focus();
   };
 
   const listener = (e) => {
@@ -153,7 +158,7 @@ function Writing() {
     const formContainer = document.querySelector(".ai-form-container");
     const icon = document.querySelector(".icon");
 
-    if (icon && icon.includes(e.target)) {
+    if (icon && icon.contains(e.target)) {
       return;
     }
 
@@ -221,15 +226,34 @@ function Writing() {
   );
 }
 
-function AIForm() {
+function AIForm({ sendGptPrompt, storyState }) {
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("");
+
+  useEffect(() => {
+    const prevNode =
+      document.querySelector(".ai-form-container").parentNode
+        .nextElementSibling;
+
+    setPrompt(prevNode.textContent.trim());
+
+    // Hide the parentNode
+    prevNode.style.display = "none";
+
+    const input = document.querySelector("#prompt-input");
+    input.focus();
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("submitted!");
-    const prevNode = e.target.parentNode.nextElementSibling;
-    prevNode.parentNode.removeChild(prevNode);
-    e.target.parentNode.innerHTML = "Hello World";
+    sendGptPrompt(prompt);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
   };
 
   return (
@@ -237,9 +261,10 @@ function AIForm() {
       <div className="flex-row">
         <input
           type="text"
+          id="prompt-input"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          onKeyDown={(e) => e.preventDefault()}
+          onKeyDown={handleKeyDown}
           className="edit-input"
         />
         <button type="submit">

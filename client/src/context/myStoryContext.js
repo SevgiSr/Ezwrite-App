@@ -13,6 +13,7 @@ import {
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
   GET_MY_STORY_SUCCESS,
+  SEND_GPT_PROMPT,
   SET_EDIT_STORY,
   SUCCESS,
 } from "./actions";
@@ -31,6 +32,8 @@ const initialStoryState = {
 
   //chapter
   chapter: {},
+
+  gptResponse: "",
 };
 
 export const MyStoryContext = React.createContext();
@@ -205,6 +208,19 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const sendGptPrompt = async (prompt) => {
+    try {
+      const { data } = await authFetch.post(`/myStories/gpt`, {
+        prompt,
+      });
+      const { GPTresponse } = data;
+      dispatch({ type: SEND_GPT_PROMPT, payload: { GPTresponse } });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   return (
     <MyStoryContext.Provider
       value={{
@@ -221,6 +237,7 @@ export const MyStoryProvider = ({ children }) => {
         saveChapter,
         addChapter,
         updateStory,
+        sendGptPrompt,
       }}
     >
       {children}

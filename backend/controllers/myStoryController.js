@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { countChapterVotes } from "./storyController.js";
+import { Configuration, OpenAIApi } from "openai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -168,6 +169,33 @@ const createChapter = async (req, res) => {
   res.status(StatusCodes.OK).json({ newStory: story, chapter });
 };
 
+const sendGptPrompt = async (req, res) => {
+  const user = await User.findById(req.user.userId).select("GPTKey");
+
+  const configuration = new Configuration({
+    apiKey: user.GPTKey,
+  });
+
+  const openai = new OpenAIApi(configuration);
+
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "assistant",
+        content:
+          "You'll take user's input and write a descriptive artistic paragraph of what user described in the input. Paragraph should be longer and more valuable in terms of literature. You can add details that user did not express.",
+      },
+      { role: "user", content: req.body.prompt },
+    ],
+  });
+
+  const GPTresponse = completion.data.choices[0].message.content;
+  console.log(GPTresponse);
+
+  res.status(StatusCodes.OK).json({ GPTresponse });
+};
+
 export {
   getMyStories,
   createStory,
@@ -178,4 +206,5 @@ export {
   createChapter,
   getMyStory,
   updateStory,
+  sendGptPrompt,
 };

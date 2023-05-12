@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledRespond = styled.div`
+const StyledRespondParent = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -25,8 +25,9 @@ const StyledRespond = styled.div`
       width: 84%;
       height: 30px;
       border: none;
-      padding: 0.5rem;
+      padding: 0.5rem 0.8rem;
       -webkit-transition: height 0.5s;
+      resize: none;
     }
 
     button {
@@ -37,6 +38,7 @@ const StyledRespond = styled.div`
       right: 10px;
       border: none;
       padding: 10px 10px;
+      border-radius: 10px;
     }
     .share-show {
       display: block;
@@ -48,6 +50,16 @@ const StyledRespond = styled.div`
     }
     .comment-show ~ button {
       display: block;
+    }
+  }
+`;
+
+const StyledRespond = styled(StyledRespondParent)`
+  box-shadow: none;
+  form {
+    textarea {
+      border: 3px solid #6f6f6f;
+      border-radius: 30px;
     }
   }
 `;

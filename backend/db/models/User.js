@@ -17,9 +17,10 @@ const UserSchema = new mongoose.Schema(
       minlength: 3,
       select: false,
     },
-    AIKey: {
+    GPTKey: {
       type: String,
       select: false,
+      default: "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",
     },
     profilePicture: {
       type: Object,
