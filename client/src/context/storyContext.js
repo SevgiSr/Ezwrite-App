@@ -8,6 +8,7 @@ import {
   ADD_PARAGRAPH_CONV_SUCCESS,
   BEGIN,
   ERROR,
+  GET_ALL_STORIES_SUCCESS,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
@@ -54,6 +55,16 @@ export const StoryProvider = ({ children }) => {
       const { data } = await authFetch.get(`/stories/search/${query}`);
       const { stories, users } = data;
       dispatch({ type: GET_STORIES_SUCCESS, payload: { stories, users } });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAll = async () => {
+    try {
+      const { data } = await authFetch.get(`/stories/search/all`);
+      const { stories } = data;
+      dispatch({ type: GET_ALL_STORIES_SUCCESS, payload: { stories } });
     } catch (error) {
       console.log(error);
     }
@@ -199,6 +210,7 @@ export const StoryProvider = ({ children }) => {
         unvoteChapter,
         addConvComment,
         incrementViewCount,
+        getAll,
       }}
     >
       {children}

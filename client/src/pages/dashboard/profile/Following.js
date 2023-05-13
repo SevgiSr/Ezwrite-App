@@ -7,7 +7,7 @@ function Following() {
   return (
     <div id="following" style={{ padding: "20px" }}>
       {profileState.profile?.following?.map((f) => {
-        return <UserCard user={f} />;
+        return <UserCard key={f._id} user={f} />;
       })}
     </div>
   );

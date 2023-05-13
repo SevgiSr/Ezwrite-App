@@ -48,6 +48,15 @@ const StyledWriting = styled.div`
     border-radius: 9px;
     padding: 5px 10px;
 
+    .options {
+      display: flex;
+      justify-content: space-between;
+      > * {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
     label {
       color: white;
       margin: 0;

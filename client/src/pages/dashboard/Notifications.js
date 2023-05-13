@@ -34,7 +34,7 @@ function Notifications() {
               >
                 <div className="profilePicture">
                   <ProfilePicture
-                    filename={nt.sender._id}
+                    filename={nt.sender?._id}
                     width="35px"
                     height="35px"
                   />
@@ -42,7 +42,7 @@ function Notifications() {
                 <div>
                   <header
                     dangerouslySetInnerHTML={{
-                      __html: `<div>${he.decode(nt.text)}</div>`,
+                      __html: `<div>${nt.text ? he.decode(nt.text) : ""}</div>`,
                     }}
                   ></header>
                   <div className="row">

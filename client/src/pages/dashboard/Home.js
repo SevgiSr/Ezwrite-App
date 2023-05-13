@@ -8,10 +8,10 @@ import { useRef } from "react";
 import { useState } from "react";
 
 function Home() {
-  const { state, getByQuery } = useContext(StoryContext);
+  const { state, getAll } = useContext(StoryContext);
 
   useEffect(() => {
-    getByQuery("l");
+    getAll();
   }, []);
 
   return (

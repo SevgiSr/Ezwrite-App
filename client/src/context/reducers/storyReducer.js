@@ -2,6 +2,7 @@ import {
   ADD_CHAPTER_CONV_SUCCESS,
   ADD_CONV_COMMENT_SUCCESS,
   ADD_PARAGRAPH_CONV_SUCCESS,
+  GET_ALL_STORIES_SUCCESS,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
   GET_STORY_SUCCESS,
@@ -15,6 +16,13 @@ const storyReducer = (state, action) => {
       ...state,
       stories: action.payload.stories,
       users: action.payload.users,
+    };
+  }
+
+  if (action.type === GET_ALL_STORIES_SUCCESS) {
+    return {
+      ...state,
+      stories: action.payload.stories,
     };
   }
   if (action.type === GET_STORY_SUCCESS) {

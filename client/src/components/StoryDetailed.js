@@ -42,15 +42,15 @@ const StoryDetailed = ({ story }) => {
             </div>
           </div>
           <div className="tags">
-            {story.tags.slice(0, 5).map((tag) => {
+            {story.tags.slice(0, 4).map((tag) => {
               return <span className="tag">{tag}</span>;
             })}
-            {story.tags.length > 5 && (
+            {story.tags.length > 4 && (
               <span style={{ fontSize: "30px", lineHeight: "0" }}>...</span>
             )}
           </div>
           <div className="description">
-            {story.description.slice(0, 361)}
+            {story.description.slice(0, 170)}
             {story.description.length > 361 && "..."}
           </div>
         </div>

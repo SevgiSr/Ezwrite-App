@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 const StyledStoryDetailed = styled.div`
   color: #222;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 4px;
+  width: 420px;
   .link {
     display: flex;
     flex-direction: row;
@@ -18,7 +19,6 @@ const StyledStoryDetailed = styled.div`
 
   .content {
     margin-left: 10px;
-    word-wrap: break-word;
 
     .title {
       font-weight: 700;
@@ -81,7 +81,7 @@ const StyledStoryDetailed = styled.div`
 
     .description {
       overflow: hidden;
-      word-break: break-word;
+      word-wrap: break-word;
       margin-top: 7px;
       color: #222;
       font-size: 12px;

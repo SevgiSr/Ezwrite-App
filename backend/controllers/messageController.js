@@ -59,7 +59,7 @@ const openNotifications = async (req, res) => {
     path: "notifications",
     populate: "sender location",
   });
-  console.log(user.notifications);
+
   res.status(StatusCodes.OK).json({ notifications: user.notifications });
 };
 

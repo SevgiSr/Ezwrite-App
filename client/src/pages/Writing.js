@@ -227,15 +227,16 @@ function Writing() {
 }
 
 function AIForm({ sendGptPrompt, storyState }) {
-  const [prompt, setPrompt] = useState("");
-  const [style, setStyle] = useState("");
+  const [content, setContent] = useState("");
+  const [style, setStyle] = useState("funny");
+  const [length, setLength] = useState("");
 
   useEffect(() => {
     const prevNode =
       document.querySelector(".ai-form-container").parentNode
         .nextElementSibling;
 
-    setPrompt(prevNode.textContent.trim());
+    setContent(prevNode.textContent.trim());
 
     // Hide the parentNode
     prevNode.style.display = "none";
@@ -247,6 +248,12 @@ function AIForm({ sendGptPrompt, storyState }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("submitted!");
+    console.log(style);
+    const prompt = {
+      content,
+      style,
+      length,
+    };
     sendGptPrompt(prompt);
   };
 
@@ -262,8 +269,8 @@ function AIForm({ sendGptPrompt, storyState }) {
         <input
           type="text"
           id="prompt-input"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           className="edit-input"
         />
@@ -271,15 +278,32 @@ function AIForm({ sendGptPrompt, storyState }) {
           <FaRegPaperPlane />
         </button>
       </div>
-      <div className="style">
-        <label htmlFor="language">Writing Style</label>
-        <div id="language" style={{ width: "200px" }}>
-          <select onChange={(e) => setStyle(e.target.value)} name="style">
-            <option value="comedic">Comedic</option>
-            <option value="descriptive">Descriptive</option>
-            <option value="emotional">Emotional</option>
-            <option value="persuasive">Persuasive</option>
-          </select>
+      <div className="options">
+        <div className="length">
+          <label htmlFor="length">Amount of sentences</label>
+          <input
+            value={length}
+            onChange={(e) => setLength(e.target.value)}
+            name="length"
+            id="length"
+            type="text"
+            placeholder="type a number"
+          />
+        </div>
+        <div className="style">
+          <label htmlFor="language">Writing Style</label>
+          <div id="language" style={{ width: "200px" }}>
+            <select
+              value={style}
+              onChange={(e) => setStyle(e.target.value)}
+              name="style"
+            >
+              <option value="funny">Funny</option>
+              <option value="descriptive">Descriptive</option>
+              <option value="emotional">Emotional</option>
+              <option value="persuasive">Persuasive</option>
+            </select>
+          </div>
         </div>
       </div>
     </form>

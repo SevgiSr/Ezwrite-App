@@ -40,6 +40,11 @@ const getByQuery = async (req, res) => {
   res.status(StatusCodes.OK).json({ stories, users });
 };
 
+const getAll = async (req, res) => {
+  const stories = await Story.find();
+  res.status(StatusCodes.OK).json({ stories });
+};
+
 const getByLength = async (req, res) => {
   const { length } = req.params;
   const stories = await Story.find({ chapters: { $size: length } }).populate(
@@ -265,4 +270,5 @@ export {
   voteChapter,
   unvoteChapter,
   incrementViewCount,
+  getAll,
 };

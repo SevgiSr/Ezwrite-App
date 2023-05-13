@@ -12,9 +12,11 @@ import {
   unvoteChapter,
   incrementViewCount,
   addParagraphConv,
+  getAll,
 } from "../controllers/storyController.js";
 
 router.route("/:category").get(getByCategory);
+router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
