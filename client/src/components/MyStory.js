@@ -7,8 +7,10 @@ import { FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
 import { FaTrashAlt } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const MyStory = ({ story }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { setEditStory, deleteStory } = useContext(MyStoryContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,10 +25,24 @@ const MyStory = ({ story }) => {
     setEditStory(story._id);
   };
 
-  const handleDeleteClick = () => {
-    deleteStory(story._id);
+  const mutation = useMutation((data) => deleteStory(data.story_id), {
+    onSuccess: (data, { story_id }) => {
+      console.log(story_id);
+      const myStories = queryClient.getQueryData(["myStories"]);
+
+      const updatedStories = myStories.filter(
+        (story) => story._id !== story_id
+      );
+
+      queryClient.setQueryData(["myStories"], updatedStories);
+
+      queryClient.invalidateQueries(["myStories"]);
+    },
+  });
+
+  const handleDeleteClick = async () => {
     setIsModalOpen(false);
-    window.location.reload();
+    await mutation.mutateAsync({ story_id: story._id });
   };
 
   return (

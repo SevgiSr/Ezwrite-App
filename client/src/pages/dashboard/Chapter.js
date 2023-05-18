@@ -13,14 +13,19 @@ import { FaComment, FaCommentAlt } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Chapter() {
+  const queryClient = useQueryClient();
   const {
     state,
     incrementViewCount,
     getChapter,
     addChapterConv,
     addConvComment,
+    getProgress,
+    setProgress,
+    setChapter,
   } = useContext(StoryContext);
   const { story_id, chapter_id } = useParams();
 
@@ -39,10 +44,51 @@ function Chapter() {
     return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
   }, []);
 
-  //u dont need getChapterConv as it seems!
+  const {
+    data: { chapters, story } = {},
+    isLoading,
+    isFetching,
+    status,
+    refetch,
+  } = useQuery({
+    queryKey: ["progress", story_id],
+    queryFn: () => getProgress(story_id),
+  });
+
+  const mutation = useMutation(
+    ({ story_id, chapter_id }) => setProgress(story_id, chapter_id),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        queryClient.setQueryData(["progress", story_id], data);
+        refetch();
+      },
+    }
+  );
+
+  //if location changes, before doing refetch checks the cache and retrieves chapter instantly
+  //if fetching happens(you mount page for the first time, refresh, mutation) it waits for fetching to end for a few seconds and updates
+  // order of dependency array does not matter
+  //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
   useEffect(() => {
-    getChapter(story_id, chapter_id);
-  }, [location]);
+    console.log("re-render");
+    if (!isFetching && status === "success") {
+      const filteredChapter = chapters.find(
+        (chapter) => chapter._id === chapter_id
+      );
+      if (filteredChapter) {
+        console.log("cached");
+        setChapter(filteredChapter, story);
+      } else {
+        console.log("not cached");
+        mutation.mutate({ story_id, chapter_id });
+      }
+    }
+  }, [location, isFetching]);
+
+  if (isLoading) {
+    return <h1>loading...</h1>;
+  }
 
   return (
     <StyledChapter>
@@ -74,7 +120,7 @@ function Chapter() {
             <div className="icon">
               <FaComment />
             </div>
-            <div className="count">{state.chapterConvs.length}</div>
+            <div className="count">{state.chapter.comments?.length}</div>
           </div>
         </div>
         {state.chapter.paragraphs?.map((paragraph, index) => {
@@ -98,11 +144,11 @@ function Chapter() {
           location={state.story._id}
           route={location.pathname}
           dest={chapter_id}
-          to={state.author.name}
+          to={state.story.author?.name}
           addComment={addChapterConv}
         />
         <div className="column-reverse">
-          {state.chapterConvs?.map((comment) => {
+          {state.chapter.comments?.map((comment) => {
             return (
               <div key={comment._id}>
                 <Conversation conv={comment} addConvComment={addConvComment} />
@@ -188,7 +234,7 @@ function Paragraph({ paragraph, index }) {
             location={state.story._id}
             route={location.pathname}
             dest={paragraph._id}
-            to={state.author.name}
+            to={state.story.author.name}
             addComment={addParagraphConv}
           />
           <div className="column-reverse">

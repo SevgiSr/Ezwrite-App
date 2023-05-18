@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { ProfileContext } from "../../../context/profileContext";
 import { Conversation } from "../../../components";
 import StyledConversations from "./styles/Conversations.styled";
 import Respond from "../../../components/Respond";
 import { UserContext } from "../../../context/userContext";
+import { useQuery } from "@tanstack/react-query";
 
 function Conversations() {
   const { username } = useParams();
@@ -12,9 +13,17 @@ function Conversations() {
     useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const location = useLocation();
+  const { convs } = useOutletContext();
+
+  /*
+  -loads at first time you click on conversations
+  -second time you switch away and get back to it it doesn't load (like caching)
+  -when someone else posts conv it doesn't update until you refresh
+
   useEffect(() => {
     getProfileConv(username);
-  }, []);
+  }, []); 
+  */
 
   return (
     <StyledConversations>
@@ -31,7 +40,7 @@ function Conversations() {
           addComment={addProfileConv}
         />
         <div className="column-reverse">
-          {profileState?.convs?.map((conv) => {
+          {convs?.map((conv) => {
             return (
               <div key={conv._id} id={conv._id} className="conv">
                 <Conversation conv={conv} addConvComment={addConvComment} />

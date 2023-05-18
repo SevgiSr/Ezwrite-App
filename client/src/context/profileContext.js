@@ -69,16 +69,8 @@ export const ProfileProvider = ({ children }) => {
   const getProfile = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}`);
-      const { user, isMainUser, isFollowing } = data;
-      dispatch({
-        type: GET_USER_SUCCESS,
-        payload: {
-          profile: user,
-          stories: user.stories,
-          isMainUser: isMainUser,
-          isFollowing: isFollowing,
-        },
-      });
+      const { profile, isMainUser, isFollowing } = data;
+      return { profile, isMainUser, isFollowing };
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -186,7 +178,7 @@ export const ProfileProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get(`/user/${username}/conversations`);
       const { convs } = data;
-      dispatch({ type: GET_PROFILE_CONV_SUCCESS, payload: { convs } });
+      return convs;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -195,14 +187,9 @@ export const ProfileProvider = ({ children }) => {
 
   const addProfileConv = async (profile_name, comment_content) => {
     try {
-      const { data } = await authFetch.post(
-        `/user/${profile_name}/conversations`,
-        {
-          comment_content,
-        }
-      );
-      const { newConv } = data;
-      dispatch({ type: ADD_PROFILE_CONV_SUCCESS, payload: { newConv } });
+      await authFetch.post(`/user/${profile_name}/conversations`, {
+        comment_content,
+      });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -211,11 +198,9 @@ export const ProfileProvider = ({ children }) => {
 
   const addConvComment = async (conv_id, comment_content) => {
     try {
-      const { data } = await authFetch.post(`/conversations/${conv_id}`, {
+      await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
       });
-      const { newConv } = data;
-      dispatch({ type: ADD_CONV_COMMENT_SUCCESS, payload: { newConv } });
     } catch (error) {
       console.log(error);
     }

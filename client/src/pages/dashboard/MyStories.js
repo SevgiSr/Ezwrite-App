@@ -9,19 +9,28 @@ import OrangeLinks from "../../components/OrangeLinks";
 import { AiOutlineClose } from "react-icons/ai";
 import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
+import { useQuery } from "@tanstack/react-query";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
   const { storyState, getMyStories } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
 
-  useEffect(() => {
-    getMyStories();
-  }, []);
+  const { data: myStories = [], isLoading } = useQuery(
+    ["myStories"],
+    getMyStories,
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <StyledMyStories>
-      {storyState.myStories.length === 0 ? (
+      {myStories.length === 0 ? (
         <div className="container">
           <h2>My Stories</h2>
           <div className="card no-stories">
@@ -53,7 +62,7 @@ function MyStories({ show }) {
 
           <div className="stories-container">
             <OrangeLinks links={[{ to: "", label: "Tüm Hikayelerim" }]} />
-            {storyState.myStories.map((story) => {
+            {myStories.map((story) => {
               return <MyStory key={story._id} story={story} show={show} />;
             })}
           </div>

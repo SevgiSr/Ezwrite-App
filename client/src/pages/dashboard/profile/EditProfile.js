@@ -1,14 +1,25 @@
 import { useContext, useState } from "react";
 import { ProfileContext } from "../../../context/profileContext";
 import StyledEditProfile from "./styles/EditProfile.styled";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function EditProfile({ handleChange, state }) {
   const { editProfileInfo, closeEditMode } = useContext(ProfileContext);
-  const handleSubmit = (e) => {
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(({ state }) => editProfileInfo(state), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["profile"]);
+    },
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     closeEditMode();
-    editProfileInfo(state);
+    await mutation.mutateAsync({ state });
   };
+
   return (
     <StyledEditProfile>
       <form id="edit-profile" onSubmit={handleSubmit}>

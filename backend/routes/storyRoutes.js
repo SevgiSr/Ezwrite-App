@@ -6,13 +6,14 @@ import {
   getStory,
   getByDate,
   getByLength,
-  getChapter,
   addChapterConv,
   voteChapter,
   unvoteChapter,
   incrementViewCount,
   addParagraphConv,
   getAll,
+  setProgress,
+  getProgress,
 } from "../controllers/storyController.js";
 
 router.route("/:category").get(getByCategory);
@@ -21,7 +22,10 @@ router.route("/search/:query").get(getByQuery);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
 router.route("/story/:id").get(getStory);
-router.route("/story/:story_id/:chapter_id").get(getChapter);
+router.route("/story/:story_id/:chapter_id");
+
+router.route("/progress/:story_id").get(getProgress);
+router.route("/progress/:story_id/:chapter_id").post(setProgress);
 
 router
   .route("/chapter/:chapter_id")

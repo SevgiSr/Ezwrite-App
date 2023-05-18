@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# Replaced usage of useEffect and useContext for server state with React Query
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- Use React Query when requesting data from the server and updating UI with it. Because it implements caching, refetching etc for you.
 
-## Available Scripts
+- Use react context and useEffect when dealing with client state - like edit mode, opening modal, changing theme. Those are not requested from the server.
 
-In the project directory, you can run:
+- State management libraries like Redux or even useContext itself are not good for working with asynchronous state (server state)
 
-### `npm start`
+Client state = synchronous
+Server state = asynchronous (fetching APIs)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# The correct approach with backend controllers - Don't Break Down, Collect!
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- We had profile page of a user. The page had conversations,following,activity tabs.
 
-### `npm test`
+- Each time we clicked the tabs it made API request to get values. Tabs were blank until server responded. It looked irresponsive.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Instead of having separate controllers for getting activity or followings you should have one controller to get ALL of them at once. Because they're tied to profile object anyways. make API request when profile page first mounts.
 
-### `npm run build`
+- It's a very bad idea to make components do API requests when they're a small part of the big page.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# RQ Notes
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Controller has to return json
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+If you want you useMutation to work, backend function has to respond with json
 
-### `npm run eject`
+# General notes
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Learned population method for mongoose
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+const chapter = await Chapter.findById(chapter_id)
+.populate({
+path: "comments",
+populate: [
+{ path: "author", model: "User" },
+{ path: "subcomments", populate: { path: "author", model: "User" } },
+],
+})
+.populate({
+path: "paragraphs",
+populate: {
+path: "comments",
+populate: [
+{ path: "author", model: "User" },
+{ path: "subcomments", populate: { path: "author", model: "User" } },
+] ,
+},
+});

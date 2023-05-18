@@ -1,30 +1,29 @@
-import { useContext } from "react";
 import Story from "../../../components/Story";
-import { ProfileContext } from "../../../context/profileContext";
 import StyledAbout from "./styles/About.styled";
 import { HiLocationMarker } from "react-icons/hi";
 import { MdSettings } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 function About() {
-  const { profileState } = useContext(ProfileContext);
+  const { profileData } = useOutletContext();
+
   return (
     <StyledAbout>
       <section className="info">
-        <div className="pronouns">{profileState.profile.pronouns}</div>
-        <div className="about">{profileState.profile.about}</div>
+        <div className="pronouns">{profileData.profile.pronouns}</div>
+        <div className="about">{profileData.profile.about}</div>
         <div className="location">
           <span className="icon">
             <HiLocationMarker />
           </span>
-          <span>{profileState.profile.location}</span>
+          <span>{profileData.profile.location}</span>
         </div>
-        <div>{profileState.profile.website}</div>
+        <div>{profileData.profile.website}</div>
       </section>
       <section className="stories">
         <header className="stories-header">
           <h3>
-            <span>Stories by {profileState.profile.profileName}</span>
+            <span>Stories by {profileData.profile.profileName}</span>
             <span className="edit-icon">
               <Link to="/myStories">
                 <MdSettings />
@@ -37,7 +36,7 @@ function About() {
             <span>3 Drafts (only visible to you)</span>
           </div>
         </header>
-        {profileState.stories.map((story) => {
+        {profileData.profile.stories?.map((story) => {
           return <Story key={story._id} story={story} />;
         })}
       </section>

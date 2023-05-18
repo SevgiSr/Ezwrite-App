@@ -7,7 +7,6 @@ import {
   unfollowProfile,
   getProfileConv,
   editProfile,
-  getProfileActivity,
   getProfileSettings,
 } from "../controllers/profileController.js";
 
@@ -19,7 +18,5 @@ router
   .route("/:username/conversations")
   .get(getProfileConv)
   .post(addProfileConv);
-
-router.route("/:username/activity").get(getProfileActivity);
 
 export default router;

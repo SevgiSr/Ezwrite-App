@@ -7,6 +7,40 @@ import Vote from "../db/models/Vote.js";
 import Progress from "../db/models/Progress.js";
 import Paragraph from "../db/models/Paragraph.js";
 
+const populateStory = {
+  path: "story",
+  populate: [{ path: "author" }, { path: "chapters", select: "title" }],
+};
+
+const populateChapters = {
+  path: "chapters",
+  populate: [
+    {
+      path: "comments",
+      populate: [
+        { path: "author", model: "User" },
+        {
+          path: "subcomments",
+          populate: { path: "author", model: "User" },
+        },
+      ],
+    },
+    {
+      path: "paragraphs",
+      populate: {
+        path: "comments",
+        populate: [
+          { path: "author", model: "User" },
+          {
+            path: "subcomments",
+            populate: { path: "author", model: "User" },
+          },
+        ],
+      },
+    },
+  ],
+};
+
 export async function countChapterVotes(chapter_id) {
   const result = await Vote.aggregate([
     { $match: { chapter: chapter_id } }, // match votes for the specified chapter
@@ -85,9 +119,20 @@ const getByDate = async (req, res) => {
   res.status(StatusCodes.OK).json({ stories });
 };
 
+// when user waits more thn 5 seconds in a chapter update progress to have array of chapter_id's 5 chapter forward in that story
+// then you can populate those chapters field
+// getProgress would be cached meaning 5 chapters would be cached
+// otherwise you would have to find the story populate some of the chapters, send those chapters back cache them and do that 3564758 times
+
 const getStory = async (req, res) => {
   const { id } = req.params;
-  const story = await Story.findById(id).populate("author chapters");
+  const story = await Story.findById(id)
+    .populate("author chapters")
+    .populate({
+      path: "progress",
+      match: { user: req.user.userId },
+      populate: { path: "chapter" },
+    });
   story.chapters.map((c) => {
     const votes = countChapterVotes(c._id);
     c.votes = votes;
@@ -97,56 +142,94 @@ const getStory = async (req, res) => {
 };
 
 const getProgress = async (req, res) => {
-  const progress = await Progress.findOne({
+  console.log("getting progress");
+
+  let progress;
+
+  progress = await Progress.findOne({
     user: req.user.userId,
     story: req.params.story_id,
-  });
+  })
+    .populate(populateStory)
+    .populate(populateChapters);
 
-  res.status(StatusCodes.OK).json({ chapter_id: progress.chapter });
-};
-
-const getChapter = async (req, res) => {
-  const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id).populate("author chapters");
-  const chapter = await Chapter.findById(chapter_id)
-    .populate({
-      path: "comments",
-      populate: [
-        { path: "author", model: "User" },
-        { path: "subcomments", populate: { path: "author", model: "User" } },
-      ],
+  if (!progress) {
+    const story = await Story.findById(req.params.story_id);
+    const chapters = story.chapters.slice(0, 5);
+    progress = await Progress.create({
+      user: req.user.userId,
+      story: req.params.story_id,
+      chapters: chapters,
     })
-    .populate({
-      path: "paragraphs",
-      populate: {
-        path: "comments",
-        populate: [
-          { path: "author", model: "User" },
-          { path: "subcomments", populate: { path: "author", model: "User" } },
-        ],
-      },
-    });
-
-  const author = story.author;
-  const chapterConvs = chapter.comments;
-
-  const votes = await countChapterVotes(chapter._id);
-
-  const vote = await Vote.findOne({
-    user: req.user.userId,
-    chapter: chapter._id,
-  });
-
-  let myVote;
-  if (!vote) {
-    myVote = 0;
-  } else {
-    myVote = vote.value;
+      .populate(populateStory)
+      .populate(populateChapters);
   }
 
-  res
-    .status(StatusCodes.OK)
-    .json({ chapter, story, votes, myVote, author, chapterConvs });
+  try {
+    progress.chapters.map((chapter) => {
+      const vote = Vote.findOne({
+        user: req.user.userId,
+        chapter: chapter._id,
+      });
+
+      let myVote;
+      if (!vote) {
+        myVote = 0;
+      } else {
+        myVote = vote.value;
+      }
+
+      chapter.myVote = myVote;
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(StatusCodes.OK).json({ progress });
+};
+
+const setProgress = async (req, res) => {
+  console.log("setting progress");
+  const { story_id, chapter_id } = req.params;
+  const story = await Story.findById(story_id);
+
+  const chapterIndex = story.chapters.findIndex(
+    (chapter) => String(chapter) === chapter_id
+  );
+
+  const chapters = story.chapters.slice(chapterIndex, chapterIndex + 5);
+
+  const progress = await Progress.findOne({
+    user: req.user.userId,
+    story: story_id,
+  });
+
+  if (!progress) {
+    const progress = await Progress.create({
+      story: story_id,
+      chapters: chapters,
+      user: req.user.userId,
+    });
+
+    await User.findByIdAndUpdate(
+      req.user.userId,
+      { $push: { storiesProgress: progress._id } },
+      { upsert: true }
+    );
+
+    await Story.findByIdAndUpdate(
+      story_id,
+      { $push: { progress: progress._id } },
+      { upsert: true }
+    );
+  }
+
+  progress.chapters = chapters;
+
+  progress.save();
+  console.log(progress);
+
+  res.status(StatusCodes.OK).json({ progress });
 };
 
 const addChapterConv = async (req, res) => {
@@ -264,11 +347,12 @@ export {
   getStory,
   getByDate,
   getByLength,
-  getChapter,
   addChapterConv,
   addParagraphConv,
   voteChapter,
   unvoteChapter,
   incrementViewCount,
   getAll,
+  setProgress,
+  getProgress,
 };

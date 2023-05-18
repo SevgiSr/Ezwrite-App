@@ -8,11 +8,20 @@ import Comment from "./Comment";
 import { UserContext } from "../context/userContext";
 import { useLocation } from "react-router-dom";
 import getDate from "../utils/getDate";
+import { useQuery } from "@tanstack/react-query";
 
 const Conversation = ({ conv, addConvComment, updatedParagraph }) => {
   const { userState } = useContext(UserContext);
 
   const location = useLocation();
+
+  /*
+  I want convs to refetch when I add a comment under conv. 
+  but I don't use a queryKey here and I send a different dest value.
+  that's why addComment function in Respond will be invalidating all queries starting with "conversations"
+  meaning the whole convs array will be refetched even when I'm using Respond from here.
+
+  */
 
   if (!conv) return null;
   if (!conv.content) return null;

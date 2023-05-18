@@ -80,7 +80,7 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const getChapter = async (story_id, chapter_id) => {
+  /*   const getChapter = async (story_id, chapter_id) => {
     try {
       const { data } = await authFetch.get(
         `/stories/story/${story_id}/${chapter_id}`
@@ -91,6 +91,32 @@ export const StoryProvider = ({ children }) => {
         type: GET_CHAPTER_SUCCESS,
         payload: { chapter, story, votes, myVote, author, chapterConvs },
       });
+    } catch (error) {
+      console.log(error);
+    }
+  }; */
+
+  const setChapter = (chapter, story) => {
+    dispatch({ type: GET_CHAPTER_SUCCESS, payload: { chapter, story } });
+  };
+
+  const getProgress = async (story_id) => {
+    try {
+      const { data } = await authFetch.get(`/stories/progress/${story_id}`);
+      const { progress } = data;
+      return progress;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const setProgress = async (story_id, chapter_id) => {
+    try {
+      const { data } = await authFetch.post(
+        `/stories/progress/${story_id}/${chapter_id}`
+      );
+      const { progress } = data;
+      return progress;
     } catch (error) {
       console.log(error);
     }
@@ -203,7 +229,7 @@ export const StoryProvider = ({ children }) => {
         getByCategory,
         getByQuery,
         getStory,
-        getChapter,
+        setChapter,
         addChapterConv,
         addParagraphConv,
         voteChapter,
@@ -211,6 +237,8 @@ export const StoryProvider = ({ children }) => {
         addConvComment,
         incrementViewCount,
         getAll,
+        getProgress,
+        setProgress,
       }}
     >
       {children}

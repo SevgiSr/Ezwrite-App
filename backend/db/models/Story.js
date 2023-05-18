@@ -34,6 +34,12 @@ const StorySchema = new mongoose.Schema(
       ref: "User",
       required: [true, "please provide user"],
     },
+    progress: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Progress",
+      },
+    ],
   },
   { timestamps: true }
 );

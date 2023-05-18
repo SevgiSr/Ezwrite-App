@@ -7,6 +7,7 @@ import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Respond({
   text,
@@ -20,11 +21,24 @@ function Respond({
   addComment,
   updatedParagraph,
 }) {
+  const queryClient = useQueryClient();
   const { sendNotification, profileState } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
   const [show, setShow] = useState(initialState);
+
+  //addComment can be adding a comment to the profile or a book or adding a comment to a conversation
+  //inactive ones won't be refetching anyways, so this is not wasteful
+  const mutation = useMutation(
+    (data) => addComment(data.dest, data.comment, data.updatedParagraph),
+    {
+      onSuccess: () => {
+        console.log(dest);
+        queryClient.invalidateQueries([`conversations`]);
+      },
+    }
+  );
 
   const stateRef = useRef(show);
 
@@ -57,11 +71,13 @@ function Respond({
     setComment(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comment) return;
     setShow(initialState);
-    addComment(dest, comment, updatedParagraph);
+
+    await mutation.mutateAsync({ dest, comment, updatedParagraph });
+
     setComment("");
     const notification = {
       text: text,
@@ -85,8 +101,8 @@ function Respond({
       <form onSubmit={handleSubmit}>
         <ProfilePicture
           filename={userState.user._id}
-          width="10%"
-          height="10%"
+          width="50px"
+          height="50px"
         />
         <textarea
           className={show.comment}

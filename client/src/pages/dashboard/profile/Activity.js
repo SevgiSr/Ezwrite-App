@@ -1,24 +1,18 @@
-import { useContext, useEffect } from "react";
 import ProfilePicture from "../../../components/ProfilePicture";
 import he from "he";
 import { FaComment, FaEnvelope } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import getDate from "../../../utils/getDate";
 import StyledActivity from "./styles/Activity.styled";
-import { ProfileContext } from "../../../context/profileContext";
 import Cover from "../../../components/Cover";
 
 function Activity() {
-  const { profileState, getProfileActivity } = useContext(ProfileContext);
-  const { username } = useParams();
-  useEffect(() => {
-    getProfileActivity(username);
-  }, []);
+  const { profileData } = useOutletContext();
 
   return (
     <StyledActivity>
       <div className="column-reverse">
-        {profileState?.activity?.map((nt) => {
+        {profileData.profile.activity?.map((nt) => {
           return (
             <Link
               key={nt._id}

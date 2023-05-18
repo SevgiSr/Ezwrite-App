@@ -7,9 +7,10 @@ import ProfilePicture from "../../components/ProfilePicture";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { AiOutlineBars } from "react-icons/ai";
+import { useQuery } from "@tanstack/react-query";
 
 function Story() {
-  const { state, getStory } = useContext(StoryContext);
+  const { state, getStory, getProgress } = useContext(StoryContext);
   const { story } = state;
   const { story_id } = useParams();
 
@@ -18,9 +19,14 @@ function Story() {
     getStory(story_id);
   }, []);
 
+  const { data: progress = {} } = useQuery({
+    queryKey: ["progress", story_id],
+    queryFn: () => getProgress(story_id),
+  });
+
   return (
     <StyledStory>
-      <StoryCard story={story} />
+      <StoryCard story={story} progress={progress} />
       <div className="story-info">
         <div className="author">
           <ProfilePicture
@@ -45,10 +51,11 @@ function Story() {
   );
 }
 
-const StoryCard = ({ story }) => {
+const StoryCard = ({ story, progress }) => {
   const navigate = useNavigate();
+
   const handleClick = () => {
-    navigate(`/${story._id}/${story.chapters[0]._id}`);
+    navigate(`/${story._id}/${progress.chapters[0]._id}`);
   };
   return (
     <div className="story-card">

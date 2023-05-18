@@ -57,6 +57,7 @@ export const MyStoryProvider = ({ children }) => {
           myStories,
         },
       });
+      return myStories;
     } catch (error) {
       console.log(error);
     }
@@ -99,18 +100,10 @@ export const MyStoryProvider = ({ children }) => {
   };
 
   const deleteStory = async (story_id) => {
-    alertDispatch({ type: BEGIN });
     try {
       await authFetch.delete(`/myStories/delete/${story_id}`);
-      alertDispatch({
-        type: SUCCESS,
-        payload: { msg: "Your Story Was Deleted!" },
-      });
     } catch (error) {
-      alertDispatch({
-        type: ERROR,
-        payload: { msg: error.response.data.msg },
-      });
+      console.log(error);
     }
   };
 

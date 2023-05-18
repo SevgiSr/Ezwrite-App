@@ -10,10 +10,12 @@ const ProgressSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Story",
     },
-    chapter: {
-      type: mongoose.Types.ObjectId,
-      ref: "Chapter",
-    },
+    chapters: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Chapter",
+      },
+    ],
   },
   { timestamps: true }
 );

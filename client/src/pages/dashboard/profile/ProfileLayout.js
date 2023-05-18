@@ -1,12 +1,15 @@
 import { Outlet, useParams } from "react-router-dom";
 import ProfileView from "./ProfileView";
 import { ProfileNavbar } from "../../../components";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ProfileContext } from "../../../context/profileContext";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 function SharedLayout() {
-  const { profileState, getProfile } = useContext(ProfileContext);
+  const { profileState, getProfile, getProfileConv } =
+    useContext(ProfileContext);
   const [profileInfo, setProfileInfo] = useState({
     profileName: "",
     pronouns: "",
@@ -17,25 +20,31 @@ function SharedLayout() {
 
   const { username } = useParams();
 
-  //make backend request on first render
-  useEffect(() => {
-    getProfile(username);
-  }, [username]);
+  const {
+    data: profileData = {},
+    isLoading,
+    refetch,
+  } = useQuery(["profile", username], () => getProfile(username), {
+    onSuccess: (data) => {
+      const { profileName, pronouns, about, website, location } = data.profile;
+      const newState = {
+        profileName,
+        pronouns,
+        about,
+        website,
+        location,
+      };
+      setProfileInfo(newState);
+    },
+  });
 
-  const { profileName, pronouns, about, website, location } =
-    profileState.profile;
-  const newState = {
-    profileName,
-    pronouns,
-    about,
-    website,
-    location,
-  };
-
-  // each time reducer changes update local state
-  useEffect(() => {
-    setProfileInfo(newState);
-  }, [profileState.profile]);
+  const { data: convs = [] } = useQuery(
+    ["conversations", username],
+    () => getProfileConv(username),
+    {
+      enabled: !!profileData,
+    }
+  );
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -43,10 +52,20 @@ function SharedLayout() {
     setProfileInfo({ ...profileInfo, [name]: value });
   };
 
+  if (isLoading) {
+    return <h1>loading...</h1>;
+  }
+
   return (
     <>
-      <ProfileView handleChange={handleChange} state={profileInfo} />
+      <ProfileView
+        handleChange={handleChange}
+        state={profileInfo}
+        profileData={profileData}
+        refetch={refetch}
+      />
       <ProfileNavbar
+        profileData={profileData}
         links={[
           { to: "", label: "About" },
           { to: "conversations", label: "Conversations" },
@@ -54,14 +73,14 @@ function SharedLayout() {
           { to: "activity", label: "Activity" },
         ]}
       />
-      {profileState.isMainUser ? (
+      {profileData.isMainUser ? (
         profileState.isEditMode ? (
           <EditProfile handleChange={handleChange} state={profileInfo} />
         ) : (
-          <Outlet />
+          <Outlet context={{ profileData, convs }} />
         )
       ) : (
-        <Outlet />
+        <Outlet context={{ profileData, convs }} />
       )}
     </>
   );

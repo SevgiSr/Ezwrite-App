@@ -87,6 +87,7 @@ const createStory = async (req, res) => {
 
 const deleteStory = async (req, res) => {
   const story = await Story.findOne({ _id: req.params.story_id });
+
   checkPermissions(req.user.userId, story.author._id);
   await story.delete();
   res.status(StatusCodes.OK);

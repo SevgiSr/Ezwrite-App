@@ -9,7 +9,7 @@ import { BsPersonCheckFill } from "react-icons/bs";
 import { AiFillMessage } from "react-icons/ai";
 import { io } from "socket.io-client";
 
-const ProfileNavbar = ({ links }) => {
+const ProfileNavbar = ({ links, profileData }) => {
   const socket = io("http://localhost:5000");
 
   const {
@@ -61,7 +61,7 @@ const ProfileNavbar = ({ links }) => {
       <div className="parent">
         <OrangeLinks links={links} className="orange-links" />
 
-        {profileState.isMainUser ? (
+        {profileData.isMainUser ? (
           <button className="profile-button" onClick={handleEditClick}>
             <span className="icon">
               <FcSettings />
@@ -70,7 +70,7 @@ const ProfileNavbar = ({ links }) => {
           </button>
         ) : (
           <div className="buttons">
-            {profileState.isFollowing ? (
+            {profileData.isFollowing ? (
               <button
                 onClick={handleUnfollowClick}
                 disabled={profileState.isDisabled}

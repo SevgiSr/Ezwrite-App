@@ -36,7 +36,7 @@ const Story = ({ story }) => {
         <Link className="title" to={`/story/${story._id}`}>
           <h3>{story.title}</h3>
         </Link>
-        <div className="author">{story.author.name}sevgi tarafından</div>
+        <div className="author">{story.author.name} tarafından</div>
         <div className="meta-data">
           <div>
             <div className="icon">

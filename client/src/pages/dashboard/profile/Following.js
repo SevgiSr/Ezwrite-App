@@ -1,12 +1,12 @@
-import { useContext } from "react";
 import { UserCard } from "../../../components";
-import { ProfileContext } from "../../../context/profileContext";
+import { useOutletContext } from "react-router-dom";
 
 function Following() {
-  const { profileState } = useContext(ProfileContext);
+  const { profileData } = useOutletContext();
+
   return (
     <div id="following" style={{ padding: "20px" }}>
-      {profileState.profile?.following?.map((f) => {
+      {profileData.profile.following?.map((f) => {
         return <UserCard key={f._id} user={f} />;
       })}
     </div>

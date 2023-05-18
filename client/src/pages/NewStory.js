@@ -8,8 +8,11 @@ import OrangeLinks from "../components/OrangeLinks";
 import { ProfileContext } from "../context/profileContext";
 import { AiFillPicture } from "react-icons/ai";
 import StoryDetails from "../components/StoryDetails";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function NewStory() {
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
   const { storyState, createStory } = useContext(MyStoryContext);
 
@@ -26,12 +29,22 @@ function NewStory() {
 
   const [imageUrl, setImageUrl] = useState("");
 
-  const handleSubmit = (e) => {
+  const mutation = useMutation(
+    (data) => createStory(data.cover, data.storyDetails),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([`myStories`]);
+      },
+    }
+  );
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     storyDetails.tags = tags;
-    createStory(cover, storyDetails);
 
     navigate("/myStories");
+
+    await mutation.mutateAsync({ cover, storyDetails });
   };
 
   const handleCoverChange = (e) => {

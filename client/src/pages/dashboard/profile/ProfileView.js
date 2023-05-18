@@ -10,7 +10,7 @@ import { useState } from "react";
 import { PulseLoader, SyncLoader } from "react-spinners";
 import BackgroundPicture from "../../../components/BackgroundPicture";
 
-function ProfileView({ handleChange, state }) {
+function ProfileView({ handleChange, state, profileData, refetch }) {
   const {
     profileState,
     alertState,
@@ -20,6 +20,7 @@ function ProfileView({ handleChange, state }) {
     uploadBcImage,
     displayImage,
   } = useContext(ProfileContext);
+
   const { username } = useParams();
 
   const [bcTimestamp, setBcTimestamp] = useState(Date.now());
@@ -27,9 +28,7 @@ function ProfileView({ handleChange, state }) {
 
   const handleClick = () => {
     closeEditMode();
-    //you normally dont need that because if sharedLayout sets reducer on first render it affects all children too
-    //it's for bringing original fields back since u canceled them
-    getProfile(username);
+    refetch();
   };
 
   const handleUploadChange = (e) => {
@@ -83,7 +82,7 @@ function ProfileView({ handleChange, state }) {
         <SyncLoader />
       ) : (
         <BackgroundPicture
-          filename={profileState.profile._id}
+          filename={profileData.profile?._id}
           timestamp={bcTimestamp}
         />
       )}
@@ -125,7 +124,7 @@ function ProfileView({ handleChange, state }) {
           <SyncLoader />
         ) : (
           <ProfilePicture
-            filename={profileState.profile._id}
+            filename={profileData.profile?._id}
             width="90px"
             height="90px"
             timestamp={timestamp}
@@ -134,7 +133,7 @@ function ProfileView({ handleChange, state }) {
       </div>
 
       <h1 className="profile-name">
-        <span>{profileState.profile.profileName}</span>
+        <span>{profileData.profile?.profileName}</span>
         {profileState.isEditMode && (
           <input
             ref={inputRef}
@@ -146,7 +145,7 @@ function ProfileView({ handleChange, state }) {
         )}
       </h1>
 
-      <h2 className="username">@{profileState.profile.name}</h2>
+      <h2 className="username">@{profileData.profile?.name}</h2>
 
       <ul id="user-info">
         <li>
@@ -163,12 +162,8 @@ function ProfileView({ handleChange, state }) {
         </li>
         <li>
           <button onClick={handleShowModal} className="info-btn">
-            <p>{profileState.profile.followers?.length}</p>
+            <p>{profileData.profile?.followers?.length}</p>
             <p>followers</p>
-            {/* <Modal show={showModal} handleClose={handleCloseModal}>
-              <h2>sevgi abla</h2>
-              <p>dekldmeçödleförlefmrk</p>
-            </Modal> */}
           </button>
         </li>
       </ul>

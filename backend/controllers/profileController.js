@@ -6,23 +6,23 @@ import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
 
 const getProfile = async (req, res) => {
-  const user = await User.findOne({ name: req.params.username }).populate(
-    "stories followers following"
-  );
+  const profile = await User.findOne({ name: req.params.username })
+    .populate("stories followers following")
+    .populate({ path: "activity", populate: "sender" });
 
   let isMainUser = false;
-  if (String(user._id) === req.user.userId) {
+  if (String(profile._id) === req.user.userId) {
     isMainUser = true;
   }
 
   let isFollowing = false;
-  user.followers.map((follower) => {
+  profile.followers.map((follower) => {
     if (String(follower._id) === req.user.userId) {
       isFollowing = true;
     }
   });
 
-  res.status(StatusCodes.OK).json({ user, isMainUser, isFollowing });
+  res.status(StatusCodes.OK).json({ profile, isMainUser, isFollowing });
 };
 
 const followProfile = async (req, res) => {
@@ -63,7 +63,8 @@ const unfollowProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ followers: user.followers });
 };
 
-const getProfileActivity = async (req, res) => {
+//now you don't have to wait for activity tab to load each time because it's populated as soon as profile mounted
+/* const getProfileActivity = async (req, res) => {
   const { username } = req.params;
 
   const user = await User.findOne({ name: username });
@@ -73,7 +74,7 @@ const getProfileActivity = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json({ activity });
-};
+}; */
 
 const getProfileConv = async (req, res) => {
   const { username } = req.params;
@@ -147,6 +148,5 @@ export {
   addProfileConv,
   editProfile,
   addReadingList,
-  getProfileActivity,
   getProfileSettings,
 };

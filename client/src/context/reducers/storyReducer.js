@@ -35,12 +35,10 @@ const storyReducer = (state, action) => {
   if (action.type === GET_CHAPTER_SUCCESS) {
     return {
       ...state,
-      chapter: action.payload.chapter,
-      author: action.payload.author,
-      chapterConvs: action.payload.chapterConvs,
       story: action.payload.story,
-      votes: action.payload.votes,
-      myVote: action.payload.myVote,
+      chapter: action.payload.chapter,
+      votes: action.payload.chapter.votesCount,
+      myVote: action.payload.chapter.myVote,
     };
   }
   if (action.type === ADD_CHAPTER_CONV_SUCCESS) {

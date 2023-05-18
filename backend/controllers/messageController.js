@@ -72,11 +72,18 @@ const sendNotification = async (req, res) => {
     sender: mongoose.Types.ObjectId(nt.sender),
   });
 
-  const user = await User.findOneAndUpdate(
+  await User.findOneAndUpdate(
     { name: req.params.username },
     { $push: { notifications: notification._id } },
     { upsert: true, new: true, runValidators: true }
   );
+
+  await User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(nt.sender) },
+    { $push: { activity: notification._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
   res.status(StatusCodes.OK);
 };
 

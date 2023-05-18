@@ -135,8 +135,8 @@ const StyledNavbar = styled.header`
         position: relative;
         .nt-count {
           position: absolute;
-          top: 4px;
-          left: -4px;
+          top: -12px;
+          left: -7px;
         }
       }
     }

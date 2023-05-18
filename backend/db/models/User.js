@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
     GPTKey: {
       type: String,
       select: false,
-      default: "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",
+      default: "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",
     },
     profilePicture: {
       type: Object,
@@ -84,6 +84,18 @@ const UserSchema = new mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    activity: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
+    storiesProgress: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Progress",
       },
     ],
     displayLanguage: {
