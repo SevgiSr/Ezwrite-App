@@ -63,10 +63,8 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const getMyStory = async (story_id) => {
+  const setMyStory = async (myStory) => {
     try {
-      const { data } = await authFetch.get(`/myStories/edit/${story_id}`);
-      const { myStory } = data;
       dispatch({
         type: GET_MY_STORY_SUCCESS,
         payload: {
@@ -220,7 +218,7 @@ export const MyStoryProvider = ({ children }) => {
         storyState,
         alertState,
         getMyStories,
-        getMyStory,
+        setMyStory,
         createStory,
         deleteStory,
         updateCover,

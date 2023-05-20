@@ -21,6 +21,7 @@ function MyStories({ show }) {
     getMyStories,
     {
       refetchOnWindowFocus: false,
+      staleTime: Infinity,
     }
   );
 

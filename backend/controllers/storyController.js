@@ -60,6 +60,28 @@ export async function countChapterVotes(chapter_id) {
   return votes;
 }
 
+const addMyVote = async (progress, userId) => {
+  try {
+    progress.chapters.map((chapter) => {
+      const vote = Vote.findOne({
+        user: userId,
+        chapter: chapter._id,
+      });
+
+      let myVote;
+      if (!vote) {
+        myVote = 0;
+      } else {
+        myVote = vote.value;
+      }
+
+      chapter.myVote = myVote;
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getByCategory = async (req, res) => {
   const { category } = req.params;
   const stories = await Story.find({ category }).populate("author");
@@ -165,25 +187,7 @@ const getProgress = async (req, res) => {
       .populate(populateChapters);
   }
 
-  try {
-    progress.chapters.map((chapter) => {
-      const vote = Vote.findOne({
-        user: req.user.userId,
-        chapter: chapter._id,
-      });
-
-      let myVote;
-      if (!vote) {
-        myVote = 0;
-      } else {
-        myVote = vote.value;
-      }
-
-      chapter.myVote = myVote;
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  addMyVote(progress, req.user.userId);
 
   res.status(StatusCodes.OK).json({ progress });
 };
@@ -191,25 +195,25 @@ const getProgress = async (req, res) => {
 const setProgress = async (req, res) => {
   console.log("setting progress");
   const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id);
+  const story = await Story.findById(story_id).populate(populateChapters);
 
   const chapterIndex = story.chapters.findIndex(
-    (chapter) => String(chapter) === chapter_id
+    (chapter) => String(chapter._id) === chapter_id
   );
 
   const chapters = story.chapters.slice(chapterIndex, chapterIndex + 5);
 
-  const progress = await Progress.findOne({
+  let progress = await Progress.findOne({
     user: req.user.userId,
     story: story_id,
-  });
+  }).populate(populateStory);
 
   if (!progress) {
-    const progress = await Progress.create({
+    progress = await Progress.create({
       story: story_id,
       chapters: chapters,
       user: req.user.userId,
-    });
+    }).populate(populateStory);
 
     await User.findByIdAndUpdate(
       req.user.userId,
@@ -226,8 +230,9 @@ const setProgress = async (req, res) => {
 
   progress.chapters = chapters;
 
-  progress.save();
-  console.log(progress);
+  progress.update();
+
+  addMyVote(progress, req.user.userId);
 
   res.status(StatusCodes.OK).json({ progress });
 };

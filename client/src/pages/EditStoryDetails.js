@@ -3,7 +3,7 @@ import { AiFillDislike } from "react-icons/ai";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaBars, FaComment } from "react-icons/fa";
 import { GoEye } from "react-icons/go";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Cover from "../components/Cover";
 import OrangeLinks from "../components/OrangeLinks";
 import { MyStoryContext } from "../context/myStoryContext";
@@ -12,19 +12,22 @@ import { PulseLoader, RotateLoader, SyncLoader } from "react-spinners";
 import getDate from "../utils/getDate";
 import StoryDetails from "../components/StoryDetails";
 import { IoIosArrowBack } from "react-icons/io";
+import { useQuery } from "@tanstack/react-query";
 
 function EditStoryDetails() {
   const {
     storyState,
     alertState,
     addChapter,
-    getMyStory,
+    getMyStories,
+    setMyStory,
     updateCover,
     updateStory,
   } = useContext(MyStoryContext);
   const { story_id } = useParams();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [navbar, setNavbar] = useState("contents");
 
@@ -39,9 +42,25 @@ function EditStoryDetails() {
 
   const [timestamp, setTimestamp] = useState(Date.now());
 
+  //if it exists in the cache it'll appear as fresh and backend request WON'T be made. isFetching will be false but because location changed myStory will be updated anyways.
+  //if it doesn't backend request will be made and after fetching is done myStory is updated the same way
+  const {
+    data: myStories = [],
+    isLoading,
+    isFetching,
+    status,
+  } = useQuery(["myStories"], getMyStories, {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
+
+  //right after getting it from the cache update global myStory state to use
   useEffect(() => {
-    getMyStory(story_id);
-  }, [story_id]);
+    if (!isFetching && status === "success") {
+      const myStory = myStories.find((story) => story._id === story_id);
+      setMyStory(myStory);
+    }
+  }, [location, isFetching]);
 
   useEffect(() => {
     const { myStory } = storyState;
@@ -53,7 +72,7 @@ function EditStoryDetails() {
       language: myStory.language,
     });
     setTags(myStory.tags);
-  }, [storyState]);
+  }, [storyState.myStory]);
 
   const handleCoverChange = (e) => {
     updateCover(e.target.files[0], story_id);

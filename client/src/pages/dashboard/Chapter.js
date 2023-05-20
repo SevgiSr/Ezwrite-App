@@ -14,6 +14,7 @@ import { UserContext } from "../../context/userContext";
 import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ClipLoader, SyncLoader } from "react-spinners";
 
 function Chapter() {
   const queryClient = useQueryClient();
@@ -33,6 +34,7 @@ function Chapter() {
   const location = useLocation();
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,9 +61,8 @@ function Chapter() {
     ({ story_id, chapter_id }) => setProgress(story_id, chapter_id),
     {
       onSuccess: (data) => {
-        console.log(data);
+        setChapter(data.chapters[0], data.story);
         queryClient.setQueryData(["progress", story_id], data);
-        refetch();
       },
     }
   );
@@ -71,7 +72,6 @@ function Chapter() {
   // order of dependency array does not matter
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
   useEffect(() => {
-    console.log("re-render");
     if (!isFetching && status === "success") {
       const filteredChapter = chapters.find(
         (chapter) => chapter._id === chapter_id
@@ -80,19 +80,30 @@ function Chapter() {
         console.log("cached");
         setChapter(filteredChapter, story);
       } else {
-        console.log("not cached");
+        console.log("NOT cached");
         mutation.mutate({ story_id, chapter_id });
       }
     }
   }, [location, isFetching]);
+
+  // cannot access latest location
+  useEffect(() => {
+    return () => {
+      console.log("SAVING PROGRESS...");
+      mutation.mutate({ story_id, chapter_id });
+    };
+  }, []);
 
   if (isLoading) {
     return <h1>loading...</h1>;
   }
 
   return (
-    <StyledChapter>
-      <ChapterHeader story={state.story} />
+    <StyledChapter ref={scrollRef}>
+      <ChapterHeader
+        isChapterLoading={mutation.isLoading}
+        scrollRef={scrollRef}
+      />
 
       <section className="chapter">
         <h1>{state.chapter.title}</h1>
@@ -264,10 +275,30 @@ function ParagraphComments({ comments, paragraph_id, openModal }) {
   const { userState } = useContext(UserContext);
 }
 
-function ChapterHeader() {
+function ChapterHeader({ isChapterLoading, scrollRef }) {
   const { state, alertState, voteChapter, unvoteChapter } =
     useContext(StoryContext);
   const [active, setActive] = useState({ upvote: false, downvote: false });
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("scrolling");
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const totalScrollableDistance = scrollHeight - clientHeight;
+      const progress = (scrollTop / totalScrollableDistance) * 100;
+      setScrollProgress(progress);
+    };
+
+    document.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleVoteClick = (e) => {
     voteChapter(state.chapter._id, e.target.name);
   };
@@ -296,6 +327,11 @@ function ChapterHeader() {
         <StoryDropdown />
       </div>
       <div className="actions">
+        {isChapterLoading && (
+          <div style={{ marginRight: "15px" }}>
+            <ClipLoader size={15} color="#222" />
+          </div>
+        )}
         <button className="add-list-btn orange-button">+</button>
 
         <button
@@ -333,6 +369,16 @@ function ChapterHeader() {
           </div>
           <div className="text">Downvote</div>
         </button>
+      </div>
+
+      <div className="progress">
+        <div
+          style={{
+            width: `${scrollProgress}%`,
+            height: "5px",
+            backgroundColor: "#00b2b2",
+          }}
+        ></div>
       </div>
     </header>
   );
