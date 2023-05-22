@@ -42,6 +42,10 @@ function EditStoryDetails() {
 
   const [timestamp, setTimestamp] = useState(Date.now());
 
+  // REMOVED BACKEND REQUEST THAT IS MADE FOR EACH AND SINGLE STORY
+
+  //Instead decided to store myStories in the cache and take out individual stories out of there.
+
   //if it exists in the cache it'll appear as fresh and backend request WON'T be made. isFetching will be false but because location changed myStory will be updated anyways.
   //if it doesn't backend request will be made and after fetching is done myStory is updated the same way
   const {

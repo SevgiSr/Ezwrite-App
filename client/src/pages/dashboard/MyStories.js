@@ -16,6 +16,10 @@ function MyStories({ show }) {
   const { storyState, getMyStories } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
 
+  //staleTime is infitiy so that is stays fresh until mutation
+  //because this data will not be updated unless user updated it himself
+  //now it does not have to make backend request each time this component is rendered
+  //and it will not make slow backend requests when user navigates between stories
   const { data: myStories = [], isLoading } = useQuery(
     ["myStories"],
     getMyStories,

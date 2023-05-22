@@ -3,22 +3,30 @@ import { handleKeyDown } from "../utils/handleKeyDown";
 import { Navbar } from "../components";
 import { useContext } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import he from "he";
 import { BsFillPencilFill } from "react-icons/bs";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { createRoot } from "react-dom/client";
 import ReactDOM from "react-dom";
 import StyledWriting from "./styles/Writing.styled";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Writing() {
+  const queryClient = useQueryClient();
   //dont change chapterBody at each typed character or cursor gets messed up - no onInput(aka. onChange)
   //just use it for saving and first loading times
   const [chapterBody, setChapterBody] = useState("Type the text...");
   const [chapterTitle, setChapterTitle] = useState("");
-  const { storyState, editChapter, saveChapter, sendGptPrompt } =
-    useContext(MyStoryContext);
+  const {
+    storyState,
+    getMyStories,
+    setEditChapter,
+    saveChapter,
+    sendGptPrompt,
+  } = useContext(MyStoryContext);
   const { story_id, chapter_id } = useParams();
+  const location = useLocation();
 
   const contentEditableRef = useRef(null);
 
@@ -26,27 +34,49 @@ function Writing() {
     setChapterTitle(e.target.value);
   };
 
-  //as soon s u load, make get request to get chapther's title and content adn set it on reducer's chapter
-  useEffect(() => {
-    editChapter(story_id, chapter_id);
-  }, []);
+  const {
+    data: myStories = [],
+    isLoading,
+    isFetching,
+    status,
+  } = useQuery(["myStories"], getMyStories, {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
 
-  //after get request, chapter in reducer is set and setChapter sets title and content in frontend
   useEffect(() => {
-    const { chapter } = storyState;
-    setChapterTitle(chapter.title);
-    setChapterBody(chapter.content);
-  }, [storyState.chapter]);
+    if (!isFetching && status === "success") {
+      const myStory = myStories.find((story) => story._id === story_id);
+      const chapter = myStory.chapters.find(
+        (chapter) => chapter._id === chapter_id
+      );
+      setChapterTitle(chapter.title);
+      setChapterBody(chapter.content);
+      setEditChapter(myStory, chapter);
+    }
+  }, [location, isFetching]);
 
   useEffect(() => {
     const updateForm = async () => {
-      const form = document.querySelector(".ai-form-container");
-      const prevNode = form.parentNode.nextElementSibling;
-      prevNode.parentNode.removeChild(prevNode);
-      form.parentNode.innerHTML = storyState.gptResponse;
+      if (storyState.gptResponse) {
+        const form = document.querySelector(".ai-form-container");
+        const prevNode = form.parentNode.nextElementSibling;
+        prevNode.parentNode.removeChild(prevNode);
+        form.parentNode.innerHTML = storyState.gptResponse;
+      }
     };
     updateForm();
   }, [storyState.gptResponse]);
+
+  const mutation = useMutation(
+    (data) =>
+      saveChapter(data.chapter, data.divArray, data.story_id, data.chapter_id),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["myStories"]);
+      },
+    }
+  );
 
   //saves in the backend and also cuz reducer's chapter changed useeffect gonna set it on frontend
   const handleSubmit = (e) => {
@@ -65,7 +95,7 @@ function Writing() {
       title: chapterTitle,
       content: content,
     };
-    saveChapter(chapter, divArray, story_id, chapter_id);
+    mutation.mutate({ chapter, divArray, story_id, chapter_id });
   };
 
   const handlePublishClick = () => {
@@ -186,7 +216,7 @@ function Writing() {
   return (
     <StyledWriting>
       <form onSubmit={handleSubmit} className="pageContainer">
-        <Navbar />
+        <Navbar isChapterLoading={mutation.isLoading} />
         <div className="storyContainer">
           <input
             id="editTitle"

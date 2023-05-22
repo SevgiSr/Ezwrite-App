@@ -158,13 +158,8 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const editChapter = async (story_id, chapter_id) => {
+  const setEditChapter = async (story, chapter) => {
     try {
-      const { data } = await authFetch.get(
-        `/myStories/${story_id}/${chapter_id}`
-      );
-      const { story, chapter } = data;
-
       dispatch({
         type: EDIT_MY_CHAPTER_SUCCESS,
         payload: { story, chapter },
@@ -224,7 +219,7 @@ export const MyStoryProvider = ({ children }) => {
         updateCover,
         getMyChapters,
         setEditStory,
-        editChapter,
+        setEditChapter,
         saveChapter,
         addChapter,
         updateStory,

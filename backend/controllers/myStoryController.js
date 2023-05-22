@@ -181,19 +181,24 @@ const sendGptPrompt = async (req, res) => {
 
   const { style, content, length } = req.body.prompt;
   console.log(req.body.prompt);
+  let GPTresponse;
 
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "assistant",
-        content: `You'll take user's input and write a paragraph consisting of exactyle ${length} amount of sentences and in ${style} manner of what user described in the input. Paragraph should be more valuable in terms of literature.`,
-      },
-      { role: "user", content: content },
-    ],
-  });
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "assistant",
+          content: `You'll take user's input and write a paragraph consisting of exactyle ${length} amount of sentences and in ${style} manner of what user described in the input. Paragraph should be more valuable in terms of literature.`,
+        },
+        { role: "user", content: content },
+      ],
+    });
 
-  const GPTresponse = completion.data.choices[0].message.content;
+    GPTresponse = completion.data.choices[0].message.content;
+  } catch (error) {
+    console.log(error.message);
+  }
 
   res.status(StatusCodes.OK).json({ GPTresponse });
 };

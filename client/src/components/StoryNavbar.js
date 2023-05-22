@@ -2,7 +2,9 @@
 import { useContext } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledStoryNavbar from "./styles/StoryNavbar.styled";
-const Navbar = ({ handlePublishClick }) => {
+import { ClipLoader } from "react-spinners";
+
+const Navbar = ({ handlePublishClick, isChapterLoading }) => {
   const { storyState } = useContext(MyStoryContext);
 
   return (
@@ -15,7 +17,13 @@ const Navbar = ({ handlePublishClick }) => {
             Draft <span>Saved</span>
           </p>
         </div>
+
         <div className="buttons">
+          {isChapterLoading && (
+            <div style={{ marginRight: "15px" }}>
+              <ClipLoader size={15} color="#222" />
+            </div>
+          )}
           <button onClick={handlePublishClick} className="btn orange-button">
             Publish
           </button>
