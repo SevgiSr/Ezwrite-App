@@ -6,17 +6,24 @@ import { ClipLoader } from "react-spinners";
 import Cover from "./Cover";
 import { FiChevronDown } from "react-icons/fi";
 import DropdownMenu from "./DropdownMenu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
 const Navbar = ({ isChapterLoading }) => {
-  const { storyState } = useContext(MyStoryContext);
+  const { storyState, addChapter } = useContext(MyStoryContext);
+  const navigate = useNavigate();
+
+  const handleNewPartClick = async () => {
+    const newChapter_id = await addChapter(storyState.story._id);
+    navigate(`/${storyState.story._id}/${newChapter_id}/writing`);
+  };
 
   return (
     <StyledStoryNavbar>
       <nav className="navbarContainer">
         <DropdownMenu
           buttonClass="write-dropdown-btn"
+          menuClass="write-dropdown-menu"
           button={
             <>
               <div className="story-card">
@@ -44,6 +51,12 @@ const Navbar = ({ isChapterLoading }) => {
           menu={
             <>
               <div>Table of contents</div>
+              <button
+                onClick={handleNewPartClick}
+                className="orange-button btn new-part-btn"
+              >
+                New Part
+              </button>
               {storyState.story.chapters?.map((chapter) => {
                 return (
                   <div
@@ -54,6 +67,7 @@ const Navbar = ({ isChapterLoading }) => {
                     }
                   >
                     <Link
+                      key={chapter._id}
                       className="link"
                       to={`/${storyState.story._id}/${chapter._id}/writing`}
                     >

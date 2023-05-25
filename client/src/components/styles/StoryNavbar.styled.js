@@ -15,10 +15,15 @@ const StyledStoryNavbar = styled.div`
     .write-dropdown-btn {
       border: none;
       cursor: pointer;
+    }
 
-      .dropdown-menu {
-        background-color: #fff;
+    .write-dropdown-menu {
+      background-color: #fff;
+      
+      .new-part-btn {
+        width: fit-content;
       }
+    }
       .story-card {
         display: flex;
         align-items: center;

@@ -56,9 +56,7 @@ const StoryCard = ({ story, progress }) => {
 
   const handleClick = () => {
     console.log(story, progress);
-    if (!progress.chapters[0]) {
-      navigate(`/${story._id}/${story.chapters[0]._id}`);
-    } else {
+    if (progress.chapters) {
       navigate(`/${story._id}/${progress.chapters[0]._id}`);
     }
   };

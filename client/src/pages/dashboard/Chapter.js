@@ -334,8 +334,6 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
     });
   };
 
-  console.log(state.myVote);
-
   useEffect(() => {
     if (state.myVote === 1) {
       setActive({ downvote: false, upvote: true });

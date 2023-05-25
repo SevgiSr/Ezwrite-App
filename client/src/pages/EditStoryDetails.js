@@ -218,7 +218,7 @@ function Contents() {
       </button>
       {storyState.myStory?.chapters?.map((chapter) => {
         return (
-          <div className="row">
+          <div key={chapter._id} className="row">
             <div className="icon">
               <FaBars />
             </div>
