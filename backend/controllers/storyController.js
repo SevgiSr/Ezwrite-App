@@ -62,21 +62,29 @@ export async function countChapterVotes(chapter_id) {
 
 const addMyVote = async (progress, userId) => {
   try {
-    progress.chapters.map((chapter) => {
-      const vote = Vote.findOne({
-        user: userId,
-        chapter: chapter._id,
-      });
+    const iterateProgress = JSON.parse(JSON.stringify(progress));
 
-      let myVote;
-      if (!vote) {
-        myVote = 0;
-      } else {
-        myVote = vote.value;
-      }
+    await Promise.all(
+      iterateProgress.chapters?.map(async (chapter) => {
+        const vote = await Vote.findOne({
+          user: userId,
+          chapter: chapter._id,
+        });
 
-      chapter.myVote = myVote;
-    });
+        let myVote;
+        if (!vote) {
+          myVote = 0;
+        } else {
+          myVote = vote.value;
+        }
+
+        chapter.myVote = myVote;
+
+        return chapter;
+      })
+    );
+
+    return iterateProgress;
   } catch (error) {
     console.log(error);
   }
@@ -155,10 +163,6 @@ const getStory = async (req, res) => {
       match: { user: req.user.userId },
       populate: { path: "chapter" },
     });
-  story.chapters.map((c) => {
-    const votes = countChapterVotes(c._id);
-    c.votes = votes;
-  });
 
   res.status(StatusCodes.OK).json({ story });
 };
@@ -185,11 +189,25 @@ const getProgress = async (req, res) => {
     })
       .populate(populateStory)
       .populate(populateChapters);
+
+    await User.findByIdAndUpdate(
+      req.user.userId,
+      { $push: { storiesProgress: progress._id } },
+      { upsert: true }
+    );
+
+    await Story.findByIdAndUpdate(
+      story_id,
+      { $push: { progress: progress._id } },
+      { upsert: true }
+    );
   }
 
-  addMyVote(progress, req.user.userId);
+  const editedProgress = await addMyVote(progress, req.user.userId);
 
-  res.status(StatusCodes.OK).json({ progress });
+  console.log("my penis");
+  console.log(editedProgress.chapters[0].myVote);
+  res.status(StatusCodes.OK).json({ progress: editedProgress });
 };
 
 const setProgress = async (req, res) => {
@@ -206,7 +224,9 @@ const setProgress = async (req, res) => {
   let progress = await Progress.findOne({
     user: req.user.userId,
     story: story_id,
-  }).populate(populateStory);
+  })
+    .populate(populateStory)
+    .populate(populateChapters);
 
   if (!progress) {
     progress = await Progress.create({
@@ -230,11 +250,11 @@ const setProgress = async (req, res) => {
 
   progress.chapters = chapters;
 
-  progress.update();
+  await progress.save();
 
-  addMyVote(progress, req.user.userId);
+  const editedProgress = await addMyVote(progress, req.user.userId);
 
-  res.status(StatusCodes.OK).json({ progress });
+  res.status(StatusCodes.OK).json({ progress: editedProgress });
 };
 
 const addChapterConv = async (req, res) => {
@@ -300,6 +320,7 @@ const voteChapter = async (req, res) => {
     vote.value = Number(req.body.vote_value); // update the vote value
     await vote.save(); // save the updated vote document
   } else {
+    console.log("new vote");
     vote = await Vote.create({
       user: req.user.userId,
       chapter: req.params.chapter_id,
@@ -332,6 +353,8 @@ const unvoteChapter = async (req, res) => {
   }
 
   await chapter.save();
+
+  console.log(chapter.votesCount);
 
   res.status(StatusCodes.OK).json({ newChapter: chapter });
 };

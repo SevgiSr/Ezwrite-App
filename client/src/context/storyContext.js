@@ -158,11 +158,12 @@ export const StoryProvider = ({ children }) => {
   const voteChapter = async (chapter_id, vote_value) => {
     alertDispatch({ type: BEGIN });
     try {
+      //will dispatch first so that it updates UI immediately
       dispatch({ type: VOTE_CHAPTER_SUCCESS, payload: { vote_value } });
+      //backend request
       const { data } = await authFetch.patch(`/stories/chapter/${chapter_id}`, {
         vote_value,
       });
-
       alertDispatch({ type: SUCCESS, payload: { msg: "voted!" } });
     } catch (error) {
       console.log(error);

@@ -55,6 +55,7 @@ function Chapter() {
   } = useQuery({
     queryKey: ["progress", story_id],
     queryFn: () => getProgress(story_id),
+    refetchOnWindowFocus: false,
   });
 
   const mutation = useMutation(
@@ -62,9 +63,10 @@ function Chapter() {
     {
       onSuccess: (data) => {
         setChapter(data.chapters[0], data.story);
-        queryClient.setQueryData(["progress", story_id], data);
+        queryClient.setQueryData(["progress", story_id], data); // does this actually work?
       },
-    }
+    },
+    [story_id, chapter_id]
   );
 
   //if location changes, before doing refetch checks the cache and retrieves chapter instantly
@@ -77,10 +79,8 @@ function Chapter() {
         (chapter) => chapter._id === chapter_id
       );
       if (filteredChapter) {
-        console.log("cached");
         setChapter(filteredChapter, story);
       } else {
-        console.log("NOT cached");
         mutation.mutate({ story_id, chapter_id });
       }
     }
@@ -103,6 +103,7 @@ function Chapter() {
       <ChapterHeader
         isChapterLoading={mutation.isLoading}
         scrollRef={scrollRef}
+        refetch={refetch}
       />
 
       <section className="chapter">
@@ -275,7 +276,9 @@ function ParagraphComments({ comments, paragraph_id, openModal }) {
   const { userState } = useContext(UserContext);
 }
 
-function ChapterHeader({ isChapterLoading, scrollRef }) {
+function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
+  const queryClient = useQueryClient();
+  const { story_id } = useParams();
   const { state, alertState, voteChapter, unvoteChapter } =
     useContext(StoryContext);
   const [active, setActive] = useState({ upvote: false, downvote: false });
@@ -284,7 +287,6 @@ function ChapterHeader({ isChapterLoading, scrollRef }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("scrolling");
       const { scrollTop, scrollHeight, clientHeight } =
         document.documentElement;
       const totalScrollableDistance = scrollHeight - clientHeight;
@@ -299,13 +301,40 @@ function ChapterHeader({ isChapterLoading, scrollRef }) {
     };
   }, []);
 
+  //update UI immediately with dispatch and make backend request
+  const voteMutation = useMutation(
+    (data) => voteChapter(data.chapter_id, data.name),
+    {
+      onSuccess: () => {
+        //change cache too so that the vote is consistent everywhere
+        queryClient.invalidateQueries(["progress", story_id]);
+      },
+    }
+  );
+
+  const unvoteMutation = useMutation(
+    (data) => unvoteChapter(data.chapter_id, data.name),
+    {
+      onSuccess: () => {
+        refetch();
+      },
+    }
+  );
+
+  //I needed to mutate cache instead of just changing chapter global state
+  //because when user navigates back they still need to see their vote
   const handleVoteClick = (e) => {
-    voteChapter(state.chapter._id, e.target.name);
+    voteMutation.mutate({ chapter_id: state.chapter._id, name: e.target.name });
   };
 
   const handleUnvoteClick = (e) => {
-    unvoteChapter(state.chapter._id, e.target.name);
+    unvoteMutation.mutate({
+      chapter_id: state.chapter._id,
+      name: e.target.name,
+    });
   };
+
+  console.log(state.myVote);
 
   useEffect(() => {
     if (state.myVote === 1) {
@@ -315,7 +344,7 @@ function ChapterHeader({ isChapterLoading, scrollRef }) {
     } else {
       setActive({ upvote: false, downvote: false });
     }
-  }, [state.myVote]);
+  }, [state]);
 
   //if it's equals to zero, display nonvoted for both
   //if its == 1 display voted

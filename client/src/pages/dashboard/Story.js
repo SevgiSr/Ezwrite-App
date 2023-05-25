@@ -55,7 +55,12 @@ const StoryCard = ({ story, progress }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/${story._id}/${progress.chapters[0]._id}`);
+    console.log(story, progress);
+    if (!progress.chapters[0]) {
+      navigate(`/${story._id}/${story.chapters[0]._id}`);
+    } else {
+      navigate(`/${story._id}/${progress.chapters[0]._id}`);
+    }
   };
   return (
     <div className="story-card">

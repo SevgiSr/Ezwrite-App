@@ -33,6 +33,7 @@ const storyReducer = (state, action) => {
   }
 
   if (action.type === GET_CHAPTER_SUCCESS) {
+    console.log(action.payload.chapter);
     return {
       ...state,
       story: action.payload.story,

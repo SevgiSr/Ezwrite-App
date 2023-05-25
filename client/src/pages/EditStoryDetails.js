@@ -12,9 +12,10 @@ import { PulseLoader, RotateLoader, SyncLoader } from "react-spinners";
 import getDate from "../utils/getDate";
 import StoryDetails from "../components/StoryDetails";
 import { IoIosArrowBack } from "react-icons/io";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 function EditStoryDetails() {
+  const queryClient = useQueryClient();
   const {
     storyState,
     alertState,
@@ -78,6 +79,15 @@ function EditStoryDetails() {
     setTags(myStory.tags);
   }, [storyState.myStory]);
 
+  const mutation = useMutation(
+    (data) => updateStory(data.story_id, data.storyDetails),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["myStories"]);
+      },
+    }
+  );
+
   const handleCoverChange = (e) => {
     updateCover(e.target.files[0], story_id);
     setTimestamp(Date.now());
@@ -95,9 +105,10 @@ function EditStoryDetails() {
     navigate("/myStories");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     storyDetails.tags = tags;
-    updateStory(story_id, storyDetails);
+    mutation.mutate({ story_id, storyDetails });
   };
 
   return (

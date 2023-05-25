@@ -89,8 +89,6 @@ function Writing() {
 
     const divArray = divElements.map((div) => he.decode(div.outerHTML));
 
-    console.log(divArray);
-
     const chapter = {
       title: chapterTitle,
       content: content,
