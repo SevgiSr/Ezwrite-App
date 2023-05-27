@@ -15,6 +15,7 @@ import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClipLoader, SyncLoader } from "react-spinners";
+import { ProfileContext } from "../../context/profileContext";
 
 function Chapter() {
   const queryClient = useQueryClient();
@@ -279,8 +280,16 @@ function ParagraphComments({ comments, paragraph_id, openModal }) {
 function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
   const queryClient = useQueryClient();
   const { story_id } = useParams();
-  const { state, alertState, voteChapter, unvoteChapter } =
-    useContext(StoryContext);
+  const {
+    state,
+    alertState,
+    voteChapter,
+    unvoteChapter,
+    addToReadingList,
+    createReadingList,
+  } = useContext(StoryContext);
+  const [title, setTitle] = useState("");
+  const { profileState } = useContext(ProfileContext);
   const [active, setActive] = useState({ upvote: false, downvote: false });
 
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -348,6 +357,14 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
   //if its == 1 display voted
   //if its == -1 display downwoted
 
+  const handleAddToReadingList = (readingListId) => {
+    addToReadingList(readingListId, state.story._id);
+  };
+
+  const handleCreateReadingList = (title) => {
+    createReadingList(title, state.story._id);
+  };
+
   return (
     <header className="chapter-header">
       <div className="dropdown">
@@ -359,7 +376,42 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
             <ClipLoader size={15} color="#222" />
           </div>
         )}
-        <button className="add-list-btn orange-button">+</button>
+
+        <DropdownMenu
+          buttonClass="add-list-btn orange-button"
+          button={<span>+</span>}
+          menu={
+            <>
+              <div>Reading Lists</div>
+              {profileState.profile.readingLists?.map((readingList) => {
+                return (
+                  <div key={readingList._id} className="dropdown-item">
+                    <button
+                      className="readingList"
+                      onClick={() => handleAddToReadingList(readingList._id)}
+                    >
+                      <div>{readingList.title}</div>
+                    </button>
+                  </div>
+                );
+              })}
+              <div className="new-readingList">
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  type="text"
+                  placeholder="Add new reading list..."
+                />
+                <button
+                  onClick={() => handleCreateReadingList(title)}
+                  className="orange-button btn"
+                >
+                  +
+                </button>
+              </div>
+            </>
+          }
+        />
 
         <button
           onClick={(e) => {

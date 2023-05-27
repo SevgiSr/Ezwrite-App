@@ -127,6 +127,29 @@ function Navbar() {
       </form>
 
       <div className="section">
+        <nav id="read-dropdown">
+          <DropdownMenu
+            button={
+              <>
+                Read
+                <AiFillCaretDown
+                  style={{ marginLeft: "8px", fontSize: "10px" }}
+                />
+              </>
+            }
+            menu={
+              <>
+                <Link to={`/library`} className="dropdown-item">
+                  Continue Reading
+                </Link>
+                <Link to={`/library`} className="dropdown-item">
+                  Reading List
+                </Link>
+              </>
+            }
+          />
+        </nav>
+
         <nav id="write-dropdown">
           <DropdownMenu
             button={

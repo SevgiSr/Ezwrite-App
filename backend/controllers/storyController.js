@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import Vote from "../db/models/Vote.js";
 import Progress from "../db/models/Progress.js";
 import Paragraph from "../db/models/Paragraph.js";
+import ReadingList from "../db/models/ReadingList.js";
 
 const populateStory = {
   path: "story",
@@ -371,6 +372,33 @@ const incrementViewCount = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
+const createReadingList = async (req, res) => {
+  const { title, story_id } = req.body;
+  const readingList = await ReadingList.create({ title });
+  if (story_id) {
+    readingList.stories.push(story_id);
+    readingList.save();
+  }
+  await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { $push: { readingLists: readingList._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({ readingList });
+};
+
+const addToReadingList = async (req, res) => {
+  const readingList = await ReadingList.findByIdAndUpdate(
+    req.params.readingListId,
+    {
+      $push: { stories: req.body.story_id },
+    },
+    { upsert: true, new: true, runValidators: true }
+  );
+  res.status(StatusCodes.OK);
+};
+
 export {
   getByCategory,
   getByQuery,
@@ -385,4 +413,6 @@ export {
   getAll,
   setProgress,
   getProgress,
+  createReadingList,
+  addToReadingList,
 };

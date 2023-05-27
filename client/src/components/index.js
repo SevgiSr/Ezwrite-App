@@ -7,7 +7,7 @@ import Conversation from "./Conversation";
 import Story from "./Story";
 import Message from "./Message";
 import UserCard from "./UserCard";
-import ReadingList from "./ReadingList";
+import ReadingLists from "./ReadingLists";
 import StoryDetailed from "./StoryDetailed";
 
 export {
@@ -20,6 +20,6 @@ export {
   Story,
   Message,
   UserCard,
-  ReadingList,
+  ReadingLists,
   StoryDetailed,
 };

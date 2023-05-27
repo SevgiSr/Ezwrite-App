@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { StoryContext } from "../../context/storyContext";
 import StyledStory from "./styles/Story.styled";
 import Cover from "../../components/Cover";
@@ -10,19 +10,32 @@ import { AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 
 function Story() {
-  const { state, getStory, getProgress } = useContext(StoryContext);
-  const { story } = state;
+  const { state, getStory, getProgress, setChapter } = useContext(StoryContext);
+
   const { story_id } = useParams();
+  const location = useLocation();
 
-  //story ay appear empty on first renders so use state?.author?.name
-  useEffect(() => {
-    getStory(story_id);
-  }, []);
-
-  const { data: progress = {} } = useQuery({
+  const {
+    data: progress = {},
+    isLoading,
+    isFetching,
+    status,
+  } = useQuery({
     queryKey: ["progress", story_id],
     queryFn: () => getProgress(story_id),
   });
+
+  const { chapters, story } = progress;
+
+  useEffect(() => {
+    if (!isFetching && status === "success") {
+      setChapter(chapters[0], story);
+    }
+  }, [location, isFetching]);
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <StyledStory>

@@ -29,6 +29,7 @@ import {
   Messages,
   Notifications,
   Settings,
+  Library,
 } from "./pages/dashboard";
 import EditStoryDetails from "./pages/EditStoryDetails";
 
@@ -62,6 +63,7 @@ function App() {
               <Route path="activity" element={<Activity />} />
             </Route>
             <Route path="/myStories" element={<MyStories />} />
+            <Route path="/library" element={<Library />} />
             <Route path="/stories/:category" element={<Search />} />
             <Route path="/stories/search/:query" element={<Search />} />
             <Route path="/story/:story_id" element={<Story />} />

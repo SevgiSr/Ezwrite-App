@@ -1,29 +1,16 @@
 import styled from "styled-components";
 
 const StyledAbout = styled.div`
-  width: 70%;
   margin: 0 auto;
   box-sizing: border-box;
   padding-bottom: 3rem;
   display: flex;
   justify-content: space-between;
-  @media only screen and (max-width: 1000px) {
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    .info {
-      min-width: 100%;
-      margin-bottom: 1rem;
-    }
-    .stories {
-      min-width: 100%;
-    }
-  }
 
   .info {
     font-size: 15px;
     color: #222;
-    width: 25%;
+    width: 28%;
     padding: 1rem;
     height: fit-content;
     box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);
@@ -36,35 +23,82 @@ const StyledAbout = styled.div`
       }
     }
   }
-  .stories {
-    width: 65%;
-    padding: 1rem;
-    box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);
-    .stories-header {
-      margin-bottom: 1.5rem;
-      h3 {
-        font-size: 24px;
-        font-weight: 600;
-        color: #222;
-        display: flex;
-        justify-content: space-between;
-        .edit-icon {
-          cursor: pointer;
-          font-size: 30px;
+  .work-info {
+    width: 68%;
+    .stories {
+      padding: 1rem;
+
+      .stories-header {
+        margin-bottom: 1.5rem;
+        h3 {
+          font-size: 24px;
+          font-weight: 600;
+          color: #222;
           display: flex;
-          align-items: center;
+          justify-content: space-between;
+          .edit-icon {
+            cursor: pointer;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+          }
+        }
+        .meta-data {
+          display: inline-block;
+          margin-top: 5px;
+          font-size: 15px;
+          color: #6f6f6f;
+          span {
+            margin-right: 10px;
+          }
         }
       }
-      .meta-data {
-        display: inline-block;
-        margin-top: 5px;
-        font-size: 15px;
+      .show-more {
+        width: 100%;
+        background-color: #eee;
         color: #6f6f6f;
-        span {
-          margin-right: 10px;
+        text-align: center;
+        border: none;
+        font-size: 16px;
+        padding: 0.6rem 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .icon {
+          margin-left: 10px;
+        }
+        :hover {
+          color: #6f6f6f;
         }
       }
     }
+
+    .readingLists {
+      margin-top: 1rem;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    .info {
+      min-width: 100%;
+      margin-bottom: 1rem;
+    }
+    .work-info {
+      min-width: 100%;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    width: 740px;
+  }
+  @media only screen and (min-width: 992px) {
+    width: 960px;
+  }
+  @media only screen and (min-width: 1350px) {
+    width: 1160px;
   }
 `;
 

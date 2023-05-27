@@ -7,6 +7,7 @@ import Messages from "./Messages";
 import Inbox from "./Inbox";
 import Notifications from "./Notifications";
 import Settings from "./Settings";
+import Library from "./Library";
 
 export {
   Home,
@@ -18,4 +19,5 @@ export {
   Inbox,
   Notifications,
   Settings,
+  Library,
 };

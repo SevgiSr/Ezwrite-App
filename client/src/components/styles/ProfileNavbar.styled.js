@@ -8,8 +8,8 @@ const StyledProfileNavbar = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
+
   .parent {
-    width: 70%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -28,7 +28,7 @@ const StyledProfileNavbar = styled.div`
     display: flex;
   }
 
-  @media only screen and (max-width: 1000px) {
+  @media only screen and (max-width: 500px) {
     button {
       .btn-text {
         display: none;
@@ -39,6 +39,22 @@ const StyledProfileNavbar = styled.div`
     }
     .parent {
       width: 95%;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    .parent {
+      width: 740px;
+    }
+  }
+  @media only screen and (min-width: 992px) {
+    .parent {
+      width: 960px;
+    }
+  }
+  @media only screen and (min-width: 1350px) {
+    .parent {
+      width: 1160px;
     }
   }
 `;

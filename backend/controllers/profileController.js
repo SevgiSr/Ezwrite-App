@@ -8,7 +8,11 @@ import ReadingList from "../db/models/ReadingList.js";
 const getProfile = async (req, res) => {
   const profile = await User.findOne({ name: req.params.username })
     .populate("stories followers following")
-    .populate({ path: "activity", populate: "sender" });
+    .populate({ path: "activity", populate: "sender" })
+    .populate({
+      path: "readingLists",
+      populate: { path: "stories", populate: "author" },
+    });
 
   let isMainUser = false;
   if (String(profile._id) === req.user.userId) {
@@ -121,18 +125,6 @@ const editProfile = async (req, res) => {
   res.status(StatusCodes.OK).json({ newUser });
 };
 
-const addReadingList = async (req, res) => {
-  const readingList = await ReadingList.create({ title: req.params.title });
-
-  await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { $push: { readingLists: readingList._id } },
-    { upsert: true, new: true, runValidators: true }
-  );
-
-  res.status(StatusCodes.OK).json({ readingList });
-};
-
 const getProfileSettings = async (req, res) => {
   const profileSettings = await User.findById(req.user.userId).select(
     "name AIKey"
@@ -147,6 +139,5 @@ export {
   getProfileConv,
   addProfileConv,
   editProfile,
-  addReadingList,
   getProfileSettings,
 };

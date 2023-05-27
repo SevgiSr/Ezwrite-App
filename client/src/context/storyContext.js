@@ -222,6 +222,30 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const addToReadingList = async (readingListId, story_id) => {
+    try {
+      const { data } = await authFetch.patch(
+        `/stories/readingLists/${readingListId}`,
+        {
+          story_id,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createReadingList = async (title, story_id) => {
+    try {
+      const { data } = await authFetch.post(`/stories/readingLists`, {
+        title,
+        story_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <StoryContext.Provider
       value={{
@@ -240,6 +264,8 @@ export const StoryProvider = ({ children }) => {
         getAll,
         getProgress,
         setProgress,
+        createReadingList,
+        addToReadingList,
       }}
     >
       {children}

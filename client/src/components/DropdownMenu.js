@@ -14,7 +14,7 @@ function DropdownMenu(props) {
   const menuRef = useRef(null);
 
   const listener = (e) => {
-    if (e.target !== buttonRef.current && e.target !== menuRef.current) {
+    if (e.target !== buttonRef.current && !menuRef.current.contains(e.target)) {
       setShowState("");
     } else if (e.target === buttonRef.current) {
       let value;
