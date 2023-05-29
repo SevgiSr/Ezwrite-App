@@ -121,7 +121,7 @@ function Navbar() {
           onChange={handleChange}
           name="query"
           value={query}
-          placeholder="Search"
+          placeholder="Search..."
           type="text"
         />
       </form>

@@ -16,6 +16,7 @@ import {
   getProgress,
   addToReadingList,
   createReadingList,
+  addStoryConv,
 } from "../controllers/storyController.js";
 
 router.route("/:category").get(getByCategory);
@@ -23,7 +24,7 @@ router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
-router.route("/story/:id").get(getStory);
+router.route("/story/:id").get(getStory).post(addStoryConv);
 router.route("/readingLists/:readingListId").patch(addToReadingList);
 
 router.route("/readingLists").post(createReadingList);

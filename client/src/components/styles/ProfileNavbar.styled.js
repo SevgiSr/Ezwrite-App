@@ -3,11 +3,13 @@ import styled from "styled-components";
 const StyledProfileNavbar = styled.div`
   width: 100%;
   height: 100%;
-  box-shadow: 0 2px 5px rgb(120 120 120 / 50%);
+  border-bottom: 1px solid var(--background1);
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
   position: relative;
+  background-color: var(--background3);
+  color: var(--font2);
 
   .parent {
     display: flex;
@@ -16,7 +18,7 @@ const StyledProfileNavbar = styled.div`
     justify-content: space-between;
   }
   .navbar-overlay {
-    background-color: #fff;
+    background-color: var(--background5);
     opacity: 0.75;
     position: absolute;
     top: 0;
@@ -26,6 +28,7 @@ const StyledProfileNavbar = styled.div`
   }
   .buttons {
     display: flex;
+    border: var(--background3);
   }
 
   @media only screen and (max-width: 500px) {

@@ -3,14 +3,16 @@ import styled from "styled-components";
 const StyledMyStory = styled.div`
   display: flex;
   padding: 20px 30px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--font2);
   position: relative;
 
   .story-title {
     width: fit-content;
+    border-bottom: 2px solid transparent;
+    color: var(--font1);
   }
   .story-title:hover {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--text-main-orange);
     cursor: pointer;
   }
 
@@ -22,11 +24,13 @@ const StyledMyStory = styled.div`
     overflow: scroll;
     max-height: 200px;
     z-index: 999;
+    scrollbar-color: var(--background5);
     .dropdown-items {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
       .dropdown-item {
         font-size: 12px;
         text-align: start;
@@ -53,6 +57,7 @@ const StyledMyStory = styled.div`
   .info {
     text-align: start;
     margin-right: 2rem;
+    color: var(--font2);
   }
 
   .buttons {

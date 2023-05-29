@@ -6,8 +6,7 @@ const StyledRespondParent = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
-  background-color: #eee;
-  box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
+  background-color: var(--background3);
 
   form {
     width: 500px;
@@ -21,7 +20,8 @@ const StyledRespondParent = styled.div`
       font-size: 16px;
       font-weight: 300;
       line-height: 24px;
-      color: #6f6f6f;
+      color: var(--font1);
+      background-color: var(--background4);
       width: 84%;
       height: 30px;
       border: none;

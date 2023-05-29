@@ -9,22 +9,56 @@ const StyledAbout = styled.div`
 
   .info {
     font-size: 15px;
-    color: #222;
+    color: var(--font1);
+    background-color: var(--background5);
     width: 28%;
     padding: 1rem;
     height: fit-content;
-    box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);
+    .pronouns {
+      border-bottom: 1px solid var(--text-main-orange);
+      margin-bottom: 10px;
+      width: fit-content;
+    }
     .location {
-      margin: 1rem 0;
+      display: flex;
       padding: 10px 0;
-      border-bottom: 1px solid #eee;
       .icon {
-        margin-right: 10px;
+        margin-right: 5px;
+        color: var(--text-main-orange);
+      }
+    }
+    .joined {
+      border-bottom: 1px solid var(--font2);
+      padding: 10px 0;
+
+      span {
+        font-weight: 600;
+      }
+    }
+
+    .website {
+      display: flex;
+      cursor: pointer;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--font2);
+      margin-bottom: 1rem;
+      .text {
+        border-bottom: 1px solid transparent;
+        :hover {
+          border-bottom: 1px solid var(--text-main-orange);
+        }
+      }
+
+      .icon {
+        margin-right: 5px;
+        color: var(--text-main-orange);
       }
     }
   }
   .work-info {
     width: 68%;
+    background-color: var(--background5);
+    color: var(--font1);
     .stories {
       padding: 1rem;
 
@@ -33,7 +67,6 @@ const StyledAbout = styled.div`
         h3 {
           font-size: 24px;
           font-weight: 600;
-          color: #222;
           display: flex;
           justify-content: space-between;
           .edit-icon {
@@ -47,7 +80,7 @@ const StyledAbout = styled.div`
           display: inline-block;
           margin-top: 5px;
           font-size: 15px;
-          color: #6f6f6f;
+          color: var(--font2);
           span {
             margin-right: 10px;
           }

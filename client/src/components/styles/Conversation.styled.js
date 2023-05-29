@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const StyledConversation = styled.article`
-  color: #6f6f6f;
-  box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
+  color: var(--font1);
+  background-color: var(--background5);
   padding: 20px 20px;
   margin-top: 1.7rem;
 
@@ -22,7 +22,7 @@ const StyledConversation = styled.article`
           font-weight: 600;
           font-size: 16px;
           line-height: 16px;
-          color: #000;
+          color: var(--font1);
         }
         p {
           font-size: 13px;

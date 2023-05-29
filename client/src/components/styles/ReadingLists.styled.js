@@ -4,9 +4,9 @@ const StyledReadingLists = styled.div`
   padding: 1rem 1.5rem;
   font-size: 24px;
   font-weight: 600;
-  color: #222;
+  color: var(--font1);
   header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--font1);
     margin-bottom: 1rem;
     padding-bottom: 1rem;
   }
@@ -18,7 +18,7 @@ const StyledReadingLists = styled.div`
         border-bottom: 3px solid transparent;
       }
       .text:hover {
-        border-bottom: 3px solid #222;
+        border-bottom: 3px solid var(--font1);
       }
       width: fit-content;
       text-decoration: none;
@@ -35,14 +35,14 @@ const StyledReadingLists = styled.div`
         font-size: 15px;
         line-height: 18px;
         font-weight: 600;
-        color: #222;
+        color: var(--font1);
         height: 35px;
         overflow: hidden;
       }
       .meta-data {
         width: 100%;
         justify-content: space-between;
-        color: #6f6f6f;
+        color: var(--font2);
         display: flex;
         font-size: 12px;
         font-weight: 300;

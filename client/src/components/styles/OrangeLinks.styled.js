@@ -9,7 +9,7 @@ const StyledOrangeLinks = styled.nav`
 
     .link {
       text-decoration: none;
-      color: #222;
+      color: var(--font2);
       line-height: 58px;
       font-size: 17px;
       font-weight: 500;

@@ -153,6 +153,17 @@ export const StoryProvider = ({ children }) => {
       console.log(error.response.data.msg);
     }
   };
+  const addStoryConv = async (story_id, comment_content) => {
+    try {
+      const { data } = await authFetch.post(`/stories/story/${story_id}`, {
+        comment_content,
+      });
+      const { newConv } = data;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
 
   //you need to call dispatch before making backend request to change UI faster
   const voteChapter = async (chapter_id, vote_value) => {
@@ -266,6 +277,7 @@ export const StoryProvider = ({ children }) => {
         setProgress,
         createReadingList,
         addToReadingList,
+        addStoryConv,
       }}
     >
       {children}

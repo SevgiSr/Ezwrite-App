@@ -41,7 +41,7 @@ const StyledProfileView = styled.header`
 
   .edit-mode {
     width: 100vw;
-    z-index: 2;
+    z-index: 998;
     nav {
       display: flex;
       align-items: center;
@@ -49,8 +49,8 @@ const StyledProfileView = styled.header`
       height: 60px;
       position: fixed;
       top: 0;
-      z-index: 2;
-      background-color: white;
+      z-index: 999;
+      background-color: var(--background3);
       width: 100vw;
       button {
         margin-right: 50px;
@@ -84,7 +84,7 @@ const StyledProfileView = styled.header`
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 2;
+      z-index: 999;
       background-color: transparent;
       cursor: pointer;
       top: 0;
@@ -97,7 +97,7 @@ const StyledProfileView = styled.header`
 
   .upload-background {
     margin-bottom: 10px;
-    z-index: 2;
+    z-index: 999;
     input {
       display: none;
     }
@@ -133,7 +133,7 @@ const StyledProfileView = styled.header`
       right: 0;
       bottom: 0;
       width: 100%;
-      z-index: 2;
+      z-index: 999;
       background: rgba(255, 255, 255, 0.667);
       border-radius: 5px;
       border: none;

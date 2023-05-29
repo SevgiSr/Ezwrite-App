@@ -9,8 +9,8 @@ const StyledNavbar = styled.header`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
-  background-color: #fff;
+  border-bottom: 1px solid var(--background1);
+  background-color: var(--background2);
   padding: 0px 20px;
   box-sizing: border-box;
 
@@ -23,8 +23,9 @@ const StyledNavbar = styled.header`
     padding: 5px 10px;
     border: none;
     cursor: pointer;
-    color: #222;
     font-size: 16px;
+    background-color: var(--background2);
+    color: var(--font2);
   }
 
   #write-dropdown,
@@ -57,7 +58,7 @@ const StyledNavbar = styled.header`
         flex-direction: column;
         > * {
           text-decoration: none;
-          color: #222;
+          color: #fff;
           padding: 10px 0;
         }
         .symbol {
@@ -75,16 +76,21 @@ const StyledNavbar = styled.header`
 
     button {
       border: none;
-      font-size: 18px;
+      font-size: 20px;
       padding: 0;
       margin: 0;
+      color: var(--icons);
     }
 
     input {
-      padding: 5px 10px;
+      padding: 9px 13px;
+      border-radius: 9px;
+      width: 270px;
+      background-color: var(--background1);
+      color: var(--font1);
 
       ::placeholder {
-        color: #222;
+        color: var(--font2);
         font-size: 15px;
         font-weight: 500;
       }

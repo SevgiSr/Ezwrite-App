@@ -12,7 +12,7 @@ const StyledStory = styled.div`
     word-wrap: break-word;
 
     .title {
-      color: #222;
+      color: var(--font1);
       text-decoration: none;
       h3 {
         font-size: 18px;
@@ -28,10 +28,11 @@ const StyledStory = styled.div`
 
     .author {
       margin-bottom: 5px;
+      color: var(--font1);
     }
 
     .meta-data {
-      color: #6f6f6f;
+      color: var(--font2);
       display: flex;
       font-size: 12px;
       width: fit-content;
@@ -49,7 +50,7 @@ const StyledStory = styled.div`
 
     .description {
       margin-top: 7px;
-      color: #6f6f6f;
+      color: var(--font1);
       font-size: 12px;
       line-height: 21px;
     }

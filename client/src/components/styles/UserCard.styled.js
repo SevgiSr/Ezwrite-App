@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 const StyledUserCard = styled.article`
   width: fit-content;
+  color: var(--font1);
+  background-color: var(--background5);
 
   .background {
     margin-bottom: 1rem;
@@ -24,11 +26,12 @@ const StyledUserCard = styled.article`
       text-align: center;
 
       .profileName {
-        color: #000;
         font-size: 18px;
+        color: var(--font1);
+        font-weight: 600;
       }
       .username {
-        color: #6f6f6f;
+        color: var(--font1);
       }
     }
     .profile-button {
@@ -40,7 +43,8 @@ const StyledUserCard = styled.article`
     .info {
       display: flex;
       justify-content: space-around;
-      background-color: #f0fbfb;
+      background-color: var(--background3);
+      color: var(--font2);
       padding: 10px 0;
       width: 100%;
       > * {

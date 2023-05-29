@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { StoryContext } from "../../context/storyContext";
 import StyledStory from "./styles/Story.styled";
 import Cover from "../../components/Cover";
@@ -8,10 +8,13 @@ import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
+import Respond from "../../components/Respond";
+import { UserContext } from "../../context/userContext";
 
 function Story() {
-  const { state, getStory, getProgress, setChapter } = useContext(StoryContext);
-
+  const { state, getStory, getProgress, setChapter, addStoryConv } =
+    useContext(StoryContext);
+  const { userState } = useContext(UserContext);
   const { story_id } = useParams();
   const location = useLocation();
 
@@ -39,27 +42,70 @@ function Story() {
 
   return (
     <StyledStory>
-      <StoryCard story={story} progress={progress} />
-      <div className="story-info">
-        <div className="author">
-          <ProfilePicture
-            filename={story.author?._id}
-            width="30px"
-            height="30px"
+      <header>
+        <StoryCard story={story} progress={progress} />
+      </header>
+      <main>
+        <section>
+          <div className="story-info">
+            <div className="author">
+              <ProfilePicture
+                filename={story.author?._id}
+                width="30px"
+                height="30px"
+              />
+              <span className="username">{story?.author?.name}</span>
+            </div>
+            <div className="status">Ongoing</div>
+            <div className="desc">{story?.description}</div>
+            <div className="tags">
+              {story.tags.map((tag) => {
+                return <span className="tag">{tag}</span>;
+              })}
+            </div>
+          </div>
+          <div className="table-contents">
+            <h2>Table of Contents</h2>
+            <ul>
+              {story?.chapters?.map((chapter) => {
+                return (
+                  <li key={chapter._id}>
+                    <Link to={`/${story._id}/${chapter._id}`}>
+                      {chapter.title}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+        <section>
+          <Respond
+            id={story_id}
+            text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            type="chapter"
+            sender={userState.user._id}
+            location={story_id}
+            route={location.pathname}
+            dest={story_id}
+            to={story.author?.name}
+            addComment={addStoryConv}
           />
-          <span className="username">{story?.author?.name}</span>
-        </div>
-        <div className="status">Ongoing</div>
-        <div className="desc">{story?.description}</div>
-      </div>
-      <div className="table-contents">
-        <h2>Table of Contents</h2>
-        <ul>
-          {story?.chapters?.map((chapter) => {
-            return <li key={chapter._id}>{chapter.title}</li>;
-          })}
-        </ul>
-      </div>
+          {/* <div className="column-reverse">
+            {state.chapter.comments?.map((comment) => {
+              return (
+                <div key={comment._id}>
+                  <Conversation
+                    conv={comment}
+                    addConvComment={addConvComment}
+                  />
+                </div>
+              );
+            })}
+          </div> */}
+        </section>
+      </main>
     </StyledStory>
   );
 }
@@ -104,7 +150,9 @@ const StoryCard = ({ story, progress }) => {
             <div className="value">10</div>
           </div>
         </div>
-        <button onClick={handleClick}>Start Reading</button>
+        <button className="orange-button btn" onClick={handleClick}>
+          Start Reading
+        </button>
       </div>
     </div>
   );

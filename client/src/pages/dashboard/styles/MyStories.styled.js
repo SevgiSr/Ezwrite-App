@@ -7,8 +7,8 @@ const StyledMyStories = styled.div`
     display: inline-block;
   }
   text-align: center;
+  color: var(--font1);
   h2 {
-    color: #222;
     font-size: 32px;
     font-weight: 600;
     line-height: 36px;
@@ -28,7 +28,8 @@ const StyledMyStories = styled.div`
     }
 
     .stories-container {
-      color: #6f6f6f;
+      background-color: var(--background5);
+      padding: 1rem;
       box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%),
         0 4px 5px 0 rgb(34 34 34 / 10%);
     }

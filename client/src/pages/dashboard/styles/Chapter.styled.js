@@ -6,8 +6,9 @@ const StyledChapter = styled.div`
   align-items: center;
   justify-content: center;
   padding-top: 100px;
+  color: var(--font1);
+
   .chapter-header {
-    box-shadow: 0 2px 2px rgb(120 120 120 / 50%);
     position: fixed;
     top: 54px;
     left: 0;
@@ -17,7 +18,7 @@ const StyledChapter = styled.div`
     margin-bottom: 4rem;
     display: flex;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: var(--background3);
 
     .progress {
       position: absolute;
@@ -25,7 +26,7 @@ const StyledChapter = styled.div`
       left: 0;
       right: 0;
       width: 100%;
-      background-color: #fff;
+      background-color: var(--background3);
     }
 
     .dropdown-menu-parent {
@@ -50,7 +51,8 @@ const StyledChapter = styled.div`
     .story-dropdown-btn {
       width: 300px;
       height: 100%;
-      color: #6f6f6f;
+      background-color: var(--background3);
+      color: var(--font1);
       padding: 5px 10px;
       border: none;
       border-right: 1px solid #eee;
@@ -59,7 +61,7 @@ const StyledChapter = styled.div`
       align-items: center;
 
       :hover {
-        background-color: #eee;
+        background-color: var(--background5);
       }
 
       .story-card {
@@ -75,7 +77,6 @@ const StyledChapter = styled.div`
           .title {
             font-weight: 700;
             font-size: 15px;
-            color: #222;
           }
         }
       }
@@ -93,11 +94,17 @@ const StyledChapter = styled.div`
       align-items: center;
       button {
         margin-right: 2.5rem;
+        background-color: var(--background3);
       }
 
       .add-list-btn {
         font-size: 20px;
         padding: 5px 15px;
+        background-color: var(--button-main);
+      }
+
+      .add-list-menu {
+        color: var(--font1);
       }
 
       .vote {
@@ -129,10 +136,12 @@ const StyledChapter = styled.div`
   .chapter {
     width: 600px;
     word-wrap: break-word;
+    color: var(--font1);
     .metadata {
+      color: var(--font2);
       display: flex;
       justify-content: center;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--font2);
       margin: 1rem 0;
       padding-bottom: 2rem;
       > * {
@@ -145,11 +154,9 @@ const StyledChapter = styled.div`
     }
     h1 {
       text-align: center;
-
       font-weight: 700;
       font-size: 32px;
       line-height: 40px;
-      color: #121212;
     }
     .paragraph {
       position: relative;
@@ -169,7 +176,7 @@ const StyledChapter = styled.div`
         font-size: 23px;
         cursor: pointer;
         .icon {
-          color: #6f6f6f;
+          color: var(--icons);
         }
         .count {
           position: absolute;
@@ -180,7 +187,7 @@ const StyledChapter = styled.div`
           bottom: 5px;
           left: 0;
           right: 0;
-          color: #fff;
+          color: var(--font1);
           font-size: 12px;
           font-weight: 600;
         }
@@ -195,6 +202,7 @@ const StyledChapter = styled.div`
       }
     }
     .comments-modal {
+      background-color: var(--background2);
       overflow-y: scroll;
       display: flex;
       flex-direction: column;
@@ -204,10 +212,8 @@ const StyledChapter = styled.div`
       bottom: 0;
       max-width: 500px;
       z-index: 1000;
-      background-color: white;
       border-radius: 5px;
       padding: 30px;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
     }
     .open-modal {
       display: block;

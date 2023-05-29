@@ -4,7 +4,7 @@ const StyledDropdownMenu = styled.div`
   .dropdown-menu-parent {
     opacity: 0;
     position: relative;
-    z-index: 1;
+    z-index: 999;
     pointer-events: none;
     transform: translateY(-10px);
     transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
@@ -12,7 +12,7 @@ const StyledDropdownMenu = styled.div`
 
   .dropdown-menu {
     position: absolute;
-    background-color: white;
+    background-color: var(--background5);
     padding: 12px 3px;
     border: transparent;
     border-radius: 0.25rem;
@@ -27,9 +27,10 @@ const StyledDropdownMenu = styled.div`
 
   .dropdown-item {
     text-decoration: none;
-    color: #222;
+    color: var(--font1);
     font-size: 16px;
     padding: 10px 5px;
+    white-space: nowrap;
   }
 
   .show {

@@ -54,7 +54,7 @@ function Chapter() {
     status,
     refetch,
   } = useQuery({
-    queryKey: ["progress", story_id],
+    queryKey: ["profile", story_id],
     queryFn: () => getProgress(story_id),
     refetchOnWindowFocus: false,
   });
@@ -290,6 +290,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
   } = useContext(StoryContext);
   const [title, setTitle] = useState("");
   const { profileState } = useContext(ProfileContext);
+
   const [active, setActive] = useState({ upvote: false, downvote: false });
 
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -379,6 +380,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
 
         <DropdownMenu
           buttonClass="add-list-btn orange-button"
+          menuClass="add-list-menu"
           button={<span>+</span>}
           menu={
             <>

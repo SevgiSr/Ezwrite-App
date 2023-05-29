@@ -40,6 +40,12 @@ const StorySchema = new mongoose.Schema(
         ref: "Progress",
       },
     ],
+    comments: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );

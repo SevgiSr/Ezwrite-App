@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNewStory = styled.div`
-  color: #6f6f6f;
+  color: var(--font1);
   display: flex;
   align-items: start;
   justify-content: center;
@@ -17,7 +17,7 @@ const StyledNewStory = styled.div`
     width: 300px;
     height: 468px;
     .label {
-      background-color: #eee;
+      background-color: var(--background5);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -49,6 +49,7 @@ const StyledNewStory = styled.div`
     width: 50%;
     display: flex;
     flex-direction: column;
+    background-color: var(--background5);
     .item {
       margin-bottom: 3rem;
       display: flex;
@@ -58,7 +59,7 @@ const StyledNewStory = styled.div`
       width: fit-content;
     }
     h1 {
-      color: #000;
+      color: var(--font1);
       border-bottom: 5px solid #ff6122;
       width: fit-content;
       margin-bottom: 2rem;
@@ -66,7 +67,7 @@ const StyledNewStory = styled.div`
     label {
       font-size: 21px;
       font-weight: 600;
-      color: #222;
+      color: var(--font2);
       margin-bottom: 15px;
       display: inline-block;
     }
@@ -74,6 +75,8 @@ const StyledNewStory = styled.div`
     #desc {
       border: 1px solid #eee;
       padding: 10px 20px;
+      background-color: var(--background4);
+      color: var(--font1);
     }
 
     #title:focus,
@@ -87,6 +90,8 @@ const StyledNewStory = styled.div`
     #category select {
       font-size: 15px;
       padding: 10px;
+      background-color: var(--background4);
+      color: var(--font1);
     }
 
     /* TAGS */
@@ -96,7 +101,8 @@ const StyledNewStory = styled.div`
     }
     .tag-item {
       display: flex;
-      background-color: #eee;
+      background-color: var(--background4);
+      color: var(--font1);
       width: fit-content;
       padding: 10px;
       border-radius: 100px;
@@ -107,7 +113,7 @@ const StyledNewStory = styled.div`
       .icon {
         margin-left: 5px;
         font-size: 10px;
-        color: #000;
+        color: var(--font1);
       }
       .delete-tag {
         cursor: pointer;
@@ -121,23 +127,27 @@ const StyledNewStory = styled.div`
       border: 1px solid #eee;
       border-radius: 100px;
       font-size: 13px;
-      color: #6f6f6f;
+      color: var(--font2);
       cursor: pointer;
       .icon {
         margin-left: 5px;
         font-size: 15px;
-        color: #000;
+        color: var(--font1);
       }
     }
     .tag-input {
       border: none;
       font-size: 17px;
+      background-color: var(--background5);
+      color: var(--font1);
     }
 
     /* language */
     .language {
       select {
         padding: 10px;
+        background-color: var(--background4);
+        color: var(--font1);
       }
     }
     /* submit */

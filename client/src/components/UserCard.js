@@ -49,7 +49,7 @@ const UserCard = ({ user }) => {
 
   if (!user) return null;
   return (
-    <StyledUserCard className="card">
+    <StyledUserCard>
       <Link
         to={`/user/${user.name}`}
         style={{ textDecoration: "none", color: "#222" }}

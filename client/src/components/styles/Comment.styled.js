@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledComment = styled.div`
-  color: #6f6f6f;
+  color: var(--font1);
   display: flex;
   flex-direction: row;
   padding: 10px 0;
@@ -13,7 +13,7 @@ const StyledComment = styled.div`
     .content {
       overflow-wrap: break-word;
       .username {
-        color: black;
+        color: var(--font1);
         font-weight: 600;
         margin-right: 7px;
         line-height: 16px;
@@ -22,14 +22,14 @@ const StyledComment = styled.div`
       .text {
         font-size: 16px;
         line-height: 21px;
-        color: #6f6f6f;
+        color: var(--font1);
       }
     }
 
     .info {
       .date {
         font-size: 13px;
-        color: #6f6f6f;
+        color: var(--font2);
       }
       .reply {
         color: #ff6122;

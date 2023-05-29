@@ -66,7 +66,6 @@ function MyStories({ show }) {
           </header>
 
           <div className="stories-container">
-            <OrangeLinks links={[{ to: "", label: "Tüm Hikayelerim" }]} />
             {myStories.map((story) => {
               return <MyStory key={story._id} story={story} show={show} />;
             })}

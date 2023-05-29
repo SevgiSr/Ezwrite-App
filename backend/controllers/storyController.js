@@ -310,6 +310,27 @@ const addParagraphConv = async (req, res) => {
     .json({ updatedParagraph, newConvs: updatedParagraph.comments });
 };
 
+const addStoryConv = async (req, res) => {
+  const { comment_content } = req.body;
+  const comment = await Comment.create({
+    author: req.user.userId,
+    content: comment_content,
+    subcomments: [],
+  });
+
+  const newConv = await Comment.findById(comment._id)
+    .populate("author")
+    .populate({ path: "subcomments", populate: "author" });
+
+  await Story.findOneAndUpdate(
+    { _id: req.params.id },
+    { $push: { comments: comment._id } },
+    { upsert: true, new: true, runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({ newConv });
+};
+
 const voteChapter = async (req, res) => {
   let vote = await Vote.findOne({
     user: req.user.userId,
@@ -415,4 +436,5 @@ export {
   getProgress,
   createReadingList,
   addToReadingList,
+  addStoryConv,
 };

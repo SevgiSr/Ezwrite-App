@@ -7,6 +7,8 @@ import StoryDetails from "../../../components/StoryDetails";
 import { ReadingLists, StoryDetailed } from "../../../components";
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
+import getDate from "../../../utils/getDate";
+import { FiLink } from "react-icons/fi";
 
 function About() {
   const { profileData } = useOutletContext();
@@ -27,10 +29,18 @@ function About() {
           </span>
           <span>{location}</span>
         </div>
-        <div>{website}</div>
+        <div className="joined">
+          <span>Joined</span> {getDate(profileData.profile.createdAt)}
+        </div>
+        <div className="website">
+          <span className="icon">
+            <FiLink />
+          </span>
+          <span className="text">{website}</span>
+        </div>
       </section>
       <section className="work-info">
-        <div className="stories card">
+        <div className="stories">
           <header className="stories-header">
             <h3>
               <span>Stories by {profileName}</span>
@@ -61,7 +71,7 @@ function About() {
             </button>
           )}
         </div>
-        <div className="readingLists card">
+        <div className="readingLists">
           <ReadingLists readingLists={profileData.profile.readingLists} />
         </div>
       </section>
