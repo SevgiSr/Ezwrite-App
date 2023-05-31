@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { countChapterVotes } from "./storyController.js";
-import { Configuration, OpenAIApi } from "openai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -86,11 +85,16 @@ const createStory = async (req, res) => {
 };
 
 const deleteStory = async (req, res) => {
-  const story = await Story.findOne({ _id: req.params.story_id });
+  const story = await Story.findOne({
+    _id: req.params.story_id,
+    author: req.user.userId,
+  });
 
-  checkPermissions(req.user.userId, story.author._id);
-  await story.delete();
-  res.status(StatusCodes.OK);
+  if (story) {
+    await story.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ response: "deleted!" });
 };
 
 const updateStory = async (req, res) => {
@@ -170,39 +174,6 @@ const createChapter = async (req, res) => {
   res.status(StatusCodes.OK).json({ newStory: story, chapter });
 };
 
-const sendGptPrompt = async (req, res) => {
-  const user = await User.findById(req.user.userId).select("GPTKey");
-
-  const configuration = new Configuration({
-    apiKey: user.GPTKey,
-  });
-
-  const openai = new OpenAIApi(configuration);
-
-  const { style, content, length } = req.body.prompt;
-  console.log(req.body.prompt);
-  let GPTresponse;
-
-  try {
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "assistant",
-          content: `You'll take user's input and write a paragraph consisting of exactyle ${length} amount of sentences and in ${style} manner of what user described in the input. Paragraph should be more valuable in terms of literature.`,
-        },
-        { role: "user", content: content },
-      ],
-    });
-
-    GPTresponse = completion.data.choices[0].message.content;
-  } catch (error) {
-    console.log(error.message);
-  }
-
-  res.status(StatusCodes.OK).json({ GPTresponse });
-};
-
 export {
   getMyStories,
   createStory,
@@ -213,5 +184,4 @@ export {
   createChapter,
   getMyStory,
   updateStory,
-  sendGptPrompt,
 };

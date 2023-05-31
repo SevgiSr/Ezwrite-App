@@ -3,7 +3,6 @@ import styled from "styled-components";
 const StyledMyStory = styled.div`
   display: flex;
   padding: 20px 30px;
-  border-bottom: 1px solid var(--font2);
   position: relative;
 
   .story-title {
@@ -21,9 +20,10 @@ const StyledMyStory = styled.div`
     padding: 0.75rem 0;
     width: 250px;
     border-radius: 0;
-    overflow: scroll;
-    max-height: 200px;
-    z-index: 999;
+    max-height: 250px;
+    max-width: 300px;
+    overflow: auto;
+    background-color: var(--background2);
     scrollbar-color: var(--background5);
     .dropdown-items {
       display: flex;
@@ -34,10 +34,14 @@ const StyledMyStory = styled.div`
       .dropdown-item {
         font-size: 12px;
         text-align: start;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--font2);
         width: 80%;
         p {
-          color: #6f6f6f;
+          color: var(--font2);
+        }
+
+        :last-child {
+          border-bottom: none;
         }
       }
     }
@@ -155,9 +159,6 @@ const StyledMyStory = styled.div`
         border-color: #e1e1e1;
       }
     }
-  }
-  .open-modal {
-    display: block;
   }
 
   .overlay {

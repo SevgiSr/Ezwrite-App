@@ -9,6 +9,7 @@ import Message from "./Message";
 import UserCard from "./UserCard";
 import ReadingLists from "./ReadingLists";
 import StoryDetailed from "./StoryDetailed";
+import LoadingScreen from "./LoadingScreen";
 
 export {
   Navbar,
@@ -22,4 +23,5 @@ export {
   UserCard,
   ReadingLists,
   StoryDetailed,
+  LoadingScreen,
 };

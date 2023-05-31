@@ -10,7 +10,6 @@ import {
   getMyStory,
   updateStory,
   deleteStory,
-  sendGptPrompt,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -80,7 +79,6 @@ router
   });
 
 router.route("/").post(createStory).get(getMyStories);
-router.route("/gpt").post(sendGptPrompt);
 router.route("/update/:story_id").patch(updateStory);
 router.route("/edit/:story_id").get(getMyStory);
 router.route("/delete/:story_id").delete(deleteStory);

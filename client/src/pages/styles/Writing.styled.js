@@ -1,9 +1,6 @@
 import styled from "styled-components";
 
 const StyledWriting = styled.div`
-  body {
-  }
-
   .pageContainer {
     width: 100vw;
     height: 100vh;
@@ -30,16 +27,22 @@ const StyledWriting = styled.div`
     height: fit-content;
     text-align: center;
     font-size: 2rem;
+    background-color: var(--background4);
+    color: var(--font1);
   }
 
   .active-paragraph {
     position: relative;
-    .icon {
+    .AI-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: absolute;
       left: -40px;
       top: 0;
       bottom: 0;
       cursor: pointer;
+      color: var(--font1);
     }
   }
 
@@ -47,6 +50,7 @@ const StyledWriting = styled.div`
     width: 100%;
     border-radius: 9px;
     padding: 5px 10px;
+    background-color: var(--background5);
 
     .options {
       display: flex;

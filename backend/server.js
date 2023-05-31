@@ -42,6 +42,7 @@ import convRoutes from "./routes/convRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js";
+import gptRoutes from "./routes/gptRoutes.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
@@ -49,6 +50,9 @@ import errorHandlerMiddleware from "./middleware/error-handler.js";
 import jwtAuthentication from "./middleware/jwt-auth.js";
 import { UnauthenticatedError } from "./errors/index.js";
 import mongoose from "mongoose";
+
+//for res.flush() so that it sends stream responses immediately instead of buffering
+import compression from "compression";
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -70,6 +74,7 @@ app.use(mongoSanitize());
 //for image
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(compression());
 
 ////  ROUTES  ////
 //  api route
@@ -81,6 +86,7 @@ app.use("/conversations", jwtAuthentication, convRoutes);
 app.use("/messages", jwtAuthentication, messageRoutes);
 app.use("/upload", jwtAuthentication, uploadRoutes);
 app.use("/images", imageRoutes);
+app.use("/gpt", gptRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {

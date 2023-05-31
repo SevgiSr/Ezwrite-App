@@ -13,6 +13,9 @@ const StyledReadingLists = styled.div`
 
   .readingList {
     margin-bottom: 2rem;
+    .stories {
+      display: flex;
+    }
     .title {
       .text {
         border-bottom: 3px solid transparent;
@@ -30,6 +33,13 @@ const StyledReadingLists = styled.div`
 
     .story {
       width: 123px;
+      margin-right: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
       .title {
         display: block;
         font-size: 15px;
@@ -38,9 +48,15 @@ const StyledReadingLists = styled.div`
         color: var(--font1);
         height: 35px;
         overflow: hidden;
+        margin-top: 10px;
+        text-decoration: underline transparent solid 2px;
+
+        :hover {
+          text-decoration: underline var(--text-main-orange) solid 2px;
+        }
       }
       .meta-data {
-        width: 100%;
+        width: 88%;
         justify-content: space-between;
         color: var(--font2);
         display: flex;

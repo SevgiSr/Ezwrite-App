@@ -9,11 +9,10 @@ import { AiOutlineClose } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const MyStory = ({ story }) => {
-  const queryClient = useQueryClient();
+const MyStory = ({ story, setIsModalOpen, isModalOpen, handleDeleteClick }) => {
   const navigate = useNavigate();
-  const { setEditStory, deleteStory } = useContext(MyStoryContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setEditStory } = useContext(MyStoryContext);
+
   const [timestamp, setTimestamp] = useState(Date.now());
   useEffect(() => {
     setTimeout(() => {
@@ -23,26 +22,6 @@ const MyStory = ({ story }) => {
   const handleClick = () => {
     navigate(`/${story._id}`);
     setEditStory(story._id);
-  };
-
-  const mutation = useMutation((data) => deleteStory(data.story_id), {
-    onSuccess: (data, { story_id }) => {
-      console.log(story_id);
-      const myStories = queryClient.getQueryData(["myStories"]);
-
-      const updatedStories = myStories.filter(
-        (story) => story._id !== story_id
-      );
-
-      queryClient.setQueryData(["myStories"], updatedStories);
-
-      queryClient.invalidateQueries(["myStories"]);
-    },
-  });
-
-  const handleDeleteClick = async () => {
-    setIsModalOpen(false);
-    await mutation.mutateAsync({ story_id: story._id });
   };
 
   return (
@@ -76,11 +55,11 @@ const MyStory = ({ story }) => {
             menu={story.chapters.map((chapter) => {
               return (
                 <Link
-                  className="link"
+                  className="dropdown-item"
                   key={chapter._id}
                   to={`/${story._id}/${chapter._id}/writing`}
                 >
-                  <div className="dropdown-item">
+                  <div>
                     {chapter.title}
 
                     <p>Taslak - Ocak 11, 2023</p>
@@ -104,7 +83,14 @@ const MyStory = ({ story }) => {
               <span className="icon">
                 <FaTrashAlt />
               </span>
-              <button onClick={() => setIsModalOpen(true)}>Delete Story</button>
+              <button
+                onClick={() => {
+                  console.log(story.title);
+                  setIsModalOpen(true);
+                }}
+              >
+                Delete Story
+              </button>
             </div>
           }
         />
@@ -112,36 +98,46 @@ const MyStory = ({ story }) => {
 
       {/* WARNING POP-UP */}
 
-      {isModalOpen && <div className="overlay"></div>}
-
-      <div
-        className={"delete-story-modal " + (isModalOpen ? "open-modal" : "")}
-      >
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="close-modal-btn icon"
-        >
-          <AiOutlineClose />
-        </button>
-        <div className="warning">
-          <h2>Are you sure you want to permanently delete your story?</h2>
-          Deleting your story is permanent and cannot be undone. If you're
-          unsure, it's better to unpublish your story. Unpublished stories can
-          only be seen by you, so they don't get any new reads, votes, or
-          comments.
-        </div>
-        <div className="buttons flex-row">
-          <button className="orange-button btn" onClick={handleDeleteClick}>
-            Delete
-          </button>
-          <button
-            className="btn-grey btn"
-            onClick={() => setIsModalOpen(false)}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+      {isModalOpen && (
+        <>
+          <div className="overlay"></div>
+          <div id={story._id} className="delete-story-modal">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="close-modal-btn icon"
+            >
+              <AiOutlineClose />
+            </button>
+            <div className="warning">
+              <h2>Are you sure you want to permanently delete your story?</h2>
+              Deleting your story is permanent and cannot be undone. If you're
+              unsure, it's better to unpublish your story. Unpublished stories
+              can only be seen by you, so they don't get any new reads, votes,
+              or comments.
+            </div>
+            <div className="buttons flex-row">
+              <button
+                className="orange-button btn"
+                onClick={() => {
+                  console.log(story.title);
+                  handleDeleteClick(story._id);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="btn-grey btn"
+                onClick={() => {
+                  console.log(story.title);
+                  setIsModalOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </StyledMyStory>
   );
 };

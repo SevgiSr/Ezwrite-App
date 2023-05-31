@@ -11,6 +11,7 @@ import { createRoot } from "react-dom/client";
 import ReactDOM from "react-dom";
 import StyledWriting from "./styles/Writing.styled";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserContext } from "../context/userContext";
 
 function Writing() {
   const queryClient = useQueryClient();
@@ -25,6 +26,7 @@ function Writing() {
     saveChapter,
     sendGptPrompt,
   } = useContext(MyStoryContext);
+  const { userState } = useContext(UserContext);
   const { story_id, chapter_id } = useParams();
   const location = useLocation();
 
@@ -120,7 +122,7 @@ function Writing() {
 
   const handleWriteClick = (currentNode) => {
     // Get the parent node of the icon
-    const icon = document.querySelector(".icon");
+    const icon = document.querySelector(".AI-icon");
     const parentNode = icon.parentNode;
     console.log(parentNode);
 
@@ -129,7 +131,11 @@ function Writing() {
 
     // Render the AIForm component into the wrapper div element
     createRoot(wrapper).render(
-      <AIForm storyState={storyState} sendGptPrompt={sendGptPrompt} />
+      <AIForm
+        userState={userState}
+        storyState={storyState}
+        sendGptPrompt={sendGptPrompt}
+      />
     );
 
     // Insert the wrapper element before the parentNode
@@ -145,7 +151,7 @@ function Writing() {
     );
     // whenever you click or enter, reset all the previous ones
     filteredDivs.map((div) => {
-      const icon = div.querySelector(".icon");
+      const icon = div.querySelector(".AI-icon");
       if (icon) icon.parentNode.removeChild(icon);
     });
     filteredDivs.map((div) => (div.className = ""));
@@ -159,7 +165,7 @@ function Writing() {
 
         // Add the icon element to the currentNode
         const icon = document.createElement("div");
-        icon.classList.add("icon");
+        icon.classList.add("AI-icon");
         // Render the icon component into the div element using ReactDOM.render()
         createRoot(icon).render(
           <BsFillPencilFill onClick={() => handleWriteClick(currentNode)} />
@@ -172,7 +178,7 @@ function Writing() {
 
         // Add the icon element to the activeNode
         const icon = document.createElement("div");
-        icon.classList.add("icon");
+        icon.classList.add("AI-icon");
         // Render the icon component into the span element using ReactDOM.render()
         createRoot(icon).render(
           <BsFillPencilFill onClick={() => handleWriteClick(e.target)} />
@@ -184,7 +190,7 @@ function Writing() {
 
   const inputListener = (e) => {
     const formContainer = document.querySelector(".ai-form-container");
-    const icon = document.querySelector(".icon");
+    const icon = document.querySelector(".AI-icon");
 
     if (icon && icon.contains(e.target)) {
       return;
@@ -254,10 +260,11 @@ function Writing() {
   );
 }
 
-function AIForm({ sendGptPrompt, storyState }) {
+function AIForm({ sendGptPrompt, storyState, userState }) {
   const [content, setContent] = useState("");
   const [style, setStyle] = useState("funny");
-  const [length, setLength] = useState("");
+  const [length, setLength] = useState("5");
+  const [response, setResponse] = useState("");
 
   useEffect(() => {
     const prevNode =
@@ -273,16 +280,37 @@ function AIForm({ sendGptPrompt, storyState }) {
     input.focus();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submitted!");
-    console.log(style);
+    console.log("submitted");
+    setResponse(""); // clear previous response
+
     const prompt = {
-      content,
       style,
       length,
+      content,
     };
-    sendGptPrompt(prompt);
+    // Make a separate POST request to send the prompt
+
+    await sendGptPrompt(prompt, userState.user._id);
+    // Then initiate the EventSource
+    var source = new EventSource("/gpt/stream");
+
+    source.onmessage = function (event) {
+      const json = event.data;
+      if (json === "[DONE]") {
+        source.close();
+        return;
+      }
+
+      try {
+        const chunk = JSON.parse(json);
+        const content = chunk?.choices?.[0]?.delta?.content || "";
+        setResponse((prevResponse) => prevResponse + content);
+      } catch (err) {
+        console.error("Error parsing JSON:", err);
+      }
+    };
   };
 
   const handleKeyDown = (e) => {
@@ -306,6 +334,7 @@ function AIForm({ sendGptPrompt, storyState }) {
           <FaRegPaperPlane />
         </button>
       </div>
+      <div className="response">{response}</div>
       <div className="options">
         <div className="length">
           <label htmlFor="length">Amount of sentences</label>

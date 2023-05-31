@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
-import { Alert, FormRow } from "../components";
+import { Alert, FormRow, LoadingScreen } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import StyledNewStory from "./styles/NewStory.styled";
@@ -42,9 +42,8 @@ function NewStory() {
     e.preventDefault();
     storyDetails.tags = tags;
 
-    navigate("/myStories");
-
-    await mutation.mutateAsync({ cover, storyDetails });
+    navigate("/myStories", { isCreating: mutation.status });
+    mutation.mutateAsync({ cover, storyDetails });
   };
 
   const handleCoverChange = (e) => {

@@ -14,7 +14,6 @@ function ReadingLists({ readingLists }) {
       </header>
       <div className="main">
         {readingLists?.map((readingList) => {
-          console.log(readingList);
           return (
             <div key={readingList._id} className="readingList">
               <Link className="title">
@@ -23,10 +22,11 @@ function ReadingLists({ readingLists }) {
                   <BsChevronRight />
                 </span>
               </Link>
-
-              {readingList.stories?.map((story) => {
-                return <Story key={story._id} story={story} />;
-              })}
+              <div className="stories">
+                {readingList.stories?.map((story) => {
+                  return <Story key={story._id} story={story} />;
+                })}
+              </div>
             </div>
           );
         })}
@@ -38,28 +38,30 @@ function ReadingLists({ readingLists }) {
 function Story({ story }) {
   return (
     <div className="story">
-      <Cover filename={story._id} width={"123px"} />
-      <div className="title">{story.title}</div>
-      <div className="meta-data">
-        <div>
-          <div className="icon">
-            <GoEye />
+      <Link to={`/story/${story._id}`} style={{ textDecoration: "none" }}>
+        <Cover filename={story._id} width={"123px"} />
+        <div className="title">{story.title}</div>
+        <div className="meta-data">
+          <div>
+            <div className="icon">
+              <GoEye />
+            </div>
+            <div className="count">0</div>
           </div>
-          <div className="count">0</div>
-        </div>
-        <div>
-          <div className="icon">
-            <BsFillStarFill />
+          <div>
+            <div className="icon">
+              <BsFillStarFill />
+            </div>
+            <div className="count">106</div>
           </div>
-          <div className="count">106</div>
-        </div>
-        <div>
-          <div className="icon">
-            <AiOutlineBars />
+          <div>
+            <div className="icon">
+              <AiOutlineBars />
+            </div>
+            <div className="count">9</div>
           </div>
-          <div className="count">9</div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 }

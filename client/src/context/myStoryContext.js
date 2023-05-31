@@ -1,6 +1,7 @@
 import React, { useReducer, useContext } from "react";
 import myStoryReducer from "./reducers/myStoryReducer";
 import { alertReducer, initialAlertState } from "./reducers/alertReducer";
+import axios from "axios";
 
 import {
   BEGIN,
@@ -194,13 +195,12 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const sendGptPrompt = async (prompt) => {
+  const sendGptPrompt = async (prompt, userId) => {
     try {
-      const { data } = await authFetch.post(`/myStories/gpt`, {
+      await axios.post(`/gpt/prompt`, {
         prompt,
+        userId,
       });
-      const { GPTresponse } = data;
-      dispatch({ type: SEND_GPT_PROMPT, payload: { GPTresponse } });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);

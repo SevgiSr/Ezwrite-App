@@ -1,11 +1,12 @@
 import { Outlet, useParams } from "react-router-dom";
 import ProfileView from "./ProfileView";
-import { ProfileNavbar } from "../../../components";
+import { LoadingScreen, ProfileNavbar } from "../../../components";
 import { useContext } from "react";
 import { ProfileContext } from "../../../context/profileContext";
 import EditProfile from "./EditProfile";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Oval } from "react-loader-spinner";
 
 function SharedLayout() {
   const { profileState, getProfile, getProfileConv } =
@@ -53,7 +54,7 @@ function SharedLayout() {
   };
 
   if (isLoading) {
-    return <h1>loading...</h1>;
+    <LoadingScreen />;
   }
 
   return (
