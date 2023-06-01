@@ -54,7 +54,7 @@ function SharedLayout() {
   };
 
   if (isLoading) {
-    <LoadingScreen />;
+    return <LoadingScreen />;
   }
 
   return (

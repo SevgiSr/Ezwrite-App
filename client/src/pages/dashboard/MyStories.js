@@ -10,13 +10,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FallingLines } from "react-loader-spinner";
 
 function MyStories({ show }) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { storyState, getMyStories, deleteStory } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isCreating } = useLocation();
-  console.log(isCreating);
 
   //staleTime is infitiy so that is stays fresh until mutation
   //because this data will not be updated unless user updated it himself
@@ -30,18 +27,6 @@ function MyStories({ show }) {
       staleTime: Infinity,
     }
   );
-
-  const mutation = useMutation((data) => deleteStory(data.story_id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["myStories"]);
-    },
-  });
-
-  const handleDeleteClick = (story_id) => {
-    setIsModalOpen(false);
-    console.log("deleting");
-    mutation.mutate({ story_id: story_id });
-  };
 
   return (
     <StyledMyStories>
@@ -72,7 +57,7 @@ function MyStories({ show }) {
           </div>
         ) : (
           <div className="stories-container">
-            {mutation.isLoading || isLoading || isCreating ? (
+            {isLoading ? (
               <StoriesFallback />
             ) : (
               <>
@@ -80,10 +65,10 @@ function MyStories({ show }) {
                   return (
                     <div key={story._id} className="my-story">
                       <MyStory
+                        key={story._id}
                         story={story}
                         setIsModalOpen={setIsModalOpen}
                         isModalOpen={isModalOpen}
-                        handleDeleteClick={handleDeleteClick}
                       />
                     </div>
                   );

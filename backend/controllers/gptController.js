@@ -16,6 +16,7 @@ const sendGptPrompt = async (req, res) => {
 };
 
 const streamTokens = async (req, res) => {
+  console.log("streaming");
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");

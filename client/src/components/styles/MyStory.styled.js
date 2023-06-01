@@ -129,7 +129,6 @@ const StyledMyStory = styled.div`
     background-color: white;
     border-radius: 5px;
     padding: 30px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
 
     .close-modal-btn {
       border: none;
@@ -161,6 +160,10 @@ const StyledMyStory = styled.div`
     }
   }
 
+  .open-modal {
+    display: block;
+  }
+
   .overlay {
     position: fixed;
     top: 0;
@@ -169,6 +172,7 @@ const StyledMyStory = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
+    opacity: 8%;
   }
 `;
 

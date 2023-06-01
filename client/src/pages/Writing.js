@@ -12,6 +12,7 @@ import ReactDOM from "react-dom";
 import StyledWriting from "./styles/Writing.styled";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../context/userContext";
+import { Discuss } from "react-loader-spinner";
 
 function Writing() {
   const queryClient = useQueryClient();
@@ -122,12 +123,15 @@ function Writing() {
 
   const handleWriteClick = (currentNode) => {
     // Get the parent node of the icon
+    document.getElementById("editStory").contentEditable = false;
+
     const icon = document.querySelector(".AI-icon");
     const parentNode = icon.parentNode;
-    console.log(parentNode);
 
     // Create the wrapper div element
-    const wrapper = document.createElement("div");
+    const wrapper = document.createElement("section");
+
+    wrapper.classList.add("ai-form-parent");
 
     // Render the AIForm component into the wrapper div element
     createRoot(wrapper).render(
@@ -135,8 +139,11 @@ function Writing() {
         userState={userState}
         storyState={storyState}
         sendGptPrompt={sendGptPrompt}
+        contentEditable={false}
       />
     );
+
+    console.log(parentNode);
 
     // Insert the wrapper element before the parentNode
     parentNode.insertAdjacentElement("beforebegin", wrapper);
@@ -144,10 +151,9 @@ function Writing() {
 
   const listener = (e) => {
     const editStory = document.getElementById("editStory");
-    const divs = document.getElementsByTagName("div");
     // get editStory's childs but not itself
-    const filteredDivs = Array.from(divs).filter(
-      (div) => editStory.contains(div) && div !== editStory
+    const filteredDivs = Array.from(editStory.children).filter(
+      (child) => child.tagName === "DIV"
     );
     // whenever you click or enter, reset all the previous ones
     filteredDivs.map((div) => {
@@ -203,6 +209,7 @@ function Writing() {
       const formWrapper = formContainer.parentNode;
       formWrapper.parentNode.removeChild(formWrapper);
       prevNode.style.display = "block";
+      document.getElementById("editStory").contentEditable = true;
     }
   };
 
@@ -218,8 +225,12 @@ function Writing() {
   }, []);
 
   return (
-    <StyledWriting>
-      <form onSubmit={handleSubmit} className="pageContainer">
+    <StyledWriting contentEditable={false}>
+      <form
+        onSubmit={handleSubmit}
+        className="pageContainer"
+        contentEditable={false}
+      >
         <Navbar isChapterLoading={mutation.isLoading} />
         <div className="storyContainer">
           <input
@@ -229,16 +240,15 @@ function Writing() {
             value={chapterTitle}
             placeholder="story title..."
           />
-          <hr style={{ color: "gray", width: "60%" }} />
-          {/* <textarea
-          id="editStory"
-          name="body"
-          onChange={handleChange}
-          value={chapter.body}
-          onKeyDown={handleKeyDown}
-          style={{ height: "100vh" }}
-          placeholder="Type your text..."
-        /> */}
+          <hr
+            style={{
+              backgroundColor: "#6f6f6f",
+              border: "none",
+              height: "2px",
+              width: "60%",
+            }}
+          />
+
           <div
             ref={contentEditableRef}
             id="editStory"
@@ -265,6 +275,11 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
   const [style, setStyle] = useState("funny");
   const [length, setLength] = useState("5");
   const [response, setResponse] = useState("");
+  const [responseStatus, setResponseStatus] = useState("static");
+
+  const handleFormClick = (e) => {
+    e.stopPropagation();
+  };
 
   useEffect(() => {
     const prevNode =
@@ -282,6 +297,7 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setResponseStatus("loading");
     console.log("submitted");
     setResponse(""); // clear previous response
 
@@ -297,9 +313,11 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
     var source = new EventSource("/gpt/stream");
 
     source.onmessage = function (event) {
+      setResponseStatus("answering");
       const json = event.data;
       if (json === "[DONE]") {
         source.close();
+        setResponseStatus("done");
         return;
       }
 
@@ -313,6 +331,16 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
     };
   };
 
+  const handleApplyClick = () => {
+    const formContainer = document.querySelector(".ai-form-container");
+    const prevNode = formContainer.parentNode.nextElementSibling;
+    const formWrapper = formContainer.parentNode;
+    formWrapper.parentNode.removeChild(formWrapper);
+    prevNode.textContent = response;
+    prevNode.style.display = "block";
+    document.getElementById("editStory").contentEditable = true;
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -320,21 +348,59 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="ai-form-container ai">
-      <div className="flex-row">
-        <input
-          type="text"
-          id="prompt-input"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="edit-input"
-        />
-        <button type="submit">
+    <form
+      onClick={handleFormClick}
+      onSubmit={handleSubmit}
+      className="ai-form-container ai"
+    >
+      <textarea
+        type="text"
+        id="prompt-input"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}
+        className="edit-input"
+        rows="3"
+      />
+      <div className="button-row">
+        <button type="submit" className="orange-button btn">
           <FaRegPaperPlane />
         </button>
       </div>
+
       <div className="response">{response}</div>
+
+      {responseStatus === "loading" && (
+        <div className="ai-loading">
+          <Discuss
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="comment-loading"
+            wrapperStyle={{}}
+            wrapperClass="comment-wrapper"
+            color="#fff"
+            backgroundColor="#ff6122"
+          />
+          <span>AI is thinking...</span>
+        </div>
+      )}
+
+      {responseStatus !== "static" && responseStatus !== "loading" && (
+        <div className="ai-buttons">
+          <button
+            type="button"
+            onClick={handleApplyClick}
+            className="orange-button btn"
+          >
+            Apply
+          </button>
+          <button type="submit" className="white-button btn">
+            Retry
+          </button>
+        </div>
+      )}
+
       <div className="options">
         <div className="length">
           <label htmlFor="length">Amount of sentences</label>
