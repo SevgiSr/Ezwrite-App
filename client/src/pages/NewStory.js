@@ -11,10 +11,10 @@ import StoryDetails from "../components/StoryDetails";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function NewStory() {
-  const queryClient = useQueryClient();
-
   const navigate = useNavigate();
-  const { storyState, createStory } = useContext(MyStoryContext);
+  const { storyState, useCreateStory } = useContext(MyStoryContext);
+
+  const createStoryMutation = useCreateStory();
 
   const [storyDetails, setStoryDetails] = useState({
     title: "",
@@ -29,21 +29,11 @@ function NewStory() {
 
   const [imageUrl, setImageUrl] = useState("");
 
-  const mutation = useMutation(
-    (data) => createStory(data.cover, data.storyDetails),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([`myStories`]);
-      },
-    }
-  );
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     storyDetails.tags = tags;
-
-    navigate("/myStories", { isCreating: mutation.status });
-    mutation.mutateAsync({ cover, storyDetails });
+    navigate("/myStories");
+    createStoryMutation.mutateAsync({ cover, storyDetails });
   };
 
   const handleCoverChange = (e) => {

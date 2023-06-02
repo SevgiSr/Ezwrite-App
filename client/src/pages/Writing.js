@@ -26,6 +26,7 @@ function Writing() {
     setEditChapter,
     saveChapter,
     sendGptPrompt,
+    useSaveChapter,
   } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
   const { story_id, chapter_id } = useParams();
@@ -36,6 +37,8 @@ function Writing() {
   const handleChange = (e) => {
     setChapterTitle(e.target.value);
   };
+
+  const saveChapterMutation = useSaveChapter();
 
   const {
     data: myStories = [],
@@ -71,16 +74,6 @@ function Writing() {
     updateForm();
   }, [storyState.gptResponse]);
 
-  const mutation = useMutation(
-    (data) =>
-      saveChapter(data.chapter, data.divArray, data.story_id, data.chapter_id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["myStories"]);
-      },
-    }
-  );
-
   //saves in the backend and also cuz reducer's chapter changed useeffect gonna set it on frontend
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +89,7 @@ function Writing() {
       title: chapterTitle,
       content: content,
     };
-    mutation.mutate({ chapter, divArray, story_id, chapter_id });
+    saveChapterMutation.mutate({ chapter, divArray, story_id, chapter_id });
   };
 
   const handlePublishClick = () => {
@@ -231,8 +224,8 @@ function Writing() {
         className="pageContainer"
         contentEditable={false}
       >
-        <Navbar isChapterLoading={mutation.isLoading} />
-        <div className="storyContainer">
+        <Navbar isChapterLoading={saveChapterMutation.isLoading} />
+        <div id="writer-editor">
           <input
             id="editTitle"
             name="title"
@@ -245,7 +238,7 @@ function Writing() {
               backgroundColor: "#6f6f6f",
               border: "none",
               height: "2px",
-              width: "60%",
+              width: "100%",
             }}
           />
 
@@ -295,9 +288,15 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
     input.focus();
   }, []);
 
+  let source;
+  console.log(source);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setResponseStatus("loading");
+    if (source) {
+      source.close();
+    }
     console.log("submitted");
     setResponse(""); // clear previous response
 
@@ -310,7 +309,7 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
 
     await sendGptPrompt(prompt, userState.user._id);
     // Then initiate the EventSource
-    var source = new EventSource("/gpt/stream");
+    source = new EventSource("/gpt/stream");
 
     source.onmessage = function (event) {
       setResponseStatus("answering");

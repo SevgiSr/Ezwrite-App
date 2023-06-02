@@ -7,13 +7,13 @@ import StyledMyStories from "./styles/MyStories.styled";
 import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FallingLines } from "react-loader-spinner";
+import { ColorRing, Dna, FallingLines } from "react-loader-spinner";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
-  const { storyState, getMyStories, deleteStory } = useContext(MyStoryContext);
+  const { storyState, getMyStories, mutationState } =
+    useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   //staleTime is infitiy so that is stays fresh until mutation
   //because this data will not be updated unless user updated it himself
@@ -32,7 +32,28 @@ function MyStories({ show }) {
     <StyledMyStories>
       <div className="container">
         <header>
-          <h2>My Stories</h2>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <h2>My Stories</h2>
+            {mutationState.isLoading && (
+              <div className="header-loader">
+                <Dna
+                  visible={true}
+                  height="50"
+                  width="50"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                />
+                <span>Loading...</span>
+              </div>
+            )}
+          </div>
           <button
             className="orange-button btn"
             onClick={() => navigate("/newStory")}
@@ -64,12 +85,7 @@ function MyStories({ show }) {
                 {myStories.map((story) => {
                   return (
                     <div key={story._id} className="my-story">
-                      <MyStory
-                        key={story._id}
-                        story={story}
-                        setIsModalOpen={setIsModalOpen}
-                        isModalOpen={isModalOpen}
-                      />
+                      <MyStory key={story._id} story={story} />
                     </div>
                   );
                 })}
@@ -84,7 +100,7 @@ function MyStories({ show }) {
 
 function StoriesFallback() {
   return (
-    <div style={{ marginTop: "2rem" }}>
+    <div style={{ margin: "5rem 0" }}>
       <FallingLines
         color="#ff6122"
         width="100"

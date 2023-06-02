@@ -14,12 +14,25 @@ import {
   GET_MY_CHAPTERS_SUCCESS,
   GET_MY_STORIES_SUCCESS,
   GET_MY_STORY_SUCCESS,
+  MUTATION_BEGIN,
+  MUTATION_ERROR,
+  MUTATION_SUCCESS,
   SEND_GPT_PROMPT,
   SET_EDIT_STORY,
   SUCCESS,
 } from "./actions";
 
 import { UserContext } from "./userContext";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import {
+  initialMutationState,
+  mutationAlertReducer,
+} from "./reducers/mutationAlertReducer";
 
 const initialStoryState = {
   //all stories
@@ -44,6 +57,11 @@ export const MyStoryProvider = ({ children }) => {
   const [alertState, alertDispatch] = useReducer(
     alertReducer,
     initialAlertState
+  );
+
+  const [mutationState, mutationDispatch] = useReducer(
+    mutationAlertReducer,
+    initialMutationState
   );
 
   const { authFetch } = useContext(UserContext);
@@ -188,7 +206,7 @@ export const MyStoryProvider = ({ children }) => {
     try {
       const { data } = await authFetch.post(`/myStories/${story_id}`);
       const { newStory, chapter } = data;
-      return chapter._id;
+      return { chapter_id: chapter._id, story_id: newStory._id };
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -205,6 +223,67 @@ export const MyStoryProvider = ({ children }) => {
       console.log(error);
       console.log(error.response.data.msg);
     }
+  };
+
+  /* MUTATIONS */
+
+  const queryClient = useQueryClient();
+
+  const useCreateStory = () => {
+    return useMutation((data) => createStory(data.cover, data.storyDetails), {
+      onMutate: () => {
+        mutationDispatch({ type: MUTATION_BEGIN });
+      },
+      onSuccess: () => {
+        mutationDispatch({ type: MUTATION_SUCCESS });
+        queryClient.invalidateQueries(["myStories"]);
+      },
+    });
+  };
+
+  const useDeleteStory = () => {
+    return useMutation((data) => deleteStory(data.story_id), {
+      onMutate: () => {
+        mutationDispatch({ type: MUTATION_BEGIN });
+      },
+      onSuccess: () => {
+        mutationDispatch({ type: MUTATION_SUCCESS });
+        queryClient.invalidateQueries(["myStories"]);
+      },
+    });
+  };
+
+  const useSaveChapter = () => {
+    return useMutation(
+      (data) =>
+        saveChapter(
+          data.chapter,
+          data.divArray,
+          data.story_id,
+          data.chapter_id
+        ),
+      {
+        onMutate: () => {
+          mutationDispatch({ type: MUTATION_BEGIN });
+        },
+        onSuccess: () => {
+          mutationDispatch({ type: MUTATION_SUCCESS });
+          queryClient.invalidateQueries(["myStories"]);
+        },
+      }
+    );
+  };
+
+  const useAddChapter = () => {
+    return useMutation((data) => addChapter(data.story_id), {
+      onMutate: () => {
+        mutationDispatch({ type: MUTATION_BEGIN });
+      },
+      onSuccess: (data) => {
+        mutationDispatch({ type: MUTATION_SUCCESS });
+        queryClient.invalidateQueries([`myStories`]);
+      },
+    });
   };
 
   return (
@@ -224,6 +303,12 @@ export const MyStoryProvider = ({ children }) => {
         addChapter,
         updateStory,
         sendGptPrompt,
+
+        useCreateStory,
+        useDeleteStory,
+        useSaveChapter,
+        useAddChapter,
+        mutationState,
       }}
     >
       {children}

@@ -8,30 +8,37 @@ import { FiChevronDown } from "react-icons/fi";
 import DropdownMenu from "./DropdownMenu";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const Navbar = ({ isChapterLoading }) => {
-  const { storyState, addChapter } = useContext(MyStoryContext);
+const Navbar = () => {
+  const { storyState, useAddChapter, mutationState } =
+    useContext(MyStoryContext);
   const navigate = useNavigate();
 
+  const addChapterMutation = useAddChapter();
+
   const handleNewPartClick = async () => {
-    const newChapter_id = await addChapter(storyState.story._id);
-    navigate(`/${storyState.story._id}/${newChapter_id}/writing`);
+    const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
+      story_id: storyState.story._id,
+    });
+
+    navigate(`/${story_id}/${chapter_id}/writing`);
   };
 
   return (
     <StyledStoryNavbar>
       <nav className="navbarContainer">
-        <DropdownMenu
-          buttonClass="write-dropdown-btn"
-          menuClass="write-dropdown-menu"
-          button={
-            <>
+        <section className="story-section">
+          <Link to="/myStories" className="back-btn">
+            <div className="icon">
+              <IoIosArrowBack />
+            </div>
+          </Link>
+          <DropdownMenu
+            buttonClass="write-dropdown-btn"
+            menuClass="write-dropdown-menu"
+            button={
               <div className="story-card">
-                <Link to="/myStories" className="back-btn">
-                  <div className="icon">
-                    <IoIosArrowBack />
-                  </div>
-                </Link>
                 <Cover width="40px" filename={storyState.story._id} />
                 <div className="story-info">
                   <p className="story-title">
@@ -46,44 +53,42 @@ const Navbar = ({ isChapterLoading }) => {
                   </p>
                 </div>
               </div>
-            </>
-          }
-          menu={
-            <>
-              <div>Table of contents</div>
-              <button
-                onClick={handleNewPartClick}
-                className="orange-button btn new-part-btn"
-              >
-                New Part
-              </button>
-              {storyState.story.chapters?.map((chapter) => {
-                return (
-                  <div
-                    key={chapter._id}
-                    className={
-                      `dropdown-item ` +
-                      (chapter._id === storyState.chapter._id && `active`)
-                    }
-                  >
-                    <Link
+            }
+            menu={
+              <>
+                {storyState.story.chapters?.map((chapter) => {
+                  return (
+                    <div
                       key={chapter._id}
-                      className="link"
-                      to={`/${storyState.story._id}/${chapter._id}/writing`}
+                      className={
+                        `dropdown-item ` +
+                        (chapter._id === storyState.chapter._id && `active`)
+                      }
                     >
-                      <div>{chapter.title}</div>
-                    </Link>
-                  </div>
-                );
-              })}
-            </>
-          }
-        />
+                      <Link
+                        className="link"
+                        to={`/${storyState.story._id}/${chapter._id}/writing`}
+                      >
+                        <div>{chapter.title}</div>
+                      </Link>
+                    </div>
+                  );
+                })}
+                <button
+                  onClick={handleNewPartClick}
+                  className="orange-button btn new-part-btn"
+                >
+                  + New Part
+                </button>
+              </>
+            }
+          />
+        </section>
 
-        <div className="buttons">
-          {isChapterLoading && (
+        <section className="buttons">
+          {mutationState.isLoading && (
             <div style={{ marginRight: "15px" }}>
-              <ClipLoader size={15} color="#222" />
+              <ClipLoader size={15} color="#fff" />
             </div>
           )}
           <button className="btn orange-button">Publish</button>
@@ -91,7 +96,7 @@ const Navbar = ({ isChapterLoading }) => {
             Save
           </button>
           <button className="btn btn-grey">Preview</button>
-        </div>
+        </section>
       </nav>
     </StyledStoryNavbar>
   );

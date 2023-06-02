@@ -14,7 +14,6 @@ const StyledMyStories = styled.div`
     font-weight: 600;
     line-height: 36px;
     text-align: start;
-    margin-bottom: 1.5rem;
   }
 
   header {
@@ -26,10 +25,20 @@ const StyledMyStories = styled.div`
     button {
       padding: 10px 20px;
     }
+
+    .header-loader {
+      margin-left: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span {
+        margin-left: 5px;
+      }
+    }
   }
 
   .stories-container {
-    min-height: 200px;
+    min-height: fit-content;
     background-color: var(--background5);
     padding: 1rem;
     box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);

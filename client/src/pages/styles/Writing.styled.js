@@ -5,9 +5,11 @@ const StyledWriting = styled.div`
     width: 100%;
   }
 
-  .storyContainer {
-    padding-top: 110px;
-    width: 100%;
+  #writer-editor {
+    max-width: 900px;
+    width: auto;
+    margin: 0 auto;
+    padding: 48px 90px;
     display: flex;
     justify-items: center;
     align-items: center;
@@ -21,8 +23,9 @@ const StyledWriting = styled.div`
   }
 
   #editTitle {
+    margin-top: 4rem;
+    width: 100%;
     border: none;
-    width: 60%;
     height: fit-content;
     text-align: center;
     font-size: 2rem;
@@ -128,7 +131,7 @@ const StyledWriting = styled.div`
   }
 
   #editStory {
-    width: 60%;
+    width: 100%;
     min-height: 100px;
     margin-top: 30px;
     border: none;

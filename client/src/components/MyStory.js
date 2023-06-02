@@ -9,13 +9,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const MyStory = ({ story, setIsModalOpen, isModalOpen }) => {
-  const queryClient = useQueryClient();
+const MyStory = ({ story }) => {
   const navigate = useNavigate();
-  const { setEditStory, deleteStory } = useContext(MyStoryContext);
+  const { setEditStory, useDeleteStory } = useContext(MyStoryContext);
 
-  const storyRef = useRef(story);
-  storyRef.current = story;
+  const deleteStoryMutation = useDeleteStory();
+  // this state should be in each individual story
+  //if it was in myStories then all stories would have the same state
+  //and if you would open modal it would be true for all of them
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [timestamp, setTimestamp] = useState(Date.now());
   useEffect(() => {
@@ -28,17 +30,11 @@ const MyStory = ({ story, setIsModalOpen, isModalOpen }) => {
     setEditStory(story._id);
   };
 
-  const mutation = useMutation((data) => deleteStory(data.story_id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["myStories"]);
-    },
-  });
-
   const handleDeleteClick = () => {
     setIsModalOpen(false);
     console.log("deleting");
-    console.log(storyRef.current.title);
-    mutation.mutate({ story_id: storyRef.current._id });
+    console.log(story.title);
+    deleteStoryMutation.mutate({ story_id: story._id });
   };
 
   return (
@@ -118,7 +114,7 @@ const MyStory = ({ story, setIsModalOpen, isModalOpen }) => {
       <DeleteModal
         setIsModalOpen={setIsModalOpen}
         handleDeleteClick={handleDeleteClick}
-        story={storyRef}
+        story={story}
         isOpen={isModalOpen}
       />
     </StyledMyStory>
@@ -147,7 +143,7 @@ function DeleteModal({ setIsModalOpen, handleDeleteClick, story, isOpen }) {
         <button
           className="btn-grey btn"
           onClick={() => {
-            console.log(story.current.title);
+            console.log(story.title);
             setIsModalOpen(false);
           }}
         >

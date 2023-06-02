@@ -13,25 +13,9 @@ const StyledStoryNavbar = styled.div`
     border-bottom: 1px solid var(--background2);
     background-color: var(--background3);
 
-    .write-dropdown-btn {
-      border: none;
-      cursor: pointer;
-    }
-
-    .write-dropdown-menu {
-      background-color: #fff;
-
-      .new-part-btn {
-        width: fit-content;
-      }
-    }
-    .story-card {
+    .story-section {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background-color: var(--background3);
-      color: var(--font2);
-
       .back-btn {
         pointer-events: fill;
         .icon {
@@ -41,24 +25,51 @@ const StyledStoryNavbar = styled.div`
         }
       }
 
-      .story-info {
-        margin-left: 5px;
-        text-align: start;
-        .story-title {
-          cursor: pointer;
-          font-size: 14px;
-          margin: 0;
+      .write-dropdown-btn {
+        border: none;
+        cursor: pointer;
+
+        .story-card {
+          width: 300px;
           display: flex;
-        }
+          align-items: center;
+          justify-content: start;
+          background-color: var(--background3);
+          color: var(--font2);
 
-        .chapter-title {
-          font-size: 20px;
-          margin: 0;
-        }
+          .story-info {
+            margin-left: 5px;
+            text-align: start;
+            .story-title {
+              cursor: pointer;
+              font-size: 14px;
+              margin: 0;
+              display: flex;
+            }
 
-        .update-info {
-          font-size: 14px;
-          margin: 0;
+            .chapter-title {
+              font-size: 20px;
+              margin: 0;
+            }
+
+            .update-info {
+              font-size: 14px;
+              margin: 0;
+            }
+          }
+        }
+      }
+
+      .write-dropdown-menu {
+        background-color: var(--background2);
+        width: 100%;
+
+        .dropdown-item {
+          border-bottom: 1px solid var(--font2);
+        }
+        .new-part-btn {
+          width: fit-content;
+          margin: 1rem auto 0 auto;
         }
       }
     }
