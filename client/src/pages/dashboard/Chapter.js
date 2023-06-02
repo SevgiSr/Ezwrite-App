@@ -374,7 +374,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
       <div className="actions">
         {isChapterLoading && (
           <div style={{ marginRight: "15px" }}>
-            <ClipLoader size={15} color="#222" />
+            <ClipLoader size={15} color="#fff" />
           </div>
         )}
 

@@ -10,6 +10,7 @@ function EditProfile({ handleChange, state }) {
 
   const mutation = useMutation(({ state }) => editProfileInfo(state), {
     onSuccess: () => {
+      //TASK: instead of doing refetch update profileInfo manually in the cache
       queryClient.invalidateQueries(["profile"]);
     },
   });

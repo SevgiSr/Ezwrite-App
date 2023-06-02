@@ -185,11 +185,13 @@ const getProgress = async (req, res) => {
     console.log("no progress");
     const story = await Story.findById(req.params.story_id);
     const chapters = story.chapters.slice(0, 5);
-    progress = await Progress.create({
+    const newProgress = await Progress.create({
       user: req.user.userId,
       story: req.params.story_id,
       chapters: chapters,
-    })
+    });
+
+    progress = await Progress.findById(newProgress._id)
       .populate(populateStory)
       .populate(populateChapters);
 
@@ -200,12 +202,13 @@ const getProgress = async (req, res) => {
     );
 
     await Story.findByIdAndUpdate(
-      story_id,
+      req.params.story_id,
       { $push: { progress: progress._id } },
       { upsert: true }
     );
 
     editedProgress = await addMyVote(progress, req.user.userId);
+    return res.status(StatusCodes.OK).json({ progress: editedProgress });
   }
 
   editedProgress = await addMyVote(progress, req.user.userId);
