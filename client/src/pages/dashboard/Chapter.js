@@ -54,7 +54,7 @@ function Chapter() {
     status,
     refetch,
   } = useQuery({
-    queryKey: ["profile", story_id],
+    queryKey: ["progress", story_id],
     queryFn: () => getProgress(story_id),
     refetchOnWindowFocus: false,
   });
@@ -64,10 +64,9 @@ function Chapter() {
     {
       onSuccess: (data) => {
         setChapter(data.chapters[0], data.story);
-        queryClient.setQueryData(["progress", story_id], data); // does this actually work?
+        queryClient.setQueryData(["progress", story_id], data);
       },
-    },
-    [story_id, chapter_id]
+    }
   );
 
   //if location changes, before doing refetch checks the cache and retrieves chapter instantly
@@ -76,6 +75,8 @@ function Chapter() {
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
   useEffect(() => {
     if (!isFetching && status === "success") {
+      console.log("fetching");
+      console.log(chapters);
       const filteredChapter = chapters.find(
         (chapter) => chapter._id === chapter_id
       );
@@ -317,7 +318,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
     {
       onSuccess: () => {
         //change cache too so that the vote is consistent everywhere
-        queryClient.invalidateQueries(["progress", story_id]);
+        queryClient.invalidateQueries(["progress"]);
       },
     }
   );
@@ -326,7 +327,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
     (data) => unvoteChapter(data.chapter_id, data.name),
     {
       onSuccess: () => {
-        refetch();
+        queryClient.invalidateQueries(["progress"]);
       },
     }
   );

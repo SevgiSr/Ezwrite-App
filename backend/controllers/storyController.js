@@ -234,26 +234,6 @@ const setProgress = async (req, res) => {
     .populate(populateStory)
     .populate(populateChapters);
 
-  if (!progress) {
-    progress = await Progress.create({
-      story: story_id,
-      chapters: chapters,
-      user: req.user.userId,
-    }).populate(populateStory);
-
-    await User.findByIdAndUpdate(
-      req.user.userId,
-      { $push: { storiesProgress: progress._id } },
-      { upsert: true }
-    );
-
-    await Story.findByIdAndUpdate(
-      story_id,
-      { $push: { progress: progress._id } },
-      { upsert: true }
-    );
-  }
-
   progress.chapters = chapters;
 
   await progress.save();

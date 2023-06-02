@@ -19,8 +19,8 @@ const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <React.StrictMode>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
       <UserProvider>
         <StoryProvider>
           <MyStoryProvider>
@@ -32,8 +32,8 @@ root.render(
       </UserProvider>
 
       <ReactQueryDevtools initialIsOpen={false} />
-    </React.StrictMode>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
