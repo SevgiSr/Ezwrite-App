@@ -14,8 +14,7 @@ const StyledEditStoryDetails = styled.div`
     right: 0;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #eee;
-    background-color: #fff;
+    background-color: var(--background3);
     height: auto;
     padding: 15px 8px;
     header {
@@ -34,7 +33,6 @@ const StyledEditStoryDetails = styled.div`
       .title {
         font-size: 21px;
         font-weight: 600;
-        color: #000;
       }
     }
     button {
@@ -84,7 +82,7 @@ const StyledEditStoryDetails = styled.div`
 
       .upload-picture {
         position: absolute;
-        bottom: 0;
+        bottom: -2px;
         width: 100%;
         input {
           display: none;
@@ -104,9 +102,14 @@ const StyledEditStoryDetails = styled.div`
   }
   .chapters-main {
     width: 600px;
+    background-color: var(--background5);
+
     header {
       border-bottom: 1px solid #eee;
-      padding: 10px 20px;
+      padding: 0 20px;
+    }
+    .details {
+      width: 100%;
     }
     button {
       padding: 8px 20px;
@@ -123,11 +126,12 @@ const StyledEditStoryDetails = styled.div`
         display: flex;
         flex-direction: column;
         width: 40vw;
+        padding: 10px 0;
         .title {
           width: fit-content;
           font-size: 18px;
           font-weight: 700;
-          color: #000;
+          color: var(--font1);
           border-bottom: 3px solid transparent;
           &:hover {
             border-bottom: 3px solid #000;

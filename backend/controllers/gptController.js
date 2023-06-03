@@ -4,14 +4,14 @@ import User from "../db/models/User.js";
 import { Configuration, OpenAIApi } from "openai";
 import axios from "axios";
 import querystring from "querystring";
+import dotenv from "dotenv";
+dotenv.config();
 
 let prompt = {};
-let GPTKey = "";
+let GPTKey = process.env.OPENAI_KEY;
 
 const sendGptPrompt = async (req, res) => {
   prompt = req.body.prompt;
-  const user = await User.findById(req.body.userId).select("GPTKey");
-  GPTKey = user.GPTKey;
   res.sendStatus(200);
 };
 

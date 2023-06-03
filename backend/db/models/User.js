@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
     GPTKey: {
       type: String,
       select: false,
-      default: "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",
+      default: "",
     },
     profilePicture: {
       type: Object,

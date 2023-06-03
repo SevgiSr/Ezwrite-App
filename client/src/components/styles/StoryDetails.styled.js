@@ -5,6 +5,8 @@ const StyledStoryDetails = styled.div`
     width: inherit;
     display: flex;
     flex-direction: column;
+    color: var(--font1);
+    background-color: var(--background5);
     .item {
       margin-bottom: 3rem;
       display: flex;
@@ -14,7 +16,7 @@ const StyledStoryDetails = styled.div`
       width: fit-content;
     }
     h1 {
-      color: #000;
+      color: var(--font1);
       border-bottom: 5px solid #ff6122;
       width: fit-content;
       margin-bottom: 2rem;
@@ -22,7 +24,7 @@ const StyledStoryDetails = styled.div`
     label {
       font-size: 21px;
       font-weight: 600;
-      color: #222;
+      color: var(--font2);
       margin-bottom: 15px;
       display: inline-block;
     }
@@ -30,6 +32,8 @@ const StyledStoryDetails = styled.div`
     #desc {
       border: 1px solid #eee;
       padding: 10px 20px;
+      background-color: var(--background4);
+      color: var(--font1);
     }
 
     #title:focus,
@@ -43,6 +47,8 @@ const StyledStoryDetails = styled.div`
     #category select {
       font-size: 15px;
       padding: 10px;
+      background-color: var(--background4);
+      color: var(--font1);
     }
 
     /* TAGS */
@@ -52,7 +58,8 @@ const StyledStoryDetails = styled.div`
     }
     .tag-item {
       display: flex;
-      background-color: #eee;
+      background-color: var(--background4);
+      color: var(--font1);
       width: fit-content;
       padding: 10px;
       border-radius: 100px;
@@ -63,7 +70,7 @@ const StyledStoryDetails = styled.div`
       .icon {
         margin-left: 5px;
         font-size: 10px;
-        color: #000;
+        color: var(--font1);
       }
       .delete-tag {
         cursor: pointer;
@@ -77,31 +84,32 @@ const StyledStoryDetails = styled.div`
       border: 1px solid #eee;
       border-radius: 100px;
       font-size: 13px;
-      color: #6f6f6f;
+      color: var(--font2);
       cursor: pointer;
       .icon {
         margin-left: 5px;
         font-size: 15px;
-        color: #000;
+        color: var(--font1);
       }
     }
     .tag-input {
       border: none;
       font-size: 17px;
-    }
-
-    .tag-input:focus {
-      outline: none;
+      background-color: var(--background5);
+      color: var(--font1);
     }
 
     /* language */
     .language {
       select {
         padding: 10px;
+        background-color: var(--background4);
+        color: var(--font1);
       }
     }
     /* submit */
     .create-btn {
+      margin: 0;
       padding: 10px;
     }
   }

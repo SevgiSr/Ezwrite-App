@@ -141,7 +141,7 @@ function EditStoryDetails() {
           View as reader
         </Link>
       </div>
-      <div className="chapters-main card">
+      <div className="chapters-main">
         <header>
           <OrangeLinks
             links={[
@@ -160,13 +160,15 @@ function EditStoryDetails() {
         </header>
 
         {navbar === "details" && (
-          <StoryDetails
-            storyDetails={storyDetails}
-            tags={tags}
-            setStoryDetails={setStoryDetails}
-            setTags={setTags}
-            handleSubmit={handleSubmit}
-          />
+          <div className="details">
+            <StoryDetails
+              storyDetails={storyDetails}
+              tags={tags}
+              setStoryDetails={setStoryDetails}
+              setTags={setTags}
+              handleSubmit={handleSubmit}
+            />
+          </div>
         )}
         {navbar === "contents" && <Contents />}
       </div>
@@ -202,13 +204,17 @@ function Navbar({ handleCancel }) {
 }
 
 function Contents() {
-  const { storyState, addChapter } = useContext(MyStoryContext);
+  const { storyState, useAddChapter } = useContext(MyStoryContext);
   const { story_id } = useParams();
   const navigate = useNavigate();
 
+  const addChapterMutation = useAddChapter();
+
   const handleNewPartClick = async () => {
-    const newChapter_id = await addChapter(story_id);
-    navigate(`/${story_id}/${newChapter_id}/writing`);
+    const data = await addChapterMutation.mutateAsync({
+      story_id: story_id,
+    });
+    navigate(`/${data.story_id}/${data.chapter_id}/writing`);
   };
 
   return (
