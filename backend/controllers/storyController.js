@@ -10,7 +10,10 @@ import ReadingList from "../db/models/ReadingList.js";
 
 const populateStory = {
   path: "story",
-  populate: [{ path: "author" }, { path: "chapters", select: "title" }],
+  populate: [
+    { path: "author" },
+    { path: "chapters", select: "title votesCount views" },
+  ],
 };
 
 const populateChapters = {
@@ -59,6 +62,28 @@ export async function countChapterVotes(chapter_id) {
   });
 
   return votes;
+}
+
+export async function getStoryVotes(story) {
+  const totalVotes = story.chapters?.reduce(
+    (total, chapter) => {
+      total.upvotes += chapter.votesCount.upvotes;
+      total.downvotes += chapter.votesCount.downvotes;
+      return total;
+    },
+    { upvotes: 0, downvotes: 0 }
+  );
+
+  return totalVotes;
+}
+
+export async function getStoryViews(story) {
+  const totalViews = story.chapters?.reduce((total, chapter) => {
+    total += chapter.views;
+    return total;
+  }, 0);
+
+  return totalViews;
 }
 
 const addMyVote = async (progress, userId) => {
@@ -165,12 +190,16 @@ const getStory = async (req, res) => {
       populate: { path: "chapter" },
     });
 
+  const storyVotes = await getStoryVotes(story);
+  story.storyVotes = storyVotes;
+  const storyViews = await getStoryViews(story);
+  story.storyViews = storyViews;
+
   res.status(StatusCodes.OK).json({ story });
 };
 
 const getProgress = async (req, res) => {
   console.log("getting progress");
-
   let progress;
   let editedProgress;
 
@@ -208,6 +237,7 @@ const getProgress = async (req, res) => {
     );
 
     editedProgress = await addMyVote(progress, req.user.userId);
+
     return res.status(StatusCodes.OK).json({ progress: editedProgress });
   }
 
@@ -339,6 +369,12 @@ const voteChapter = async (req, res) => {
 
   chapter.votesCount = await countChapterVotes(chapter._id);
   await chapter.save();
+  const story = await Story.findById(req.params.story_id).populate({
+    path: "chapters",
+    select: "votesCount",
+  });
+  story.votesCount = await getStoryVotes(story);
+  await story.save();
 
   res.status(StatusCodes.OK).json({ value: Number(req.body.vote_value) });
 };
@@ -357,11 +393,15 @@ const unvoteChapter = async (req, res) => {
     await chapter.votes.pull(vote._id);
     await vote.remove();
     chapter.votesCount = await countChapterVotes(chapter._id);
+
+    await chapter.save();
+    const story = await Story.findById(req.params.story_id).populate({
+      path: "chapters",
+      select: "votesCount",
+    });
+    story.votesCount = await getStoryVotes(story);
+    await story.save();
   }
-
-  await chapter.save();
-
-  console.log(chapter.votesCount);
 
   res.status(StatusCodes.OK).json({ newChapter: chapter });
 };
@@ -372,7 +412,10 @@ const incrementViewCount = async (req, res) => {
     { _id: req.params.chapter_id },
     { $inc: { views: 1 } }
   );
-  console.log("success");
+  await Story.findOneAndUpdate(
+    { _id: req.params.story_id },
+    { $inc: { views: 1 } }
+  );
   res.status(StatusCodes.OK);
 };
 

@@ -4,6 +4,7 @@ import Story from "../db/models/Story.js";
 import Notification from "../db/models/Notification.js";
 import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
+import { getStoryVotes, getStoryViews } from "./storyController.js";
 
 const getProfile = async (req, res) => {
   const profile = await User.findOne({ name: req.params.username })

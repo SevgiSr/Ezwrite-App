@@ -137,6 +137,7 @@ const StyledChapter = styled.div`
     width: 600px;
     word-wrap: break-word;
     color: var(--font1);
+    margin-bottom: 300px;
     .metadata {
       color: var(--font2);
       display: flex;

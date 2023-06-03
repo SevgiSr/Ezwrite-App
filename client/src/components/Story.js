@@ -1,7 +1,7 @@
 import StyledStory from "./styles/Story.styled";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
-import { AiOutlineBars } from "react-icons/ai";
+import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import Cover from "./Cover";
 import { useEffect, useState } from "react";
@@ -42,19 +42,25 @@ const Story = ({ story }) => {
             <div className="icon">
               <GoEye />
             </div>
-            <div className="count">0</div>
+            <div className="count">{story.views}</div>
           </div>
           <div>
             <div className="icon">
               <BsFillStarFill />
             </div>
-            <div className="count">106</div>
+            <div className="count">{story.votesCount.upvotes}</div>
+          </div>
+          <div>
+            <div className="icon">
+              <AiFillDislike />
+            </div>
+            <div className="count">{story.votesCount.downvotes}</div>
           </div>
           <div>
             <div className="icon">
               <AiOutlineBars />
             </div>
-            <div className="count">9</div>
+            <div className="count">{story.chapters.length}</div>
           </div>
         </div>
         <div className="description">

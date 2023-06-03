@@ -1,4 +1,4 @@
-import { AiOutlineBars } from "react-icons/ai";
+import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { BsFillStarFill } from "react-icons/bs";
 import { GoEye } from "react-icons/go";
 import { Link } from "react-router-dom";
@@ -24,21 +24,28 @@ const StoryDetailed = ({ story }) => {
                 <GoEye />
                 <span>Reads</span>
               </div>
-              <div className="count">0</div>
+              <div className="count">{story.views}</div>
             </div>
             <div>
               <div className="icon">
                 <BsFillStarFill />
                 <span>Votes</span>
               </div>
-              <div className="count">106</div>
+              <div className="count">{story.votesCount.upvotes}</div>
+            </div>
+            <div>
+              <div className="icon">
+                <AiFillDislike />
+                <span>Downvotes</span>
+              </div>
+              <div className="count">{story.votesCount.downvotes}</div>
             </div>
             <div>
               <div className="icon">
                 <AiOutlineBars />
                 <span>Parts</span>
               </div>
-              <div className="count">9</div>
+              <div className="count">{story.chapters.length}</div>
             </div>
           </div>
           <div className="tags">

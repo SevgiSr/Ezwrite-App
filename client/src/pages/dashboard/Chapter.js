@@ -40,7 +40,7 @@ function Chapter() {
   useEffect(() => {
     const timer = setTimeout(() => {
       console.log("incrementing view");
-      incrementViewCount(chapter_id); // Send a request to the backend to increment the view count
+      incrementViewCount(story_id, chapter_id); // Send a request to the backend to increment the view count
     }, 30000); // Change the time interval as needed
     setViewTimer(timer);
 
@@ -314,7 +314,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
 
   //update UI immediately with dispatch and make backend request
   const voteMutation = useMutation(
-    (data) => voteChapter(data.chapter_id, data.name),
+    (data) => voteChapter(data.story_id, data.chapter_id, data.name),
     {
       onSuccess: () => {
         //change cache too so that the vote is consistent everywhere
@@ -324,7 +324,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
   );
 
   const unvoteMutation = useMutation(
-    (data) => unvoteChapter(data.chapter_id, data.name),
+    (data) => unvoteChapter(data.story_id, data.chapter_id, data.name),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["progress"]);
@@ -335,11 +335,16 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
   //I needed to mutate cache instead of just changing chapter global state
   //because when user navigates back they still need to see their vote
   const handleVoteClick = (e) => {
-    voteMutation.mutate({ chapter_id: state.chapter._id, name: e.target.name });
+    voteMutation.mutate({
+      story_id: state.story._id,
+      chapter_id: state.chapter._id,
+      name: e.target.name,
+    });
   };
 
   const handleUnvoteClick = (e) => {
     unvoteMutation.mutate({
+      story_id: state.story._id,
       chapter_id: state.chapter._id,
       name: e.target.name,
     });

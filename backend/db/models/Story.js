@@ -46,6 +46,14 @@ const StorySchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
+    votesCount: {
+      type: Object,
+      default: { upvotes: 0, downvotes: 0 },
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

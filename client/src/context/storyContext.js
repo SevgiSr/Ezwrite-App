@@ -166,15 +166,18 @@ export const StoryProvider = ({ children }) => {
   };
 
   //you need to call dispatch before making backend request to change UI faster
-  const voteChapter = async (chapter_id, vote_value) => {
+  const voteChapter = async (story_id, chapter_id, vote_value) => {
     alertDispatch({ type: BEGIN });
     try {
       //will dispatch first so that it updates UI immediately
       dispatch({ type: VOTE_CHAPTER_SUCCESS, payload: { vote_value } });
       //backend request
-      const { data } = await authFetch.patch(`/stories/chapter/${chapter_id}`, {
-        vote_value,
-      });
+      const { data } = await authFetch.patch(
+        `/stories/vote/${story_id}/${chapter_id}`,
+        {
+          vote_value,
+        }
+      );
       alertDispatch({ type: SUCCESS, payload: { msg: "voted!" } });
     } catch (error) {
       console.log(error);
@@ -183,11 +186,13 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const unvoteChapter = async (chapter_id, vote_value) => {
+  const unvoteChapter = async (story_id, chapter_id, vote_value) => {
     alertDispatch({ type: BEGIN });
     try {
       dispatch({ type: UNVOTE_CHAPTER_SUCCESS, payload: { vote_value } });
-      const { data } = await authFetch.delete(`/stories/chapter/${chapter_id}`);
+      const { data } = await authFetch.delete(
+        `/stories/vote/${story_id}/${chapter_id}`
+      );
 
       alertDispatch({ type: SUCCESS, payload: { msg: "unvoted!" } });
     } catch (error) {
@@ -197,10 +202,10 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const incrementViewCount = async (chapter_id) => {
+  const incrementViewCount = async (story_id, chapter_id) => {
     try {
       const { data } = await authFetch.post(
-        `/stories/chapter/${chapter_id}/view`
+        `/stories/view/${story_id}/${chapter_id}`
       );
     } catch (error) {
       console.log(error);

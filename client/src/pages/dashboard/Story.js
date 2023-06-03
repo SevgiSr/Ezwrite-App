@@ -6,7 +6,7 @@ import Cover from "../../components/Cover";
 import ProfilePicture from "../../components/ProfilePicture";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
-import { AiOutlineBars } from "react-icons/ai";
+import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import Respond from "../../components/Respond";
 import { UserContext } from "../../context/userContext";
@@ -133,21 +133,28 @@ const StoryCard = ({ story, progress }) => {
               <GoEye />
               Reads
             </div>
-            <div className="value">88.8K</div>
+            <div className="value">{story.views}</div>
           </div>
           <div className="item">
             <div className="label">
               <BsFillStarFill />
               Votes
             </div>
-            <div className="value">1,1K</div>
+            <div className="value">{story.votesCount.upvotes}</div>
+          </div>
+          <div className="item">
+            <div className="label">
+              <AiFillDislike />
+              Downvotes
+            </div>
+            <div className="value">{story.votesCount.downvotes}</div>
           </div>
           <div className="item">
             <div className="label">
               <AiOutlineBars />
               Parts
             </div>
-            <div className="value">10</div>
+            <div className="value">{story.chapters.length}</div>
           </div>
         </div>
         <button className="orange-button btn" onClick={handleClick}>

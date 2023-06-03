@@ -35,13 +35,13 @@ router.route("/progress/:story_id").get(getProgress);
 router.route("/progress/:story_id/:chapter_id").post(setProgress);
 
 router
-  .route("/chapter/:chapter_id")
+  .route("/vote/:story_id/:chapter_id")
   .post(addChapterConv)
   .patch(voteChapter)
   .delete(unvoteChapter);
 
 router.route("/chapter/comments/:paragraph_id").post(addParagraphConv);
 
-router.route("/chapter/:chapter_id/view").post(incrementViewCount);
+router.route("/view/:story_id/:chapter_id").post(incrementViewCount);
 
 export default router;
