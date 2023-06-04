@@ -62,8 +62,17 @@ const StoryDetails = ({
               value={storyDetails.category}
             >
               <option value="0">Select a category:</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="romance">Romance</option>
               <option value="action">Action</option>
-              <option value="scienceFiction">Science Fiction</option>
+              <option value="horror">Horror</option>
+              <option value="mystery">Mystery</option>
+              <option value="paranormal">Paranormal</option>
+              <option value="vampire">Vampire/Werewolf</option>
+              <option value="educational">Educational</option>
+              <option value="debate">Debate</option>
+              <option value="humor">Humor</option>
+              <option value="nonFiction">Non-fiction</option>
             </select>
           </div>
         </div>

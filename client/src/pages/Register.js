@@ -42,12 +42,12 @@ function Register() {
   };
 
   useEffect(() => {
-    if (userState.user) {
+    if (userState.user && userState.token) {
       setTimeout(() => {
         navigate("/myStories");
       }, 1000);
     }
-  }, [userState.user, navigate]);
+  }, [userState.user, userState.token, navigate]);
 
   return (
     <StyledRegister>

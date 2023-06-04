@@ -36,6 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/register" element={<Register />} />
         {/*PROFILE */}
         <Route
           path="/"
@@ -89,9 +90,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );

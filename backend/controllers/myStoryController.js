@@ -152,7 +152,7 @@ const saveChapter = async (req, res) => {
   chapterObj.title = chapter.title;
   chapterObj.content = chapter.content;
   chapterObj.paragraphs = paragraphs;
-  chapterObj.save();
+  await chapterObj.save();
 
   res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
 };

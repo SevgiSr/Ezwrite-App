@@ -53,6 +53,9 @@ const StyledRegister = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
+    label {
+      color: #ffb041;
+    }
     h3 {
       display: flex;
       flex-direction: row;
@@ -68,6 +71,7 @@ const StyledRegister = styled.div`
       }
     }
     .isMember {
+      color: #ffb041;
       margin-top: 2rem;
     }
   }

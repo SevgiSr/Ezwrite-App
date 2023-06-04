@@ -206,11 +206,44 @@ function Writing() {
     }
   };
 
+  const pasteListener = (e) => {
+    if (e.target.getAttribute("contenteditable")) {
+      // prevent the default pasting event
+      e.preventDefault();
+
+      // get text representation of clipboard
+      var text = (e.originalEvent || e).clipboardData.getData("text/plain");
+
+      // split text into paragraphs and create a div for each one
+      var paragraphs = text.split("\n").map((paragraph) => {
+        var div = document.createElement("div");
+        div.textContent = paragraph;
+        return div;
+      });
+
+      // get current selection
+      var selection = document.getSelection();
+      if (selection.rangeCount > 0) {
+        // get the first range
+        var range = selection.getRangeAt(0);
+
+        // insert each paragraph as a new div
+        paragraphs.forEach((paragraphDiv) => {
+          range.insertNode(paragraphDiv);
+          // Create a new range for the next paragraph
+          range.setStartAfter(paragraphDiv);
+        });
+      }
+    }
+  };
+
   useEffect(() => {
+    document.addEventListener("paste", pasteListener);
     document.addEventListener("click", inputListener);
     window.addEventListener("click", listener);
     window.addEventListener("keypress", listener);
     return () => {
+      document.removeEventListener("paste", pasteListener);
       document.removeEventListener("click", inputListener);
       window.removeEventListener("click", listener);
       window.removeEventListener("keypress", listener);
