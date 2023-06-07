@@ -73,7 +73,7 @@ const ScrollRow = ({ items }) => {
         </div>
       )}
 
-      {window.innerWidth - listWidth.current < scrollX && (
+      {window.innerWidth - listWidth.current <= scrollX && (
         <div className="row--right" onClick={handleRightArrow}>
           <FaAngleRight />
         </div>

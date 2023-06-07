@@ -116,6 +116,7 @@ const StyledAbout = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+    padding: 0 25px;
     .info {
       min-width: 100%;
       margin-bottom: 1rem;

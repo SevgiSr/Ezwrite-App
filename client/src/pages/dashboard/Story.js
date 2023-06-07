@@ -10,10 +10,17 @@ import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import Respond from "../../components/Respond";
 import { UserContext } from "../../context/userContext";
+import { Conversation } from "../../components";
 
 function Story() {
-  const { state, getStory, getProgress, setChapter, addStoryConv } =
-    useContext(StoryContext);
+  const {
+    state,
+    getStory,
+    getProgress,
+    setChapter,
+    useAddStoryConv,
+    useAddConvComment,
+  } = useContext(StoryContext);
   const { userState } = useContext(UserContext);
   const { story_id } = useParams();
   const location = useLocation();
@@ -46,7 +53,7 @@ function Story() {
         <StoryCard story={story} progress={progress} />
       </header>
       <main>
-        <section>
+        <section className="info-section">
           <div className="story-info">
             <div className="author">
               <ProfilePicture
@@ -79,31 +86,34 @@ function Story() {
             </ul>
           </div>
         </section>
-        <section>
-          <Respond
-            id={story_id}
-            text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            type="chapter"
-            sender={userState.user._id}
-            location={story_id}
-            route={location.pathname}
-            dest={story_id}
-            to={story.author?.name}
-            addComment={addStoryConv}
-          />
-          {/* <div className="column-reverse">
-            {state.chapter.comments?.map((comment) => {
-              return (
-                <div key={comment._id}>
-                  <Conversation
-                    conv={comment}
-                    addConvComment={addConvComment}
-                  />
-                </div>
-              );
-            })}
-          </div> */}
+        <section className="comments-section">
+          <div className="comments">
+            <Respond
+              id={story_id}
+              text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+              activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+              type="chapter"
+              sender={userState.user._id}
+              location={story_id}
+              route={location.pathname}
+              dest={story_id}
+              to={story.author?.name}
+              useAddConv={useAddStoryConv}
+            />
+            <div className="column-reverse">
+              {state.story.comments?.map((comment) => {
+                return (
+                  <div key={comment._id} className="comment">
+                    <Conversation
+                      key={comment._id}
+                      conv={comment}
+                      useAddConvComment={useAddConvComment}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </section>
       </main>
     </StyledStory>

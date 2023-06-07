@@ -29,6 +29,7 @@ import {
   UPLOAD_IMAGE_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const initialProfileState = {
   isMainUser: false,
@@ -308,6 +309,32 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  /* MUTATIONS */
+
+  const queryClient = useQueryClient();
+
+  const useAddProfileConv = () => {
+    return useMutation(
+      (data) => addProfileConv(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["conversations"]);
+        },
+      }
+    );
+  };
+
+  const useAddConvComment = () => {
+    return useMutation(
+      (data) => addConvComment(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["conversations"]);
+        },
+      }
+    );
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -333,6 +360,9 @@ export const ProfileProvider = ({ children }) => {
         sendNotification,
         deleteNotifications,
         getProfileActivity,
+
+        useAddProfileConv,
+        useAddConvComment,
       }}
     >
       {children}

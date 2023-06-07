@@ -29,14 +29,13 @@ router.route("/readingLists/:readingListId").patch(addToReadingList);
 
 router.route("/readingLists").post(createReadingList);
 
-router.route("/story/:story_id/:chapter_id");
+router.route("/chapter/:chapter_id").post(addChapterConv);
 
 router.route("/progress/:story_id").get(getProgress);
 router.route("/progress/:story_id/:chapter_id").post(setProgress);
 
 router
   .route("/vote/:story_id/:chapter_id")
-  .post(addChapterConv)
   .patch(voteChapter)
   .delete(unvoteChapter);
 

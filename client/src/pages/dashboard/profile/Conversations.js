@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 
 function Conversations() {
   const { username } = useParams();
-  const { profileState, addProfileConv, getProfileConv, addConvComment } =
+  const { profileState, useAddProfileConv, useAddConvComment } =
     useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const location = useLocation();
@@ -37,13 +37,16 @@ function Conversations() {
           route={location.pathname}
           to={username}
           dest={username}
-          addComment={addProfileConv}
+          useAddConv={useAddProfileConv}
         />
         <div className="column-reverse">
           {convs?.map((conv) => {
             return (
               <div key={conv._id} id={conv._id} className="conv">
-                <Conversation conv={conv} addConvComment={addConvComment} />
+                <Conversation
+                  conv={conv}
+                  useAddConvComment={useAddConvComment}
+                />
               </div>
             );
           })}

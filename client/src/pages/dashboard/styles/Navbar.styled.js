@@ -13,6 +13,7 @@ const StyledNavbar = styled.header`
   background-color: var(--background2);
   padding: 0px 20px;
   box-sizing: border-box;
+  overflow: hidden;
 
   .section {
     display: flex;
@@ -31,18 +32,6 @@ const StyledNavbar = styled.header`
   #write-dropdown,
   #discover-dropdown {
     margin: 0 3em;
-  }
-
-  @media only screen and (max-width: 680px) {
-    padding: 0;
-    #write-dropdown,
-    #discover-dropdown {
-      margin: 0;
-    }
-
-    .username {
-      display: none;
-    }
   }
 
   #discover-dropdown {
@@ -155,6 +144,24 @@ const StyledNavbar = styled.header`
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    padding: 0;
+    #write-dropdown,
+    #discover-dropdown {
+      margin: 0;
+    }
+
+    .username {
+      display: none;
+    }
+
+    #search-form {
+      input {
+        width: auto;
+      }
     }
   }
 `;

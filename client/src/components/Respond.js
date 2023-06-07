@@ -18,7 +18,7 @@ function Respond({
   route,
   to,
   dest,
-  addComment,
+  useAddConv,
   updatedParagraph,
 }) {
   const queryClient = useQueryClient();
@@ -30,15 +30,8 @@ function Respond({
 
   //addComment can be adding a comment to the profile or a book or adding a comment to a conversation
   //inactive ones won't be refetching anyways, so this is not wasteful
-  const mutation = useMutation(
-    (data) => addComment(data.dest, data.comment, data.updatedParagraph),
-    {
-      onSuccess: () => {
-        console.log(dest);
-        queryClient.invalidateQueries([`conversations`]);
-      },
-    }
-  );
+
+  const addConvMutation = useAddConv();
 
   const stateRef = useRef(show);
 
@@ -76,7 +69,7 @@ function Respond({
     if (!comment) return;
     setShow(initialState);
 
-    await mutation.mutateAsync({ dest, comment, updatedParagraph });
+    await addConvMutation.mutateAsync({ dest, comment, updatedParagraph });
 
     setComment("");
     const notification = {

@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import getDate from "../utils/getDate";
 import { useQuery } from "@tanstack/react-query";
 
-const Conversation = ({ conv, addConvComment, updatedParagraph }) => {
+const Conversation = ({ conv, useAddConvComment, updatedParagraph }) => {
   const { userState } = useContext(UserContext);
 
   const location = useLocation();
@@ -42,7 +42,7 @@ const Conversation = ({ conv, addConvComment, updatedParagraph }) => {
           </div>
           <div id="options">...</div>
         </header>
-        <main id="content">{conv.content}</main>
+        <div id="content">{conv.content}</div>
         {conv.subcomments?.map((sc) => {
           return <Comment key={sc._id} comment={sc} />;
         })}
@@ -69,7 +69,7 @@ const Conversation = ({ conv, addConvComment, updatedParagraph }) => {
         route={location.pathname}
         to={conv.author.name}
         dest={conv._id}
-        addComment={addConvComment}
+        useAddConv={useAddConvComment}
         updatedParagraph={updatedParagraph}
       />
     </>

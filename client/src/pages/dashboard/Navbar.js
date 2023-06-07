@@ -71,9 +71,9 @@ function Navbar() {
   return (
     <StyledNavbar>
       <div className="section">
-        <div className="logo">
+        <Link to={"/"} className="logo">
           <img src={src} alt="" />
-        </div>
+        </Link>
         <nav id="discover-dropdown">
           <DropdownMenu
             button={

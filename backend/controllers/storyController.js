@@ -13,6 +13,16 @@ const populateStory = {
   populate: [
     { path: "author" },
     { path: "chapters", select: "title votesCount views" },
+    {
+      path: "comments",
+      populate: [
+        { path: "author", model: "User" },
+        {
+          path: "subcomments",
+          populate: { path: "author", model: "User" },
+        },
+      ],
+    },
   ],
 };
 

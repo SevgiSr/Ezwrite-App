@@ -17,6 +17,7 @@ import {
   VOTE_CHAPTER_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const initialState = {
   users: [],
@@ -262,6 +263,55 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  /* MUTATIONS */
+
+  const queryClient = useQueryClient();
+
+  const useAddStoryConv = () => {
+    return useMutation(
+      (data) => addStoryConv(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
+  };
+
+  const useAddChapterConv = () => {
+    return useMutation(
+      (data) => addChapterConv(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
+  };
+
+  const useAddParagraphConv = () => {
+    return useMutation(
+      (data) =>
+        addParagraphConv(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
+  };
+
+  const useAddConvComment = () => {
+    return useMutation(
+      (data) => addConvComment(data.dest, data.comment, data.updatedParagraph),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
+  };
+
   return (
     <StoryContext.Provider
       value={{
@@ -283,6 +333,11 @@ export const StoryProvider = ({ children }) => {
         createReadingList,
         addToReadingList,
         addStoryConv,
+
+        useAddChapterConv,
+        useAddStoryConv,
+        useAddParagraphConv,
+        useAddConvComment,
       }}
     >
       {children}

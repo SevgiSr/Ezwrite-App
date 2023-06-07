@@ -23,8 +23,8 @@ function Chapter() {
     state,
     incrementViewCount,
     getChapter,
-    addChapterConv,
-    addConvComment,
+    useAddChapterConv,
+    useAddConvComment,
     getProgress,
     setProgress,
     setChapter,
@@ -75,8 +75,6 @@ function Chapter() {
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
   useEffect(() => {
     if (!isFetching && status === "success") {
-      console.log("fetching");
-      console.log(chapters);
       const filteredChapter = chapters.find(
         (chapter) => chapter._id === chapter_id
       );
@@ -159,13 +157,17 @@ function Chapter() {
           route={location.pathname}
           dest={chapter_id}
           to={state.story.author?.name}
-          addComment={addChapterConv}
+          useAddConv={useAddChapterConv}
         />
         <div className="column-reverse">
           {state.chapter.comments?.map((comment) => {
+            console.log(comment);
             return (
               <div key={comment._id}>
-                <Conversation conv={comment} addConvComment={addConvComment} />
+                <Conversation
+                  conv={comment}
+                  useAddConvComment={useAddConvComment}
+                />
               </div>
             );
           })}
@@ -180,7 +182,8 @@ function Paragraph({ paragraph, index }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { userState } = useContext(UserContext);
   const location = useLocation();
-  const { state, addConvComment, addParagraphConv } = useContext(StoryContext);
+  const { state, useAddConvComment, useAddParagraphConv } =
+    useContext(StoryContext);
 
   const modalRef = useRef(null);
   const buttonRef = useRef(null);
@@ -249,7 +252,7 @@ function Paragraph({ paragraph, index }) {
             route={location.pathname}
             dest={paragraph._id}
             to={state.story.author.name}
-            addComment={addParagraphConv}
+            useAddConv={useAddParagraphConv}
           />
           <div className="column-reverse">
             {paragraph.comments?.map((comment) => {
@@ -261,7 +264,7 @@ function Paragraph({ paragraph, index }) {
                   <Conversation
                     id={comment._id}
                     conv={comment}
-                    addConvComment={addConvComment}
+                    useAddConvComment={useAddConvComment}
                     updatedParagraph={paragraph._id}
                   />
                 </div>
