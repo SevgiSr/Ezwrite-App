@@ -239,6 +239,16 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const getLibrary = async () => {
+    try {
+      const { data } = await authFetch.get("/stories/library");
+      const { continueReading, readingLists } = data;
+      return { continueReading, readingLists };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addToReadingList = async (readingListId, story_id) => {
     try {
       const { data } = await authFetch.patch(
@@ -330,6 +340,7 @@ export const StoryProvider = ({ children }) => {
         getAll,
         getProgress,
         setProgress,
+        getLibrary,
         createReadingList,
         addToReadingList,
         addStoryConv,

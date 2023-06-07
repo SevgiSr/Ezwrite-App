@@ -218,7 +218,14 @@ const getProgress = async (req, res) => {
     story: req.params.story_id,
   })
     .populate(populateStory)
-    .populate(populateChapters);
+    .populate(populateChapters)
+    .populate({
+      path: "user",
+      populate: {
+        path: "readingLists",
+        populate: { path: "stories", populate: "author" },
+      },
+    });
 
   if (!progress) {
     console.log("no progress");
@@ -232,7 +239,14 @@ const getProgress = async (req, res) => {
 
     progress = await Progress.findById(newProgress._id)
       .populate(populateStory)
-      .populate(populateChapters);
+      .populate(populateChapters)
+      .populate({
+        path: "user",
+        populate: {
+          path: "readingLists",
+          populate: { path: "stories", populate: "author" },
+        },
+      });
 
     await User.findByIdAndUpdate(
       req.user.userId,
@@ -272,7 +286,14 @@ const setProgress = async (req, res) => {
     story: story_id,
   })
     .populate(populateStory)
-    .populate(populateChapters);
+    .populate(populateChapters)
+    .populate({
+      path: "user",
+      populate: {
+        path: "readingLists",
+        populate: { path: "stories", populate: "author" },
+      },
+    });
 
   progress.chapters = chapters;
 
@@ -429,6 +450,28 @@ const incrementViewCount = async (req, res) => {
   res.status(StatusCodes.OK);
 };
 
+const getLibrary = async (req, res) => {
+  const user = await User.findById(req.user.userId).populate([
+    {
+      path: "storiesProgress",
+      populate: { path: "story", populate: "author" },
+    },
+    { path: "readingLists", populate: { path: "stories", populate: "author" } },
+  ]);
+
+  const continueReading = user.storiesProgress;
+
+  continueReading.map((progress) => {
+    const chapterIndex = progress.story?.chapters.indexOf(progress.chapters[0]);
+    progress.chapterIndex = chapterIndex;
+    return progress;
+  });
+
+  const readingLists = user.readingLists;
+
+  res.status(StatusCodes.OK).json({ readingLists, continueReading });
+};
+
 const createReadingList = async (req, res) => {
   const { title, story_id } = req.body;
   const readingList = await ReadingList.create({ title });
@@ -470,6 +513,7 @@ export {
   getAll,
   setProgress,
   getProgress,
+  getLibrary,
   createReadingList,
   addToReadingList,
   addStoryConv,

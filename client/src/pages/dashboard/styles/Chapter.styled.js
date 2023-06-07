@@ -104,7 +104,30 @@ const StyledChapter = styled.div`
       }
 
       .add-list-menu {
-        color: var(--font1);
+        width: fit-content;
+        padding: 10px;
+        left: -150px;
+        top: 5px;
+        .title {
+          color: var(--font2);
+        }
+
+        .reading-list {
+          border: none;
+          width: 100%;
+          text-align: start;
+          background-color: inherit;
+          cursor: pointer;
+          color: var(--font1);
+        }
+
+        .new-reading-list {
+          display: flex;
+          button {
+            margin: 0;
+            background-color: var(--button-main);
+          }
+        }
       }
 
       .vote {

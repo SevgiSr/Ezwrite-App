@@ -48,7 +48,7 @@ function Chapter() {
   }, []);
 
   const {
-    data: { chapters, story } = {},
+    data: { chapters, story, user } = {},
     isLoading,
     isFetching,
     status,
@@ -104,6 +104,7 @@ function Chapter() {
         isChapterLoading={mutation.isLoading}
         scrollRef={scrollRef}
         refetch={refetch}
+        user={user}
       />
 
       <section className="chapter">
@@ -163,7 +164,6 @@ function Chapter() {
         </div>
         <div className="column-reverse">
           {state.chapter.comments?.map((comment) => {
-            console.log(comment);
             return (
               <div key={comment._id}>
                 <Conversation
@@ -279,13 +279,8 @@ function Paragraph({ paragraph, index }) {
   );
 }
 
-function ParagraphComments({ comments, paragraph_id, openModal }) {
-  const { userState } = useContext(UserContext);
-}
-
-function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
+function ChapterHeader({ isChapterLoading, user }) {
   const queryClient = useQueryClient();
-  const { story_id } = useParams();
   const {
     state,
     alertState,
@@ -295,7 +290,6 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
     createReadingList,
   } = useContext(StoryContext);
   const [title, setTitle] = useState("");
-  const { profileState } = useContext(ProfileContext);
 
   const [active, setActive] = useState({ upvote: false, downvote: false });
 
@@ -395,12 +389,12 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
           button={<span>+</span>}
           menu={
             <>
-              <div>Reading Lists</div>
-              {profileState.profile.readingLists?.map((readingList) => {
+              <div className="title">Reading Lists</div>
+              {user.readingLists?.map((readingList) => {
                 return (
                   <div key={readingList._id} className="dropdown-item">
                     <button
-                      className="readingList"
+                      className="reading-list"
                       onClick={() => handleAddToReadingList(readingList._id)}
                     >
                       <div>{readingList.title}</div>
@@ -408,7 +402,7 @@ function ChapterHeader({ isChapterLoading, scrollRef, refetch }) {
                   </div>
                 );
               })}
-              <div className="new-readingList">
+              <div className="new-reading-list">
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}

@@ -17,8 +17,10 @@ import {
   addToReadingList,
   createReadingList,
   addStoryConv,
+  getLibrary,
 } from "../controllers/storyController.js";
 
+router.route("/library").get(getLibrary);
 router.route("/:category").get(getByCategory);
 router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
