@@ -5,7 +5,7 @@ const StyledChapter = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 100px;
+  padding: 100px 0;
   color: var(--font1);
 
   .chapter-header {
@@ -137,7 +137,7 @@ const StyledChapter = styled.div`
     width: 600px;
     word-wrap: break-word;
     color: var(--font1);
-    margin-bottom: 300px;
+    margin-bottom: 100px;
     .metadata {
       color: var(--font2);
       display: flex;
@@ -220,8 +220,8 @@ const StyledChapter = styled.div`
       display: block;
     }
   }
-  .comments {
-    margin: 2rem 0;
+  .comments-section {
+    width: 600px;
   }
 `;
 

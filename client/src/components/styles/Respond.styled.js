@@ -9,7 +9,7 @@ const StyledRespondParent = styled.div`
   background-color: var(--background3);
 
   form {
-    width: 500px;
+    width: 100%;
     padding: 20px 10px;
     display: flex;
     flex-direction: row;

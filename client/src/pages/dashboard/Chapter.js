@@ -146,7 +146,7 @@ function Chapter() {
         })}
       </section>
 
-      <div className="comments">
+      <section className="comments-section">
         <Respond
           id={chapter_id}
           text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
@@ -172,7 +172,7 @@ function Chapter() {
             );
           })}
         </div>
-      </div>
+      </section>
     </StyledChapter>
   );
 }

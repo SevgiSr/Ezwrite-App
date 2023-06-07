@@ -4,7 +4,7 @@ const StyledNavbar = styled.header`
   position: sticky;
   top: 0;
   left: 0;
-  z-index: 5;
+  z-index: 999;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -13,7 +13,6 @@ const StyledNavbar = styled.header`
   background-color: var(--background2);
   padding: 0px 20px;
   box-sizing: border-box;
-  overflow: hidden;
 
   .section {
     display: flex;
