@@ -8,6 +8,7 @@ import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ClipLoader, SyncLoader } from "react-spinners";
 
 function Respond({
   text,
@@ -107,6 +108,11 @@ function Respond({
           rows="1"
           placeholder="Type your comment..."
         ></textarea>
+        {addConvMutation.isLoading && (
+          <div className="icon">
+            <ClipLoader color="rgb(0, 178, 178)" size={25} />
+          </div>
+        )}
         <button
           className={`${show.share} orange-button`}
           name="share"

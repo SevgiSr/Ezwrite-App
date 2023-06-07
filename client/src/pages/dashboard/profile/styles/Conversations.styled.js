@@ -6,6 +6,7 @@ const StyledConversations = styled.div`
   flex-direction: column;
   align-items: center;
   #parent {
+    width: 550px;
     margin-bottom: 150px;
   }
 `;

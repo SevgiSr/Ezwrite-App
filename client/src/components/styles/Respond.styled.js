@@ -6,7 +6,6 @@ const StyledRespondParent = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
-  background-color: var(--background3);
 
   form {
     width: 100%;
@@ -15,6 +14,13 @@ const StyledRespondParent = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    background-color: var(--background3);
+    position: relative;
+
+    .icon {
+      position: absolute;
+      right: 30px;
+    }
 
     textarea {
       font-size: 16px;

@@ -147,18 +147,20 @@ function Chapter() {
       </section>
 
       <section className="comments-section">
-        <Respond
-          id={chapter_id}
-          text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-          activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-          type="chapter"
-          sender={userState.user._id}
-          location={state.story._id}
-          route={location.pathname}
-          dest={chapter_id}
-          to={state.story.author?.name}
-          useAddConv={useAddChapterConv}
-        />
+        <div className="respond-component">
+          <Respond
+            id={chapter_id}
+            text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+            type="chapter"
+            sender={userState.user._id}
+            location={state.story._id}
+            route={location.pathname}
+            dest={chapter_id}
+            to={state.story.author?.name}
+            useAddConv={useAddChapterConv}
+          />
+        </div>
         <div className="column-reverse">
           {state.chapter.comments?.map((comment) => {
             console.log(comment);

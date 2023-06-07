@@ -203,6 +203,7 @@ const StyledChapter = styled.div`
       }
     }
     .comments-modal {
+      width: 500px;
       background-color: var(--background2);
       overflow-y: scroll;
       display: flex;
@@ -211,7 +212,6 @@ const StyledChapter = styled.div`
       top: 0;
       right: 0;
       bottom: 0;
-      max-width: 500px;
       z-index: 1000;
       border-radius: 5px;
       padding: 30px;
@@ -220,8 +220,14 @@ const StyledChapter = styled.div`
       display: block;
     }
   }
+
   .comments-section {
     width: 600px;
+    .respond-component {
+      form {
+        background-color: transparent;
+      }
+    }
   }
 `;
 
