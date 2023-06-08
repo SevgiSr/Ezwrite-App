@@ -11,7 +11,7 @@ import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
 
 function Navbar() {
-  const { userState } = useContext(UserContext);
+  const { userState, logoutUser } = useContext(UserContext);
 
   //for notifications
   const [ntCount, setNtCount] = useState(0);
@@ -207,6 +207,14 @@ function Navbar() {
                 </Link>
                 <Link to={`/settings`} className="dropdown-item">
                   <span>Settings</span>
+                </Link>
+                <hr />
+                <Link
+                  to={"/register"}
+                  className="dropdown-item"
+                  onClick={logoutUser}
+                >
+                  <span>Log out</span>
                 </Link>
               </>
             }
