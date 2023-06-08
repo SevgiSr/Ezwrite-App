@@ -46,7 +46,7 @@ const ScrollRow = ({ items }) => {
 
   useEffect(() => {
     setListWidthState(items.length * itemRef.current?.offsetWidth);
-  }, []);
+  }, [items]);
 
   //marginLeft is eiher negative or zero
 
