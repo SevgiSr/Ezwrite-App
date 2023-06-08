@@ -6,7 +6,11 @@ import { Conversation } from "../../components";
 import Respond from "../../components/Respond";
 import { FiChevronDown } from "react-icons/fi";
 import Cover from "../../components/Cover";
-import { AiFillDislike, AiFillStar } from "react-icons/ai";
+import {
+  AiFillDislike,
+  AiFillStar,
+  AiOutlineCheckCircle,
+} from "react-icons/ai";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaComment, FaCommentAlt } from "react-icons/fa";
@@ -286,14 +290,20 @@ function ChapterHeader({ isChapterLoading, user }) {
     alertState,
     voteChapter,
     unvoteChapter,
-    addToReadingList,
-    createReadingList,
+    useAddToList,
+    useCreateList,
   } = useContext(StoryContext);
+
+  const createListMutation = useCreateList();
+  const addToListMutation = useAddToList();
+
   const [title, setTitle] = useState("");
 
   const [active, setActive] = useState({ upvote: false, downvote: false });
 
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  const [mutatedListId, setMutatedListId] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -363,12 +373,18 @@ function ChapterHeader({ isChapterLoading, user }) {
   //if its == 1 display voted
   //if its == -1 display downwoted
 
-  const handleAddToReadingList = (readingListId) => {
-    addToReadingList(readingListId, state.story._id);
+  const handleAddToList = (readingListId) => {
+    setMutatedListId(readingListId);
+    addToListMutation.mutate({
+      readingListId,
+      story_id: state.story._id,
+    });
   };
 
-  const handleCreateReadingList = (title) => {
-    createReadingList(title, state.story._id);
+  const handleCreateList = (title) => {
+    if (title !== "") {
+      createListMutation.mutate({ title, story_id: state.story._id });
+    }
   };
 
   return (
@@ -395,10 +411,23 @@ function ChapterHeader({ isChapterLoading, user }) {
                   <div key={readingList._id} className="dropdown-item">
                     <button
                       className="reading-list"
-                      onClick={() => handleAddToReadingList(readingList._id)}
+                      onClick={() => handleAddToList(readingList._id)}
                     >
                       <div>{readingList.title}</div>
                     </button>
+                    <div className="icon">
+                      {mutatedListId === readingList._id &&
+                        addToListMutation.isLoading && (
+                          <ClipLoader size={18} color="rgb(0, 178, 178)" />
+                        )}
+                      {mutatedListId === readingList._id &&
+                        addToListMutation.status === "success" && (
+                          <AiOutlineCheckCircle
+                            size={20}
+                            color="rgb(0, 178, 178)"
+                          />
+                        )}
+                    </div>
                   </div>
                 );
               })}
@@ -410,7 +439,7 @@ function ChapterHeader({ isChapterLoading, user }) {
                   placeholder="Add new reading list..."
                 />
                 <button
-                  onClick={() => handleCreateReadingList(title)}
+                  onClick={() => handleCreateList(title)}
                   className="orange-button btn"
                 >
                   +

@@ -16,7 +16,7 @@ function ReadingLists({ readingLists }) {
         {readingLists?.map((readingList) => {
           return (
             <div key={readingList._id} className="readingList">
-              <Link className="title">
+              <Link to={`/list/${readingList._id}`} className="title">
                 <span className="text">{readingList.title}</span>
                 <span className="icon">
                   <BsChevronRight />

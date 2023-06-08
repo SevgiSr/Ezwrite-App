@@ -112,13 +112,19 @@ const StyledChapter = styled.div`
           color: var(--font2);
         }
 
-        .reading-list {
-          border: none;
-          width: 100%;
-          text-align: start;
-          background-color: inherit;
-          cursor: pointer;
-          color: var(--font1);
+        .dropdown-item {
+          display: flex;
+          .reading-list {
+            border: none;
+            width: 100%;
+            text-align: start;
+            background-color: inherit;
+            cursor: pointer;
+            color: var(--font1);
+          }
+
+          .icon {
+          }
         }
 
         .new-reading-list {

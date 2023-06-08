@@ -474,16 +474,20 @@ const getLibrary = async (req, res) => {
 
 const createReadingList = async (req, res) => {
   const { title, story_id } = req.body;
-  const readingList = await ReadingList.create({ title });
-  if (story_id) {
-    readingList.stories.push(story_id);
-    readingList.save();
+
+  if (title && title !== "") {
+    const readingList = await ReadingList.create({ title });
+
+    if (story_id) {
+      readingList.stories.push(story_id);
+      await readingList.save();
+    }
+    await User.findOneAndUpdate(
+      { _id: req.user.userId },
+      { $push: { readingLists: readingList._id } },
+      { upsert: true, new: true, runValidators: true }
+    );
   }
-  await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { $push: { readingLists: readingList._id } },
-    { upsert: true, new: true, runValidators: true }
-  );
 
   res.status(StatusCodes.OK).json({ readingList });
 };
@@ -492,11 +496,11 @@ const addToReadingList = async (req, res) => {
   const readingList = await ReadingList.findByIdAndUpdate(
     req.params.readingListId,
     {
-      $push: { stories: req.body.story_id },
+      $addToSet: { stories: req.body.story_id },
     },
     { upsert: true, new: true, runValidators: true }
   );
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json({ readingList });
 };
 
 export {

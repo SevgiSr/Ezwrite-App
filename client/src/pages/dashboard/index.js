@@ -8,6 +8,7 @@ import Inbox from "./Inbox";
 import Notifications from "./Notifications";
 import Settings from "./Settings";
 import Library from "./Library";
+import ReadingList from "./ReadingList";
 
 export {
   Home,
@@ -20,4 +21,5 @@ export {
   Notifications,
   Settings,
   Library,
+  ReadingList,
 };

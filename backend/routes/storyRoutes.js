@@ -27,8 +27,8 @@ router.route("/search/:query").get(getByQuery);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
 router.route("/story/:id").get(getStory).post(addStoryConv);
-router.route("/readingLists/:readingListId").patch(addToReadingList);
 
+router.route("/readingLists/:readingListId").patch(addToReadingList);
 router.route("/readingLists").post(createReadingList);
 
 router.route("/chapter/:chapter_id").post(addChapterConv);

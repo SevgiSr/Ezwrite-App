@@ -257,6 +257,8 @@ export const StoryProvider = ({ children }) => {
           story_id,
         }
       );
+      const { readingList } = data;
+      return readingList;
     } catch (error) {
       console.log(error);
     }
@@ -268,6 +270,8 @@ export const StoryProvider = ({ children }) => {
         title,
         story_id,
       });
+      const { readingList } = data;
+      return readingList;
     } catch (error) {
       console.log(error);
     }
@@ -322,6 +326,27 @@ export const StoryProvider = ({ children }) => {
     );
   };
 
+  const useCreateList = () => {
+    return useMutation((data) => createReadingList(data.title, data.story_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+        queryClient.invalidateQueries(["library"]);
+      },
+    });
+  };
+
+  const useAddToList = () => {
+    return useMutation(
+      (data) => addToReadingList(data.readingListId, data.story_id),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+          queryClient.invalidateQueries(["library"]);
+        },
+      }
+    );
+  };
+
   return (
     <StoryContext.Provider
       value={{
@@ -349,6 +374,8 @@ export const StoryProvider = ({ children }) => {
         useAddStoryConv,
         useAddParagraphConv,
         useAddConvComment,
+        useCreateList,
+        useAddToList,
       }}
     >
       {children}
