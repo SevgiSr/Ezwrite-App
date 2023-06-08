@@ -451,15 +451,14 @@ const incrementViewCount = async (req, res) => {
 };
 
 const getLibrary = async (req, res) => {
-  const user = await User.findById(req.user.userId).populate([
-    {
-      path: "storiesProgress",
-      populate: { path: "story", populate: "author" },
-    },
-    { path: "readingLists", populate: { path: "stories", populate: "author" } },
-  ]);
+  const user = await User.findById(req.user.userId).populate({
+    path: "readingLists",
+    populate: { path: "stories", populate: "author" },
+  });
 
-  const continueReading = user.storiesProgress;
+  const continueReading = await Progress.find({
+    author: req.user.userId,
+  }).populate({ path: "story", populate: "author" });
 
   continueReading.map((progress) => {
     const chapterIndex = progress.story?.chapters.indexOf(progress.chapters[0]);

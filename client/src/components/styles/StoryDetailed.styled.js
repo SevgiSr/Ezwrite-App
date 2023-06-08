@@ -6,6 +6,7 @@ const StyledStoryDetailed = styled.div`
   padding: 1.5rem;
   border-radius: 4px;
   width: 420px;
+  height: 250px;
 
   div {
     word-wrap: break-word;
@@ -35,7 +36,7 @@ const StyledStoryDetailed = styled.div`
       white-space: normal; /* Ensures text can break into a new line */
       font-weight: 700;
       font-size: 22px;
-      line-height: 28px;
+      line-height: 24px;
       color: var(--font1);
     }
 

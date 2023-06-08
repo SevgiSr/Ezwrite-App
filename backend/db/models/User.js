@@ -92,12 +92,6 @@ const UserSchema = new mongoose.Schema(
         ref: "Notification",
       },
     ],
-    storiesProgress: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Progress",
-      },
-    ],
     displayLanguage: {
       type: String,
     },

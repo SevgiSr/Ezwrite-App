@@ -8,7 +8,7 @@ const register = async (req, res) => {
   // request from frontend ->
   const { name, password } = req.body;
 
-  if (!name || !password) {
+  if (!name || name === "" || !password) {
     throw new BadRequestError("please provide all values");
     //I can just throw js error and it'll be sent in error handler middleware. but instead of usual js error I created my instance of it.
   }

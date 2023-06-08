@@ -2,6 +2,15 @@ import { StatusCodes } from "http-status-codes";
 import Story from "../db/models/Story.js";
 import User from "../db/models/User.js";
 import Chapter from "../db/models/Chapter.js";
+import Progress from "../db/models/Progress.js";
+import Comment from "../db/models/Comment.js";
+import Notification from "../db/models/Notification.js";
+import PrivateConv from "../db/models/PrivateConv.js";
+import ReadingList from "../db/models/ReadingList.js";
+import Message from "../db/models/Message.js";
+import Paragraph from "../db/models/Paragraph.js";
+import Vote from "../db/models/Vote.js";
+
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
 import dotenv from "dotenv";
@@ -12,7 +21,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import checkPermissions from "../utils/checkPermissions.js";
-import Paragraph from "../db/models/Paragraph.js";
+
+async function deleteCommentAndSubcomments(commentId) {
+  const comment = await Comment.findById(commentId);
+
+  for (let subcommentId of comment.subcomments) {
+    await Comment.findByIdAndRemove(subcommentId);
+  }
+
+  await Comment.findByIdAndRemove(commentId);
+}
 
 //if you use req.user.userId - secure
 //if you don't, add checkPermissions()
@@ -20,30 +38,25 @@ import Paragraph from "../db/models/Paragraph.js";
 //before adding checkPermissions users could easily change each others stories by just knowing it's id
 
 const getMyStories = async (req, res) => {
-  // jwt-auth middleware coming before sending any myStory request
-  // sets userId inside req.user object if the token is verified
-  /*   console.log(req.user.userId); */
-  //author field in story model only had ur user's id
-  // now author is an object of id and name
-  const myStories = await Story.find({ author: req.user.userId }).populate({
-    path: "author chapters",
-  });
-  // Sort stories based on creation or update time in descending order (from farthest to nearest)
-  const sortedStories = myStories.sort((a, b) => {
-    const aTime = new Date(a.updatedAt);
-    const bTime = new Date(b.updatedAt);
+  /*
+    await Story.deleteMany();
+    await ReadingList.deleteMany();
+    await Progress.deleteMany();
+    await Chapter.deleteMany();
+    await Comment.deleteMany();
+    await Message.deleteMany();
+    await Notification.deleteMany();
+    await Paragraph.deleteMany();
+    await PrivateConv.deleteMany();
+    await Vote.deleteMany();
+ */
+  const myStories = await Story.find({ author: req.user.userId })
+    .populate({
+      path: "author chapters",
+    })
+    .sort("-updatedAt");
 
-    // Compare the time values to sort in descending order
-    if (aTime > bTime) {
-      return -1;
-    } else if (aTime < bTime) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-
-  res.status(StatusCodes.OK).json({ myStories: sortedStories });
+  res.status(StatusCodes.OK).json({ myStories });
 };
 
 const getMyStory = async (req, res) => {
@@ -90,6 +103,50 @@ const deleteStory = async (req, res) => {
   });
 
   if (story) {
+    // Delete all chapters and their paragraphs
+    for (let chapterId of story.chapters) {
+      let chapter = await Chapter.findById(chapterId);
+
+      //delete paragraphs and their comments
+      for (let paragraphId of chapter.paragraphs) {
+        const paragraph = await Paragraph.findById(paragraphId);
+
+        for (let commentId of paragraph.comments) {
+          await deleteCommentAndSubcomments(commentId);
+        }
+        await Paragraph.findByIdAndRemove(paragraphId);
+      }
+
+      //delete chapter cotes
+      for (let voteId of chapter.votes) {
+        await Vote.findByIdAndRemove(voteId);
+      }
+
+      //delete chapter comments
+      for (let commentId of chapter.comments) {
+        await deleteCommentAndSubcomments(commentId);
+      }
+
+      await Chapter.findByIdAndRemove(chapterId);
+    }
+
+    // Delete all progress documents
+    for (let progressId of story.progress) {
+      await Progress.findByIdAndRemove(progressId);
+    }
+
+    // Delete all comment documents
+    for (let commentId of story.comments) {
+      await deleteCommentAndSubcomments(commentId);
+    }
+
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $pull: { stories: story._id } }
+    );
+
+    await ReadingList.updateMany({}, { $pull: { stories: story._id } });
+
     await story.delete();
   }
 
@@ -142,8 +199,14 @@ const saveChapter = async (req, res) => {
   const { chapter, divArray } = req.body;
 
   const chapterObj = await Chapter.findById(req.params.chapter_id);
-  for (let i = 0; i < chapterObj.paragraphs.length; i++) {
-    await Paragraph.findByIdAndDelete(chapterObj.paragraphs[i]._id);
+  for (let paragraphId of chapterObj.paragraphs) {
+    const paragraph = await Paragraph.findById(paragraphId);
+
+    for (let commentId of paragraph.comments) {
+      await deleteCommentAndSubcomments(commentId);
+    }
+
+    await Paragraph.findByIdAndRemove(paragraphId);
   }
 
   const paragraphs = divArray.map((div) => new Paragraph({ content: div }));
@@ -167,8 +230,15 @@ const createChapter = async (req, res) => {
     story: story._id,
   });
 
-  story.chapters.push(chapter._id);
-  await story.save();
+  /* 
+if you don't need the updated document, 
+then "updateOne" will be a more efficient choice 
+as it will consume fewer resources than the "findOneAndUpdate" 
+*/
+  await Story.updateOne(
+    { _id: req.params.story_id },
+    { $push: { chapters: chapter._id } }
+  );
 
   res.status(StatusCodes.OK).json({ newStory: story, chapter });
 };
@@ -184,3 +254,8 @@ export {
   getMyStory,
   updateStory,
 };
+
+/* 
+DONE WITH ADJUSTING CODE FOR CORRECT DELETION
+
+*/

@@ -57,7 +57,7 @@ const StoryDetailed = ({ story }) => {
             )}
           </div>
           <div className="description">
-            {story.description.slice(0, 170)}
+            {story.description.slice(0, 159)}
             {story.description.length > 361 && "..."}
           </div>
         </div>
