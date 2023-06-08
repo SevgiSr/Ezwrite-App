@@ -19,6 +19,12 @@ Server state = asynchronous (fetching APIs)
 
 - It's a very bad idea to make components do API requests when they're a small part of the big page.
 
+# !!IMPORTANT: Realized that when you delete an object in MongoDB, you have to manually delete all of it's references or child objects.
+
+-If I delete story I have to manually delete all of it's chapters. And paragraphs of those chapters etc.
+
+-If I delete story I have to delete all of it's reference id's. Pull it from the user object or readingList object.
+
 # RQ Notes
 
 ## Controller has to return json
