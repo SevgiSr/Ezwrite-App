@@ -36,9 +36,17 @@ const ScrollRow = ({ items }) => {
   const [scrollX, setScrollX] = useState(0);
   const rowRef = useRef(null);
   const itemRef = useRef(null);
-  const listWidth = useRef(0);
+  const [listWidth, setListWidth] = useState(0);
+  const listWidthRef = useRef(listWidth);
 
-  listWidth.current = items.length * itemRef.current?.offsetWidth;
+  const setListWidthState = (state) => {
+    listWidthRef.current = state;
+    setListWidth(state);
+  };
+
+  useEffect(() => {
+    setListWidthState(items.length * itemRef.current?.offsetWidth);
+  }, []);
 
   //marginLeft is eiher negative or zero
 
@@ -57,10 +65,10 @@ const ScrollRow = ({ items }) => {
   //marginLeft decreases as you scroll to the right
   const handleRightArrow = () => {
     let x = scrollX - Math.round(window.innerWidth / 2);
-    if (window.innerWidth - listWidth.current > x) {
+    if (window.innerWidth - listWidth > x) {
       // if the calculated new margin is more than the lenght of non-visible items it means we scrolled too much
       // and items cannot be scrolled further
-      x = window.innerWidth - listWidth.current - 120; // the margin from left edge should be list width minus screen size so than only the last screen-sized part is visible. plus the margin for last item
+      x = window.innerWidth - listWidth - 120; // the margin from left edge should be list width minus screen size so than only the last screen-sized part is visible. plus the margin for last item
     }
     setScrollX(x);
   };
@@ -73,7 +81,7 @@ const ScrollRow = ({ items }) => {
         </div>
       )}
 
-      {window.innerWidth - listWidth.current <= scrollX && (
+      {window.innerWidth - listWidth <= scrollX && (
         <div className="row--right" onClick={handleRightArrow}>
           <FaAngleRight />
         </div>
