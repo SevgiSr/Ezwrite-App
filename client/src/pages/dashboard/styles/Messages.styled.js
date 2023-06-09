@@ -1,28 +1,24 @@
 import styled from "styled-components";
 
 const StyledMessages = styled.div`
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  .title {
-    position: absolute;
-    top: 60px;
-    left: 60px;
-  }
-
   .parent {
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     .messages {
       border-radius: 15px;
-      height: 65%;
+      height: 550px;
       width: 100%;
       box-sizing: border-box;
       padding: 1rem;

@@ -16,16 +16,17 @@ const StyledSendMessage = styled.div`
     justify-content: space-between;
     textarea {
       border-radius: 15px;
-      box-shadow: 0 2px 5px rgb(120 120 120 / 25%);
       font-size: 16px;
       font-weight: 300;
       line-height: 24px;
-      color: #6f6f6f;
+      color: var(--font1);
+      background-color: var(--background5);
       width: 85%;
       height: 30px;
       border: none;
-      padding: 0.5rem;
+      padding: 0.5rem 0.8rem;
       -webkit-transition: height 0.5s;
+      resize: none;
     }
     button {
       cursor: pointer;

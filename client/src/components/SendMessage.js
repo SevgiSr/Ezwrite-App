@@ -77,6 +77,7 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
           id=""
           cols="30"
           rows="10"
+          placeholder="Type your message..."
         ></textarea>
         <button
           className={`${show.sendBtn} orange-button`}
