@@ -72,6 +72,9 @@ function About() {
           )}
         </div>
         <div className="readingLists">
+          <header>
+            {profileData.profile.readingLists.length} Reading Lists
+          </header>
           <ReadingLists readingLists={profileData.profile.readingLists} />
         </div>
       </section>

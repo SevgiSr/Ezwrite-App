@@ -9,9 +9,6 @@ import { AiOutlineBars } from "react-icons/ai";
 function ReadingLists({ readingLists }) {
   return (
     <StyledReadingLists>
-      <header>
-        <div>{readingLists.length} Reading Lists</div>
-      </header>
       <div className="main">
         {readingLists?.map((readingList) => {
           return (

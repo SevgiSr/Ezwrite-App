@@ -29,7 +29,8 @@ const StyledNotifications = styled.div`
     }
 
     .notification {
-      color: #6f6f6f;
+      color: var(--font1);
+      background-color: var(--background5);
       box-shadow: 0 8px 12px rgb(18 18 18 / 16%);
       margin-top: 1.5rem;
       padding: 10px 20px;
@@ -37,7 +38,7 @@ const StyledNotifications = styled.div`
       align-items: start;
 
       &:hover {
-        background-color: #eee;
+        background-color: var(--background4);
       }
 
       header {
@@ -50,6 +51,7 @@ const StyledNotifications = styled.div`
       .date {
         font-size: 13px;
         line-height: 18px;
+        color: var(--font2);
       }
       .profilePicture {
         margin-right: 10px;

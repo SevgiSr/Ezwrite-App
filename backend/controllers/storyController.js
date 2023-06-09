@@ -457,18 +457,25 @@ const getLibrary = async (req, res) => {
   });
 
   const continueReading = await Progress.find({
-    author: req.user.userId,
+    user: req.user.userId,
   }).populate({ path: "story", populate: "author" });
 
-  continueReading.map((progress) => {
-    const chapterIndex = progress.story?.chapters.indexOf(progress.chapters[0]);
-    progress.chapterIndex = chapterIndex;
-    return progress;
+  const editedContinueReading = continueReading.map((progress) => {
+    const chapterIndex = progress.story?.chapters.findIndex(
+      (chapter) =>
+        chapter._id.toString() === progress.chapters[0]._id.toString()
+    );
+    return {
+      ...progress._doc,
+      chapterIndex,
+    };
   });
 
   const readingLists = user.readingLists;
 
-  res.status(StatusCodes.OK).json({ readingLists, continueReading });
+  res
+    .status(StatusCodes.OK)
+    .json({ readingLists, continueReading: editedContinueReading });
 };
 
 const createReadingList = async (req, res) => {

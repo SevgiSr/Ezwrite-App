@@ -3,7 +3,7 @@ import styled from "styled-components";
 const StyledUserCard = styled.article`
   width: fit-content;
   color: var(--font1);
-  background-color: var(--background5);
+  background-color: var(--background1);
 
   .background {
     margin-bottom: 1rem;

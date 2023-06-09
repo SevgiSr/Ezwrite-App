@@ -53,6 +53,7 @@ function Search() {
         <button
           className={`${search === "users" && "active"}`}
           onClick={(e) => setSearch("users")}
+          disabled={params.category}
         >
           Users
         </button>

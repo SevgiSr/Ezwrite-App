@@ -44,7 +44,7 @@ function Register() {
   useEffect(() => {
     if (userState.user && userState.token) {
       setTimeout(() => {
-        navigate("/myStories");
+        navigate("/");
       }, 1000);
     }
   }, [userState.user, userState.token, navigate]);

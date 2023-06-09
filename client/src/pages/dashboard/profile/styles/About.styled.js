@@ -108,7 +108,17 @@ const StyledAbout = styled.div`
     }
 
     .readingLists {
-      margin-top: 1rem;
+      padding: 1rem 1.5rem;
+      header {
+        border-bottom: 1px solid var(--font1);
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .stories {
+        padding: 0;
+      }
     }
   }
 

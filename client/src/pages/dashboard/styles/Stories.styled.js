@@ -16,6 +16,7 @@ const StyledStories = styled.div`
       color: var(--font2);
       margin-right: 1rem;
       border: none;
+      cursor: pointer;
     }
 
     .active {
