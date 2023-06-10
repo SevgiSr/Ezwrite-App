@@ -6,12 +6,25 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { UserContext } from "../context/userContext";
+import { useQuery } from "@tanstack/react-query";
 const UserCard = ({ user }) => {
   const socket = io("http://localhost:5000");
-  const { alertState, followProfile, unfollowProfile, sendNotification } =
-    useContext(ProfileContext);
+  const {
+    alertState,
+    getProfile,
+    useFollowProfile,
+    useUnfollowProfile,
+    sendNotification,
+  } = useContext(ProfileContext);
 
-  const [followState, setFollowState] = useState("unfollow");
+  const followProfileMutation = useFollowProfile();
+  const unfollowProfileMutation = useUnfollowProfile();
+
+  //get profile data of ahmed user
+  const { data: profileData = {}, isLoading } = useQuery(
+    ["profile", user.name],
+    () => getProfile(user.name)
+  );
 
   const { userState } = useContext(UserContext);
   const localUser = userState.user;
@@ -21,15 +34,15 @@ const UserCard = ({ user }) => {
     e.stopPropagation();
     if (e.target.name === "follow") {
       handleFollowClick();
-      setFollowState("unfollow");
     } else {
       handleUnfollowClick();
-      setFollowState("follow");
     }
   };
+
   const handleFollowClick = () => {
     if (localUser.name === user.name) return;
-    followProfile(user.name);
+    console.log("following...");
+    followProfileMutation.mutate({ username: user.name });
     const notification = {
       type: "You have a new follower.",
       content: `${localUser.name} has followed you.`,
@@ -44,10 +57,11 @@ const UserCard = ({ user }) => {
 
   const handleUnfollowClick = () => {
     console.log("unfollowing..");
-    unfollowProfile(user.name);
+    unfollowProfileMutation.mutate({ username: user.name });
   };
 
   if (!user) return null;
+  if (isLoading) return null;
   return (
     <StyledUserCard>
       <Link
@@ -77,23 +91,27 @@ const UserCard = ({ user }) => {
           <button
             onClick={toggleFollowClick}
             disabled={alertState.isLoading}
-            className={`${followState} profile-button`}
-            name={followState}
+            className={`${
+              profileData.isFollowing ? "unfollow" : "follow"
+            } profile-button`}
+            name={profileData.isFollowing ? "unfollow" : "follow"}
           >
             <span className="icon">
               <BsPersonPlusFill />
             </span>
-            <span className="btn-text">{followState}</span>
+            <span className="btn-text">
+              {profileData.isFollowing ? "unfollow" : "follow"}
+            </span>
           </button>
           <div className="info">
             <div>
               {user.stories.length} <span>Works</span>
             </div>
             <div>
-              {user.following.length} <span>Following</span>
+              {profileData.profile.following.length} <span>Following</span>
             </div>
             <div>
-              {user.followers.length} <span>Followers</span>
+              {profileData.profile.followers.length} <span>Followers</span>
             </div>
           </div>
         </div>

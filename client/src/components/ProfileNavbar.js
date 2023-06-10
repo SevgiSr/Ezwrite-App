@@ -11,17 +11,22 @@ import { io } from "socket.io-client";
 
 const ProfileNavbar = ({ links, profileData }) => {
   const socket = io("http://localhost:5000");
+  //profileData has isFollowing and visited user's followers info
+  //if we just invalidate prodile queries profileData is going to update
 
+  //we need profileState for editMode
   const {
-    alertState,
     profileState,
     openEditMode,
-    followProfile,
-    unfollowProfile,
+    useFollowProfile,
+    useUnfollowProfile,
     sendNotification,
   } = useContext(ProfileContext);
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const followProfileMutation = useFollowProfile();
+  const unfollowProfileMutation = useUnfollowProfile();
 
   const navigate = useNavigate();
   const { username } = useParams();
@@ -33,7 +38,7 @@ const ProfileNavbar = ({ links, profileData }) => {
   const handleFollowClick = () => {
     console.log(user.name, username);
     if (user.name === username) return;
-    followProfile(username);
+    followProfileMutation.mutate({ username });
     const notification = {
       type: "You have a new follower.",
       content: `${user.name} has followed you.`,
@@ -48,7 +53,7 @@ const ProfileNavbar = ({ links, profileData }) => {
 
   const handleUnfollowClick = () => {
     console.log("unfollowing..");
-    unfollowProfile(username);
+    unfollowProfileMutation.mutate({ username });
   };
 
   const handleMessageClick = () => {
@@ -73,7 +78,10 @@ const ProfileNavbar = ({ links, profileData }) => {
             {profileData.isFollowing ? (
               <button
                 onClick={handleUnfollowClick}
-                disabled={profileState.isDisabled}
+                disabled={
+                  unfollowProfileMutation.isLoading ||
+                  followProfileMutation.isLoading
+                }
                 className="following profile-button"
               >
                 <span className="icon">
@@ -84,7 +92,10 @@ const ProfileNavbar = ({ links, profileData }) => {
             ) : (
               <button
                 onClick={handleFollowClick}
-                disabled={alertState.isLoading}
+                disabled={
+                  followProfileMutation.isLoading ||
+                  unfollowProfileMutation.isLoading
+                }
                 className="follow profile-button"
               >
                 <span className="icon">

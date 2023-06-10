@@ -130,16 +130,9 @@ export const ProfileProvider = ({ children }) => {
 
   const followProfile = async (username) => {
     try {
-      alertDispatch({
-        type: BEGIN,
-      });
       const { data } = await authFetch.get(`/user/${username}/follow`);
       const { followers } = data;
-      alertDispatch({ type: SUCCESS, payload: { msg: "followed" } });
-      dispatch({
-        type: FOLLOW_PROFILE_SUCCESS,
-        payload: { followers },
-      });
+      return followers;
     } catch (error) {
       console.log(error);
       alertDispatch({ type: ERROR });
@@ -148,17 +141,9 @@ export const ProfileProvider = ({ children }) => {
 
   const unfollowProfile = async (username) => {
     try {
-      alertDispatch({
-        type: BEGIN,
-      });
       const { data } = await authFetch.get(`/user/${username}/unfollow`);
       const { followers } = data;
-
-      alertDispatch({ type: SUCCESS, payload: { msg: "unfollowed" } });
-      dispatch({
-        type: UNFOLLOW_PROFILE_SUCCESS,
-        payload: { followers },
-      });
+      return followers;
     } catch (error) {
       console.log(error);
       alertDispatch({ type: ERROR });
@@ -223,6 +208,7 @@ export const ProfileProvider = ({ children }) => {
       );
       const { newUser } = data;
       dispatch({ type: EDIT_PROFILE_SUCCESS, payload: { newUser } });
+      return newUser;
     } catch (error) {
       console.log(error);
     }
@@ -335,6 +321,32 @@ export const ProfileProvider = ({ children }) => {
     );
   };
 
+  const useFollowProfile = () => {
+    return useMutation((data) => followProfile(data.username), {
+      onMutate: (variables) => {
+        queryClient.setQueriesData(["profile", variables.username], (old) => {
+          return { ...old, isFollowing: true };
+        });
+      },
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries(["profile", variables.username]);
+      },
+    });
+  };
+
+  const useUnfollowProfile = () => {
+    return useMutation((data) => unfollowProfile(data.username), {
+      onMutate: (variables) => {
+        queryClient.setQueriesData(["profile", variables.username], (old) => {
+          return { ...old, isFollowing: false };
+        });
+      },
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries(["profile", variables.username]);
+      },
+    });
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -363,6 +375,8 @@ export const ProfileProvider = ({ children }) => {
 
         useAddProfileConv,
         useAddConvComment,
+        useFollowProfile,
+        useUnfollowProfile,
       }}
     >
       {children}

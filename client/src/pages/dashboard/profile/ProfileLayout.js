@@ -37,6 +37,7 @@ function SharedLayout() {
       };
       setProfileInfo(newState);
     },
+    refetchOnWindowFocus: false,
   });
 
   const { data: convs = [] } = useQuery(
@@ -75,6 +76,7 @@ function SharedLayout() {
         ]}
       />
       {profileData.isMainUser ? (
+        // we have dispatches that changes edit mode. edit mode is in global state
         profileState.isEditMode ? (
           <EditProfile handleChange={handleChange} state={profileInfo} />
         ) : (
