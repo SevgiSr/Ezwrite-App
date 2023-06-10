@@ -5,19 +5,11 @@ import axios from "axios";
 
 import {
   BEGIN,
-  CREATE_STORY_BEGIN,
-  CREATE_STORY_ERROR,
-  CREATE_STORY_SUCCESS,
   EDIT_MY_CHAPTER_SUCCESS,
-  EDIT_STORY_SUCCESS,
   ERROR,
-  GET_MY_CHAPTERS_SUCCESS,
-  GET_MY_STORIES_SUCCESS,
   GET_MY_STORY_SUCCESS,
   MUTATION_BEGIN,
-  MUTATION_ERROR,
   MUTATION_SUCCESS,
-  SEND_GPT_PROMPT,
   SET_EDIT_STORY,
   SUCCESS,
 } from "./actions";
@@ -70,12 +62,6 @@ export const MyStoryProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get("/myStories");
       const { myStories } = data;
-      dispatch({
-        type: GET_MY_STORIES_SUCCESS,
-        payload: {
-          myStories,
-        },
-      });
       return myStories;
     } catch (error) {
       console.log(error);
@@ -96,7 +82,6 @@ export const MyStoryProvider = ({ children }) => {
   };
 
   const createStory = async (file, storyDetails) => {
-    alertDispatch({ type: BEGIN });
     try {
       let fileData = new FormData();
       fileData.append("file", file);
@@ -106,13 +91,8 @@ export const MyStoryProvider = ({ children }) => {
         `/myStories/cover/${story._id}`,
         fileData
       );
-      alertDispatch({ type: SUCCESS, payload: { msg: "New Story Created!" } });
     } catch (error) {
-      if (error.response.status === 401) return;
-      alertDispatch({
-        type: ERROR,
-        payload: { msg: error.response.data.msg },
-      });
+      console.log(error);
     }
   };
 
@@ -125,20 +105,14 @@ export const MyStoryProvider = ({ children }) => {
   };
 
   const updateStory = async (story_id, storyDetails) => {
-    alertDispatch({ type: BEGIN });
     try {
       const { data } = await authFetch.patch(
         `/myStories/update/${story_id}`,
         storyDetails
       );
       const { story } = data;
-      alertDispatch({ type: SUCCESS, payload: { msg: "Updated Story!" } });
     } catch (error) {
-      if (error.response.status === 401) return;
-      alertDispatch({
-        type: ERROR,
-        payload: { msg: error.response.data.msg },
-      });
+      console.log(error);
     }
   };
 
@@ -162,21 +136,6 @@ export const MyStoryProvider = ({ children }) => {
     dispatch({ type: SET_EDIT_STORY, payload: { id } });
   };
 
-  const getMyChapters = async (id) => {
-    try {
-      setEditStory(id);
-      const { data } = await authFetch.get(`/myStories/${id}`);
-      const { story } = data;
-      dispatch({
-        type: GET_MY_CHAPTERS_SUCCESS,
-        payload: { story: story, chapters: story.chapters },
-      });
-    } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
-    }
-  };
-
   const setEditChapter = async (story, chapter) => {
     try {
       dispatch({
@@ -195,7 +154,6 @@ export const MyStoryProvider = ({ children }) => {
         chapter,
         divArray,
       });
-      dispatch({ type: EDIT_STORY_SUCCESS, payload: { chapter } });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -296,7 +254,6 @@ export const MyStoryProvider = ({ children }) => {
         createStory,
         deleteStory,
         updateCover,
-        getMyChapters,
         setEditStory,
         setEditChapter,
         saveChapter,
@@ -315,3 +272,9 @@ export const MyStoryProvider = ({ children }) => {
     </MyStoryContext.Provider>
   );
 };
+
+/* 
+
+REMOVED DISPATCHES
+
+*/

@@ -49,10 +49,10 @@ const UserCard = ({ user }) => {
     const notification = {
       text: `${localUser.name} has followed you.`,
       activity: `${localUser.name} has followed ${user.name}`,
-      type: "follow",
+      type: "profile",
       sender: localUser._id,
       location: user._id,
-      route: location.pathname,
+      route: `/user/${user.name}`,
     };
 
     socket.emit("send notification", {

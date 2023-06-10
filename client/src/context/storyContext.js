@@ -3,15 +3,10 @@ import storyReducer from "./reducers/storyReducer";
 import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 
 import {
-  ADD_CHAPTER_CONV_SUCCESS,
-  ADD_CONV_COMMENT_SUCCESS,
-  ADD_PARAGRAPH_CONV_SUCCESS,
   BEGIN,
   ERROR,
-  GET_ALL_STORIES_SUCCESS,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
-  GET_STORY_SUCCESS,
   SUCCESS,
   UNVOTE_CHAPTER_SUCCESS,
   VOTE_CHAPTER_SUCCESS,
@@ -71,16 +66,6 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const getStory = async (id) => {
-    try {
-      const { data } = await authFetch.get(`/stories/story/${id}`);
-      const { story } = data;
-      dispatch({ type: GET_STORY_SUCCESS, payload: { story } });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   /*   const getChapter = async (story_id, chapter_id) => {
     try {
       const { data } = await authFetch.get(
@@ -129,7 +114,7 @@ export const StoryProvider = ({ children }) => {
         comment_content,
       });
       const { newConv } = data;
-      dispatch({ type: ADD_CHAPTER_CONV_SUCCESS, payload: { newConv } });
+      return newConv;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -145,10 +130,7 @@ export const StoryProvider = ({ children }) => {
         }
       );
       const { updatedParagraph, newConvs } = data;
-      dispatch({
-        type: ADD_PARAGRAPH_CONV_SUCCESS,
-        payload: { updatedParagraph, newConvs },
-      });
+      return { updatedParagraph, newConvs };
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -160,6 +142,7 @@ export const StoryProvider = ({ children }) => {
         comment_content,
       });
       const { newConv } = data;
+      return newConv;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -219,21 +202,8 @@ export const StoryProvider = ({ children }) => {
         comment_content,
       });
       const { newConv } = data;
-      if (!updatedParagraph) {
-        dispatch({
-          type: ADD_CONV_COMMENT_SUCCESS,
-          payload: { newConv, type: "chapter" },
-        });
-      } else {
-        dispatch({
-          type: ADD_CONV_COMMENT_SUCCESS,
-          payload: {
-            newConv,
-            type: "paragraph",
-            updatedParagraph,
-          },
-        });
-      }
+
+      return newConv;
     } catch (error) {
       console.log(error);
     }
@@ -354,7 +324,6 @@ export const StoryProvider = ({ children }) => {
         alertState,
         getByCategory,
         getByQuery,
-        getStory,
         setChapter,
         addChapterConv,
         addParagraphConv,
@@ -382,3 +351,8 @@ export const StoryProvider = ({ children }) => {
     </StoryContext.Provider>
   );
 };
+
+/* 
+REMOVED DISPATCH
+
+*/

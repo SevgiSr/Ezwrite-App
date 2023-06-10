@@ -157,7 +157,7 @@ function Chapter() {
             id={chapter_id}
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            type="chapter"
+            type="story"
             sender={userState.user._id}
             location={state.story._id}
             route={location.pathname}
@@ -252,7 +252,7 @@ function Paragraph({ paragraph, index }) {
             key={"paragraph-" + paragraph._id}
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            type="chapter"
+            type="story"
             sender={userState.user._id}
             location={state.story._id}
             route={location.pathname}

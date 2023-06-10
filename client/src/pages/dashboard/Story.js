@@ -90,9 +90,9 @@ function Story() {
           <div className="comments">
             <Respond
               id={story_id}
-              text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-              activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-              type="chapter"
+              text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
+              activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
+              type="story"
               sender={userState.user._id}
               location={story_id}
               route={location.pathname}

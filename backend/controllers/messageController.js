@@ -60,7 +60,13 @@ const openNotifications = async (req, res) => {
     populate: "sender location",
   });
 
-  res.status(StatusCodes.OK).json({ notifications: user.notifications });
+  const notifications = user.notifications.sort(
+    (a, b) => b.createdAt - a.createdAt
+  );
+
+  console.log(notifications);
+
+  res.status(StatusCodes.OK).json({ notifications });
 };
 
 const sendNotification = async (req, res) => {
@@ -69,11 +75,6 @@ const sendNotification = async (req, res) => {
   const notification = await Notification.create({
     ...nt,
   });
-
-  console.log("notification");
-  console.log(notification);
-
-  console.log(nt.sender);
 
   await User.updateOne(
     { name: req.params.username },

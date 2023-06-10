@@ -57,7 +57,7 @@ function Activity() {
                   />
                 </div>
               )}
-              {nt.type === "chapter" && (
+              {nt.type === "story" && (
                 <div style={{ marginLeft: "auto" }} className="story">
                   <Cover filename={nt.location} width="45px" />
                 </div>

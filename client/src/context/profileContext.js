@@ -4,28 +4,13 @@ import profileReducer from "./reducers/profileReducer";
 import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 
 import {
-  ADD_CONV_COMMENT_SUCCESS,
-  ADD_PROFILE_CONV_SUCCESS,
   BEGIN,
   CLOSE_EDIT_MODE,
-  DELETE_NOTIFICATIONS_SUCCESS,
-  EDIT_PROFILE_SUCCESS,
   ERROR,
-  FOLLOW_PROFILE_BEGIN,
-  FOLLOW_PROFILE_SUCCESS,
-  GET_IMAGE_SUCCESS,
-  GET_PROFILE_ACTIVITY_SUCCESS,
-  GET_PROFILE_CONV_SUCCESS,
   GET_PROFILE_SETTINGS,
-  GET_USER_SUCCESS,
   OPEN_EDIT_MODE,
-  OPEN_INBOX_SUCCESS,
   OPEN_MESSAGES_SUCCESS,
-  OPEN_NOTIFICATIONS_SUCCESS,
-  SEND_NOTIFICATION_SUCCESS,
   SUCCESS,
-  UNFOLLOW_PROFILE_BEGIN,
-  UNFOLLOW_PROFILE_SUCCESS,
   UPLOAD_IMAGE_SUCCESS,
 } from "./actions";
 import { UserContext } from "./userContext";
@@ -150,16 +135,6 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
-  const getProfileActivity = async (username) => {
-    try {
-      const { data } = await authFetch.get(`/user/${username}/activity`);
-      const { activity } = data;
-      dispatch({ type: GET_PROFILE_ACTIVITY_SUCCESS, payload: { activity } });
-    } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
-    }
-  };
   const getProfileConv = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}/conversations`);
@@ -207,7 +182,6 @@ export const ProfileProvider = ({ children }) => {
         { profileInfo }
       );
       const { newUser } = data;
-      dispatch({ type: EDIT_PROFILE_SUCCESS, payload: { newUser } });
       return newUser;
     } catch (error) {
       console.log(error);
@@ -228,13 +202,13 @@ export const ProfileProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get("/messages/inbox");
       const { inbox } = data;
-      console.log(inbox);
-      dispatch({ type: OPEN_INBOX_SUCCESS, payload: { inbox } });
+      return inbox;
     } catch (error) {
       console.log(error);
     }
   };
 
+  //has dispatch
   const openMessages = async (username) => {
     try {
       const { data } = await authFetch.get(`/messages/${username}`);
@@ -263,7 +237,6 @@ export const ProfileProvider = ({ children }) => {
       await authFetch.post(`/messages/notifications/${username}`, {
         nt: notification,
       });
-      console.log(notification);
     } catch (error) {
       console.log(error);
     }
@@ -273,17 +246,13 @@ export const ProfileProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get(`/messages/notifications`);
       const { notifications } = data;
-      console.log(notifications);
-      dispatch({
-        type: OPEN_NOTIFICATIONS_SUCCESS,
-        payload: { notifications },
-      });
+      return notifications;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteNotifications = async () => {
+  /* const deleteNotifications = async () => {
     try {
       await authFetch.delete(`/messages/notifications`);
 
@@ -293,11 +262,19 @@ export const ProfileProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }; */
 
   /* MUTATIONS */
 
   const queryClient = useQueryClient();
+
+  const useEditProfileInfo = () => {
+    return useMutation(({ state }) => editProfileInfo(state), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["profile"]);
+      },
+    });
+  };
 
   const useAddProfileConv = () => {
     return useMutation(
@@ -370,16 +347,21 @@ export const ProfileProvider = ({ children }) => {
         sendMessage,
         openNotifications,
         sendNotification,
-        deleteNotifications,
-        getProfileActivity,
 
         useAddProfileConv,
         useAddConvComment,
         useFollowProfile,
         useUnfollowProfile,
+        useEditProfileInfo,
       }}
     >
       {children}
     </ProfileContext.Provider>
   );
 };
+
+/* 
+
+REMOVED DISPATCHES
+
+*/

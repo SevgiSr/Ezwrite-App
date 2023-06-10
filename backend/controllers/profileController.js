@@ -9,6 +9,13 @@ import { getStoryVotes, getStoryViews } from "./storyController.js";
 const getProfile = async (req, res) => {
   const profile = await User.findOne({ name: req.params.username })
     .populate("stories followers following")
+    .populate({
+      path: "notifications",
+      populate: "sender",
+      options: {
+        sort: { createdAt: -1 },
+      },
+    })
     .populate({ path: "activity", populate: "sender" })
     .populate({
       path: "readingLists",

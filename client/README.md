@@ -25,6 +25,8 @@ Server state = asynchronous (fetching APIs)
 
 -If I delete story I have to delete all of it's reference id's. Pull it from the user object or readingList object.
 
+# !!IMPORTANT: Don't use {upsert: true} in mongoose. (it creates new documents if the document was not found)
+
 # RQ Notes
 
 ## Controller has to return json

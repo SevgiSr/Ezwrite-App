@@ -141,10 +141,14 @@ const getByQuery = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
+  /*   console.log("deleting");
+  await User.updateMany({}, { $set: { activity: [] } });
+  await User.updateMany({}, { $set: { notifications: [] } });
+  await Notification.deleteMany();
+ */
   const stories = await Story.find();
   let users = await User.find();
   users = users.filter((user) => String(user._id) !== String(req.user.userId));
-  console.log(users);
   res.status(StatusCodes.OK).json({ stories, users });
 };
 
@@ -251,14 +255,8 @@ const getProgress = async (req, res) => {
         },
       });
 
-    await User.updateOne(
-      req.user.userId,
-      { $push: { storiesProgress: progress._id } },
-      { runValidators: true }
-    );
-
     await Story.updateOne(
-      req.params.story_id,
+      { _id: req.params.story_id },
       { $push: { progress: progress._id } },
       { runValidators: true }
     );

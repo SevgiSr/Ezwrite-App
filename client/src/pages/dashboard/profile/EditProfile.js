@@ -4,21 +4,14 @@ import StyledEditProfile from "./styles/EditProfile.styled";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function EditProfile({ handleChange, state }) {
-  const { editProfileInfo, closeEditMode } = useContext(ProfileContext);
+  const { useEditProfileInfo, closeEditMode } = useContext(ProfileContext);
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(({ state }) => editProfileInfo(state), {
-    onSuccess: () => {
-      //TASK: instead of doing refetch update profileInfo manually in the cache
-      queryClient.invalidateQueries(["profile"]);
-    },
-  });
+  const editProfileInfoMutation = useEditProfileInfo();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     closeEditMode();
-    await mutation.mutateAsync({ state });
+    await editProfileInfoMutation.mutateAsync({ state });
   };
 
   return (
