@@ -29,8 +29,8 @@ function Register() {
   const onSubmit = (e) => {
     e.preventDefault();
     const { name, password, isMember } = user;
-    if (!password || !name) {
-      console.log("provide all values bitch");
+    if (!password || !name || name === "") {
+      console.log("provide all values");
       return;
     }
     const currentUser = { name, password };

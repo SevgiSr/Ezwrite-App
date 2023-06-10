@@ -87,10 +87,10 @@ const createStory = async (req, res) => {
   story.chapters.push(chapter._id);
   await story.save();
 
-  await User.findOneAndUpdate(
+  await User.updateOne(
     { _id: req.user.userId },
     { $push: { stories: story._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
   res.status(StatusCodes.CREATED).json({ story });
@@ -163,7 +163,7 @@ const updateStory = async (req, res) => {
   const story = await Story.findOneAndUpdate(
     { _id: req.params.story_id },
     { ...req.body },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   res.status(StatusCodes.CREATED).json({ story });
@@ -237,7 +237,8 @@ as it will consume fewer resources than the "findOneAndUpdate"
 */
   await Story.updateOne(
     { _id: req.params.story_id },
-    { $push: { chapters: chapter._id } }
+    { $push: { chapters: chapter._id } },
+    { runValidators: true }
   );
 
   res.status(StatusCodes.OK).json({ newStory: story, chapter });

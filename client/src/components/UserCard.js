@@ -3,7 +3,7 @@ import StyledUserCard from "./styles/UserCard.styled";
 import { io } from "socket.io-client";
 import { ProfileContext } from "../context/profileContext";
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { UserContext } from "../context/userContext";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +19,8 @@ const UserCard = ({ user }) => {
 
   const followProfileMutation = useFollowProfile();
   const unfollowProfileMutation = useUnfollowProfile();
+
+  const location = useLocation();
 
   //get profile data of ahmed user
   const { data: profileData = {}, isLoading } = useQuery(
@@ -43,10 +45,16 @@ const UserCard = ({ user }) => {
     if (localUser.name === user.name) return;
     console.log("following...");
     followProfileMutation.mutate({ username: user.name });
+
     const notification = {
-      type: "You have a new follower.",
-      content: `${localUser.name} has followed you.`,
+      text: `${localUser.name} has followed you.`,
+      activity: `${localUser.name} has followed ${user.name}`,
+      type: "follow",
+      sender: localUser._id,
+      location: user._id,
+      route: location.pathname,
     };
+
     socket.emit("send notification", {
       notification,
       room: user.name,

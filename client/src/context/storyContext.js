@@ -64,8 +64,8 @@ export const StoryProvider = ({ children }) => {
   const getAll = async () => {
     try {
       const { data } = await authFetch.get(`/stories/search/all`);
-      const { stories } = data;
-      dispatch({ type: GET_ALL_STORIES_SUCCESS, payload: { stories } });
+      const { stories, users } = data;
+      return { stories, users };
     } catch (error) {
       console.log(error);
     }

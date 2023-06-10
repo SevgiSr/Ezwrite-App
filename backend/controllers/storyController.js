@@ -142,7 +142,10 @@ const getByQuery = async (req, res) => {
 
 const getAll = async (req, res) => {
   const stories = await Story.find();
-  res.status(StatusCodes.OK).json({ stories });
+  let users = await User.find();
+  users = users.filter((user) => String(user._id) !== String(req.user.userId));
+  console.log(users);
+  res.status(StatusCodes.OK).json({ stories, users });
 };
 
 const getByLength = async (req, res) => {
@@ -248,16 +251,16 @@ const getProgress = async (req, res) => {
         },
       });
 
-    await User.findByIdAndUpdate(
+    await User.updateOne(
       req.user.userId,
       { $push: { storiesProgress: progress._id } },
-      { upsert: true }
+      { runValidators: true }
     );
 
-    await Story.findByIdAndUpdate(
+    await Story.updateOne(
       req.params.story_id,
       { $push: { progress: progress._id } },
-      { upsert: true }
+      { runValidators: true }
     );
 
     editedProgress = await addMyVote(progress, req.user.userId);
@@ -316,10 +319,10 @@ const addChapterConv = async (req, res) => {
     .populate("author")
     .populate({ path: "subcomments", populate: "author" });
 
-  await Chapter.findOneAndUpdate(
+  await Chapter.updateOne(
     { _id: req.params.chapter_id },
     { $push: { comments: comment._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
   res.status(StatusCodes.OK).json({ newConv });
@@ -340,7 +343,7 @@ const addParagraphConv = async (req, res) => {
   const updatedParagraph = await Paragraph.findOneAndUpdate(
     { _id: req.params.paragraph_id },
     { $push: { comments: comment._id } },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   ).populate({
     path: "comments",
     populate: [
@@ -366,10 +369,10 @@ const addStoryConv = async (req, res) => {
     .populate("author")
     .populate({ path: "subcomments", populate: "author" });
 
-  await Story.findOneAndUpdate(
+  await Story.updateOne(
     { _id: req.params.id },
     { $push: { comments: comment._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
   res.status(StatusCodes.OK).json({ newConv });
@@ -488,10 +491,10 @@ const createReadingList = async (req, res) => {
       readingList.stories.push(story_id);
       await readingList.save();
     }
-    await User.findOneAndUpdate(
+    await User.updateOne(
       { _id: req.user.userId },
       { $push: { readingLists: readingList._id } },
-      { upsert: true, new: true, runValidators: true }
+      { runValidators: true }
     );
   }
 
@@ -504,7 +507,7 @@ const addToReadingList = async (req, res) => {
     {
       $addToSet: { stories: req.body.story_id },
     },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
   res.status(StatusCodes.OK).json({ readingList });
 };

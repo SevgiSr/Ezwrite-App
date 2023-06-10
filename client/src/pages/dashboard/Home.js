@@ -1,38 +1,45 @@
 import StyledHome from "./styles/Home.styled";
-import { StoryDetailed } from "../../components";
+import { StoryDetailed, UserCard } from "../../components";
 import { useContext } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { useEffect } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useRef } from "react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 function Home() {
-  const { state, getAll } = useContext(StoryContext);
+  const { getAll } = useContext(StoryContext);
 
-  useEffect(() => {
-    getAll();
-  }, []);
+  const { data: { stories, users } = {}, isLoading } = useQuery(["home"], () =>
+    getAll()
+  );
+
+  if (isLoading) return null;
 
   return (
     <StyledHome>
-      <div className="stories-row">
+      <div className="items-row">
+        <h1>Explore Users</h1>
+        <ScrollRow items={users} type="user" />
+      </div>
+      <div className="items-row">
         <h1>Popular Now</h1>
-        <ScrollRow items={state.stories} />
+        <ScrollRow items={stories} type="story" />
       </div>
-      <div className="stories-row">
+      <div className="items-row">
         <h1>Recommended For You</h1>
-        <ScrollRow items={state.stories} />
+        <ScrollRow items={stories} type="story" />
       </div>
-      <div className="stories-row">
+      <div className="items-row">
         <h1>New & Hot</h1>
-        <ScrollRow items={state.stories} />
+        <ScrollRow items={stories} type="story" />
       </div>
     </StyledHome>
   );
 }
 
-const ScrollRow = ({ items }) => {
+const ScrollRow = ({ items, type }) => {
   const [scrollX, setScrollX] = useState(0);
   const rowRef = useRef(null);
   const itemRef = useRef(null);
@@ -94,13 +101,19 @@ const ScrollRow = ({ items }) => {
             marginLeft: scrollX,
           }}
         >
-          {items.map((item) => {
-            return (
-              <div className="row--item" ref={itemRef}>
-                <StoryDetailed key={item._id} story={item} />
-              </div>
-            );
-          })}
+          <>
+            {items.map((item) => {
+              return (
+                <div className="row--item" ref={itemRef}>
+                  {type === "story" ? (
+                    <StoryDetailed key={item._id} story={item} />
+                  ) : (
+                    <UserCard key={item._id} user={item} />
+                  )}
+                </div>
+              );
+            })}
+          </>
         </div>
       </div>
     </div>

@@ -42,7 +42,7 @@ const followProfile = async (req, res) => {
   const user = await User.findOneAndUpdate(
     { name: req.params.username },
     { $push: { followers: req.user.userId } },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   await User.findOneAndUpdate(
@@ -57,7 +57,7 @@ const unfollowProfile = async (req, res) => {
   const user = await User.findOneAndUpdate(
     { name: req.params.username },
     { $pull: { followers: req.user.userId } },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   await User.findOneAndUpdate(
@@ -105,10 +105,10 @@ const addProfileConv = async (req, res) => {
     .populate({ path: "subcomments", populate: "author" });
 
   console.log(newConv);
-  await User.findOneAndUpdate(
+  await User.updateOne(
     { name: req.params.username },
     { $push: { comments: comment._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
   res.status(StatusCodes.OK).json({ newConv: newConv });
@@ -120,7 +120,7 @@ const editProfile = async (req, res) => {
   const newUser = await User.findOneAndUpdate(
     { _id: req.user.userId },
     { ...profileInfo },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   res.status(StatusCodes.OK).json({ newUser });

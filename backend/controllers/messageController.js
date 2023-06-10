@@ -68,30 +68,33 @@ const sendNotification = async (req, res) => {
 
   const notification = await Notification.create({
     ...nt,
-    location: mongoose.Types.ObjectId(nt.location),
-    sender: mongoose.Types.ObjectId(nt.sender),
   });
 
-  await User.findOneAndUpdate(
+  console.log("notification");
+  console.log(notification);
+
+  console.log(nt.sender);
+
+  await User.updateOne(
     { name: req.params.username },
     { $push: { notifications: notification._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
-  await User.findOneAndUpdate(
-    { _id: mongoose.Types.ObjectId(nt.sender) },
+  await User.updateOne(
+    { _id: notification.sender },
     { $push: { activity: notification._id } },
-    { upsert: true, new: true, runValidators: true }
+    { runValidators: true }
   );
 
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json({ notification });
 };
 
 const deleteNotifications = async (req, res) => {
   await User.findOneAndUpdate(
     { _id: req.user.userId },
     { $unset: { notifications: [] } },
-    { upsert: true, new: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   await Notification.deleteMany({});

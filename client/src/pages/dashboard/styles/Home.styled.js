@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const StyledHome = styled.div`
-  .stories-row {
-    margin: 3rem 0;
+  .items-row {
+    margin: 2rem 0;
     h1 {
       padding-left: 2rem;
       color: #000;

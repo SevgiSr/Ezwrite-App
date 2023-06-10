@@ -7,8 +7,9 @@ import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
 const register = async (req, res) => {
   // request from frontend ->
   const { name, password } = req.body;
+  console.log(name, password);
 
-  if (!name || name === "" || !password) {
+  if (!name || !password) {
     throw new BadRequestError("please provide all values");
     //I can just throw js error and it'll be sent in error handler middleware. but instead of usual js error I created my instance of it.
   }
@@ -34,7 +35,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { name, password } = req.body;
-
+  console.log(name, password);
   if (!name || !password) {
     throw new BadRequestError("Please provide all values");
   }
