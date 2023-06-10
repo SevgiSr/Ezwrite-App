@@ -69,12 +69,9 @@ function Users() {
     <div className="users-parent">
       {state.users.map((user) => {
         return (
-          <Link
-            style={{ textDecoration: "none", color: "#6f6f6f" }}
-            to={`/user/${user.name}`}
-          >
-            <UserCard user={user} key={user._id} />
-          </Link>
+          <div key={user._id} className="user">
+            <UserCard user={user} />
+          </div>
         );
       })}
     </div>

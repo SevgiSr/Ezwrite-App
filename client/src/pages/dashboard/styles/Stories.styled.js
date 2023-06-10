@@ -110,6 +110,15 @@ const StyledStories = styled.div`
       transition: background-color 180ms ease;
     }
   }
+
+  .users-parent {
+    display: flex;
+    flex-wrap: wrap;
+    .user {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+  }
 `;
 
 export default StyledStories;
