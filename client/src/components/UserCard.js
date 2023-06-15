@@ -7,8 +7,9 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { UserContext } from "../context/userContext";
 import { useQuery } from "@tanstack/react-query";
+import socket from "../socket.js";
+
 const UserCard = ({ user }) => {
-  const socket = io("http://localhost:5000");
   const {
     alertState,
     getProfile,

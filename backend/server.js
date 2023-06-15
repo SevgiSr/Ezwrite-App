@@ -54,14 +54,16 @@ import mongoose from "mongoose";
 //for res.flush() so that it sends stream responses immediately instead of buffering
 import compression from "compression";
 
-if (process.env.NODE_ENV !== "production") {
+/* if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
-}
+} */
+
+app.use(morgan("dev"));
 
 ////////////
 const __dirname = dirname(fileURLToPath(import.meta.url));
 //only when ready to deploy
-app.use(express.static(path.resolve(__dirname, "../client/build")));
+/* app.use(express.static(path.resolve(__dirname, "../client/build"))); */
 ///////////
 //now -node server and I can access app in localhost:5000
 
@@ -103,7 +105,7 @@ app.use(errorHandlerMiddleware);
 const httpServer = createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5000",
+    origin: "http://localhost:3000",
   },
 });
 

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 
 import {
   Writing,
@@ -48,7 +48,7 @@ function App() {
           }
         >
           <Route index element={<Home />} />
-          <Route path="user/:username" element={<ProfileLayout />}>
+          <Route path="/user/:username" element={<ProfileLayout />}>
             <Route index element={<About />} />
             <Route path="conversations" element={<Conversations />} />
             <Route path="following" element={<Following />} />

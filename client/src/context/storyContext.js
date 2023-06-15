@@ -108,6 +108,28 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const addStoryConv = async (story_id, comment_content) => {
+    try {
+      const { data } = await authFetch.post(`/stories/story/${story_id}`, {
+        comment_content,
+      });
+      const { newConv } = data;
+      return newConv;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const deleteStoryConv = async (story_id, conv_id) => {
+    try {
+      await authFetch.delete(`/stories/story/${story_id}/${conv_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   const addChapterConv = async (chapter_id, comment_content) => {
     try {
       const { data } = await authFetch.post(`/stories/chapter/${chapter_id}`, {
@@ -115,6 +137,15 @@ export const StoryProvider = ({ children }) => {
       });
       const { newConv } = data;
       return newConv;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const deleteChapterConv = async (chapter_id, conv_id) => {
+    try {
+      await authFetch.delete(`/stories/chapter/${chapter_id}/${conv_id}`);
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -129,20 +160,19 @@ export const StoryProvider = ({ children }) => {
           comment_content,
         }
       );
-      const { updatedParagraph, newConvs } = data;
-      return { updatedParagraph, newConvs };
+      const { comment } = data;
+      return comment;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
     }
   };
-  const addStoryConv = async (story_id, comment_content) => {
+
+  const deleteParagraphConv = async (paragraph_id, conv_id) => {
     try {
-      const { data } = await authFetch.post(`/stories/story/${story_id}`, {
-        comment_content,
-      });
-      const { newConv } = data;
-      return newConv;
+      await authFetch.delete(
+        `/stories/chapter/comments/${paragraph_id}/${conv_id}`
+      );
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -196,7 +226,7 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const addConvComment = async (conv_id, comment_content, updatedParagraph) => {
+  const addConvComment = async (conv_id, comment_content) => {
     try {
       const { data } = await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
@@ -204,6 +234,14 @@ export const StoryProvider = ({ children }) => {
       const { newConv } = data;
 
       return newConv;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteConvComment = async (conv_id, comment_id) => {
+    try {
+      await authFetch.delete(`/conversations/${conv_id}/${comment_id}`);
     } catch (error) {
       console.log(error);
     }
@@ -252,42 +290,64 @@ export const StoryProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
   const useAddStoryConv = () => {
-    return useMutation(
-      (data) => addStoryConv(data.dest, data.comment, data.updatedParagraph),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["progress"]);
-        },
-      }
-    );
+    return useMutation((data) => addStoryConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
+  };
+
+  const useDeleteStoryConv = () => {
+    return useMutation((data) => deleteStoryConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
   };
 
   const useAddChapterConv = () => {
-    return useMutation(
-      (data) => addChapterConv(data.dest, data.comment, data.updatedParagraph),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["progress"]);
-        },
-      }
-    );
+    return useMutation((data) => addChapterConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
+  };
+
+  const useDeleteChapterConv = () => {
+    return useMutation((data) => deleteChapterConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
   };
 
   const useAddParagraphConv = () => {
-    return useMutation(
-      (data) =>
-        addParagraphConv(data.dest, data.comment, data.updatedParagraph),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["progress"]);
-        },
-      }
-    );
+    return useMutation((data) => addParagraphConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
+  };
+
+  const useDeleteParagraphConv = () => {
+    return useMutation((data) => deleteParagraphConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
   };
 
   const useAddConvComment = () => {
+    return useMutation((data) => addConvComment(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["progress"]);
+      },
+    });
+  };
+
+  const useDeleteConvComment = () => {
     return useMutation(
-      (data) => addConvComment(data.dest, data.comment, data.updatedParagraph),
+      (data) => deleteConvComment(data.conv_id, data.comment_id),
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["progress"]);
@@ -345,6 +405,10 @@ export const StoryProvider = ({ children }) => {
         useAddConvComment,
         useCreateList,
         useAddToList,
+        useDeleteConvComment,
+        useDeleteChapterConv,
+        useDeleteStoryConv,
+        useDeleteParagraphConv,
       }}
     >
       {children}

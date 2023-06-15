@@ -326,6 +326,23 @@ const addChapterConv = async (req, res) => {
   res.status(StatusCodes.OK).json({ newConv });
 };
 
+const deleteChapterConv = async (req, res) => {
+  const conv = await Comment.findById(req.params.conv_id);
+
+  if (conv) {
+    for (let commentId of conv.subcomments) {
+      await Comment.findByIdAndRemove(commentId);
+    }
+    await Chapter.findByIdAndUpdate(req.params.chapter_id, {
+      $pull: { comments: conv._id },
+    });
+
+    await conv.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
+};
+
 const addParagraphConv = async (req, res) => {
   const { comment_content } = req.body;
   const comment = await Comment.create({
@@ -334,25 +351,30 @@ const addParagraphConv = async (req, res) => {
     subcomments: [],
   });
 
-  const newConv = await Comment.findById(comment._id)
-    .populate("author")
-    .populate({ path: "subcomments", populate: "author" });
-
-  const updatedParagraph = await Paragraph.findOneAndUpdate(
+  await Paragraph.updateOne(
     { _id: req.params.paragraph_id },
     { $push: { comments: comment._id } },
     { new: true, runValidators: true }
-  ).populate({
-    path: "comments",
-    populate: [
-      { path: "author", model: "User" },
-      { path: "subcomments", populate: { path: "author", model: "User" } },
-    ],
-  });
+  );
 
-  res
-    .status(StatusCodes.OK)
-    .json({ updatedParagraph, newConvs: updatedParagraph.comments });
+  res.status(StatusCodes.OK).json({ comment });
+};
+
+const deleteParagraphConv = async (req, res) => {
+  const conv = await Comment.findById(req.params.conv_id);
+
+  if (conv) {
+    for (let commentId of conv.subcomments) {
+      await Comment.findByIdAndRemove(commentId);
+    }
+    await Paragraph.findByIdAndUpdate(req.params.paragraph_id, {
+      $pull: { comments: conv._id },
+    });
+
+    await conv.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const addStoryConv = async (req, res) => {
@@ -374,6 +396,23 @@ const addStoryConv = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json({ newConv });
+};
+
+const deleteStoryConv = async (req, res) => {
+  const conv = await Comment.findById(req.params.conv_id);
+
+  if (conv) {
+    for (let commentId of conv.subcomments) {
+      await Comment.findByIdAndRemove(commentId);
+    }
+    await Story.findByIdAndUpdate(req.params.story_id, {
+      $pull: { comments: conv._id },
+    });
+
+    await conv.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const voteChapter = async (req, res) => {
@@ -528,4 +567,7 @@ export {
   createReadingList,
   addToReadingList,
   addStoryConv,
+  deleteChapterConv,
+  deleteParagraphConv,
+  deleteStoryConv,
 };

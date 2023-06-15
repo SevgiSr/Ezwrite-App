@@ -28,7 +28,9 @@ function Chapter() {
     incrementViewCount,
     getChapter,
     useAddChapterConv,
+    useDeleteChapterConv,
     useAddConvComment,
+    useDeleteConvComment,
     getProgress,
     setProgress,
     setChapter,
@@ -172,7 +174,10 @@ function Chapter() {
               <div key={comment._id}>
                 <Conversation
                   conv={comment}
+                  dest={state.chapter._id}
                   useAddConvComment={useAddConvComment}
+                  useDeleteConv={useDeleteChapterConv}
+                  useDeleteConvComment={useDeleteConvComment}
                 />
               </div>
             );
@@ -188,8 +193,13 @@ function Paragraph({ paragraph, index }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { userState } = useContext(UserContext);
   const location = useLocation();
-  const { state, useAddConvComment, useAddParagraphConv } =
-    useContext(StoryContext);
+  const {
+    state,
+    useAddConvComment,
+    useDeleteConvComment,
+    useAddParagraphConv,
+    useDeleteParagraphConv,
+  } = useContext(StoryContext);
 
   const modalRef = useRef(null);
   const buttonRef = useRef(null);
@@ -270,8 +280,10 @@ function Paragraph({ paragraph, index }) {
                   <Conversation
                     id={comment._id}
                     conv={comment}
+                    dest={paragraph._id}
                     useAddConvComment={useAddConvComment}
-                    updatedParagraph={paragraph._id}
+                    useDeleteConv={useDeleteParagraphConv}
+                    useDeleteConvComment={useDeleteConvComment}
                   />
                 </div>
               );

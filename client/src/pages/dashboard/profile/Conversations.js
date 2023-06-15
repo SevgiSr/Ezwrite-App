@@ -9,8 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 
 function Conversations() {
   const { username } = useParams();
-  const { profileState, useAddProfileConv, useAddConvComment } =
-    useContext(ProfileContext);
+  const {
+    profileState,
+    useAddProfileConv,
+    useDeleteProfileConv,
+    useAddConvComment,
+    useDeleteConvComment,
+  } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const location = useLocation();
   const { convs } = useOutletContext();
@@ -45,7 +50,10 @@ function Conversations() {
               <div key={conv._id} id={conv._id} className="conv">
                 <Conversation
                   conv={conv}
+                  dest={username}
                   useAddConvComment={useAddConvComment}
+                  useDeleteConv={useDeleteProfileConv}
+                  useDeleteConvComment={useDeleteConvComment}
                 />
               </div>
             );

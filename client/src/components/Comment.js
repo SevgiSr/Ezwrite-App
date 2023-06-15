@@ -1,8 +1,20 @@
 import StyledComment from "./styles/Comment.styled";
 import ProfilePicture from "./ProfilePicture";
 import getDate from "../utils/getDate";
+import DropdownMenu from "./DropdownMenu";
+import { FiMoreHorizontal } from "react-icons/fi";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, conv_id, useDeleteConvComment }) => {
+  const deleteConvCommentMutation = useDeleteConvComment();
+
+  const handleDeleteClick = () => {
+    console.log("deleting...");
+    deleteConvCommentMutation.mutate({
+      conv_id: conv_id,
+      comment_id: comment._id,
+    });
+  };
+
   return (
     <>
       <StyledComment>
@@ -23,6 +35,18 @@ const Comment = ({ comment }) => {
             <span style={{ margin: "0 5px" }}>•</span>
             <span className="reply">Reply</span>
           </div>
+        </div>
+        <div className="options">
+          <DropdownMenu
+            buttonClass="icon"
+            button={<FiMoreHorizontal />}
+            menu={
+              <>
+                <div onClick={handleDeleteClick}>Delete Comment</div>
+                <div>Report Comment</div>
+              </>
+            }
+          />
         </div>
       </StyledComment>
     </>

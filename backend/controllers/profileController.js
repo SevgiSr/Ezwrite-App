@@ -121,6 +121,26 @@ const addProfileConv = async (req, res) => {
   res.status(StatusCodes.OK).json({ newConv: newConv });
 };
 
+const deleteProfileConv = async (req, res) => {
+  const conv = await Comment.findById(req.params.conv_id);
+
+  if (conv) {
+    for (let commentId of conv.subcomments) {
+      await Comment.findByIdAndRemove(commentId);
+    }
+    await User.findOneAndUpdate(
+      { name: req.params.username },
+      {
+        $pull: { comments: conv._id },
+      }
+    );
+
+    await conv.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
+};
+
 const editProfile = async (req, res) => {
   const { profileInfo } = req.body;
 
@@ -148,4 +168,5 @@ export {
   addProfileConv,
   editProfile,
   getProfileSettings,
+  deleteProfileConv,
 };

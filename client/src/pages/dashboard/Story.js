@@ -20,6 +20,8 @@ function Story() {
     setChapter,
     useAddStoryConv,
     useAddConvComment,
+    useDeleteStoryConv,
+    useDeleteConvComment,
   } = useContext(StoryContext);
   const { userState } = useContext(UserContext);
   const { story_id } = useParams();
@@ -107,7 +109,10 @@ function Story() {
                     <Conversation
                       key={comment._id}
                       conv={comment}
+                      dest={story._id}
                       useAddConvComment={useAddConvComment}
+                      useDeleteConv={useDeleteStoryConv}
+                      useDeleteConvComment={useDeleteConvComment}
                     />
                   </div>
                 );

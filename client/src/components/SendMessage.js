@@ -4,11 +4,10 @@ import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
 import { ProfileContext } from "../context/profileContext";
+import socket from "../socket.js";
 
 const SendMessage = ({ messageContent, setMessageContent }) => {
   const { sendMessage } = useContext(ProfileContext);
-
-  const socket = io("http://localhost:5000");
 
   const initialState = { msgBox: "", sendBtn: "" };
   const [show, setShow] = useState(initialState);

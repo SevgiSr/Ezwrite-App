@@ -157,11 +157,29 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
+  const deleteProfileConv = async (profile_name, conv_id) => {
+    try {
+      await authFetch.delete(`/user/${profile_name}/conversations/${conv_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   const addConvComment = async (conv_id, comment_content) => {
     try {
       await authFetch.post(`/conversations/${conv_id}`, {
         comment_content,
       });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteConvComment = async (conv_id, comment_id) => {
+    try {
+      console.log("deleting in");
+      await authFetch.delete(`/conversations/${conv_id}/${comment_id}`);
     } catch (error) {
       console.log(error);
     }
@@ -287,9 +305,25 @@ export const ProfileProvider = ({ children }) => {
     );
   };
 
+  const useDeleteProfileConv = () => {
+    return useMutation((data) => deleteProfileConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["conversations"]);
+      },
+    });
+  };
+
   const useAddConvComment = () => {
+    return useMutation((data) => addConvComment(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["conversations"]);
+      },
+    });
+  };
+
+  const useDeleteConvComment = () => {
     return useMutation(
-      (data) => addConvComment(data.dest, data.comment, data.updatedParagraph),
+      (data) => deleteConvComment(data.conv_id, data.comment_id),
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["conversations"]);
@@ -353,6 +387,8 @@ export const ProfileProvider = ({ children }) => {
         useFollowProfile,
         useUnfollowProfile,
         useEditProfileInfo,
+        useDeleteConvComment,
+        useDeleteProfileConv,
       }}
     >
       {children}

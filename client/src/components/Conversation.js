@@ -6,13 +6,21 @@ import { ProfileContext } from "../context/profileContext";
 import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 import { UserContext } from "../context/userContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import getDate from "../utils/getDate";
 import { useQuery } from "@tanstack/react-query";
+import { FiMoreHorizontal } from "react-icons/fi";
+import { DropdownMenu } from "./index";
 
-const Conversation = ({ conv, useAddConvComment, updatedParagraph }) => {
+const Conversation = ({
+  conv,
+  dest,
+  useAddConvComment,
+  useDeleteConv,
+  useDeleteConvComment,
+}) => {
   const { userState } = useContext(UserContext);
-
+  const deleteConvMutation = useDeleteConv();
   const location = useLocation();
 
   /*
@@ -23,8 +31,12 @@ const Conversation = ({ conv, useAddConvComment, updatedParagraph }) => {
 
   */
 
+  const handleDeleteClick = () => {
+    deleteConvMutation.mutate({ dest, conv_id: conv._id });
+  };
+
   if (!conv) return null;
-  if (!conv.content) return null;
+
   return (
     <>
       <StyledConversation>
@@ -40,11 +52,27 @@ const Conversation = ({ conv, useAddConvComment, updatedParagraph }) => {
               <p>{getDate(conv.createdAt)}</p>
             </div>
           </div>
-          <div id="options">...</div>
+          <DropdownMenu
+            buttonClass="icon"
+            button={<FiMoreHorizontal />}
+            menu={
+              <>
+                <div onClick={handleDeleteClick}>Delete Comment</div>
+                <div>Report Comment</div>
+              </>
+            }
+          />
         </header>
         <div id="content">{conv.content}</div>
         {conv.subcomments?.map((sc) => {
-          return <Comment key={sc._id} comment={sc} />;
+          return (
+            <Comment
+              key={sc._id}
+              comment={sc}
+              conv_id={conv._id}
+              useDeleteConvComment={useDeleteConvComment}
+            />
+          );
         })}
       </StyledConversation>
 
@@ -70,7 +98,6 @@ const Conversation = ({ conv, useAddConvComment, updatedParagraph }) => {
         to={conv.author.name}
         dest={conv._id}
         useAddConv={useAddConvComment}
-        updatedParagraph={updatedParagraph}
       />
     </>
   );

@@ -20,7 +20,6 @@ function Respond({
   to,
   dest,
   useAddConv,
-  updatedParagraph,
 }) {
   const queryClient = useQueryClient();
   const { sendNotification, profileState } = useContext(ProfileContext);
@@ -70,7 +69,7 @@ function Respond({
     if (!comment) return;
     setShow(initialState);
 
-    await addConvMutation.mutateAsync({ dest, comment, updatedParagraph });
+    await addConvMutation.mutateAsync({ dest, comment });
 
     setComment("");
     const notification = {

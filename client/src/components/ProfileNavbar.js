@@ -8,9 +8,9 @@ import { BsPersonPlusFill } from "react-icons/bs";
 import { BsPersonCheckFill } from "react-icons/bs";
 import { AiFillMessage } from "react-icons/ai";
 import { io } from "socket.io-client";
+import socket from "../socket.js";
 
 const ProfileNavbar = ({ links, profileData }) => {
-  const socket = io("http://localhost:5000");
   //profileData has isFollowing and visited user's followers info
   //if we just invalidate prodile queries profileData is going to update
 

@@ -20,4 +20,21 @@ const addConvComment = async (req, res) => {
   res.status(StatusCodes.OK).json({ newConv });
 };
 
-export { addConvComment };
+//FOR ALL OF CONVERSATIONS' SUBCOMMENTS
+const deleteConvComment = async (req, res) => {
+  const { conv_id, comment_id } = req.params;
+
+  // First, remove the subcomment document
+  await Comment.findByIdAndRemove(comment_id);
+
+  // Then, remove the reference to the subcomment from the parent comment
+  await Comment.findByIdAndUpdate(conv_id, {
+    $pull: { subcomments: comment_id },
+  });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Subcomment deleted successfully." });
+};
+
+export { addConvComment, deleteConvComment };
