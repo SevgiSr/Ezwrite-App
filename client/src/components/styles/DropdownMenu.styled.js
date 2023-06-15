@@ -13,7 +13,6 @@ const StyledDropdownMenu = styled.div`
   .dropdown-menu {
     position: absolute;
     background-color: var(--background5);
-    padding: 12px 3px;
     border: transparent;
     border-radius: 0.25rem;
     box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
@@ -28,9 +27,14 @@ const StyledDropdownMenu = styled.div`
   .dropdown-item {
     text-decoration: none;
     color: var(--font1);
-    font-size: 16px;
-    padding: 10px 5px;
+    font-size: 15px;
+    padding: 13px 8px;
     white-space: nowrap;
+    cursor: pointer;
+
+    :hover {
+      background-color: var(--background4);
+    }
   }
 
   .show {

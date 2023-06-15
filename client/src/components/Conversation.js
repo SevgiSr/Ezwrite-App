@@ -11,6 +11,9 @@ import getDate from "../utils/getDate";
 import { useQuery } from "@tanstack/react-query";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { DropdownMenu } from "./index";
+import { RiMoreFill } from "react-icons/ri";
+import { FaTrash } from "react-icons/fa";
+import { BsFlagFill } from "react-icons/bs";
 
 const Conversation = ({
   conv,
@@ -52,16 +55,31 @@ const Conversation = ({
               <p>{getDate(conv.createdAt)}</p>
             </div>
           </div>
-          <DropdownMenu
-            buttonClass="icon"
-            button={<FiMoreHorizontal />}
-            menu={
-              <>
-                <div onClick={handleDeleteClick}>Delete Comment</div>
-                <div>Report Comment</div>
-              </>
-            }
-          />
+          <div className="options">
+            <DropdownMenu
+              button={
+                <div className="icon">
+                  <RiMoreFill />
+                </div>
+              }
+              menu={
+                <>
+                  <button onClick={handleDeleteClick} className="dropdown-item">
+                    <div className="icon">
+                      <FaTrash />
+                    </div>
+                    Delete Comment
+                  </button>
+                  <button className="dropdown-item">
+                    <div className="icon">
+                      <BsFlagFill />
+                    </div>
+                    Report Comment
+                  </button>
+                </>
+              }
+            />
+          </div>
         </header>
         <div id="content">{conv.content}</div>
         {conv.subcomments?.map((sc) => {

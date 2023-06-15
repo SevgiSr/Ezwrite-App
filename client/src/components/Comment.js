@@ -3,6 +3,9 @@ import ProfilePicture from "./ProfilePicture";
 import getDate from "../utils/getDate";
 import DropdownMenu from "./DropdownMenu";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { RiMoreFill } from "react-icons/ri";
+import { FaTrash } from "react-icons/fa";
+import { BsFlagFill } from "react-icons/bs";
 
 const Comment = ({ comment, conv_id, useDeleteConvComment }) => {
   const deleteConvCommentMutation = useDeleteConvComment();
@@ -38,12 +41,25 @@ const Comment = ({ comment, conv_id, useDeleteConvComment }) => {
         </div>
         <div className="options">
           <DropdownMenu
-            buttonClass="icon"
-            button={<FiMoreHorizontal />}
+            button={
+              <div className="icon">
+                <RiMoreFill />
+              </div>
+            }
             menu={
               <>
-                <div onClick={handleDeleteClick}>Delete Comment</div>
-                <div>Report Comment</div>
+                <button onClick={handleDeleteClick} className="dropdown-item">
+                  <div className="icon">
+                    <FaTrash />
+                  </div>
+                  Delete Comment
+                </button>
+                <button className="dropdown-item">
+                  <div className="icon">
+                    <BsFlagFill />
+                  </div>
+                  Report Comment
+                </button>
               </>
             }
           />

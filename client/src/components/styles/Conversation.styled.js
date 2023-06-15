@@ -30,6 +30,28 @@ const StyledConversation = styled.article`
         }
       }
     }
+
+    .options {
+      .dropdown-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--font1);
+        .icon {
+          font-size: 15px;
+          margin-right: 5px;
+        }
+      }
+      button {
+        border: none;
+        cursor: pointer;
+        background-color: var(--background5);
+        color: var(--font2);
+        .icon {
+          font-size: 24px;
+        }
+      }
+    }
   }
   main {
     overflow-wrap: break-word;
