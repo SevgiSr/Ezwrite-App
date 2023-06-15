@@ -14,6 +14,7 @@ import { DropdownMenu } from "./index";
 import { RiMoreFill } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
 import { BsFlagFill } from "react-icons/bs";
+import { ClipLoader } from "react-spinners";
 
 const Conversation = ({
   conv,
@@ -56,29 +57,36 @@ const Conversation = ({
             </div>
           </div>
           <div className="options">
-            <DropdownMenu
-              button={
-                <div className="icon">
-                  <RiMoreFill />
-                </div>
-              }
-              menu={
-                <>
-                  <button onClick={handleDeleteClick} className="dropdown-item">
-                    <div className="icon">
-                      <FaTrash />
-                    </div>
-                    Delete Comment
-                  </button>
-                  <button className="dropdown-item">
-                    <div className="icon">
-                      <BsFlagFill />
-                    </div>
-                    Report Comment
-                  </button>
-                </>
-              }
-            />
+            {deleteConvMutation.isLoading ? (
+              <ClipLoader color="rgb(0, 178, 178)" size={18} />
+            ) : (
+              <DropdownMenu
+                button={
+                  <div className="icon">
+                    <RiMoreFill />
+                  </div>
+                }
+                menu={
+                  <>
+                    <button
+                      onClick={handleDeleteClick}
+                      className="dropdown-item"
+                    >
+                      <div className="icon">
+                        <FaTrash />
+                      </div>
+                      Delete Comment
+                    </button>
+                    <button className="dropdown-item">
+                      <div className="icon">
+                        <BsFlagFill />
+                      </div>
+                      Report Comment
+                    </button>
+                  </>
+                }
+              />
+            )}
           </div>
         </header>
         <div id="content">{conv.content}</div>
