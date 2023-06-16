@@ -205,10 +205,14 @@ const editChapter = async (req, res) => {
 const saveChapter = async (req, res) => {
   const { title, paragraphContents } = req.body;
 
+  console.log(paragraphContents);
+
   //backend sanitizes by default. unsanitize it
   const decodedParagraphContents = paragraphContents.map((content) =>
     he.decode(content)
   );
+
+  console.log(decodedParagraphContents);
 
   const chapterObj = await Chapter.findById(req.params.chapter_id);
   for (let paragraphId of chapterObj.paragraphs) {
@@ -240,7 +244,8 @@ const saveChapter = async (req, res) => {
       let cleanContent = DOMPurifySanitizer.sanitize(content, {
         ALLOWED_TAGS: ["h2", "b", "u", "i", "br", "p"],
       });
-      return `<p>${cleanContent}</p>`;
+      console.log(cleanContent);
+      return cleanContent;
     })
     .join("");
 

@@ -200,7 +200,7 @@ const StyledChapter = styled.div`
       .comment-btn {
         display: none;
         position: absolute;
-        bottom: 2px;
+        bottom: -3px;
         right: 0;
         border: none;
         font-size: 23px;

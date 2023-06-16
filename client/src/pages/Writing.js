@@ -15,7 +15,7 @@ import { UserContext } from "../context/userContext";
 import { Discuss } from "react-loader-spinner";
 import MediumEditor from "medium-editor";
 import "medium-editor/dist/css/medium-editor.css";
-import "medium-editor/dist/css/themes/default.css";
+import "medium-editor/dist/css/themes/beagle.css";
 
 function Writing() {
   const queryClient = useQueryClient();
@@ -39,7 +39,16 @@ function Writing() {
 
   useEffect(() => {
     const editor = new MediumEditor(editorRef.current, {
-      // any options go here
+      toolbar: {
+        buttons: [
+          "bold",
+          "italic",
+          "underline",
+          "justifyLeft",
+          "justifyCenter",
+          "justifyRight",
+        ],
+      },
     });
 
     return () => {

@@ -55,3 +55,12 @@ populate: [
 ] ,
 },
 });
+
+## Frontend: innerHTML turns santized text into it's original string, and non-sanitized text into actual html tags
+
+-if text is sanitized innerHTML will turn them into their original shape but in string
+-&lt; => ">" (innerHTML)
+
+-if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
+
+!that's why you should sanitize user input and not sanitize the styling tags
