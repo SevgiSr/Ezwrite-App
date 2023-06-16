@@ -205,14 +205,10 @@ const editChapter = async (req, res) => {
 const saveChapter = async (req, res) => {
   const { title, paragraphContents } = req.body;
 
-  console.log(paragraphContents);
-
   //backend sanitizes by default. unsanitize it
   const decodedParagraphContents = paragraphContents.map((content) =>
     he.decode(content)
   );
-
-  console.log(decodedParagraphContents);
 
   const chapterObj = await Chapter.findById(req.params.chapter_id);
   for (let paragraphId of chapterObj.paragraphs) {
@@ -228,14 +224,14 @@ const saveChapter = async (req, res) => {
   // &lt; => ">"  (innerHTML)
   //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
   //that's why you should sanitize user input and not sanitize the styling tags
-  const paragraphs = decodedParagraphContents.map((content) => {
+  const paragraphs = await decodedParagraphContents.map((content) => {
     let cleanContent = DOMPurifySanitizer.sanitize(content, {
       ALLOWED_TAGS: ["h2", "b", "u", "i", "br", "p"],
     });
     return new Paragraph({ content: cleanContent });
   });
 
-  paragraphs.forEach((p) => p.save());
+  await paragraphs.forEach((p) => p.save());
 
   //sanitized tags will be represented as text
   //string versions of tags will be turned into actual tags when set to innerHTMl
@@ -249,13 +245,51 @@ const saveChapter = async (req, res) => {
     })
     .join("");
 
-  console.log(content);
   chapterObj.title = title;
   chapterObj.content = content;
   chapterObj.paragraphs = paragraphs;
   await chapterObj.save();
 
   res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
+};
+
+const deleteChapter = async (req, res) => {
+  const { story_id, chapter_id } = req.params;
+  console.log("deletiing");
+  console.log(story_id, chapter_id);
+  const chapter = await Chapter.findById(chapter_id);
+  console.log(chapter);
+
+  if (chapter) {
+    for (let paragraphId of chapter.paragraphs) {
+      console.log(paragraphId);
+      const paragraph = await Paragraph.findById(paragraphId);
+      console.log(paragraph);
+
+      for (let commentId of paragraph?.comments) {
+        await deleteCommentAndSubcomments(commentId);
+      }
+      await Paragraph.findByIdAndRemove(paragraphId);
+    }
+
+    //delete chapter cotes
+    for (let voteId of chapter.votes) {
+      await Vote.findByIdAndRemove(voteId);
+    }
+
+    //delete chapter comments
+    for (let commentId of chapter.comments) {
+      await deleteCommentAndSubcomments(commentId);
+    }
+    await Story.updateOne(
+      { _id: story_id },
+      { $pull: { chapters: chapter._id } }
+    );
+
+    await chapter.delete();
+  }
+
+  res.status(StatusCodes.OK).json({ msg: "chapter deleted!" });
 };
 
 const createChapter = async (req, res) => {
@@ -292,6 +326,7 @@ export {
   createChapter,
   getMyStory,
   updateStory,
+  deleteChapter,
 };
 
 /* 

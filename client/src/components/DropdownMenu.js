@@ -41,6 +41,7 @@ function DropdownMenu(props) {
         ref={buttonRef}
         name="drop"
         className={`dropdown-toggle ` + props.buttonClass}
+        type="button"
       >
         {props.button}
       </button>

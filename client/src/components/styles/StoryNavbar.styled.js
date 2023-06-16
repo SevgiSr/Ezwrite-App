@@ -78,8 +78,31 @@ const StyledStoryNavbar = styled.div`
   .buttons {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-right: 1.5rem;
+    .options {
+      margin-left: 1.5rem;
+      .dropdown-menu {
+        left: -100px;
+      }
+      .dropdown-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--font1);
+        .icon {
+          font-size: 15px;
+          margin-right: 5px;
+        }
+      }
+      button {
+        border: none;
+        cursor: pointer;
+        background-color: var(--background3);
+        color: var(--font2);
+        .icon {
+          font-size: 38px;
+        }
+      }
+    }
   }
 `;
 

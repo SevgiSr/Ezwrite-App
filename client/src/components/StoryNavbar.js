@@ -6,16 +6,20 @@ import { ClipLoader } from "react-spinners";
 import Cover from "./Cover";
 import { FiChevronDown } from "react-icons/fi";
 import DropdownMenu from "./DropdownMenu";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { RiMoreFill } from "react-icons/ri";
+import { FaTrash } from "react-icons/fa";
 
 const Navbar = () => {
-  const { storyState, useAddChapter, mutationState } =
+  const { storyState, useAddChapter, mutationState, useDeleteChapter } =
     useContext(MyStoryContext);
   const navigate = useNavigate();
+  const { story_id, chapter_id } = useParams();
 
   const addChapterMutation = useAddChapter();
+  const deleteChapterMutation = useDeleteChapter();
 
   const handleNewPartClick = async () => {
     const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
@@ -23,6 +27,13 @@ const Navbar = () => {
     });
 
     navigate(`/${story_id}/${chapter_id}/writing`);
+  };
+
+  //YOU HAVE TO
+  //if you want to navigate only after mutation ended:
+  const handleDeleteClick = async () => {
+    await deleteChapterMutation.mutateAsync({ story_id, chapter_id });
+    navigate(`/${story_id}`);
   };
 
   return (
@@ -34,6 +45,7 @@ const Navbar = () => {
               <IoIosArrowBack />
             </div>
           </Link>
+
           <DropdownMenu
             buttonClass="write-dropdown-btn"
             menuClass="write-dropdown-menu"
@@ -96,6 +108,33 @@ const Navbar = () => {
             Save
           </button>
           <button className="btn btn-grey">Preview</button>
+          <div className="options">
+            {deleteChapterMutation.isLoading ? (
+              <ClipLoader color="rgb(0, 178, 178)" size={18} />
+            ) : (
+              <DropdownMenu
+                button={
+                  <div className="icon">
+                    <RiMoreFill />
+                  </div>
+                }
+                menu={
+                  <>
+                    <button
+                      onClick={handleDeleteClick}
+                      className="dropdown-item"
+                      type="button"
+                    >
+                      <div className="icon">
+                        <FaTrash />
+                      </div>
+                      Delete Chapter
+                    </button>
+                  </>
+                }
+              />
+            )}
+          </div>
         </section>
       </nav>
     </StyledStoryNavbar>

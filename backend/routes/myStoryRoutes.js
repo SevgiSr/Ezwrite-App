@@ -10,6 +10,7 @@ import {
   getMyStory,
   updateStory,
   deleteStory,
+  deleteChapter,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -83,6 +84,10 @@ router.route("/update/:story_id").patch(updateStory);
 router.route("/edit/:story_id").get(getMyStory);
 router.route("/delete/:story_id").delete(deleteStory);
 router.route("/:story_id").get(getMyChapters).post(createChapter);
-router.route("/:story_id/:chapter_id").get(editChapter).patch(saveChapter);
+router
+  .route("/:story_id/:chapter_id")
+  .get(editChapter)
+  .patch(saveChapter)
+  .delete(deleteChapter);
 
 export default router;

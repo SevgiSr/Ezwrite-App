@@ -155,7 +155,6 @@ export const MyStoryProvider = ({ children }) => {
     chapter_id
   ) => {
     try {
-      console.log(paragraphContents);
       await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
         title,
         paragraphContents,
@@ -171,6 +170,15 @@ export const MyStoryProvider = ({ children }) => {
       const { data } = await authFetch.post(`/myStories/${story_id}`);
       const { newStory, chapter } = data;
       return { chapter_id: chapter._id, story_id: newStory._id };
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const deleteChapter = async (story_id, chapter_id) => {
+    try {
+      await authFetch.delete(`/myStories/${story_id}/${chapter_id}`);
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -250,6 +258,17 @@ export const MyStoryProvider = ({ children }) => {
     });
   };
 
+  const useDeleteChapter = () => {
+    return useMutation(
+      (data) => deleteChapter(data.story_id, data.chapter_id),
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries([`myStories`]);
+        },
+      }
+    );
+  };
+
   return (
     <MyStoryContext.Provider
       value={{
@@ -272,6 +291,7 @@ export const MyStoryProvider = ({ children }) => {
         useSaveChapter,
         useAddChapter,
         mutationState,
+        useDeleteChapter,
       }}
     >
       {children}
