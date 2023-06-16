@@ -52,8 +52,9 @@ const getMyStories = async (req, res) => {
  */
   const myStories = await Story.find({ author: req.user.userId })
     .populate({
-      path: "author chapters",
+      path: "author",
     })
+    .populate({ path: "chapters", populate: "paragraphs" })
     .sort("-updatedAt");
 
   res.status(StatusCodes.OK).json({ myStories });
@@ -196,7 +197,9 @@ const editChapter = async (req, res) => {
 };
 
 const saveChapter = async (req, res) => {
-  const { chapter, divArray } = req.body;
+  const { title, paragraphContents } = req.body;
+
+  console.log(title, paragraphContents);
 
   const chapterObj = await Chapter.findById(req.params.chapter_id);
   for (let paragraphId of chapterObj.paragraphs) {
@@ -209,13 +212,23 @@ const saveChapter = async (req, res) => {
     await Paragraph.findByIdAndRemove(paragraphId);
   }
 
-  const paragraphs = divArray.map((div) => new Paragraph({ content: div }));
-  paragraphs.forEach((div) => div.save());
+  const paragraphs = paragraphContents.map(
+    (content) => new Paragraph({ content })
+  );
+  paragraphs.forEach((p) => p.save());
 
-  chapterObj.title = chapter.title;
-  chapterObj.content = chapter.content;
+  //sanitized tags will be represented as text
+  //string versions of tags will be turned into actual tags when set to innerHTMl
+  const content = paragraphContents
+    .map((content) => `<p>${content === "" ? "<br />" : content}</p>`)
+    .join("");
+
+  chapterObj.title = title;
+  chapterObj.content = content;
   chapterObj.paragraphs = paragraphs;
   await chapterObj.save();
+
+  console.log(chapterObj);
 
   res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
 };

@@ -132,12 +132,9 @@ const StyledWriting = styled.div`
 
   #editStory {
     width: 100%;
-    min-height: 100px;
-    margin-top: 30px;
     border: none;
+    outline: none;
     font-size: 18px;
-    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
-      sans-serif;
     line-height: 3rem;
   }
 

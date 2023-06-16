@@ -204,6 +204,15 @@ function Paragraph({ paragraph, index }) {
   const modalRef = useRef(null);
   const buttonRef = useRef(null);
 
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.innerHTML =
+        paragraph?.content === "" ? "<br />" : paragraph.content;
+    }
+  }, [paragraph]);
+
   const listener = (e) => {
     if (
       e.target !== buttonRef.current &&
@@ -226,12 +235,7 @@ function Paragraph({ paragraph, index }) {
       onMouseEnter={() => setIsButtonVisible(true)}
       onMouseLeave={() => setIsButtonVisible(false)}
     >
-      <div
-        className="content"
-        dangerouslySetInnerHTML={{
-          __html: he.decode(paragraph.content ? paragraph.content : ""),
-        }}
-      ></div>
+      <div ref={contentRef} className="content"></div>
       <button
         ref={buttonRef}
         className={

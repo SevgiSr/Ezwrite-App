@@ -11,6 +11,7 @@
     "axios": "^1.2.2",
     "he": "^1.2.0",
     "http-proxy-middleware": "^2.0.6",
+    "medium-editor": "^5.23.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",

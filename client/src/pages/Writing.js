@@ -13,6 +13,9 @@ import StyledWriting from "./styles/Writing.styled";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../context/userContext";
 import { Discuss } from "react-loader-spinner";
+import MediumEditor from "medium-editor";
+import "medium-editor/dist/css/medium-editor.css";
+import "medium-editor/dist/css/themes/default.css";
 
 function Writing() {
   const queryClient = useQueryClient();
@@ -32,7 +35,18 @@ function Writing() {
   const { story_id, chapter_id } = useParams();
   const location = useLocation();
 
-  const contentEditableRef = useRef(null);
+  const editorRef = useRef(null);
+
+  useEffect(() => {
+    const editor = new MediumEditor(editorRef.current, {
+      // any options go here
+    });
+
+    return () => {
+      // this will cleanup the MediumEditor instance on component unmount
+      editor.destroy();
+    };
+  }, []);
 
   const handleChange = (e) => {
     setChapterTitle(e.target.value);
@@ -57,7 +71,12 @@ function Writing() {
         (chapter) => chapter._id === chapter_id
       );
       setChapterTitle(chapter.title);
-      setChapterBody(chapter.content);
+      const editor = document.getElementById("editStory");
+      editor.innerHTML = chapter.content;
+      // Focus on the editor if there is initial content
+      if (chapter.content.trim() !== "") {
+        editor.focus();
+      }
       setEditChapter(myStory, chapter);
     }
   }, [location, isFetching]);
@@ -77,44 +96,32 @@ function Writing() {
   //saves in the backend and also cuz reducer's chapter changed useeffect gonna set it on frontend
   const handleSubmit = (e) => {
     e.preventDefault();
-    const content = document.getElementById("editStory").innerHTML;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, "text/html");
+    const editorContent = document.getElementById("editStory");
+    const paragraphs = Array.from(editorContent.children);
 
-    const divElements = Array.from(doc.querySelectorAll("div"));
+    //if text is sanitized innerHTML will turn them into their original shape but in string
+    // &lt; => ">"  (innerHTML)
+    //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
+    const paragraphContents = paragraphs.map((p) => {
+      // Sanitize text content for storing
+      const sanitizedText = p.textContent
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      return sanitizedText;
+    });
 
-    const divArray = divElements.map((div) => he.decode(div.outerHTML));
+    console.log(paragraphContents);
 
-    const chapter = {
+    saveChapterMutation.mutate({
       title: chapterTitle,
-      content: content,
-    };
-    saveChapterMutation.mutate({ chapter, divArray, story_id, chapter_id });
+      paragraphContents,
+      story_id,
+      chapter_id,
+    });
   };
 
-  const handlePublishClick = () => {
-    const content = document.getElementById("editStory").innerHTML;
-    const chapter = {
-      title: chapterTitle,
-      body: content,
-    };
-    saveChapter(chapter, story_id, chapter_id);
-  };
-
-  //wrap first line of contentEditable div into a div
-  const handleInput = (e) => {
-    const div = contentEditableRef.current;
-    const firstLine = div.innerText.split("\n")[0];
-
-    if (firstLine && !div.querySelector("div")) {
-      const newDiv = document.createElement("div");
-      newDiv.innerText = firstLine;
-      div.innerHTML = div.innerHTML.replace(firstLine, "");
-      div.insertBefore(newDiv, div.firstChild);
-    }
-  };
-
-  const handleWriteClick = (currentNode) => {
+  const handleWriteClick = () => {
     // Get the parent node of the icon
     document.getElementById("editStory").contentEditable = false;
 
@@ -146,14 +153,14 @@ function Writing() {
     const editStory = document.getElementById("editStory");
     // get editStory's childs but not itself
     const filteredDivs = Array.from(editStory.children).filter(
-      (child) => child.tagName === "DIV"
+      (child) => child.tagName === "P"
     );
     // whenever you click or enter, reset all the previous ones
     filteredDivs.map((div) => {
       const icon = div.querySelector(".AI-icon");
       if (icon) icon.parentNode.removeChild(icon);
     });
-    filteredDivs.map((div) => (div.className = ""));
+    filteredDivs.map((p) => (p.className = ""));
 
     if (e.key === "Enter") {
       // wait so that it recognizes the last element cursor is at
@@ -206,47 +213,14 @@ function Writing() {
     }
   };
 
-  const pasteListener = (e) => {
-    if (e.target.getAttribute("contenteditable")) {
-      // prevent the default pasting event
-      e.preventDefault();
-
-      // get text representation of clipboard
-      var text = (e.originalEvent || e).clipboardData.getData("text/plain");
-
-      // split text into paragraphs and create a div for each one
-      var paragraphs = text.split("\n").map((paragraph) => {
-        var div = document.createElement("div");
-        div.textContent = paragraph;
-        return div;
-      });
-
-      // get current selection
-      var selection = document.getSelection();
-      if (selection.rangeCount > 0) {
-        // get the first range
-        var range = selection.getRangeAt(0);
-
-        // insert each paragraph as a new div
-        paragraphs.forEach((paragraphDiv) => {
-          range.insertNode(paragraphDiv);
-          // Create a new range for the next paragraph
-          range.setStartAfter(paragraphDiv);
-        });
-      }
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener("paste", pasteListener);
     document.addEventListener("click", inputListener);
     window.addEventListener("click", listener);
-    window.addEventListener("keypress", listener);
+    window.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener("paste", pasteListener);
       document.removeEventListener("click", inputListener);
       window.removeEventListener("click", listener);
-      window.removeEventListener("keypress", listener);
+      window.removeEventListener("keydown", listener);
     };
   }, []);
 
@@ -275,21 +249,7 @@ function Writing() {
             }}
           />
 
-          <div
-            ref={contentEditableRef}
-            id="editStory"
-            contentEditable
-            onKeyDown={handleKeyDown}
-            onInput={handleInput}
-            style={{
-              minHeight: "100vh",
-              outline: "none",
-              position: "relative",
-            }}
-            dangerouslySetInnerHTML={{
-              __html: he.decode(chapterBody ? chapterBody : ""),
-            }}
-          />
+          <div ref={editorRef} className="editable" id="editStory"></div>
         </div>
       </form>
     </StyledWriting>

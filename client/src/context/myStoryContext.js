@@ -148,11 +148,16 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const saveChapter = async (chapter, divArray, story_id, chapter_id) => {
+  const saveChapter = async (
+    title,
+    paragraphContents,
+    story_id,
+    chapter_id
+  ) => {
     try {
       await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
-        chapter,
-        divArray,
+        title,
+        paragraphContents,
       });
     } catch (error) {
       console.log(error);
@@ -215,8 +220,8 @@ export const MyStoryProvider = ({ children }) => {
     return useMutation(
       (data) =>
         saveChapter(
-          data.chapter,
-          data.divArray,
+          data.title,
+          data.paragraphContents,
           data.story_id,
           data.chapter_id
         ),
