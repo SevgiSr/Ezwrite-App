@@ -155,6 +155,7 @@ export const MyStoryProvider = ({ children }) => {
     chapter_id
   ) => {
     try {
+      console.log(paragraphContents);
       await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
         title,
         paragraphContents,

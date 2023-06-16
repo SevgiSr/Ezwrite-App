@@ -10,12 +10,18 @@ import ReadingList from "../db/models/ReadingList.js";
 import Message from "../db/models/Message.js";
 import Paragraph from "../db/models/Paragraph.js";
 import Vote from "../db/models/Vote.js";
+import DOMPurify from "dompurify";
+import { JSDOM } from "jsdom";
 
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
 import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import he from "he";
+
+const window = new JSDOM("").window;
+const DOMPurifySanitizer = DOMPurify(window);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -199,7 +205,10 @@ const editChapter = async (req, res) => {
 const saveChapter = async (req, res) => {
   const { title, paragraphContents } = req.body;
 
-  console.log(title, paragraphContents);
+  //backend sanitizes by default. unsanitize it
+  const decodedParagraphContents = paragraphContents.map((content) =>
+    he.decode(content)
+  );
 
   const chapterObj = await Chapter.findById(req.params.chapter_id);
   for (let paragraphId of chapterObj.paragraphs) {
@@ -211,24 +220,34 @@ const saveChapter = async (req, res) => {
 
     await Paragraph.findByIdAndRemove(paragraphId);
   }
+  //if text is sanitized innerHTML will turn them into their original shape but in string
+  // &lt; => ">"  (innerHTML)
+  //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
+  const paragraphs = decodedParagraphContents.map((content) => {
+    let cleanContent = DOMPurifySanitizer.sanitize(content, {
+      ALLOWED_TAGS: ["h2", "b", "u", "i", "br"],
+    });
+    return new Paragraph({ content: cleanContent });
+  });
 
-  const paragraphs = paragraphContents.map(
-    (content) => new Paragraph({ content })
-  );
   paragraphs.forEach((p) => p.save());
 
   //sanitized tags will be represented as text
   //string versions of tags will be turned into actual tags when set to innerHTMl
-  const content = paragraphContents
-    .map((content) => `<p>${content === "" ? "<br />" : content}</p>`)
+  const content = decodedParagraphContents
+    .map((content) => {
+      let cleanContent = DOMPurifySanitizer.sanitize(content, {
+        ALLOWED_TAGS: ["h2", "b", "u", "i", "br"],
+      });
+      return `<p>${cleanContent}</p>`;
+    })
     .join("");
 
+  console.log(content);
   chapterObj.title = title;
   chapterObj.content = content;
   chapterObj.paragraphs = paragraphs;
   await chapterObj.save();
-
-  console.log(chapterObj);
 
   res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
 };

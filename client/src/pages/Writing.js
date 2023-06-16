@@ -99,17 +99,7 @@ function Writing() {
     const editorContent = document.getElementById("editStory");
     const paragraphs = Array.from(editorContent.children);
 
-    //if text is sanitized innerHTML will turn them into their original shape but in string
-    // &lt; => ">"  (innerHTML)
-    //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
-    const paragraphContents = paragraphs.map((p) => {
-      // Sanitize text content for storing
-      const sanitizedText = p.textContent
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-      return sanitizedText;
-    });
+    const paragraphContents = paragraphs.map((p) => p.innerHTML);
 
     console.log(paragraphContents);
 
