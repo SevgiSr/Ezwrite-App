@@ -15,7 +15,7 @@ import { UserContext } from "../context/userContext";
 import { Discuss } from "react-loader-spinner";
 import MediumEditor from "medium-editor";
 import "medium-editor/dist/css/medium-editor.css";
-import "medium-editor/dist/css/themes/beagle.css";
+import "../assets/edited-beagle.css";
 
 function Writing() {
   const queryClient = useQueryClient();
