@@ -208,8 +208,7 @@ function Paragraph({ paragraph, index }) {
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.innerHTML =
-        paragraph?.content === "" ? "<br />" : paragraph.content;
+      contentRef.current.innerHTML = paragraph.content;
     }
   }, [paragraph]);
 

@@ -99,7 +99,7 @@ function Writing() {
     const editorContent = document.getElementById("editStory");
     const paragraphs = Array.from(editorContent.children);
 
-    const paragraphContents = paragraphs.map((p) => p.innerHTML);
+    const paragraphContents = paragraphs.map((p) => p.outerHTML);
 
     console.log(paragraphContents);
 

@@ -223,9 +223,10 @@ const saveChapter = async (req, res) => {
   //if text is sanitized innerHTML will turn them into their original shape but in string
   // &lt; => ">"  (innerHTML)
   //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
+  //that's why you should sanitize user input and not sanitize the styling tags
   const paragraphs = decodedParagraphContents.map((content) => {
     let cleanContent = DOMPurifySanitizer.sanitize(content, {
-      ALLOWED_TAGS: ["h2", "b", "u", "i", "br"],
+      ALLOWED_TAGS: ["h2", "b", "u", "i", "br", "p"],
     });
     return new Paragraph({ content: cleanContent });
   });
@@ -237,7 +238,7 @@ const saveChapter = async (req, res) => {
   const content = decodedParagraphContents
     .map((content) => {
       let cleanContent = DOMPurifySanitizer.sanitize(content, {
-        ALLOWED_TAGS: ["h2", "b", "u", "i", "br"],
+        ALLOWED_TAGS: ["h2", "b", "u", "i", "br", "p"],
       });
       return `<p>${cleanContent}</p>`;
     })
