@@ -2,16 +2,21 @@ import { useContext, useState } from "react";
 import { ProfileContext } from "../../../context/profileContext";
 import StyledEditProfile from "./styles/EditProfile.styled";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserContext } from "../../../context/userContext";
 
 function EditProfile({ handleChange, state }) {
   const { useEditProfileInfo, closeEditMode } = useContext(ProfileContext);
+  const { userState } = useContext(UserContext);
 
   const editProfileInfoMutation = useEditProfileInfo();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     closeEditMode();
-    await editProfileInfoMutation.mutateAsync({ state });
+    await editProfileInfoMutation.mutateAsync({
+      state,
+      username: userState.user.name,
+    });
   };
 
   return (

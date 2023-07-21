@@ -193,12 +193,11 @@ export const ProfileProvider = ({ children }) => {
     dispatch({ type: CLOSE_EDIT_MODE });
   };
 
-  const editProfileInfo = async (profileInfo) => {
+  const editProfileInfo = async (profileInfo, username) => {
     try {
-      const { data } = await authFetch.patch(
-        `/user/${profileState.profile.name}`,
-        { profileInfo }
-      );
+      const { data } = await authFetch.patch(`/user/${username}`, {
+        profileInfo,
+      });
       const { newUser } = data;
       return newUser;
     } catch (error) {
@@ -287,11 +286,23 @@ export const ProfileProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
   const useEditProfileInfo = () => {
-    return useMutation(({ state }) => editProfileInfo(state), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["profile"]);
-      },
-    });
+    return useMutation(
+      ({ state, username }) => editProfileInfo(state, username),
+      {
+        onMutate: (variables) => {
+          queryClient.setQueriesData(
+            ["profile", variables.username],
+            (old) => ({
+              ...old,
+              profile: { ...old.profile, ...variables.state },
+            })
+          );
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries(["profile"]);
+        },
+      }
+    );
   };
 
   const useAddProfileConv = () => {

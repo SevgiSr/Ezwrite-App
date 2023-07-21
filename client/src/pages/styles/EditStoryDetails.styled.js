@@ -118,9 +118,36 @@ const StyledEditStoryDetails = styled.div`
     .row {
       display: flex;
       padding: 10px 30px;
-      .icon {
+      .bars-icon {
         font-size: 25px;
         margin-right: 20px;
+      }
+      .options {
+        position: relative;
+        right: -18px;
+        .dropdown-item {
+          padding: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--font1);
+          .icon {
+            font-size: 15px;
+            margin-right: 5px;
+          }
+        }
+        button {
+          padding: 0 15px;
+          margin: 0;
+          border: none;
+          cursor: pointer;
+          background-color: var(--background5);
+          color: var(--font2);
+          .icon {
+            margin-right: 0;
+            font-size: 38px;
+          }
+        }
       }
       .chapter {
         display: flex;
@@ -144,17 +171,7 @@ const StyledEditStoryDetails = styled.div`
           align-items: center;
 
           .metadata {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            width: 300px;
-            > * {
-              display: flex;
-              .icon {
-                font-size: 15px;
-                margin-right: 5px;
-              }
-            }
+            width: 200px;
           }
         }
       }

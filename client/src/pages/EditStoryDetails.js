@@ -1,18 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { AiFillDislike } from "react-icons/ai";
 import { BsFillStarFill } from "react-icons/bs";
-import { FaBars, FaComment } from "react-icons/fa";
+import { FaBars, FaComment, FaTrash } from "react-icons/fa";
 import { GoEye } from "react-icons/go";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Cover from "../components/Cover";
 import OrangeLinks from "../components/OrangeLinks";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledEditStoryDetails from "./styles/EditStoryDetails.styled";
-import { PulseLoader, RotateLoader, SyncLoader } from "react-spinners";
+import {
+  ClipLoader,
+  PulseLoader,
+  RotateLoader,
+  SyncLoader,
+} from "react-spinners";
 import getDate from "../utils/getDate";
 import StoryDetails from "../components/StoryDetails";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DropdownMenu, Metadata } from "../components";
+import { RiMoreFill } from "react-icons/ri";
 
 function EditStoryDetails() {
   const queryClient = useQueryClient();
@@ -204,11 +211,13 @@ function Navbar({ handleCancel }) {
 }
 
 function Contents() {
-  const { storyState, useAddChapter } = useContext(MyStoryContext);
+  const { storyState, useAddChapter, useDeleteChapter } =
+    useContext(MyStoryContext);
   const { story_id } = useParams();
   const navigate = useNavigate();
 
   const addChapterMutation = useAddChapter();
+  const deleteChapterMutation = useDeleteChapter();
 
   const handleNewPartClick = async () => {
     const data = await addChapterMutation.mutateAsync({
@@ -217,15 +226,23 @@ function Contents() {
     navigate(`/${data.story_id}/${data.chapter_id}/writing`);
   };
 
+  const handleDeleteClick = async (chapter_id) => {
+    await deleteChapterMutation.mutateAsync({ story_id, chapter_id });
+  };
+
   return (
     <div id="contents">
-      <button onClick={handleNewPartClick} className="orange-button btn">
+      <button
+        disabled={deleteChapterMutation.isLoading}
+        onClick={handleNewPartClick}
+        className="orange-button btn"
+      >
         New Part
       </button>
       {storyState.myStory?.chapters?.map((chapter) => {
         return (
           <div key={chapter._id} className="row">
-            <div className="icon">
+            <div className="bars-icon icon">
               <FaBars />
             </div>
             <div className="chapter">
@@ -243,34 +260,41 @@ function Contents() {
                   </span>
                 </div>
                 <div className="metadata">
-                  <div>
-                    <div className="icon">
-                      <GoEye />
-                    </div>
-                    <div className="count">{chapter.views}</div>
-                  </div>
-                  <div>
-                    <div className="icon">
-                      <BsFillStarFill />
-                    </div>
-                    <div className="count">{chapter.votesCount.upvotes}</div>
-                  </div>
-                  <div>
-                    <div className="icon">
-                      <AiFillDislike />
-                    </div>
-                    <div className="count">{chapter.votesCount.downvotes}</div>
-                  </div>
-                  <div>
-                    <div className="icon">
-                      <FaComment />
-                    </div>
-                    <div className="count">
-                      {chapter.chapterConvs ? chapter.chapterConvs.length : 0}
-                    </div>
-                  </div>
+                  <Metadata
+                    views={chapter.views}
+                    likes={chapter.votesCount.upvotes}
+                    dislikes={chapter.votesCount.downvotes}
+                    comments={chapter.chapterConvs}
+                  />
                 </div>
               </div>
+            </div>
+            <div className="options">
+              {deleteChapterMutation.isLoading ? (
+                <ClipLoader color="rgb(0, 178, 178)" size={25} />
+              ) : (
+                <DropdownMenu
+                  button={
+                    <div className="icon">
+                      <RiMoreFill />
+                    </div>
+                  }
+                  menu={
+                    <>
+                      <button
+                        onClick={() => handleDeleteClick(chapter._id)}
+                        className="dropdown-item"
+                        type="button"
+                      >
+                        <div className="icon">
+                          <FaTrash />
+                        </div>
+                        Delete Chapter
+                      </button>
+                    </>
+                  }
+                />
+              )}
             </div>
           </div>
         );

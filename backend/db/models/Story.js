@@ -54,6 +54,15 @@ const StorySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    visibility: {
+      type: String,
+      enum: ["published", "draft"],
+      default: "draft",
+    },
+    chapterCount: {
+      type: Object,
+      default: { published: 0, draft: 0 },
+    },
   },
   { timestamps: true }
 );
@@ -61,5 +70,26 @@ const StorySchema = new mongoose.Schema(
 function arrayLimit(val) {
   return val.length <= 15;
 }
+
+StorySchema.pre("find", function () {
+  // Only add the visibility check if it's not specifically excluded
+  if (!this.getOptions().excludeVisibilityCheck) {
+    this.where({ visibility: "published" });
+  }
+});
+
+StorySchema.pre("findById", function () {
+  // Only add the visibility check if it's not specifically excluded
+  if (!this.getOptions().excludeVisibilityCheck) {
+    this.where({ visibility: "published" });
+  }
+});
+
+StorySchema.pre("findOne", function () {
+  // Only add the visibility check if it's not specifically excluded
+  if (!this.getOptions().excludeVisibilityCheck) {
+    this.where({ visibility: "published" });
+  }
+});
 
 export default mongoose.model("Story", StorySchema);

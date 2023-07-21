@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
 const StyledUserCard = styled.article`
-  width: fit-content;
+  width: 100%;
   color: var(--font1);
   background-color: var(--background1);
 
   .background {
     margin-bottom: 1rem;
-    filter: brightness(75%);
+    filter: brightness(55%);
   }
 
   .main {

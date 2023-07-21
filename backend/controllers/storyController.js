@@ -8,40 +8,16 @@ import Progress from "../db/models/Progress.js";
 import Paragraph from "../db/models/Paragraph.js";
 import ReadingList from "../db/models/ReadingList.js";
 
-const populateStory = {
-  path: "story",
-  populate: [
-    { path: "author" },
-    { path: "chapters", select: "title votesCount views" },
-    {
-      path: "comments",
-      populate: [
-        { path: "author", model: "User" },
-        {
-          path: "subcomments",
-          populate: { path: "author", model: "User" },
-        },
-      ],
-    },
-  ],
-};
-
-const populateChapters = {
-  path: "chapters",
-  populate: [
-    {
-      path: "comments",
-      populate: [
-        { path: "author", model: "User" },
-        {
-          path: "subcomments",
-          populate: { path: "author", model: "User" },
-        },
-      ],
-    },
-    {
-      path: "paragraphs",
-      populate: {
+function populateStory(mode) {
+  const populateOptions = {
+    path: "story",
+    populate: [
+      { path: "author" },
+      {
+        path: "chapters",
+        select: "title votesCount views",
+      },
+      {
         path: "comments",
         populate: [
           { path: "author", model: "User" },
@@ -51,9 +27,51 @@ const populateChapters = {
           },
         ],
       },
-    },
-  ],
-};
+    ],
+  };
+
+  if (mode === "read") {
+    populateOptions.populate[1].match = { visibility: "published" };
+  } else {
+    populateOptions.options = { excludeVisibilityCheck: true };
+  }
+  return populateOptions;
+}
+
+function populateChapters(mode) {
+  const populateOptions = {
+    path: "chapters",
+    populate: [
+      {
+        path: "comments",
+        populate: [
+          { path: "author", model: "User" },
+          {
+            path: "subcomments",
+            populate: { path: "author", model: "User" },
+          },
+        ],
+      },
+      {
+        path: "paragraphs",
+        populate: {
+          path: "comments",
+          populate: [
+            { path: "author", model: "User" },
+            {
+              path: "subcomments",
+              populate: { path: "author", model: "User" },
+            },
+          ],
+        },
+      },
+    ],
+  };
+  if (mode === "read") {
+    populateOptions.match = { visibility: "published" };
+  }
+  return populateOptions;
+}
 
 export async function countChapterVotes(chapter_id) {
   const result = await Vote.aggregate([
@@ -127,17 +145,29 @@ const addMyVote = async (progress, userId) => {
 };
 
 const getByCategory = async (req, res) => {
-  const { category } = req.params;
-  const stories = await Story.find({ category }).populate("author");
+  try {
+    const { category } = req.params;
+    const stories = await Story.find({
+      category,
+    }).populate("author");
 
-  res.status(StatusCodes.OK).json({ stories });
+    res.status(StatusCodes.OK).json({ stories });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getByQuery = async (req, res) => {
-  const { query } = req.params;
-  const stories = await Story.find({ title: { $regex: query, $options: "i" } });
-  const users = await User.find({ name: { $regex: query, $options: "i" } });
-  res.status(StatusCodes.OK).json({ stories, users });
+  try {
+    const { query } = req.params;
+    const stories = await Story.find({
+      title: { $regex: query, $options: "i" },
+    }).populate("author");
+    const users = await User.find({ name: { $regex: query, $options: "i" } });
+    res.status(StatusCodes.OK).json({ stories, users });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getAll = async (req, res) => {
@@ -146,50 +176,64 @@ const getAll = async (req, res) => {
   await User.updateMany({}, { $set: { notifications: [] } });
   await Notification.deleteMany();
  */
-  const stories = await Story.find();
-  let users = await User.find();
-  users = users.filter((user) => String(user._id) !== String(req.user.userId));
-  res.status(StatusCodes.OK).json({ stories, users });
+  try {
+    const stories = await Story.find().populate("author");
+    let users = await User.find();
+    users = users.filter(
+      (user) => String(user._id) !== String(req.user.userId)
+    );
+    res.status(StatusCodes.OK).json({ stories, users });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getByLength = async (req, res) => {
-  const { length } = req.params;
-  const stories = await Story.find({ chapters: { $size: length } }).populate(
-    "author"
-  );
+  try {
+    const { length } = req.params;
+    const stories = await Story.find({ chapters: { $size: length } }).populate(
+      "author"
+    );
 
-  res.status(StatusCodes.OK).json({ stories });
+    res.status(StatusCodes.OK).json({ stories });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getByDate = async (req, res) => {
-  let query = Story.find();
+  try {
+    let query = Story.find().populate("author");
 
-  // Set the time range for the query based on the input parameter
-  switch (req.params.date) {
-    case "today":
-      query.where("updatedAt").gte(new Date().setHours(0, 0, 0, 0));
-      break;
-    case "this week":
-      query
-        .where("updatedAt")
-        .gte(new Date(new Date().setDate(new Date().getDate() - 7)));
-      break;
-    case "this month":
-      query
-        .where("updatedAt")
-        .gte(new Date(new Date().setMonth(new Date().getMonth() - 1)));
-      break;
-    case "this year":
-      query
-        .where("updatedAt")
-        .gte(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
-      break;
-    default:
-      return Promise.reject(new Error(`Invalid time range: ${timeRange}`));
+    // Set the time range for the query based on the input parameter
+    switch (req.params.date) {
+      case "today":
+        query.where("updatedAt").gte(new Date().setHours(0, 0, 0, 0));
+        break;
+      case "this week":
+        query
+          .where("updatedAt")
+          .gte(new Date(new Date().setDate(new Date().getDate() - 7)));
+        break;
+      case "this month":
+        query
+          .where("updatedAt")
+          .gte(new Date(new Date().setMonth(new Date().getMonth() - 1)));
+        break;
+      case "this year":
+        query
+          .where("updatedAt")
+          .gte(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
+        break;
+      default:
+        return Promise.reject(new Error(`Invalid time range: ${timeRange}`));
+    }
+
+    const stories = await query.exec();
+    res.status(StatusCodes.OK).json({ stories });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  const stories = await query.exec();
-  res.status(StatusCodes.OK).json({ stories });
 };
 
 // when user waits more thn 5 seconds in a chapter update progress to have array of chapter_id's 5 chapter forward in that story
@@ -197,274 +241,293 @@ const getByDate = async (req, res) => {
 // getProgress would be cached meaning 5 chapters would be cached
 // otherwise you would have to find the story populate some of the chapters, send those chapters back cache them and do that 3564758 times
 
-const getStory = async (req, res) => {
-  const { id } = req.params;
-  const story = await Story.findById(id)
-    .populate("author chapters")
-    .populate({
-      path: "progress",
-      match: { user: req.user.userId },
-      populate: { path: "chapter" },
-    });
-
-  const storyVotes = await getStoryVotes(story);
-  story.storyVotes = storyVotes;
-  const storyViews = await getStoryViews(story);
-  story.storyViews = storyViews;
-
-  res.status(StatusCodes.OK).json({ story });
-};
-
 const getProgress = async (req, res) => {
-  console.log("getting progress");
-  let progress;
-  let editedProgress;
+  try {
+    console.log("getting progress");
+    let progress;
+    let editedProgress;
+    let mode = "read";
 
-  progress = await Progress.findOne({
-    user: req.user.userId,
-    story: req.params.story_id,
-  })
-    .populate(populateStory)
-    .populate(populateChapters)
-    .populate({
-      path: "user",
-      populate: {
-        path: "readingLists",
-        populate: { path: "stories", populate: "author" },
-      },
+    const story = await Story.findById(req.params.story_id, null, {
+      excludeVisibilityCheck: true,
     });
 
-  if (!progress) {
-    console.log("no progress");
-    const story = await Story.findById(req.params.story_id);
-    const chapters = story.chapters.slice(0, 5);
-    const newProgress = await Progress.create({
+    if (String(story.author._id) === String(req.user.userId)) {
+      mode = "preview";
+    }
+
+    progress = await Progress.findOne({
       user: req.user.userId,
       story: req.params.story_id,
-      chapters: chapters,
-    });
-
-    progress = await Progress.findById(newProgress._id)
-      .populate(populateStory)
-      .populate(populateChapters)
-      .populate({
+    }).populate([
+      populateStory(mode),
+      populateChapters(mode),
+      {
         path: "user",
         populate: {
           path: "readingLists",
           populate: { path: "stories", populate: "author" },
         },
+      },
+    ]);
+
+    if (!progress || !progress.chapters || progress.chapters.length === 0) {
+      console.log("no progress");
+      const chapters = story.chapters.slice(0, 5);
+
+      const newProgress = await Progress.create({
+        user: req.user.userId,
+        story: req.params.story_id,
+        chapters: chapters,
       });
 
-    await Story.updateOne(
-      { _id: req.params.story_id },
-      { $push: { progress: progress._id } },
-      { runValidators: true }
-    );
+      progress = await Progress.findById(newProgress._id).populate([
+        populateStory(mode),
+        populateChapters(mode),
+        {
+          path: "user",
+          populate: {
+            path: "readingLists",
+            populate: { path: "stories", populate: "author" },
+          },
+        },
+      ]);
+
+      await Story.updateOne(
+        { _id: req.params.story_id },
+        { $push: { progress: progress._id } },
+        { runValidators: true }
+      );
+
+      editedProgress = await addMyVote(progress, req.user.userId);
+
+      return res
+        .status(StatusCodes.OK)
+        .json({ progress: editedProgress, mode });
+    }
 
     editedProgress = await addMyVote(progress, req.user.userId);
 
-    return res.status(StatusCodes.OK).json({ progress: editedProgress });
+    res.status(StatusCodes.OK).json({ progress: editedProgress, mode });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  editedProgress = await addMyVote(progress, req.user.userId);
-
-  res.status(StatusCodes.OK).json({ progress: editedProgress });
 };
 
 const setProgress = async (req, res) => {
-  console.log("setting progress");
-  const { story_id, chapter_id } = req.params;
-  const story = await Story.findById(story_id).populate(populateChapters);
+  try {
+    console.log("setting progress");
+    const { story_id, chapter_id } = req.params;
+    let mode = "read";
 
-  const chapterIndex = story.chapters.findIndex(
-    (chapter) => String(chapter._id) === chapter_id
-  );
-
-  const chapters = story.chapters.slice(chapterIndex, chapterIndex + 5);
-
-  let progress = await Progress.findOne({
-    user: req.user.userId,
-    story: story_id,
-  })
-    .populate(populateStory)
-    .populate(populateChapters)
-    .populate({
-      path: "user",
-      populate: {
-        path: "readingLists",
-        populate: { path: "stories", populate: "author" },
-      },
+    const story = await Story.findById(story_id, null, {
+      excludeVisibilityCheck: true,
     });
 
-  progress.chapters = chapters;
+    if (String(story.author._id) === req.user.userId) {
+      mode = "preview";
+    }
 
-  await progress.save();
+    const chapterIndex = story.chapters.findIndex(
+      (chapter) => String(chapter._id) === chapter_id
+    );
 
-  const editedProgress = await addMyVote(progress, req.user.userId);
+    const chapters = story.chapters.slice(chapterIndex, chapterIndex + 5);
 
-  res.status(StatusCodes.OK).json({ progress: editedProgress });
+    const progress = await Progress.findOne({
+      user: req.user.userId,
+      story: story_id,
+    });
+
+    progress.chapters = chapters;
+
+    await progress.save();
+
+    await progress.populate([
+      populateStory(mode),
+      populateChapters(mode),
+      {
+        path: "user",
+        populate: {
+          path: "readingLists",
+          populate: { path: "stories", populate: "author" },
+        },
+      },
+    ]);
+
+    const editedProgress = await addMyVote(progress, req.user.userId);
+
+    res.status(StatusCodes.OK).json({ progress: editedProgress, mode });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const addChapterConv = async (req, res) => {
-  const { comment_content } = req.body;
-  const comment = await Comment.create({
-    author: req.user.userId,
-    content: comment_content,
-    subcomments: [],
-  });
+  try {
+    const { comment_content } = req.body;
+    const comment = await Comment.create({
+      author: req.user.userId,
+      content: comment_content,
+      subcomments: [],
+    });
 
-  const newConv = await Comment.findById(comment._id)
-    .populate("author")
-    .populate({ path: "subcomments", populate: "author" });
+    const newConv = await Comment.findById(comment._id)
+      .populate("author")
+      .populate({ path: "subcomments", populate: "author" });
 
-  await Chapter.updateOne(
-    { _id: req.params.chapter_id },
-    { $push: { comments: comment._id } },
-    { runValidators: true }
-  );
+    await Chapter.updateOne(
+      { _id: req.params.chapter_id },
+      { $push: { comments: comment._id } },
+      { runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ newConv });
+    res.status(StatusCodes.OK).json({ newConv });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const deleteChapterConv = async (req, res) => {
-  const conv = await Comment.findById(req.params.conv_id);
+  try {
+    const conv = await Comment.findById(req.params.conv_id);
 
-  if (conv) {
-    for (let commentId of conv.subcomments) {
-      await Comment.findByIdAndRemove(commentId);
+    if (conv) {
+      for (let commentId of conv.subcomments) {
+        await Comment.findByIdAndRemove(commentId);
+      }
+      await Chapter.findByIdAndUpdate(req.params.chapter_id, {
+        $pull: { comments: conv._id },
+      });
+
+      await conv.delete();
     }
-    await Chapter.findByIdAndUpdate(req.params.chapter_id, {
-      $pull: { comments: conv._id },
-    });
 
-    await conv.delete();
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "comment deleted successfully." });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const addParagraphConv = async (req, res) => {
-  const { comment_content } = req.body;
-  const comment = await Comment.create({
-    author: req.user.userId,
-    content: comment_content,
-    subcomments: [],
-  });
+  try {
+    const { comment_content } = req.body;
+    const comment = await Comment.create({
+      author: req.user.userId,
+      content: comment_content,
+      subcomments: [],
+    });
 
-  await Paragraph.updateOne(
-    { _id: req.params.paragraph_id },
-    { $push: { comments: comment._id } },
-    { new: true, runValidators: true }
-  );
+    await Paragraph.updateOne(
+      { _id: req.params.paragraph_id },
+      { $push: { comments: comment._id } },
+      { new: true, runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ comment });
+    res.status(StatusCodes.OK).json({ comment });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const deleteParagraphConv = async (req, res) => {
-  const conv = await Comment.findById(req.params.conv_id);
+  try {
+    const conv = await Comment.findById(req.params.conv_id);
 
-  if (conv) {
-    for (let commentId of conv.subcomments) {
-      await Comment.findByIdAndRemove(commentId);
+    if (conv) {
+      for (let commentId of conv.subcomments) {
+        await Comment.findByIdAndRemove(commentId);
+      }
+      await Paragraph.findByIdAndUpdate(req.params.paragraph_id, {
+        $pull: { comments: conv._id },
+      });
+
+      await conv.delete();
     }
-    await Paragraph.findByIdAndUpdate(req.params.paragraph_id, {
-      $pull: { comments: conv._id },
-    });
 
-    await conv.delete();
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "comment deleted successfully." });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const addStoryConv = async (req, res) => {
-  const { comment_content } = req.body;
-  const comment = await Comment.create({
-    author: req.user.userId,
-    content: comment_content,
-    subcomments: [],
-  });
+  try {
+    const { comment_content } = req.body;
+    const comment = await Comment.create({
+      author: req.user.userId,
+      content: comment_content,
+      subcomments: [],
+    });
 
-  const newConv = await Comment.findById(comment._id)
-    .populate("author")
-    .populate({ path: "subcomments", populate: "author" });
+    const newConv = await Comment.findById(comment._id)
+      .populate("author")
+      .populate({ path: "subcomments", populate: "author" });
 
-  await Story.updateOne(
-    { _id: req.params.id },
-    { $push: { comments: comment._id } },
-    { runValidators: true }
-  );
+    await Story.updateOne(
+      { _id: req.params.id },
+      { $push: { comments: comment._id } },
+      { runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ newConv });
+    res.status(StatusCodes.OK).json({ newConv });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const deleteStoryConv = async (req, res) => {
-  const conv = await Comment.findById(req.params.conv_id);
+  try {
+    const conv = await Comment.findById(req.params.conv_id);
 
-  if (conv) {
-    for (let commentId of conv.subcomments) {
-      await Comment.findByIdAndRemove(commentId);
+    if (conv) {
+      for (let commentId of conv.subcomments) {
+        await Comment.findByIdAndRemove(commentId);
+      }
+      await Story.findByIdAndUpdate(req.params.story_id, {
+        $pull: { comments: conv._id },
+      });
+
+      await conv.delete();
     }
-    await Story.findByIdAndUpdate(req.params.story_id, {
-      $pull: { comments: conv._id },
-    });
 
-    await conv.delete();
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "comment deleted successfully." });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const voteChapter = async (req, res) => {
-  let vote = await Vote.findOne({
-    user: req.user.userId,
-    chapter: req.params.chapter_id,
-  });
-
-  const chapter = await Chapter.findById(req.params.chapter_id);
-
-  //if vote exists, no need to create new one, just change the value
-  if (vote) {
-    vote.value = Number(req.body.vote_value); // update the vote value
-    await vote.save(); // save the updated vote document
-  } else {
-    console.log("new vote");
-    vote = await Vote.create({
+  try {
+    let vote = await Vote.findOne({
       user: req.user.userId,
       chapter: req.params.chapter_id,
-      value: Number(req.body.vote_value),
-    }); // create a new vote document if one does not exist
-    //save the vote to CHapter ONLY if you created a new one
-    await chapter.votes.push(vote._id);
-  }
+    });
 
-  chapter.votesCount = await countChapterVotes(chapter._id);
-  await chapter.save();
-  const story = await Story.findById(req.params.story_id).populate({
-    path: "chapters",
-    select: "votesCount",
-  });
-  story.votesCount = await getStoryVotes(story);
-  await story.save();
+    const chapter = await Chapter.findById(req.params.chapter_id);
 
-  res.status(StatusCodes.OK).json({ value: Number(req.body.vote_value) });
-};
+    //if vote exists, no need to create new one, just change the value
+    if (vote) {
+      vote.value = Number(req.body.vote_value); // update the vote value
+      await vote.save(); // save the updated vote document
+    } else {
+      console.log("new vote");
+      vote = await Vote.create({
+        user: req.user.userId,
+        chapter: req.params.chapter_id,
+        value: Number(req.body.vote_value),
+      }); // create a new vote document if one does not exist
+      //save the vote to CHapter ONLY if you created a new one
+      await chapter.votes.push(vote._id);
+    }
 
-const unvoteChapter = async (req, res) => {
-  //find your vote no matter what value it has
-  const vote = await Vote.findOne({
-    user: req.user.userId,
-    chapter: req.params.chapter_id,
-  });
-
-  const chapter = await Chapter.findById(req.params.chapter_id);
-
-  //take the vote back from chapter and delete vote object
-  if (vote) {
-    await chapter.votes.pull(vote._id);
-    await vote.remove();
     chapter.votesCount = await countChapterVotes(chapter._id);
-
     await chapter.save();
     const story = await Story.findById(req.params.story_id).populate({
       path: "chapters",
@@ -472,87 +535,135 @@ const unvoteChapter = async (req, res) => {
     });
     story.votesCount = await getStoryVotes(story);
     await story.save();
-  }
 
-  res.status(StatusCodes.OK).json({ newChapter: chapter });
+    res.status(StatusCodes.OK).json({ value: Number(req.body.vote_value) });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const unvoteChapter = async (req, res) => {
+  try {
+    //find your vote no matter what value it has
+    const vote = await Vote.findOne({
+      user: req.user.userId,
+      chapter: req.params.chapter_id,
+    });
+
+    const chapter = await Chapter.findById(req.params.chapter_id);
+
+    //take the vote back from chapter and delete vote object
+    if (vote) {
+      await chapter.votes.pull(vote._id);
+      await vote.remove();
+      chapter.votesCount = await countChapterVotes(chapter._id);
+
+      await chapter.save();
+      const story = await Story.findById(req.params.story_id).populate({
+        path: "chapters",
+        select: "votesCount",
+      });
+      story.votesCount = await getStoryVotes(story);
+      await story.save();
+    }
+
+    res.status(StatusCodes.OK).json({ newChapter: chapter });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const incrementViewCount = async (req, res) => {
-  console.log("incremeting view");
-  await Chapter.findOneAndUpdate(
-    { _id: req.params.chapter_id },
-    { $inc: { views: 1 } }
-  );
-  await Story.findOneAndUpdate(
-    { _id: req.params.story_id },
-    { $inc: { views: 1 } }
-  );
-  res.status(StatusCodes.OK);
+  try {
+    console.log("incremeting view");
+    await Chapter.findOneAndUpdate(
+      { _id: req.params.chapter_id },
+      { $inc: { views: 1 } }
+    );
+    await Story.findOneAndUpdate(
+      { _id: req.params.story_id },
+      { $inc: { views: 1 } }
+    );
+    res.status(StatusCodes.OK);
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getLibrary = async (req, res) => {
-  const user = await User.findById(req.user.userId).populate({
-    path: "readingLists",
-    populate: { path: "stories", populate: "author" },
-  });
+  try {
+    const user = await User.findById(req.user.userId).populate({
+      path: "readingLists",
+      populate: { path: "stories", populate: "author" },
+    });
 
-  const continueReading = await Progress.find({
-    user: req.user.userId,
-  }).populate({ path: "story", populate: "author" });
+    const continueReading = await Progress.find({
+      user: req.user.userId,
+    }).populate({ path: "story", populate: "author" });
 
-  const editedContinueReading = continueReading.map((progress) => {
-    const chapterIndex = progress.story?.chapters.findIndex(
-      (chapter) =>
-        chapter._id.toString() === progress.chapters[0]._id.toString()
-    );
-    return {
-      ...progress._doc,
-      chapterIndex,
-    };
-  });
+    const editedContinueReading = continueReading.map((progress) => {
+      const chapterIndex = progress.story?.chapters.findIndex(
+        (chapter) =>
+          chapter._id.toString() === progress.chapters[0]._id.toString()
+      );
+      return {
+        ...progress._doc,
+        chapterIndex,
+      };
+    });
 
-  const readingLists = user.readingLists;
+    const readingLists = user.readingLists;
 
-  res
-    .status(StatusCodes.OK)
-    .json({ readingLists, continueReading: editedContinueReading });
+    res
+      .status(StatusCodes.OK)
+      .json({ readingLists, continueReading: editedContinueReading });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const createReadingList = async (req, res) => {
-  const { title, story_id } = req.body;
+  try {
+    const { title, story_id } = req.body;
 
-  if (title && title !== "") {
-    const readingList = await ReadingList.create({ title });
+    if (title && title !== "") {
+      const readingList = await ReadingList.create({ title });
 
-    if (story_id) {
-      readingList.stories.push(story_id);
-      await readingList.save();
+      if (story_id) {
+        readingList.stories.push(story_id);
+        await readingList.save();
+      }
+      await User.updateOne(
+        { _id: req.user.userId },
+        { $push: { readingLists: readingList._id } },
+        { runValidators: true }
+      );
     }
-    await User.updateOne(
-      { _id: req.user.userId },
-      { $push: { readingLists: readingList._id } },
-      { runValidators: true }
-    );
-  }
 
-  res.status(StatusCodes.OK).json({ readingList });
+    res.status(StatusCodes.OK).json({ readingList });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const addToReadingList = async (req, res) => {
-  const readingList = await ReadingList.findByIdAndUpdate(
-    req.params.readingListId,
-    {
-      $addToSet: { stories: req.body.story_id },
-    },
-    { new: true, runValidators: true }
-  );
-  res.status(StatusCodes.OK).json({ readingList });
+  try {
+    const readingList = await ReadingList.findByIdAndUpdate(
+      req.params.readingListId,
+      {
+        $addToSet: { stories: req.body.story_id },
+      },
+      { new: true, runValidators: true }
+    );
+    res.status(StatusCodes.OK).json({ readingList });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export {
   getByCategory,
   getByQuery,
-  getStory,
   getByDate,
   getByLength,
   addChapterConv,

@@ -7,7 +7,7 @@ function Following() {
 
   return (
     <StyledFollowing>
-      <div className="following-parent" style={{ padding: "20px" }}>
+      <div className="media-container">
         {profileData.profile.following?.map((f) => {
           return (
             <div key={f._id} className="user">

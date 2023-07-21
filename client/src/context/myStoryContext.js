@@ -165,11 +165,11 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const addChapter = async (story_id) => {
+  const addChapter = async (id) => {
     try {
-      const { data } = await authFetch.post(`/myStories/${story_id}`);
-      const { newStory, chapter } = data;
-      return { chapter_id: chapter._id, story_id: newStory._id };
+      const { data } = await authFetch.patch(`/myStories/${id}`);
+      const { chapter_id, story_id } = data;
+      return { chapter_id, story_id };
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -185,9 +185,27 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const publishChapter = async (story_id, chapter_id) => {
+    try {
+      await authFetch.patch(`/myStories/publish/${story_id}/${chapter_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const unpublishChapter = async (story_id, chapter_id) => {
+    try {
+      await authFetch.patch(`/myStories/unpublish/${story_id}/${chapter_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   const sendGptPrompt = async (prompt, userId) => {
     try {
-      await axios.post(`/gpt/prompt`, {
+      await axios.post(`/api/gpt/prompt`, {
         prompt,
         userId,
       });
@@ -215,11 +233,15 @@ export const MyStoryProvider = ({ children }) => {
 
   const useDeleteStory = () => {
     return useMutation((data) => deleteStory(data.story_id), {
-      onMutate: () => {
-        mutationDispatch({ type: MUTATION_BEGIN });
+      onMutate: (variables) => {
+        const data = queryClient.getQueryData(["myStories"]);
+        const data_filtered = data.filter(
+          (story) => story._id !== variables.story_id
+        );
+        console.log(data_filtered);
+        queryClient.setQueryData(["myStories"], () => data_filtered);
       },
       onSuccess: () => {
-        mutationDispatch({ type: MUTATION_SUCCESS });
         queryClient.invalidateQueries(["myStories"]);
       },
     });
@@ -269,6 +291,28 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
+  const usePublishChapter = () => {
+    return useMutation(
+      (data) => publishChapter(data.story_id, data.chapter_id),
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries([`myStories`]);
+        },
+      }
+    );
+  };
+
+  const useUnpublishChapter = () => {
+    return useMutation(
+      (data) => unpublishChapter(data.story_id, data.chapter_id),
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries([`myStories`]);
+        },
+      }
+    );
+  };
+
   return (
     <MyStoryContext.Provider
       value={{
@@ -292,6 +336,8 @@ export const MyStoryProvider = ({ children }) => {
         useAddChapter,
         mutationState,
         useDeleteChapter,
+        usePublishChapter,
+        useUnpublishChapter,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ModalCenter from "./ModalCenter";
 
 const MyStory = ({ story }) => {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ const MyStory = ({ story }) => {
         <div>
           <DropdownMenu
             buttonClass="orange-button btn story-btn"
+            menuClass="chapters-dropdown"
             button={
               <>
                 <span className="text">Edit Story</span>
@@ -85,74 +87,65 @@ const MyStory = ({ story }) => {
 
         <DropdownMenu
           buttonClass="white-button"
-          menuClass="more-menu"
           button={
             <span className="icon">
               <FiMoreHorizontal />
             </span>
           }
           menu={
-            <div className="flex-row">
+            <div className="dropdown-item flex-row">
               <span className="icon">
                 <FaTrashAlt />
               </span>
-              <button
+              <div
                 onClick={() => {
                   setIsModalOpen(true);
                 }}
               >
                 Delete Story
-              </button>
+              </div>
             </div>
           }
         />
       </div>
 
-      {/* WARNING POP-UP */}
-      {isModalOpen && <div className="overlay"></div>}
-
-      <DeleteModal
-        setIsModalOpen={setIsModalOpen}
-        handleDeleteClick={handleDeleteClick}
-        story={story}
+      <ModalCenter
         isOpen={isModalOpen}
+        content={
+          <>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="close-modal-btn icon"
+            >
+              <AiOutlineClose />
+            </button>
+            <div className="warning">
+              <h2>Are you sure you want to permanently delete your story?</h2>
+              Deleting your story is permanent and cannot be undone. If you're
+              unsure, it's better to unpublish your story. Unpublished stories
+              can only be seen by you, so they don't get any new reads, votes,
+              or comments.
+            </div>
+            <div className="buttons flex-row">
+              <button className="orange-button btn" onClick={handleDeleteClick}>
+                Delete
+              </button>
+              <button
+                className="btn-grey btn"
+                onClick={() => {
+                  console.log(story.title);
+                  setIsModalOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        }
       />
     </StyledMyStory>
   );
 };
-
-function DeleteModal({ setIsModalOpen, handleDeleteClick, story, isOpen }) {
-  return (
-    <div className={"delete-story-modal " + (isOpen ? "open-modal" : "")}>
-      <button
-        onClick={() => setIsModalOpen(false)}
-        className="close-modal-btn icon"
-      >
-        <AiOutlineClose />
-      </button>
-      <div className="warning">
-        <h2>Are you sure you want to permanently delete your story?</h2>
-        Deleting your story is permanent and cannot be undone. If you're unsure,
-        it's better to unpublish your story. Unpublished stories can only be
-        seen by you, so they don't get any new reads, votes, or comments.
-      </div>
-      <div className="buttons flex-row">
-        <button className="orange-button btn" onClick={handleDeleteClick}>
-          Delete
-        </button>
-        <button
-          className="btn-grey btn"
-          onClick={() => {
-            console.log(story.title);
-            setIsModalOpen(false);
-          }}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-}
 
 //learn how to add param routes
 

@@ -55,7 +55,7 @@ function MyStories({ show }) {
             )}
           </div>
           <button
-            className="orange-button btn"
+            className="btn orange-button"
             onClick={() => navigate("/newStory")}
           >
             + Create story
@@ -70,7 +70,7 @@ function MyStories({ show }) {
               Hi, {userState.user.name}! You haven't written any stories yet.
             </div>
             <button
-              className="orange-button btn"
+              className="btn orange-button"
               onClick={() => navigate("/newStory")}
             >
               + Create story

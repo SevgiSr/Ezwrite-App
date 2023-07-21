@@ -114,7 +114,12 @@ function Chapter() {
       />
 
       <section className="chapter">
-        <h1>{state.chapter.title}</h1>
+        <div className="flex-row">
+          <h1>{state.chapter.title}</h1>
+          {state.chapter.visibility === "draft" && (
+            <p className="visibility">(DRAFT)</p>
+          )}
+        </div>
         <div className="metadata">
           <div>
             <div className="icon">

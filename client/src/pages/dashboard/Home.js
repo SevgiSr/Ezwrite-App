@@ -7,6 +7,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useRef } from "react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { v4 as uuidv4 } from "uuid";
 
 function Home() {
   const { getAll } = useContext(StoryContext);
@@ -24,7 +25,7 @@ function Home() {
         <ScrollRow items={users} type="user" />
       </div>
       <div className="items-row">
-        <h1>Popular Now</h1>
+        <h1>Popular</h1>
         <ScrollRow items={stories} type="story" />
       </div>
       <div className="items-row">
@@ -106,7 +107,7 @@ const ScrollRow = ({ items, type }) => {
               return (
                 <div className="row--item" ref={itemRef}>
                   {type === "story" ? (
-                    <StoryDetailed key={item._id} story={item} />
+                    <StoryDetailed key={uuidv4()} story={item} />
                   ) : (
                     <UserCard key={item._id} user={item} />
                   )}

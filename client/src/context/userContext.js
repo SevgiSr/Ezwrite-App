@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
   // the backend jwt-auth middleware expecting a header starting with 'Bearer' and the token
   // but in default axios we dont have that header
   const authFetch = axios.create({
-    baseURL: "/",
+    baseURL: "/api",
     //I can add headers here but this will cause send that token in each axios request
   });
 
@@ -92,7 +92,7 @@ export const UserProvider = ({ children }) => {
     alertDispatch({ type: BEGIN });
     try {
       //user created in db. token created and sent back
-      const response = await axios.post("/auth/register", currentUser);
+      const response = await axios.post("/api/auth/register", currentUser);
 
       const { user, token } = response.data;
 
@@ -119,7 +119,7 @@ export const UserProvider = ({ children }) => {
   const loginUser = async (currentUser) => {
     alertDispatch({ type: BEGIN });
     try {
-      const { data } = await axios.post("/auth/login", currentUser);
+      const { data } = await axios.post("/api/auth/login", currentUser);
       const { user, token } = data;
 
       dispatch({

@@ -49,8 +49,8 @@ const ChapterSchema = new mongoose.Schema(
     },
     visibility: {
       type: String,
-      enum: ["public", "private"],
-      default: "private",
+      enum: ["published", "draft"],
+      default: "draft",
     },
   },
   { timestamps: true }

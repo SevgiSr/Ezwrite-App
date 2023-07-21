@@ -6,101 +6,109 @@ import User from "../db/models/User.js";
 import Notification from "../db/models/Notification.js";
 import mongoose from "mongoose";
 const getPrivateConvs = async (req, res) => {
-  const user = await User.findById(req.user.userId).populate({
-    path: "privateConvs",
-    populate: "messages users",
-  });
+  try {
+    const user = await User.findById(req.user.userId).populate({
+      path: "privateConvs",
+      populate: "messages users",
+    });
 
-  console.log(user.privateConvs);
+    console.log(user.privateConvs);
 
-  res.status(StatusCodes.OK).json({ inbox: user.privateConvs });
+    res.status(StatusCodes.OK).json({ inbox: user.privateConvs });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const openPrivateConv = async (req, res) => {
-  const { username } = req.params;
-  const receiver = await User.findOne({ name: username });
-  const conv = await PrivateConv.findOne({
-    users: [req.user.userId, receiver._id].sort(),
-  }).populate({ path: "messages", populate: "author" });
-  res.status(StatusCodes.OK).json({ conv });
+  try {
+    const { username } = req.params;
+    const receiver = await User.findOne({ name: username });
+    const conv = await PrivateConv.findOne({
+      users: [req.user.userId, receiver._id].sort(),
+    }).populate({ path: "messages", populate: "author" });
+    res.status(StatusCodes.OK).json({ conv });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const sendMessage = async (req, res) => {
-  const { message_content } = req.body;
-  const { username } = req.params;
-  const receiver = await User.findOne({ name: username });
-  const message = await Message.create({
-    author: req.user.userId,
-    content: message_content,
-  });
-  const privateConv = await PrivateConv.findOne({
-    users: [req.user.userId, receiver._id].sort(),
-  });
-
-  if (privateConv) {
-    privateConv.messages.push(message);
-    await privateConv.save();
-    console.log(privateConv);
-  } else {
-    const newPrivateConv = await PrivateConv.create({
-      users: [req.user.userId, receiver._id].sort(),
-      messages: [message],
+  try {
+    const { message_content } = req.body;
+    const { username } = req.params;
+    const receiver = await User.findOne({ name: username });
+    const message = await Message.create({
+      author: req.user.userId,
+      content: message_content,
     });
-    await User.updateMany(
-      { _id: { $in: [req.user.userId, receiver._id] } },
-      { $push: { privateConvs: newPrivateConv._id } }
-    );
+    const privateConv = await PrivateConv.findOne({
+      users: [req.user.userId, receiver._id].sort(),
+    });
+
+    if (privateConv) {
+      privateConv.messages.push(message);
+      await privateConv.save();
+      console.log(privateConv);
+    } else {
+      const newPrivateConv = await PrivateConv.create({
+        users: [req.user.userId, receiver._id].sort(),
+        messages: [message],
+      });
+      await User.updateMany(
+        { _id: { $in: [req.user.userId, receiver._id] } },
+        { $push: { privateConvs: newPrivateConv._id } }
+      );
+    }
+    res.status(StatusCodes.OK);
+  } catch (error) {
+    throw new Error(error.message);
   }
-  res.status(StatusCodes.OK);
 };
 
 const openNotifications = async (req, res) => {
-  const user = await User.findById(req.user.userId).populate({
-    path: "notifications",
-    populate: "sender location",
-  });
+  try {
+    const user = await User.findById(req.user.userId).populate({
+      path: "notifications",
+      populate: "sender location",
+    });
 
-  const notifications = user.notifications.sort(
-    (a, b) => b.createdAt - a.createdAt
-  );
+    const notifications = user.notifications.sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
 
-  console.log(notifications);
+    console.log(notifications);
 
-  res.status(StatusCodes.OK).json({ notifications });
+    res.status(StatusCodes.OK).json({ notifications });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const sendNotification = async (req, res) => {
-  const { nt } = req.body;
+  try {
+    const { nt } = req.body;
 
-  const notification = await Notification.create({
-    ...nt,
-  });
+    const notification = await Notification.create({
+      ...nt,
+    });
 
-  await User.updateOne(
-    { name: req.params.username },
-    { $push: { notifications: notification._id } },
-    { runValidators: true }
-  );
+    await User.updateOne(
+      { name: req.params.username },
+      { $push: { notifications: notification._id } },
+      { runValidators: true }
+    );
 
-  await User.updateOne(
-    { _id: notification.sender },
-    { $push: { activity: notification._id } },
-    { runValidators: true }
-  );
+    await User.updateOne(
+      { _id: notification.sender },
+      { $push: { activity: notification._id } },
+      { runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ notification });
-};
-
-const deleteNotifications = async (req, res) => {
-  await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { $unset: { notifications: [] } },
-    { new: true, runValidators: true }
-  );
-
-  await Notification.deleteMany({});
-
-  res.status(StatusCodes.OK);
+    res.status(StatusCodes.OK).json({ notification });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export {
@@ -109,5 +117,4 @@ export {
   sendMessage,
   openNotifications,
   sendNotification,
-  deleteNotifications,
 };

@@ -22,9 +22,6 @@ const StyledMyStories = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    button {
-      padding: 10px 20px;
-    }
 
     .header-loader {
       margin-left: 1rem;

@@ -182,12 +182,20 @@ const StyledChapter = styled.div`
         }
       }
     }
-    h1 {
-      text-align: center;
-      font-weight: 700;
-      font-size: 32px;
+    .flex-row {
+      justify-content: center;
       line-height: 40px;
+      h1 {
+        text-align: center;
+        font-weight: 700;
+        font-size: 32px;
+      }
+      .visibility {
+        margin-left: 10px;
+        color: #6f6f6f;
+      }
     }
+
     .paragraph {
       position: relative;
       padding-right: 50px;

@@ -37,10 +37,9 @@ function Story() {
     queryFn: () => getProgress(story_id),
   });
 
-  const { chapters, story } = progress;
-
   useEffect(() => {
     if (!isFetching && status === "success") {
+      const { chapters, story } = progress;
       setChapter(chapters[0], story);
     }
   }, [location, isFetching]);
@@ -48,27 +47,28 @@ function Story() {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
+  if (!state.story || !state.chapter) return null;
 
   return (
     <StyledStory>
       <header>
-        <StoryCard story={story} progress={progress} />
+        <StoryCard progress={progress} />
       </header>
       <main>
         <section className="info-section">
           <div className="story-info">
             <div className="author">
               <ProfilePicture
-                filename={story.author?._id}
+                filename={state.story.author?._id}
                 width="30px"
                 height="30px"
               />
-              <span className="username">{story?.author?.name}</span>
+              <span className="username">{state.story?.author?.name}</span>
             </div>
             <div className="status">Ongoing</div>
-            <div className="desc">{story?.description}</div>
+            <div className="desc">{state.story?.description}</div>
             <div className="tags">
-              {story.tags.map((tag) => {
+              {state.story.tags?.map((tag) => {
                 return <span className="tag">{tag}</span>;
               })}
             </div>
@@ -76,10 +76,10 @@ function Story() {
           <div className="table-contents">
             <h2>Table of Contents</h2>
             <ul>
-              {story?.chapters?.map((chapter) => {
+              {state.story?.chapters?.map((chapter) => {
                 return (
                   <li key={chapter._id}>
-                    <Link to={`/${story._id}/${chapter._id}`}>
+                    <Link to={`/${state.story._id}/${chapter._id}`}>
                       {chapter.title}
                     </Link>
                   </li>
@@ -99,7 +99,7 @@ function Story() {
               location={story_id}
               route={location.pathname}
               dest={story_id}
-              to={story.author?.name}
+              to={state.story.author?.name}
               useAddConv={useAddStoryConv}
             />
             <div className="column-reverse">
@@ -109,7 +109,7 @@ function Story() {
                     <Conversation
                       key={comment._id}
                       conv={comment}
-                      dest={story._id}
+                      dest={state.story._id}
                       useAddConvComment={useAddConvComment}
                       useDeleteConv={useDeleteStoryConv}
                       useDeleteConvComment={useDeleteConvComment}
@@ -129,47 +129,50 @@ const StoryCard = ({ story, progress }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log(story, progress);
     if (progress.chapters) {
-      navigate(`/${story._id}/${progress.chapters[0]._id}`);
+      navigate(`/${progress.story._id}/${progress.chapters[0]._id}`);
     }
   };
   return (
     <div className="story-card">
       <div className="cover">
-        <Cover filename={story._id} width="184px" height="250px" />
+        <Cover filename={progress.story._id} width="184px" height="250px" />
       </div>
       <div className="info">
-        <h3>{story.title}</h3>
-
+        <div className="flex-row">
+          <h3>{progress.story.title}</h3>
+          {progress.story.visibility === "draft" && (
+            <p className="visibility">DRAFT (Only visible to you)</p>
+          )}
+        </div>
         <div className="stats">
           <div className="item">
             <div className="label">
               <GoEye />
               Reads
             </div>
-            <div className="value">{story.views}</div>
+            <div className="value">{progress.story.views}</div>
           </div>
           <div className="item">
             <div className="label">
               <BsFillStarFill />
               Votes
             </div>
-            <div className="value">{story.votesCount.upvotes}</div>
+            <div className="value">{progress.story.votesCount.upvotes}</div>
           </div>
           <div className="item">
             <div className="label">
               <AiFillDislike />
               Downvotes
             </div>
-            <div className="value">{story.votesCount.downvotes}</div>
+            <div className="value">{progress.story.votesCount.downvotes}</div>
           </div>
           <div className="item">
             <div className="label">
               <AiOutlineBars />
               Parts
             </div>
-            <div className="value">{story.chapters.length}</div>
+            <div className="value">{progress.story.chapters.length}</div>
           </div>
         </div>
         <button className="orange-button btn" onClick={handleClick}>

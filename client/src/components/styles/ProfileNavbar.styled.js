@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
 const StyledProfileNavbar = styled.div`
-  width: 100%;
-  height: 100%;
   border-bottom: 1px solid var(--background1);
   margin-bottom: 1.5rem;
   display: flex;
@@ -39,25 +37,6 @@ const StyledProfileNavbar = styled.div`
       .icon {
         font-size: 20px;
       }
-    }
-    .parent {
-      width: 95%;
-    }
-  }
-
-  @media only screen and (min-width: 768px) {
-    .parent {
-      width: 740px;
-    }
-  }
-  @media only screen and (min-width: 992px) {
-    .parent {
-      width: 960px;
-    }
-  }
-  @media only screen and (min-width: 1350px) {
-    .parent {
-      width: 1160px;
     }
   }
 `;

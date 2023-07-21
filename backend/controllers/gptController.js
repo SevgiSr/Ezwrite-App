@@ -16,13 +16,13 @@ const sendGptPrompt = async (req, res) => {
 };
 
 const streamTokens = async (req, res) => {
-  console.log("streaming");
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  const { length, style, content } = prompt;
   try {
+    console.log("streaming");
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const { length, style, content } = prompt;
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -57,7 +57,7 @@ const streamTokens = async (req, res) => {
       res.end();
     });
   } catch (error) {
-    console.log(error.message);
+    throw new Error(error.message);
   }
 };
 

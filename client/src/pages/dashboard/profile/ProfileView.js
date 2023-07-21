@@ -84,6 +84,7 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
         <BackgroundPicture
           filename={profileData.profile?._id}
           timestamp={bcTimestamp}
+          height="370px"
         />
       )}
 

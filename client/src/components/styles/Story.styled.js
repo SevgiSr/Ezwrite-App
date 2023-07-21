@@ -14,6 +14,12 @@ const StyledStory = styled.div`
     .title {
       color: var(--font1);
       text-decoration: none;
+      .visibility {
+        margin-left: 10px;
+        background-color: #6f6f6f;
+        padding: 3px 5px;
+        border-radius: 20px;
+      }
       h3 {
         font-size: 18px;
         line-height: 28px;

@@ -1,13 +1,15 @@
 import styled from "styled-components";
 
 const StyledAbout = styled.div`
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding-bottom: 3rem;
-  display: flex;
-  justify-content: space-between;
+  .media-container {
+    padding-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
 
   .info {
+    box-sizing: border-box;
     font-size: 15px;
     color: var(--font1);
     background-color: var(--background5);
@@ -122,27 +124,20 @@ const StyledAbout = styled.div`
     }
   }
 
-  @media only screen and (max-width: 500px) {
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    padding: 0 25px;
-    .info {
-      min-width: 100%;
-      margin-bottom: 1rem;
+  @media only screen and (max-width: 768px) {
+    .media-container {
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      padding: 0 20px;
+      .info {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+      .work-info {
+        width: 100%;
+      }
     }
-    .work-info {
-      min-width: 100%;
-    }
-  }
-  @media only screen and (min-width: 768px) {
-    width: 740px;
-  }
-  @media only screen and (min-width: 992px) {
-    width: 960px;
-  }
-  @media only screen and (min-width: 1350px) {
-    width: 1160px;
   }
 `;
 

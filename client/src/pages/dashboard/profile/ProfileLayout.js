@@ -7,6 +7,7 @@ import EditProfile from "./EditProfile";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Oval } from "react-loader-spinner";
+import StyledProfileLayout from "./styles/ProfileLayout.styled";
 
 function SharedLayout() {
   const { profileState, getProfile, getProfileConv } =
@@ -27,15 +28,18 @@ function SharedLayout() {
     refetch,
   } = useQuery(["profile", username], () => getProfile(username), {
     onSuccess: (data) => {
-      const { profileName, pronouns, about, website, location } = data.profile;
-      const newState = {
-        profileName,
-        pronouns,
-        about,
-        website,
-        location,
-      };
-      setProfileInfo(newState);
+      if (data.isMainUser) {
+        const { profileName, pronouns, about, website, location } =
+          data.profile;
+        const newState = {
+          profileName,
+          pronouns,
+          about,
+          website,
+          location,
+        };
+        setProfileInfo(newState);
+      }
     },
     refetchOnWindowFocus: false,
   });
@@ -59,7 +63,7 @@ function SharedLayout() {
   }
 
   return (
-    <>
+    <StyledProfileLayout>
       <ProfileView
         handleChange={handleChange}
         state={profileInfo}
@@ -85,7 +89,7 @@ function SharedLayout() {
       ) : (
         <Outlet context={{ profileData, convs }} />
       )}
-    </>
+    </StyledProfileLayout>
   );
 }
 

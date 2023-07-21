@@ -63,7 +63,7 @@ const ProfileNavbar = ({ links, profileData }) => {
   return (
     <StyledProfileNavbar>
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
-      <div className="parent">
+      <div className="media-container parent">
         <OrangeLinks links={links} className="orange-links" />
 
         {profileData.isMainUser ? (

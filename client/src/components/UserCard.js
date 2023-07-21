@@ -8,6 +8,7 @@ import { BsPersonPlusFill } from "react-icons/bs";
 import { UserContext } from "../context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import socket from "../socket.js";
+import BackgroundPicture from "./BackgroundPicture";
 
 const UserCard = ({ user }) => {
   const {
@@ -77,18 +78,7 @@ const UserCard = ({ user }) => {
         to={`/user/${user.name}`}
         style={{ textDecoration: "none", color: "#222" }}
       >
-        <div className="background" style={{ width: "300px", height: "100px" }}>
-          <img
-            src={`/images/background/${user._id}`}
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center center",
-            }}
-          />
-        </div>
+        <BackgroundPicture filename={user._id} height="102px" />
         <div className="main">
           <div className="profilePicture">
             <ProfilePicture filename={user._id} width="70px" height="70px" />

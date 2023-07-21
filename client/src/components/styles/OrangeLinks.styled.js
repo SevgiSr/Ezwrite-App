@@ -19,7 +19,6 @@ const StyledOrangeLinks = styled.nav`
 
     @media only screen and (max-width: 1000px) {
       .link {
-        margin: 0 1rem;
         font-size: 17px;
       }
     }

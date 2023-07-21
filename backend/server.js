@@ -49,6 +49,7 @@ import notFoundMiddleware from "./middleware/not-found.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
 import jwtAuthentication from "./middleware/jwt-auth.js";
 import { UnauthenticatedError } from "./errors/index.js";
+
 import mongoose from "mongoose";
 
 //for res.flush() so that it sends stream responses immediately instead of buffering
@@ -80,15 +81,15 @@ app.use(compression());
 
 ////  ROUTES  ////
 //  api route
-app.use("/auth", authRoutes);
-app.use("/myStories", jwtAuthentication, myStoryRoutes);
-app.use("/user", jwtAuthentication, profileRoutes);
-app.use("/stories", jwtAuthentication, storyRoutes);
-app.use("/conversations", jwtAuthentication, convRoutes);
-app.use("/messages", jwtAuthentication, messageRoutes);
-app.use("/upload", jwtAuthentication, uploadRoutes);
-app.use("/images", imageRoutes);
-app.use("/gpt", gptRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/myStories", jwtAuthentication, myStoryRoutes);
+app.use("/api/user", jwtAuthentication, profileRoutes);
+app.use("/api/stories", jwtAuthentication, storyRoutes);
+app.use("/api/conversations", jwtAuthentication, convRoutes);
+app.use("/api/messages", jwtAuthentication, messageRoutes);
+app.use("/api/upload", jwtAuthentication, uploadRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/gpt", gptRoutes);
 
 //  react route
 /* app.get("*", (req, res) => {

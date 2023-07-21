@@ -26,13 +26,19 @@ const StyledStory = styled.div`
         border-radius: 3px;
       }
       h3 {
-        margin-bottom: 2rem;
         font-weight: 700;
         font-size: 32px;
         line-height: 40px;
       }
+      .visibility {
+        margin-left: 10px;
+        padding: 3px 5px;
+        background-color: #6f6f6f;
+        border-radius: 20px;
+      }
 
       .stats {
+        margin-top: 2rem;
         display: flex;
         justify-content: space-between;
         width: 300px;

@@ -1,6 +1,6 @@
 function Cover({ width, filename, timestamp }) {
   const numericWidth = parseFloat(width);
-  const imageUrl = `/images/cover/${filename}?t=${timestamp}`;
+  const imageUrl = `/api/images/cover/${filename}?t=${timestamp}`;
   return (
     <img
       style={{

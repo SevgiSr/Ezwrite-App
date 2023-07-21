@@ -55,8 +55,7 @@ function Register() {
         {userState.showAlert && <Alert />}
         <form className="form glass" onSubmit={onSubmit}>
           <h3 className="orange-text">
-            {user.isMember ? "Login" : "Register"}
-            <span>, to start writing!</span>
+            {user.isMember ? "Login" : "Register"} to start writing!
             <div className="book-icon">
               <BsBookFill style={{ color: "#d25e00", position: "relative" }} />
             </div>

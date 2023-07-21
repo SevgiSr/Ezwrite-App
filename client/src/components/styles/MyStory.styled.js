@@ -15,7 +15,7 @@ const StyledMyStory = styled.div`
     cursor: pointer;
   }
 
-  .dropdown-menu {
+  .chapters-dropdown {
     display: block;
     padding: 0.75rem 0;
     width: 250px;
@@ -35,7 +35,6 @@ const StyledMyStory = styled.div`
         font-size: 12px;
         text-align: start;
         border-bottom: 1px solid var(--font2);
-        width: 80%;
         p {
           color: var(--font2);
         }
@@ -96,18 +95,11 @@ const StyledMyStory = styled.div`
     }
     .more-menu {
       overflow: hidden;
-      width: 120px;
-      padding: 10px 15px;
-      button {
-        font-size: 14px;
-        font-weight: 600;
-        color: #6f6f6f;
-        border: none;
-        cursor: pointer;
-      }
-      .icon {
-        margin-right: 5px;
-      }
+      width: fit-content;
+
+      display: block;
+
+      padding: 3px 15px;
     }
   }
 
@@ -118,28 +110,7 @@ const StyledMyStory = styled.div`
     justify-content: end;
   }
 
-  .delete-story-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 500px;
-    z-index: 1000;
-    background-color: white;
-    border-radius: 5px;
-    padding: 30px;
-
-    .close-modal-btn {
-      border: none;
-      position: relative;
-      right: 15px;
-      bottom: 15px;
-      font-size: 30px;
-      color: #ff6122;
-      cursor: pointer;
-    }
-
+  .modal-content {
     h2 {
       margin-bottom: 1rem;
     }
@@ -158,21 +129,6 @@ const StyledMyStory = styled.div`
         border-color: #e1e1e1;
       }
     }
-  }
-
-  .open-modal {
-    display: block;
-  }
-
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    opacity: 8%;
   }
 `;
 

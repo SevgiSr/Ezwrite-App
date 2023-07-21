@@ -7,72 +7,99 @@ import ReadingList from "../db/models/ReadingList.js";
 import { getStoryVotes, getStoryViews } from "./storyController.js";
 
 const getProfile = async (req, res) => {
-  const profile = await User.findOne({ name: req.params.username })
-    .populate("stories followers following")
-    .populate({
-      path: "notifications",
-      populate: "sender",
-      options: {
-        sort: { createdAt: -1 },
-      },
-    })
-    .populate({ path: "activity", populate: "sender" })
-    .populate({
-      path: "readingLists",
-      populate: { path: "stories", populate: "author" },
+  try {
+    const mainUser = await User.findById(req.user.userId);
+    let isMainUser = false;
+    if (req.params.username === mainUser.name) {
+      isMainUser = true;
+    }
+    let profile = await User.findOne({ name: req.params.username })
+      .populate({
+        path: "stories",
+        options: { excludeVisibilityCheck: isMainUser },
+      })
+      .populate("followers following")
+      .populate({
+        path: "notifications",
+        populate: "sender",
+        options: {
+          sort: { createdAt: -1 },
+        },
+      })
+      .populate({ path: "activity", populate: "sender" })
+      .populate({
+        path: "readingLists",
+        populate: { path: "stories", populate: "author" },
+      });
+
+    profile.stories.sort((a, b) => {
+      // First sort by visibility (published comes first)
+      if (a.visibility === "published" && b.visibility !== "published")
+        return -1;
+      if (a.visibility !== "published" && b.visibility === "published")
+        return 1;
+
+      // Then sort by updatedAt date (newest first)
+      return b.updatedAt - a.updatedAt;
     });
 
-  let isMainUser = false;
-  if (String(profile._id) === req.user.userId) {
-    isMainUser = true;
+    let isFollowing = false;
+    profile.followers.map((follower) => {
+      if (String(follower._id) === req.user.userId) {
+        isFollowing = true;
+      }
+    });
+
+    res.status(StatusCodes.OK).json({ profile, isMainUser, isFollowing });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  let isFollowing = false;
-  profile.followers.map((follower) => {
-    if (String(follower._id) === req.user.userId) {
-      isFollowing = true;
-    }
-  });
-
-  res.status(StatusCodes.OK).json({ profile, isMainUser, isFollowing });
 };
 
 const followProfile = async (req, res) => {
-  console.log("backend: following...");
-  const isFollowing = await User.find({
-    name: req.params.username,
-    followers: { $elemMatch: { $eq: req.user.userId } },
-  });
+  try {
+    console.log("backend: following...");
+    const isFollowing = await User.find({
+      name: req.params.username,
+      followers: { $elemMatch: { $eq: req.user.userId } },
+    });
 
-  if (isFollowing.length > 0) return;
+    if (isFollowing.length > 0) return;
 
-  const user = await User.findOneAndUpdate(
-    { name: req.params.username },
-    { $push: { followers: req.user.userId } },
-    { new: true, runValidators: true }
-  );
+    const user = await User.findOneAndUpdate(
+      { name: req.params.username },
+      { $push: { followers: req.user.userId } },
+      { new: true, runValidators: true }
+    );
 
-  await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { $push: { following: user._id } }
-  );
-  res.status(StatusCodes.OK).json({ followers: user.followers });
+    await User.findOneAndUpdate(
+      { _id: req.user.userId },
+      { $push: { following: user._id } }
+    );
+    res.status(StatusCodes.OK).json({ followers: user.followers });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const unfollowProfile = async (req, res) => {
-  console.log("backend: unfollowing...");
-  const user = await User.findOneAndUpdate(
-    { name: req.params.username },
-    { $pull: { followers: req.user.userId } },
-    { new: true, runValidators: true }
-  );
+  try {
+    console.log("backend: unfollowing...");
+    const user = await User.findOneAndUpdate(
+      { name: req.params.username },
+      { $pull: { followers: req.user.userId } },
+      { new: true, runValidators: true }
+    );
 
-  await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { $pull: { following: user._id } }
-  );
+    await User.findOneAndUpdate(
+      { _id: req.user.userId },
+      { $pull: { following: user._id } }
+    );
 
-  res.status(StatusCodes.OK).json({ followers: user.followers });
+    res.status(StatusCodes.OK).json({ followers: user.followers });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 //now you don't have to wait for activity tab to load each time because it's populated as soon as profile mounted
@@ -89,75 +116,97 @@ const unfollowProfile = async (req, res) => {
 }; */
 
 const getProfileConv = async (req, res) => {
-  const { username } = req.params;
-  const user = await User.findOne({ name: username });
-  const comments = await Comment.find({
-    _id: { $in: user.comments },
-  })
-    .populate("author")
-    .populate({ path: "subcomments", populate: "author" });
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ name: username });
+    const comments = await Comment.find({
+      _id: { $in: user.comments },
+    })
+      .populate("author")
+      .populate({ path: "subcomments", populate: "author" });
 
-  res.status(StatusCodes.OK).json({ convs: comments });
+    res.status(StatusCodes.OK).json({ convs: comments });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const addProfileConv = async (req, res) => {
-  const { comment_content } = req.body;
-  const comment = await Comment.create({
-    author: req.user.userId,
-    content: comment_content,
-    subcomments: [],
-  });
-  const newConv = await Comment.findById(comment._id)
-    .populate("author")
-    .populate({ path: "subcomments", populate: "author" });
+  try {
+    const { comment_content } = req.body;
+    const comment = await Comment.create({
+      author: req.user.userId,
+      content: comment_content,
+      subcomments: [],
+    });
+    const newConv = await Comment.findById(comment._id)
+      .populate("author")
+      .populate({ path: "subcomments", populate: "author" });
 
-  console.log(newConv);
-  await User.updateOne(
-    { name: req.params.username },
-    { $push: { comments: comment._id } },
-    { runValidators: true }
-  );
+    console.log(newConv);
+    await User.updateOne(
+      { name: req.params.username },
+      { $push: { comments: comment._id } },
+      { runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ newConv: newConv });
+    res.status(StatusCodes.OK).json({ newConv: newConv });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const deleteProfileConv = async (req, res) => {
-  const conv = await Comment.findById(req.params.conv_id);
+  try {
+    const conv = await Comment.findById(req.params.conv_id);
 
-  if (conv) {
-    for (let commentId of conv.subcomments) {
-      await Comment.findByIdAndRemove(commentId);
-    }
-    await User.findOneAndUpdate(
-      { name: req.params.username },
-      {
-        $pull: { comments: conv._id },
+    if (conv) {
+      for (let commentId of conv.subcomments) {
+        await Comment.findByIdAndRemove(commentId);
       }
-    );
+      await User.findOneAndUpdate(
+        { name: req.params.username },
+        {
+          $pull: { comments: conv._id },
+        }
+      );
 
-    await conv.delete();
+      await conv.delete();
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "comment deleted successfully." });
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  res.status(StatusCodes.OK).json({ message: "comment deleted successfully." });
 };
 
 const editProfile = async (req, res) => {
-  const { profileInfo } = req.body;
+  try {
+    const { profileInfo } = req.body;
 
-  const newUser = await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { ...profileInfo },
-    { new: true, runValidators: true }
-  );
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user.userId },
+      { ...profileInfo },
+      { new: true, runValidators: true }
+    );
 
-  res.status(StatusCodes.OK).json({ newUser });
+    res.status(StatusCodes.OK).json({ newUser });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const getProfileSettings = async (req, res) => {
-  const profileSettings = await User.findById(req.user.userId).select(
-    "name AIKey"
-  );
-  res.status(StatusCodes.OK).json({ profileSettings });
+  try {
+    const profileSettings = await User.findById(req.user.userId).select(
+      "name AIKey"
+    );
+    res.status(StatusCodes.OK).json({ profileSettings });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export {

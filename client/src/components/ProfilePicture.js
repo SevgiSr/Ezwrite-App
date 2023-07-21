@@ -5,7 +5,7 @@ import StyledProfilePicture from "./styles/ProfilePicture.styled";
 import src from "./Default.webp";
 
 const ProfilePicture = ({ width, height, filename, timestamp }) => {
-  const imageUrl = `/images/${filename}?t=${timestamp}`;
+  const imageUrl = `/api/images/${filename}?t=${timestamp}`;
 
   return (
     <StyledProfilePicture width={width} height={height}>

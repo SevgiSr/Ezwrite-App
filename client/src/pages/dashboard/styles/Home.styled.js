@@ -68,9 +68,9 @@ const StyledHome = styled.div`
     margin-right: 0;
   }
 
-  .row--item:hover {
+  /*   .row--item:hover {
     transform: scale(1.08);
-  }
+  } */
 `;
 
 export default StyledHome;

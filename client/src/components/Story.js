@@ -33,8 +33,11 @@ const Story = ({ story }) => {
         <Cover filename={story._id} width="140px" />
       </div>
       <div className="content">
-        <Link className="title" to={`/story/${story._id}`}>
+        <Link className="title flex-row" to={`/story/${story._id}`}>
           <h3>{story.title}</h3>
+          {story.visibility === "draft" && (
+            <p className="visibility">DRAFT (only visible to you)</p>
+          )}
         </Link>
         <div className="author">{story.author.name} tarafından</div>
         <div className="meta-data">

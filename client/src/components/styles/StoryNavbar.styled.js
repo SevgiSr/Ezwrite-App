@@ -67,6 +67,10 @@ const StyledStoryNavbar = styled.div`
         .dropdown-item {
           border-bottom: 1px solid var(--font2);
         }
+
+        .dropdown-items {
+          height: 300px;
+        }
         .new-part-btn {
           width: fit-content;
           margin: 1rem auto 0 auto;

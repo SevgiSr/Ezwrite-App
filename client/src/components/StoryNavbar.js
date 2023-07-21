@@ -13,13 +13,21 @@ import { RiMoreFill } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
 
 const Navbar = () => {
-  const { storyState, useAddChapter, mutationState, useDeleteChapter } =
-    useContext(MyStoryContext);
+  const {
+    storyState,
+    useAddChapter,
+    mutationState,
+    useDeleteChapter,
+    usePublishChapter,
+    useUnpublishChapter,
+  } = useContext(MyStoryContext);
   const navigate = useNavigate();
   const { story_id, chapter_id } = useParams();
 
   const addChapterMutation = useAddChapter();
   const deleteChapterMutation = useDeleteChapter();
+  const publishChapterMutation = usePublishChapter();
+  const unpublishChapterMutation = useUnpublishChapter();
 
   const handleNewPartClick = async () => {
     const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
@@ -36,6 +44,17 @@ const Navbar = () => {
     navigate(`/${story_id}`);
   };
 
+  const handlePublishClick = () => {
+    console.log("publishing");
+    publishChapterMutation.mutate({ story_id, chapter_id });
+  };
+
+  const handleUnpublishClick = () => {
+    unpublishChapterMutation.mutate({ story_id, chapter_id });
+  };
+
+  if (!storyState.story) return null;
+  if (!storyState.chapter) return null;
   return (
     <StyledStoryNavbar>
       <nav className="navbarContainer">
@@ -61,7 +80,8 @@ const Navbar = () => {
                   </p>
                   <h4 className="chapter-title">{storyState.chapter.title}</h4>
                   <p className="update-info">
-                    Draft <span>(Saved)</span>
+                    {storyState.chapter.visibility?.toUpperCase()}{" "}
+                    <span>(Saved)</span>
                   </p>
                 </div>
               </div>
@@ -86,13 +106,16 @@ const Navbar = () => {
                     </div>
                   );
                 })}
-                <button
-                  onClick={handleNewPartClick}
-                  className="orange-button btn new-part-btn"
-                >
-                  + New Part
-                </button>
               </>
+            }
+            extra={
+              <button
+                type="button"
+                onClick={handleNewPartClick}
+                className="orange-button btn new-part-btn"
+              >
+                + New Part
+              </button>
             }
           />
         </section>
@@ -103,7 +126,27 @@ const Navbar = () => {
               <ClipLoader size={15} color="#fff" />
             </div>
           )}
-          <button className="btn orange-button">Publish</button>
+
+          {storyState.chapter.visibility === "draft" && (
+            <button
+              onClick={handlePublishClick}
+              type="submit"
+              className="btn orange-button"
+            >
+              Publish
+            </button>
+          )}
+
+          {storyState.chapter.visibility === "published" && (
+            <button
+              onClick={handleUnpublishClick}
+              type="submit"
+              className="btn orange-button"
+            >
+              Unpublish
+            </button>
+          )}
+
           <button type="submit" id="saveButton" className="btn btn-grey">
             Save
           </button>

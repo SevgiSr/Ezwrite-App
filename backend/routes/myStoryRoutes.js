@@ -11,6 +11,8 @@ import {
   updateStory,
   deleteStory,
   deleteChapter,
+  publishChapter,
+  unpublishChapter,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -80,14 +82,17 @@ router
   });
 
 router.route("/").post(createStory).get(getMyStories);
-router.route("/update/:story_id").patch(updateStory);
-router.route("/edit/:story_id").get(getMyStory);
+router.route("/:story_id").get(getMyChapters).patch(createChapter);
 router.route("/delete/:story_id").delete(deleteStory);
-router.route("/:story_id").get(getMyChapters).post(createChapter);
 router
   .route("/:story_id/:chapter_id")
   .get(editChapter)
   .patch(saveChapter)
   .delete(deleteChapter);
+router.route("/update/:story_id").patch(updateStory);
+router.route("/edit/:story_id").get(getMyStory);
+
+router.route("/publish/:story_id/:chapter_id").patch(publishChapter);
+router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
 
 export default router;
