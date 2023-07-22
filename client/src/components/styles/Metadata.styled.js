@@ -5,6 +5,7 @@ const StyledMetadata = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 100%;
+  color: var(--font1);
   > * {
     display: flex;
     .icon {

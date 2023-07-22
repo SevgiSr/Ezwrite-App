@@ -332,7 +332,10 @@ const setProgress = async (req, res) => {
       (chapter) => String(chapter._id) === chapter_id
     );
 
-    const chapters = story.chapters.slice(chapterIndex, chapterIndex + 5);
+    const chapters = story.chapters.slice(
+      chapterIndex < 3 ? 0 : chapterIndex - 2,
+      chapterIndex + 5
+    );
 
     const progress = await Progress.findOne({
       user: req.user.userId,

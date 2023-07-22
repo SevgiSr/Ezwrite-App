@@ -1,6 +1,7 @@
 import React, { useReducer, useContext } from "react";
 import storyReducer from "./reducers/storyReducer";
 import { alertReducer, initialAlertState } from "./reducers/alertReducer";
+import axios from "axios";
 
 import {
   BEGIN,
@@ -96,15 +97,47 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  /* //////// CANCEL TOKEN ///////////// */
+  /* QUEUE REQUESTS, ENSURE THAT ONLY ONE MUTATION IS IN PROGRESS AT ANY TIME */
+
+  /* 
+  FIXED: 
+    1."No matching document found for id" from backend
+    2."undefined" chapter from frontend
+  
+  BEFORE: When you click on uncached chapters very quick and make multiple mutation requests,
+  race conditions were occurring.
+   -> A race condition in this context is when your code's behavior is dependent on the relative timing of events, 
+   such as multiple network requests. If these events don't occur in the order you expect, it can lead to unexpected behavior and errors.
+
+Before, your mutation was running multiple requests at the same time without any form of synchronization. 
+These multiple requests were modifying the same resource (a chapter in this case) in the database concurrently, 
+leading to the "No matching document found for id" error due to versioning. 
+This happens when one mutation request finishes and updates the version of the document while another mutation request is still running on the old version of the document.
+  
+Even though you might not be seeing the cancel logs, it doesn't necessarily mean that the cancel mechanism isn't working. The mechanism is more about ensuring that there's only one mutation in progress at any time rather than actually cancelling a lot of requests. The absence of the log message could simply mean that most of your requests have a chance to complete before a new mutation is initiated.
+
+Given that the backend seems to handle only one request at a time (as evidenced by the versioning error you mentioned), this setup of canceling the previous request when a new one comes in should help to prevent errors and make the app more robust.
+  
+  */
+  let source = axios.CancelToken.source();
+
   const setProgress = async (story_id, chapter_id) => {
     try {
       const { data } = await authFetch.post(
-        `/stories/progress/${story_id}/${chapter_id}`
+        `/stories/progress/${story_id}/${chapter_id}`,
+        {
+          cancelToken: source.token,
+        }
       );
       const { progress } = data;
       return progress;
     } catch (error) {
-      console.log(error);
+      if (axios.isCancel(error)) {
+        console.log("Request canceled", error.message);
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -285,7 +318,35 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  /* MUTATIONS */
+  /* PROGRESS MUTATIONS */
+
+  const useSetProgress = () => {
+    return useMutation(
+      ({ story_id, chapter_id }) => {
+        // Cancel previous request if it exists
+        if (source) {
+          source.cancel("Operation canceled due to new request.");
+        }
+
+        // Create a new cancel token for this request
+        source = axios.CancelToken.source();
+        return setProgress(story_id, chapter_id);
+      },
+      {
+        onSuccess: (data, variables) => {
+          const currentChapter = data.chapters.find(
+            (chapter) => chapter._id === variables.chapter_id
+          );
+          const newCache = data.chapters.map((chapter) => chapter.title);
+          console.log(newCache);
+          setChapter(currentChapter, data.story);
+          queryClient.setQueryData(["progress", variables.story_id], data);
+        },
+      }
+    );
+  };
+
+  /* COMMENT MUTATIONS */
 
   const queryClient = useQueryClient();
 
@@ -356,6 +417,8 @@ export const StoryProvider = ({ children }) => {
     );
   };
 
+  /* LIST MUTATIONS */
+
   const useCreateList = () => {
     return useMutation((data) => createReadingList(data.title, data.story_id), {
       onSuccess: () => {
@@ -399,6 +462,7 @@ export const StoryProvider = ({ children }) => {
         addToReadingList,
         addStoryConv,
 
+        useSetProgress,
         useAddChapterConv,
         useAddStoryConv,
         useAddParagraphConv,

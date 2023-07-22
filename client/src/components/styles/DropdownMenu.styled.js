@@ -18,11 +18,14 @@ const StyledDropdownMenu = styled.div`
     box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
   }
 
+  .dropdown-items-wrapper {
+    overflow-y: auto;
+  }
+
   .dropdown-items {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow-y: auto;
   }
 
   .dropdown-item {

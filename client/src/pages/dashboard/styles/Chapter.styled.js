@@ -10,7 +10,7 @@ const StyledChapter = styled.div`
 
   .chapter-header {
     position: fixed;
-    top: 54px;
+    top: 51px;
     left: 0;
     right: 0;
     z-index: 2;

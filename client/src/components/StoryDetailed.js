@@ -10,7 +10,7 @@ import ProfilePicture from "./ProfilePicture";
 import UserLine from "./UserLine";
 import Metadata from "./Metadata";
 
-const StoryDetailed = ({ story, key }) => {
+const StoryDetailed = ({ story }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -106,9 +106,7 @@ const StoryDetailed = ({ story, key }) => {
               </Link>
               <button
                 className="btn orange-button read-btn"
-                onClick={() =>
-                  navigate(`/${story._id}/${story.chapters[0]._id}`)
-                }
+                onClick={() => navigate(`/${story._id}/${story.chapters[0]}`)}
               >
                 Start Reading
               </button>

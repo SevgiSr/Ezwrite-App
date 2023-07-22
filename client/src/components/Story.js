@@ -1,14 +1,20 @@
 import StyledStory from "./styles/Story.styled";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
-import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { AiFillDislike, AiOutlineBars, AiOutlineDown } from "react-icons/ai";
+import { Link, useNavigate } from "react-router-dom";
 import Cover from "./Cover";
 import { useEffect, useState } from "react";
+import Metadata from "./Metadata";
+import ModalCenter from "./ModalCenter";
+import UserLine from "./UserLine";
 
 const Story = ({ story }) => {
   const [viewCount, setViewCount] = useState(0);
   const [storyVotes, setStoryVotes] = useState({ upvotes: 0, downvotes: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     let count = 0;
     story.chapters.map((chapter) => {
@@ -33,12 +39,12 @@ const Story = ({ story }) => {
         <Cover filename={story._id} width="140px" />
       </div>
       <div className="content">
-        <Link className="title flex-row" to={`/story/${story._id}`}>
+        <div className="title flex-row" onClick={() => setIsModalOpen(true)}>
           <h3>{story.title}</h3>
           {story.visibility === "draft" && (
             <p className="visibility">DRAFT (only visible to you)</p>
           )}
-        </Link>
+        </div>
         <div className="author">{story.author.name} tarafından</div>
         <div className="meta-data">
           <div>
@@ -67,10 +73,51 @@ const Story = ({ story }) => {
           </div>
         </div>
         <div className="description">
-          {story.description.slice(0, 486)}
-          {story.description.length > 100 && "..."}
+          {story.description.slice(0, 286)}
+          {story.description.length > 286 && "..."}
         </div>
       </div>
+      <ModalCenter
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        content={
+          <div className="modal-content">
+            <div className="modal-main">
+              <Cover filename={story._id} width="200px" />
+              <Metadata
+                views={story.views}
+                upvotes={story.votesCount.upvotes}
+                downvotes={story.votesCount.downvotes}
+                comments={story.comments.length}
+              />
+            </div>
+            <div className="modal-details">
+              <h3 className="modal-title">{story.title}</h3>
+              <div className="user-line">
+                <UserLine user={story.author} />
+              </div>
+              <div className="modal-description">
+                {story.description.slice(0, 368)}
+                {story.description.length > 370 && "..."}
+              </div>
+              <Link to={`/story/${story._id}`} className="details-btn">
+                <span>See Details</span>{" "}
+                <span className="icon details-icon">
+                  <AiOutlineDown />
+                </span>
+              </Link>
+              <button
+                className="btn orange-button read-btn"
+                onClick={() =>
+                  navigate(`/${story._id}/${story.chapters[0]._id}`)
+                }
+              >
+                Start Reading
+              </button>
+            </div>
+          </div>
+        }
+      />
     </StyledStory>
   );
 };

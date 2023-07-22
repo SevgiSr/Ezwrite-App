@@ -6,7 +6,6 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const ModalCenter = ({ isOpen, setIsOpen, content }) => {
   const overlayRef = useRef(null);
-  console.log(isOpen);
   const isOpenRef = useRef(isOpen);
 
   // Update isOpenRef whenever isOpen changes
@@ -15,10 +14,7 @@ const ModalCenter = ({ isOpen, setIsOpen, content }) => {
   }, [isOpen]);
 
   const listener = (e) => {
-    if (
-      e.target === overlayRef.current ||
-      overlayRef.current.contains(e.target)
-    ) {
+    if (overlayRef.current && e.target === overlayRef.current) {
       setIsOpen(false);
       isOpenRef.current = false;
     }

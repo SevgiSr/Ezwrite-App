@@ -17,6 +17,7 @@ const getProfile = async (req, res) => {
       .populate({
         path: "stories",
         options: { excludeVisibilityCheck: isMainUser },
+        populate: "author",
       })
       .populate("followers following")
       .populate({

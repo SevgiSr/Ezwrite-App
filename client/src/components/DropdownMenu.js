@@ -47,7 +47,9 @@ function DropdownMenu(props) {
       </button>
       <div ref={menuRef} className={"dropdown-menu-parent " + show}>
         <div className={"dropdown-menu " + props.menuClass}>
-          <div className="dropdown-items">{props.menu}</div>
+          <div className="dropdown-items-wrapper">
+            <div className="dropdown-items">{props.menu}</div>
+          </div>
           <div className="extra">{props.extra}</div>
         </div>
       </div>

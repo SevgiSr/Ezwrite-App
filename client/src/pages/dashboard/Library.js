@@ -58,6 +58,7 @@ function Continue({ continueReading }) {
   return (
     <div className="continueReading">
       {continueReading?.map((progress) => {
+        console.log(progress);
         return (
           <div key={progress._id} className="item">
             <Story story={progress.story} />
@@ -66,7 +67,7 @@ function Continue({ continueReading }) {
                 style={{
                   width: `${
                     5 +
-                    (progress.chapterIndex / progress.story.chapters.length) *
+                    (progress.chapterIndex / progress.story?.chapters?.length) *
                       100
                   }%`,
                   height: "5px",
@@ -82,6 +83,7 @@ function Continue({ continueReading }) {
 }
 
 function Story({ story }) {
+  if (!story) return null;
   return (
     <div className="story">
       <Link to={`/story/${story._id}`} style={{ textDecoration: "none" }}>

@@ -19,20 +19,18 @@ import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClipLoader, SyncLoader } from "react-spinners";
-import { ProfileContext } from "../../context/profileContext";
 
 function Chapter() {
   const queryClient = useQueryClient();
   const {
     state,
     incrementViewCount,
-    getChapter,
     useAddChapterConv,
     useDeleteChapterConv,
     useAddConvComment,
     useDeleteConvComment,
+    useSetProgress,
     getProgress,
-    setProgress,
     setChapter,
   } = useContext(StoryContext);
   const { story_id, chapter_id } = useParams();
@@ -65,15 +63,7 @@ function Chapter() {
     refetchOnWindowFocus: false,
   });
 
-  const mutation = useMutation(
-    ({ story_id, chapter_id }) => setProgress(story_id, chapter_id),
-    {
-      onSuccess: (data) => {
-        setChapter(data.chapters[0], data.story);
-        queryClient.setQueryData(["progress", story_id], data);
-      },
-    }
-  );
+  const setProgressMutation = useSetProgress();
 
   //if location changes, before doing refetch checks the cache and retrieves chapter instantly
   //if fetching happens(you mount page for the first time, refresh, mutation) it waits for fetching to end for a few seconds and updates
@@ -81,13 +71,15 @@ function Chapter() {
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
   useEffect(() => {
     if (!isFetching && status === "success") {
-      const filteredChapter = chapters.find(
+      const currentChapter = chapters.find(
         (chapter) => chapter._id === chapter_id
       );
-      if (filteredChapter) {
-        setChapter(filteredChapter, story);
+      if (currentChapter) {
+        console.log("accessing");
+        setChapter(currentChapter, story);
       } else {
-        mutation.mutate({ story_id, chapter_id });
+        console.log("mutating");
+        setProgressMutation.mutate({ story_id, chapter_id });
       }
     }
   }, [location, isFetching]);
@@ -96,7 +88,7 @@ function Chapter() {
   useEffect(() => {
     return () => {
       console.log("SAVING PROGRESS...");
-      mutation.mutate({ story_id, chapter_id });
+      setProgressMutation.mutate({ story_id, chapter_id });
     };
   }, []);
 
@@ -107,7 +99,7 @@ function Chapter() {
   return (
     <StyledChapter ref={scrollRef}>
       <ChapterHeader
-        isChapterLoading={mutation.isLoading}
+        isChapterLoading={setProgressMutation.isLoading}
         scrollRef={scrollRef}
         refetch={refetch}
         user={user}
@@ -117,7 +109,7 @@ function Chapter() {
         <div className="flex-row">
           <h1>{state.chapter.title}</h1>
           {state.chapter.visibility === "draft" && (
-            <p className="visibility">(DRAFT)</p>
+            <p className="visibility">{"(DRAFT)"}</p>
           )}
         </div>
         <div className="metadata">
@@ -545,20 +537,20 @@ function StoryDropdown() {
             <div>Table of contents</div>
             {state.story.chapters?.map((chapter) => {
               return (
-                <div
+                <Link
+                  className="link"
                   key={chapter._id}
-                  className={
-                    `dropdown-item ` +
-                    (chapter._id === state.chapter._id && `active`)
-                  }
+                  to={`/${state.story._id}/${chapter._id}`}
                 >
-                  <Link
-                    className="link"
-                    to={`/${state.story._id}/${chapter._id}`}
+                  <div
+                    className={
+                      `dropdown-item ` +
+                      (chapter._id === state.chapter._id && `active`)
+                    }
                   >
                     <div>{chapter.title}</div>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               );
             })}
           </>

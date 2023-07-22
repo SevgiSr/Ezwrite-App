@@ -68,9 +68,10 @@ const StyledStoryNavbar = styled.div`
           border-bottom: 1px solid var(--font2);
         }
 
-        .dropdown-items {
-          height: 300px;
+        .dropdown-items-wrapper {
+          max-height: 300px;
         }
+
         .new-part-btn {
           width: fit-content;
           margin: 1rem auto 0 auto;
