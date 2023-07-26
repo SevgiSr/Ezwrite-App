@@ -34,6 +34,10 @@ html {
   border-color: #36393F;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 
 
 

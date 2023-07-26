@@ -10,8 +10,10 @@ import ReadingList from "../db/models/ReadingList.js";
 import Message from "../db/models/Message.js";
 import Paragraph from "../db/models/Paragraph.js";
 import Vote from "../db/models/Vote.js";
+import Tag from "../db/models/Tag.js";
 import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
+import mongoose from "mongoose";
 
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
@@ -110,10 +112,13 @@ const getMyStories = async (req, res) => {
     const myStories = await Story.find({ author: req.user.userId }, null, {
       excludeVisibilityCheck: true,
     })
-      .populate({
-        path: "author",
-      })
-      .populate({ path: "chapters", populate: "paragraphs" })
+      .populate([
+        {
+          path: "author",
+        },
+        { path: "chapters", populate: "paragraphs" },
+        { path: "tags" },
+      ])
       .sort("-updatedAt");
 
     res.status(StatusCodes.OK).json({ myStories });
@@ -131,7 +136,7 @@ const getMyStory = async (req, res) => {
         excludeVisibilityCheck: true,
       }
     ).populate({
-      path: "author chapters",
+      path: "author chapters tags",
     });
 
     res.status(StatusCodes.OK).json({ myStory });
@@ -142,15 +147,35 @@ const getMyStory = async (req, res) => {
 
 const createStory = async (req, res) => {
   try {
-    const { title, description, category } = req.body;
+    console.log("creating story");
+    const { title, tags } = req.body;
 
-    if (!title || !category) {
+    console.log(req.body);
+
+    console.log(tags);
+
+    if (!title) {
       throw new BadRequestError("please provide all values");
     }
 
     req.body.author = req.user.userId;
 
-    const story = await Story.create(req.body);
+    let tagDocs = await Promise.all(
+      tags.map(async (tag) => {
+        let foundTag = await Tag.findOne({ name: tag });
+        if (foundTag) {
+          foundTag.count++;
+          await foundTag.save();
+          return foundTag;
+        } else {
+          return await Tag.create({ name: tag, count: 1 });
+        }
+      })
+    );
+    req.body.tags = tagDocs;
+
+    const story = new Story(req.body);
+    console.log(story);
 
     const chapter = await Chapter.create({
       content: "",
@@ -167,6 +192,9 @@ const createStory = async (req, res) => {
       { runValidators: true }
     );
 
+    console.log("story tagssssssssssssssssss");
+    console.log(story.tags);
+
     res.status(StatusCodes.CREATED).json({ story });
   } catch (error) {
     throw new Error(error.message);
@@ -174,6 +202,7 @@ const createStory = async (req, res) => {
 };
 
 const deleteStory = async (req, res) => {
+  console.log("delete story");
   try {
     const story = await Story.findOne(
       {
@@ -236,6 +265,19 @@ const deleteStory = async (req, res) => {
         }
       }
 
+      if (story?.tags) {
+        // Delete all progress documents
+        for (let tagId of story.tags) {
+          const tag = await Tag.findById(tagId);
+          tag.count--;
+          if (tag.count === 0) {
+            await tag.remove();
+          } else {
+            await tag.save();
+          }
+        }
+      }
+
       await User.updateOne(
         { _id: req.user.userId },
         { $pull: { stories: story._id } }
@@ -243,10 +285,7 @@ const deleteStory = async (req, res) => {
 
       await ReadingList.updateMany({}, { $pull: { stories: story._id } });
 
-      console.log("deleting");
       await story.delete();
-
-      console.log("deleting");
     }
 
     res.status(StatusCodes.OK).json({ response: "deleted!" });
@@ -257,17 +296,68 @@ const deleteStory = async (req, res) => {
 
 const updateStory = async (req, res) => {
   try {
-    const { title, category } = req.body;
+    const { title, tags } = req.body;
 
-    if (!title || !category) {
+    if (!title) {
       throw new BadRequestError("please provide all values");
     }
 
-    const story = await Story.findOneAndUpdate(
-      { _id: req.params.story_id, author: req.user.userId },
-      { ...req.body },
-      { new: true, runValidators: true }
+    const story = await Story.findOne(
+      {
+        _id: req.params.story_id,
+        author: req.user.userId,
+      },
+      null,
+      { excludeVisibilityCheck: true }
     );
+
+    if (!story) {
+      throw new BadRequestError("Story not found");
+    }
+
+    const currentTagNames = story.tags.map((tag) => tag.name);
+
+    //tags are in mongoose object form
+    const tagsToRemove = story.tags.filter((tag) => !tags.includes(tag.name));
+    //tags are just in name form
+    const tagsToAdd = tags.filter((tag) => !currentTagNames.includes(tag));
+
+    // Decrease the count of tags and remove from the story. (if count is 0 delete tag object)
+    const removedTagsPromise = Promise.all(
+      tagsToRemove.map(async (tag) => {
+        const foundTag = await Tag.findOne({ name: tag.name });
+        if (foundTag) {
+          foundTag.count--;
+          if (foundTag.count === 0) {
+            await foundTag.remove();
+          } else {
+            await foundTag.save();
+          }
+        }
+      })
+    );
+
+    // Create or increment the count of the new tags and add to the story
+    const addedTagsPromise = Promise.all(
+      tagsToAdd.map(async (tag) => {
+        // if tag doesn't exist, new one with count 1 will be created because of upsert:true
+        let foundTag = await Tag.findOneAndUpdate(
+          { name: tag },
+          { $inc: { count: 1 } },
+          { new: true, upsert: true }
+        );
+        story.tags.push(foundTag);
+      })
+    );
+
+    // Wait for all the promises to resolve. istead of putting await in front of each of them make them run parallel (faster)
+    await Promise.all([removedTagsPromise, addedTagsPromise]);
+
+    Object.assign(story, req.body);
+    story.tags = story.tags.filter((tag) => !tagsToRemove.includes(tag));
+    await story.save();
+
+    console.log(story.tags.map((tag) => tag.name));
 
     res.status(StatusCodes.CREATED).json({ story });
   } catch (error) {

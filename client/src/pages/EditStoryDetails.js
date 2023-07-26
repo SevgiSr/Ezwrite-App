@@ -70,20 +70,25 @@ function EditStoryDetails() {
   useEffect(() => {
     if (!isFetching && status === "success") {
       const myStory = myStories.find((story) => story._id === story_id);
+      console.log(myStory);
       setMyStory(myStory);
     }
   }, [location, isFetching]);
 
   useEffect(() => {
     const { myStory } = storyState;
+    if (myStory && Object.keys(myStory).length !== 0) {
+      console.log(myStory);
 
-    setStoryDetails({
-      title: myStory.title,
-      description: myStory.description,
-      category: myStory.category,
-      language: myStory.language,
-    });
-    setTags(myStory.tags);
+      setStoryDetails({
+        title: myStory.title,
+        description: myStory.description,
+        category: myStory.category,
+        language: myStory.language,
+      });
+      const tagNames = myStory.tags?.map((tag) => tag.name);
+      setTags(tagNames);
+    }
   }, [storyState.myStory]);
 
   const mutation = useMutation(
@@ -108,13 +113,15 @@ function EditStoryDetails() {
       category: myStory.category,
       language: myStory.language,
     });
-    setTags(myStory.tags);
+    const tagNames = myStory.tags.map((tag) => tag.name);
+    setTags(tagNames);
     navigate("/myStories");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     storyDetails.tags = tags;
+    console.log(storyDetails);
     mutation.mutate({ story_id, storyDetails });
   };
 

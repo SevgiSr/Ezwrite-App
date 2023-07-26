@@ -7,12 +7,14 @@ import Vote from "../db/models/Vote.js";
 import Progress from "../db/models/Progress.js";
 import Paragraph from "../db/models/Paragraph.js";
 import ReadingList from "../db/models/ReadingList.js";
+import Trie from "../utils/Trie.js";
 
 function populateStory(mode) {
   const populateOptions = {
     path: "story",
     populate: [
       { path: "author" },
+      { path: "tags" },
       {
         path: "chapters",
         select: "title votesCount views",
@@ -149,7 +151,7 @@ const getByCategory = async (req, res) => {
     const { category } = req.params;
     const stories = await Story.find({
       category,
-    }).populate("author");
+    }).populate("author progress tags");
 
     res.status(StatusCodes.OK).json({ stories });
   } catch (error) {
@@ -162,9 +164,21 @@ const getByQuery = async (req, res) => {
     const { query } = req.params;
     const stories = await Story.find({
       title: { $regex: query, $options: "i" },
-    }).populate("author");
+    }).populate("author progress tags");
     const users = await User.find({ name: { $regex: query, $options: "i" } });
     res.status(StatusCodes.OK).json({ stories, users });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getByTag = async (req, res) => {
+  try {
+    const { tag } = req.params;
+    const stories = await Story.find({
+      tags: { $in: tag },
+    }).populate("author progress tags");
+    res.status(StatusCodes.OK).json({ stories });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -177,12 +191,9 @@ const getAll = async (req, res) => {
   await Notification.deleteMany();
  */
   try {
-    const stories = await Story.find().populate("author");
-    let users = await User.find();
-    users = users.filter(
-      (user) => String(user._id) !== String(req.user.userId)
-    );
-    res.status(StatusCodes.OK).json({ stories, users });
+    const stories = await Story.find().populate("author progress tags");
+
+    res.status(StatusCodes.OK).json({ stories });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -192,7 +203,7 @@ const getByLength = async (req, res) => {
   try {
     const { length } = req.params;
     const stories = await Story.find({ chapters: { $size: length } }).populate(
-      "author"
+      "author progress tags"
     );
 
     res.status(StatusCodes.OK).json({ stories });
@@ -203,7 +214,7 @@ const getByLength = async (req, res) => {
 
 const getByDate = async (req, res) => {
   try {
-    let query = Story.find().populate("author");
+    let query = Story.find().populate("author progress tags");
 
     // Set the time range for the query based on the input parameter
     switch (req.params.date) {
@@ -361,6 +372,22 @@ const setProgress = async (req, res) => {
     const editedProgress = await addMyVote(progress, req.user.userId);
 
     res.status(StatusCodes.OK).json({ progress: editedProgress, mode });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const setCurrentChapter = async (req, res) => {
+  try {
+    const { story_id, chapter_id } = req.params;
+    await Progress.updateOne(
+      {
+        user: req.user.userId,
+        story: story_id,
+      },
+      { currentChapter: chapter_id },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     throw new Error(error.message);
   }
@@ -669,6 +696,7 @@ export {
   getByQuery,
   getByDate,
   getByLength,
+  getByTag,
   addChapterConv,
   addParagraphConv,
   voteChapter,
@@ -684,4 +712,5 @@ export {
   deleteChapterConv,
   deleteParagraphConv,
   deleteStoryConv,
+  setCurrentChapter,
 };

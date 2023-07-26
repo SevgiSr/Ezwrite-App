@@ -3,15 +3,18 @@ import { BsFillArrowRightCircleFill, BsFillStarFill } from "react-icons/bs";
 import { GoEye } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 import Cover from "./Cover";
-import StyledStoryDetailed from "./styles/StoryDetailed.styled";
-import { useState } from "react";
+import StyledStoryCardDetailed from "./styles/StoryCardDetailed.styled";
+import { useContext, useState } from "react";
 import ModalCenter from "./ModalCenter";
 import ProfilePicture from "./ProfilePicture";
 import UserLine from "./UserLine";
 import Metadata from "./Metadata";
+import { UserContext } from "../context/userContext";
+import Tag from "./Tag";
 
-const StoryDetailed = ({ story }) => {
+const StoryCardDetailed = ({ story }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userState } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -19,9 +22,11 @@ const StoryDetailed = ({ story }) => {
     setIsModalOpen(true);
   };
 
+  const myProgress = story.progress.find((p) => p.user === userState.user._id);
+
   if (!story) return null;
   return (
-    <StyledStoryDetailed>
+    <StyledStoryCardDetailed>
       <div className="link" onClick={handleClick}>
         <div className="cover">
           <Cover filename={story._id} width="160px" />
@@ -62,10 +67,10 @@ const StoryDetailed = ({ story }) => {
             </div>
           </div>
           <div className="tags">
-            {story.tags.slice(0, 4).map((tag) => {
-              return <span className="tag">{tag}</span>;
+            {story.tags?.slice(0, 4).map((tag) => {
+              return <Tag tag={tag} />;
             })}
-            {story.tags.length > 4 && (
+            {story.tags?.length > 4 && (
               <span style={{ fontSize: "30px", lineHeight: "0" }}>...</span>
             )}
           </div>
@@ -106,7 +111,20 @@ const StoryDetailed = ({ story }) => {
               </Link>
               <button
                 className="btn orange-button read-btn"
-                onClick={() => navigate(`/${story._id}/${story.chapters[0]}`)}
+                onClick={() => {
+                  if (!myProgress) {
+                    console.log("first chapter");
+                    navigate(`/${story._id}/${story.chapters[0]}`);
+                  } else if (
+                    story.chapters.indexOf(myProgress.currentChapter) < 0
+                  ) {
+                    console.log("story page");
+                    navigate(`/story/${story._id}`);
+                  } else {
+                    console.log("progress current chapter");
+                    navigate(`/${story._id}/${myProgress.currentChapter}`);
+                  }
+                }}
               >
                 Start Reading
               </button>
@@ -114,8 +132,8 @@ const StoryDetailed = ({ story }) => {
           </div>
         }
       />
-    </StyledStoryDetailed>
+    </StyledStoryCardDetailed>
   );
 };
 
-export default StoryDetailed;
+export default StoryCardDetailed;

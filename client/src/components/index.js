@@ -8,12 +8,14 @@ import Story from "./Story";
 import Message from "./Message";
 import UserCard from "./UserCard";
 import ReadingLists from "./ReadingLists";
-import StoryDetailed from "./StoryDetailed";
+import StoryCardDetailed from "./StoryCardDetailed";
+import StoryCardRanked from "./StoryCardRanked";
 import LoadingScreen from "./LoadingScreen";
 import DropdownMenu from "./DropdownMenu";
 import ModalCenter from "./ModalCenter";
 import Metadata from "./Metadata";
 import UserLine from "./UserLine";
+import Tag from "./Tag";
 
 export {
   Navbar,
@@ -26,10 +28,12 @@ export {
   Message,
   UserCard,
   ReadingLists,
-  StoryDetailed,
+  StoryCardDetailed,
+  StoryCardRanked,
   LoadingScreen,
   DropdownMenu,
   ModalCenter,
   Metadata,
   UserLine,
+  Tag,
 };

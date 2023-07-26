@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-const StyledStoryDetailed = styled.div`
+const StyledStoryCardDetailed = styled.div`
   color: var(--font1);
   background-color: var(--background5);
   padding: 1.5rem;
   border-radius: 4px;
-  width: 420px;
-  height: 250px;
+  width: 470px;
+  height: 290px;
   cursor: pointer;
 
   div {
@@ -138,4 +138,4 @@ const StyledStoryDetailed = styled.div`
   }
 `;
 
-export default StyledStoryDetailed;
+export default StyledStoryCardDetailed;

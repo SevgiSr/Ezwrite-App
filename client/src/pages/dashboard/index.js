@@ -9,6 +9,7 @@ import Notifications from "./Notifications";
 import Settings from "./Settings";
 import Library from "./Library";
 import ReadingList from "./ReadingList";
+import Browse from "./Browse";
 
 export {
   Home,
@@ -22,4 +23,5 @@ export {
   Settings,
   Library,
   ReadingList,
+  Browse,
 };

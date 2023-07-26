@@ -9,8 +9,10 @@ import {
   editProfile,
   getProfileSettings,
   deleteProfileConv,
+  getAllUsers,
 } from "../controllers/profileController.js";
 
+router.route("/explore/all").get(getAllUsers);
 router.route("/settings").get(getProfileSettings);
 router.route("/:username").get(getProfile).patch(editProfile);
 router.route("/:username/follow").get(followProfile);

@@ -113,6 +113,18 @@ export const ProfileProvider = ({ children }) => {
     } */
   };
 
+  const getAllUsers = async () => {
+    try {
+      const { data } = await authFetch.get(`/user/explore/all`);
+      const { users } = data;
+      console.log(users);
+      return users;
+    } catch (error) {
+      console.log(error);
+      alertDispatch({ type: ERROR });
+    }
+  };
+
   const followProfile = async (username) => {
     try {
       const { data } = await authFetch.get(`/user/${username}/follow`);
@@ -374,6 +386,7 @@ export const ProfileProvider = ({ children }) => {
       value={{
         profileState,
         alertState,
+        getAllUsers,
         getProfile,
         uploadImage,
         uploadBcImage,

@@ -5,7 +5,7 @@ import Story from "../../components/Story";
 import StyledStories from "./styles/Stories.styled";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserCard } from "../../components";
-import StoryDetailed from "../../components/StoryDetailed";
+import StoryCardDetailed from "../../components/StoryCardDetailed";
 
 function Option({ id, label, selectedValue, onChange }) {
   const isSelected = selectedValue === id;
@@ -28,7 +28,8 @@ function Option({ id, label, selectedValue, onChange }) {
 
 function Search() {
   const [search, setSearch] = useState("");
-  const { state, getByCategory, getByQuery } = useContext(StoryContext);
+  const { state, getByCategory, getByQuery, getByTag } =
+    useContext(StoryContext);
   const params = useParams();
 
   useEffect(() => {
@@ -37,6 +38,9 @@ function Search() {
       setSearch("stories");
     } else if (params.category) {
       getByCategory(params.category);
+      setSearch("stories");
+    } else if (params.tag) {
+      getByTag(params.tag);
       setSearch("stories");
     }
   }, [params]);
@@ -132,7 +136,7 @@ function Stories() {
         {state.stories.map((story) => {
           return (
             <div className="card">
-              <StoryDetailed key={story._id} story={story} />
+              <StoryCardDetailed key={story._id} story={story} />
             </div>
           );
         })}

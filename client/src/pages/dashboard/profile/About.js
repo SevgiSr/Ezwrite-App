@@ -4,7 +4,7 @@ import { HiLocationMarker } from "react-icons/hi";
 import { MdSettings } from "react-icons/md";
 import { Link, useOutletContext } from "react-router-dom";
 import StoryDetails from "../../../components/StoryDetails";
-import { ReadingLists, StoryDetailed } from "../../../components";
+import { ReadingLists, StoryCardDetailed } from "../../../components";
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import getDate from "../../../utils/getDate";

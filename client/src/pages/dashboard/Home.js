@@ -1,5 +1,5 @@
 import StyledHome from "./styles/Home.styled";
-import { StoryDetailed, UserCard } from "../../components";
+import { StoryCardDetailed, UserCard } from "../../components";
 import { useContext } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { useEffect } from "react";
@@ -8,34 +8,46 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
+import { ProfileContext } from "../../context/profileContext";
+import SideNavbar from "./SideNavbar";
 
 function Home() {
-  const { getAll } = useContext(StoryContext);
+  const { getAllStories } = useContext(StoryContext);
+  const { getAllUsers } = useContext(ProfileContext);
 
-  const { data: { stories, users } = {}, isLoading } = useQuery(["home"], () =>
-    getAll()
+  const { data: stories = [], isStoriesLoading } = useQuery(
+    ["all", "stories"],
+    () => getAllStories()
   );
 
-  if (isLoading) return null;
+  const { data: users = [], isUsersLoading } = useQuery(["all", "users"], () =>
+    getAllUsers()
+  );
+
+  console.log(users, stories);
+
+  if (isStoriesLoading || isUsersLoading) return null;
 
   return (
     <StyledHome>
-      <div className="items-row">
-        <h1>Explore Users</h1>
-        <ScrollRow items={users} type="user" />
-      </div>
-      <div className="items-row">
-        <h1>Popular</h1>
-        <ScrollRow items={stories} type="story" />
-      </div>
-      <div className="items-row">
-        <h1>Recommended For You</h1>
-        <ScrollRow items={stories} type="story" />
-      </div>
-      <div className="items-row">
-        <h1>New & Hot</h1>
-        <ScrollRow items={stories} type="story" />
-      </div>
+      <main>
+        <div className="items-row">
+          <h1>Explore Users</h1>
+          <ScrollRow items={users} type="user" />
+        </div>
+        <div className="items-row">
+          <h1>Popular</h1>
+          <ScrollRow items={stories} type="story" />
+        </div>
+        <div className="items-row">
+          <h1>Recommended For You</h1>
+          <ScrollRow items={stories} type="story" />
+        </div>
+        <div className="items-row">
+          <h1>New & Hot</h1>
+          <ScrollRow items={stories} type="story" />
+        </div>
+      </main>
     </StyledHome>
   );
 }
@@ -107,7 +119,7 @@ const ScrollRow = ({ items, type }) => {
               return (
                 <div className="row--item" ref={itemRef}>
                   {type === "story" ? (
-                    <StoryDetailed key={uuidv4()} story={item} />
+                    <StoryCardDetailed key={uuidv4()} story={item} />
                   ) : (
                     <UserCard key={item._id} user={item} />
                   )}

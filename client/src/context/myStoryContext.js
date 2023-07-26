@@ -106,10 +106,12 @@ export const MyStoryProvider = ({ children }) => {
 
   const updateStory = async (story_id, storyDetails) => {
     try {
-      const { data } = await authFetch.patch(
+      console.log("bruh");
+      const { data } = await authFetch.post(
         `/myStories/update/${story_id}`,
         storyDetails
       );
+      console.log("duh");
       const { story } = data;
     } catch (error) {
       console.log(error);

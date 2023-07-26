@@ -13,10 +13,12 @@ const StorySchema = new mongoose.Schema(
       type: String,
       required: [true, "please provide category"],
     },
-    tags: {
-      type: Array,
-      validate: [arrayLimit, "{PATH} exceeds the limit of 10"],
-    },
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
     language: {
       type: String,
     },
@@ -68,7 +70,7 @@ const StorySchema = new mongoose.Schema(
 );
 
 function arrayLimit(val) {
-  return val.length <= 15;
+  return val.length <= 10;
 }
 
 StorySchema.pre("find", function () {

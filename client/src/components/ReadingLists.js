@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import StyledReadingLists from "./styles/ReadingLists.styled";
-import StoryDetailed from "./StoryDetailed";
+import StoryDetailed from "./StoryCardDetailed";
 import Cover from "./Cover";
 import { BsChevronRight, BsFillStarFill } from "react-icons/bs";
 import { GoEye } from "react-icons/go";

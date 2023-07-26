@@ -30,6 +30,7 @@ import {
   Settings,
   Library,
   ReadingList,
+  Browse,
 } from "./pages/dashboard";
 import EditStoryDetails from "./pages/EditStoryDetails";
 
@@ -59,12 +60,14 @@ function App() {
           <Route path="/list/:list_id" element={<ReadingList />} />
           <Route path="/stories/:category" element={<Search />} />
           <Route path="/stories/search/:query" element={<Search />} />
+          <Route path="/stories/search/tags/:tag" element={<Search />} />
           <Route path="/story/:story_id" element={<Story />} />
           <Route path="/:story_id/:chapter_id" element={<Chapter />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:username" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/browse" element={<Browse />} />
         </Route>
 
         <Route

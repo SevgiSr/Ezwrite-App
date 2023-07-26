@@ -57,11 +57,21 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  const getAll = async () => {
+  const getByTag = async (tag) => {
+    try {
+      const { data } = await authFetch.get(`/stories/search/tags/${tag}`);
+      const { stories } = data;
+      return stories;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllStories = async () => {
     try {
       const { data } = await authFetch.get(`/stories/search/all`);
-      const { stories, users } = data;
-      return { stories, users };
+      const { stories } = data;
+      return stories;
     } catch (error) {
       console.log(error);
     }
@@ -138,6 +148,18 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       } else {
         console.log(error);
       }
+    }
+  };
+
+  const setCurrentChapter = async (story_id, chapter_id) => {
+    try {
+      const { data } = await authFetch.patch(
+        `/stories/progress/${story_id}/${chapter_id}`
+      );
+      const { progress } = data;
+      return progress;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -334,6 +356,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       },
       {
         onSuccess: (data, variables) => {
+          /* to avoid jumping effect set current chapter to chapter_id from location instead of this variable which is outdated location */
           const currentChapter = data.chapters.find(
             (chapter) => chapter._id === variables.chapter_id
           );
@@ -341,6 +364,19 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           console.log(newCache);
           setChapter(currentChapter, data.story);
           queryClient.setQueryData(["progress", variables.story_id], data);
+        },
+      }
+    );
+  };
+
+  const useSetCurrentChapter = () => {
+    return useMutation(
+      ({ story_id, chapter_id }) => {
+        return setCurrentChapter(story_id, chapter_id);
+      },
+      {
+        onSuccess: (data, variables) => {
+          queryClient.invalidateQueries(["progress"]);
         },
       }
     );
@@ -454,13 +490,14 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         unvoteChapter,
         addConvComment,
         incrementViewCount,
-        getAll,
+        getAllStories,
         getProgress,
         setProgress,
         getLibrary,
         createReadingList,
         addToReadingList,
         addStoryConv,
+        getByTag,
 
         useSetProgress,
         useAddChapterConv,
@@ -473,6 +510,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         useDeleteChapterConv,
         useDeleteStoryConv,
         useDeleteParagraphConv,
+        useSetCurrentChapter,
       }}
     >
       {children}

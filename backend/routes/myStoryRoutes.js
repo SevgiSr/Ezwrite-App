@@ -80,19 +80,24 @@ router
     );
     res.status(StatusCodes.OK).json({ file: req.file.id });
   });
-
-router.route("/").post(createStory).get(getMyStories);
-router.route("/:story_id").get(getMyChapters).patch(createChapter);
+// Routes that include specific actions should come first
+router.route("/update/:story_id").post(updateStory);
 router.route("/delete/:story_id").delete(deleteStory);
+router.route("/edit/:story_id").get(getMyStory);
+
+// Then we have routes that also include chapter id
 router
   .route("/:story_id/:chapter_id")
   .get(editChapter)
   .patch(saveChapter)
   .delete(deleteChapter);
-router.route("/update/:story_id").patch(updateStory);
-router.route("/edit/:story_id").get(getMyStory);
-
 router.route("/publish/:story_id/:chapter_id").patch(publishChapter);
 router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
+
+// Then the more general routes with only story id
+router.route("/:story_id").get(getMyChapters).patch(createChapter);
+
+// And finally, the most general path
+router.route("/").post(createStory).get(getMyStories);
 
 export default router;

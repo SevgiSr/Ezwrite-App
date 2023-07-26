@@ -6,6 +6,19 @@ import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
 import { getStoryVotes, getStoryViews } from "./storyController.js";
 
+const getAllUsers = async (req, res) => {
+  try {
+    console.log("gettin users");
+    let users = await User.find();
+    users = users.filter(
+      (user) => String(user._id) !== String(req.user.userId)
+    );
+    return users;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const getProfile = async (req, res) => {
   try {
     const mainUser = await User.findById(req.user.userId);
@@ -219,4 +232,5 @@ export {
   editProfile,
   getProfileSettings,
   deleteProfileConv,
+  getAllUsers,
 };

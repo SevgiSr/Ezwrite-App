@@ -29,6 +29,7 @@ function Chapter() {
     useDeleteChapterConv,
     useAddConvComment,
     useDeleteConvComment,
+    useSetCurrentChapter,
     useSetProgress,
     getProgress,
     setChapter,
@@ -40,16 +41,6 @@ function Chapter() {
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
   const scrollRef = useRef(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("incrementing view");
-      incrementViewCount(story_id, chapter_id); // Send a request to the backend to increment the view count
-    }, 30000); // Change the time interval as needed
-    setViewTimer(timer);
-
-    return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
-  }, []);
 
   const {
     data: { chapters, story, user } = {},
@@ -64,11 +55,21 @@ function Chapter() {
   });
 
   const setProgressMutation = useSetProgress();
+  const setCurrentChapterMutation = useSetCurrentChapter();
 
   //if location changes, before doing refetch checks the cache and retrieves chapter instantly
   //if fetching happens(you mount page for the first time, refresh, mutation) it waits for fetching to end for a few seconds and updates
   // order of dependency array does not matter
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
+
+  useEffect(() => {
+    return () => {
+      console.log("SAVING PROGRESS.....");
+      setCurrentChapterMutation.mutate({ story_id, chapter_id });
+      console.log("saved progress");
+    };
+  }, []);
+
   useEffect(() => {
     if (!isFetching && status === "success") {
       const currentChapter = chapters.find(
@@ -84,12 +85,14 @@ function Chapter() {
     }
   }, [location, isFetching]);
 
-  // cannot access latest location
   useEffect(() => {
-    return () => {
-      console.log("SAVING PROGRESS...");
-      setProgressMutation.mutate({ story_id, chapter_id });
-    };
+    const timer = setTimeout(() => {
+      console.log("incrementing view");
+      incrementViewCount(story_id, chapter_id); // Send a request to the backend to increment the view count
+    }, 30000); // Change the time interval as needed
+    setViewTimer(timer);
+
+    return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
   }, []);
 
   if (isLoading) {
@@ -534,7 +537,6 @@ function StoryDropdown() {
         }
         menu={
           <>
-            <div>Table of contents</div>
             {state.story.chapters?.map((chapter) => {
               return (
                 <Link

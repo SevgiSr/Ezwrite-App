@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 const StyledHome = styled.div`
+  overflow: hidden;
+
   .items-row {
     margin: 2rem 0;
     h1 {

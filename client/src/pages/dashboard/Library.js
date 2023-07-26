@@ -32,24 +32,9 @@ function Library() {
 
   return (
     <StyledLibrary>
-      <header>
-        <OrangeLinks
-          links={[
-            {
-              to: "",
-              label: "Continue Reading",
-              handleClick: () => setNavbar("continue"),
-            },
-            {
-              to: "",
-              label: "Reading List",
-              handleClick: () => setNavbar("list"),
-            },
-          ]}
-        />
-      </header>
-      {navbar === "continue" && <Continue continueReading={continueReading} />}
-      {navbar === "list" && <ReadingLists readingLists={readingLists} />}
+      <Continue continueReading={continueReading} />
+      <h2>Reading Lists</h2>
+      <ReadingLists readingLists={readingLists} />
     </StyledLibrary>
   );
 }
@@ -57,27 +42,31 @@ function Library() {
 function Continue({ continueReading }) {
   return (
     <div className="continueReading">
-      {continueReading?.map((progress) => {
-        console.log(progress);
-        return (
-          <div key={progress._id} className="item">
-            <Story story={progress.story} />
-            <div className="progress">
-              <div
-                style={{
-                  width: `${
-                    5 +
-                    (progress.chapterIndex / progress.story?.chapters?.length) *
-                      100
-                  }%`,
-                  height: "5px",
-                  backgroundColor: "#00b2b2",
-                }}
-              ></div>
+      <h2>Continue Reading</h2>
+      <div className="continue-stories">
+        {continueReading?.map((progress) => {
+          console.log(progress);
+          return (
+            <div key={progress._id} className="item">
+              <Story story={progress.story} />
+              <div className="progress">
+                <div
+                  style={{
+                    width: `${
+                      5 +
+                      (progress.chapterIndex /
+                        progress.story?.chapters?.length) *
+                        100
+                    }%`,
+                    height: "5px",
+                    backgroundColor: "#00b2b2",
+                  }}
+                ></div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

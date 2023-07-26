@@ -37,6 +37,9 @@ const StyledChapter = styled.div`
       width: 100%;
       border-radius: 1px;
     }
+    .dropdown-items-wrapper {
+      max-height: 300px;
+    }
     .dropdown-item {
       border-top: 1px solid #eee;
     }

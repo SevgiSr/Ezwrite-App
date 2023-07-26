@@ -20,12 +20,15 @@ import {
   deleteChapterConv,
   deleteParagraphConv,
   deleteStoryConv,
+  setCurrentChapter,
+  getByTag,
 } from "../controllers/storyController.js";
 
 router.route("/library").get(getLibrary);
 router.route("/:category").get(getByCategory);
 router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
+router.route("/search/tags/:tag").get(getByTag);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
 router.route("/story/:story_id/:conv_id").delete(deleteStoryConv);
@@ -38,7 +41,10 @@ router.route("/chapter/:chapter_id/:conv_id").delete(deleteChapterConv);
 router.route("/chapter/:chapter_id").post(addChapterConv);
 
 router.route("/progress/:story_id").get(getProgress);
-router.route("/progress/:story_id/:chapter_id").post(setProgress);
+router
+  .route("/progress/:story_id/:chapter_id")
+  .post(setProgress)
+  .patch(setCurrentChapter);
 
 router
   .route("/vote/:story_id/:chapter_id")

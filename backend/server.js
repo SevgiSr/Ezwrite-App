@@ -33,6 +33,9 @@ import mongoSanitize from "express-mongo-sanitize";
 //db
 import connectDB from "./db/connect.js";
 
+//redis
+import redis from "redis";
+
 //routers
 import authRoutes from "./routes/authRoutes.js";
 import myStoryRoutes from "./routes/myStoryRoutes.js";
@@ -141,6 +144,8 @@ const listener = (socket) => {
 
 const port = process.env.PORT || 5000;
 
+const client = redis.createClient();
+
 const start = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL, {
@@ -154,6 +159,9 @@ const start = async () => {
 
     httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
     io.on("connection", listener);
+    client.on("connect", () => {
+      console.log("connected to Redis");
+    });
   } catch (error) {
     console.log(error);
   }

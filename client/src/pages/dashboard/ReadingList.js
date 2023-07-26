@@ -3,7 +3,7 @@ import StyledReadingList from "./styles/ReadingList.styled";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
-import { StoryDetailed } from "../../components";
+import { StoryCardDetailed } from "../../components";
 
 function ReadingList() {
   const location = useLocation();
@@ -39,7 +39,7 @@ function ReadingList() {
     <StyledReadingList>
       <h1>{readingList.title}</h1>
       {readingList.stories?.map((story) => {
-        return <StoryDetailed key={story._id} story={story} />;
+        return <StoryCardDetailed key={story._id} story={story} />;
       })}
     </StyledReadingList>
   );

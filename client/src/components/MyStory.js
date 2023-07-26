@@ -111,6 +111,7 @@ const MyStory = ({ story }) => {
 
       <ModalCenter
         isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
         content={
           <>
             <button

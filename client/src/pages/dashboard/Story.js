@@ -10,7 +10,7 @@ import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import Respond from "../../components/Respond";
 import { UserContext } from "../../context/userContext";
-import { Conversation } from "../../components";
+import { Conversation, Tag } from "../../components";
 
 function Story() {
   const {
@@ -69,7 +69,7 @@ function Story() {
             <div className="desc">{state.story?.description}</div>
             <div className="tags">
               {state.story.tags?.map((tag) => {
-                return <span className="tag">{tag}</span>;
+                return <Tag tag={tag} key={tag._id} />;
               })}
             </div>
           </div>

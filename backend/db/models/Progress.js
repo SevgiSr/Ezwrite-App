@@ -16,6 +16,10 @@ const ProgressSchema = new mongoose.Schema(
         ref: "Chapter",
       },
     ],
+    currentChapter: {
+      type: mongoose.Types.ObjectId,
+      ref: "Chapter",
+    },
   },
   { timestamps: true }
 );
