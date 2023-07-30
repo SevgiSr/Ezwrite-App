@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, useCreateStory } = useContext(MyStoryContext);
+  const { storyState, useCreateStory, getTags } = useContext(MyStoryContext);
 
   const createStoryMutation = useCreateStory();
 

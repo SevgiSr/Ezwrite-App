@@ -93,6 +93,7 @@ const StyledStoryDetails = styled.div`
       }
     }
     .tag-input {
+      width: 100%;
       border: none;
       font-size: 17px;
       background-color: var(--background5);
@@ -111,6 +112,18 @@ const StyledStoryDetails = styled.div`
     .create-btn {
       margin: 0;
       padding: 10px;
+    }
+  }
+
+  .tag-suggestions {
+    background-color: #222;
+    width: 100%;
+    .tag-suggestion {
+      padding: 5px 25px;
+      cursor: pointer;
+      :hover {
+        background-color: var(--background3);
+      }
     }
   }
 `;

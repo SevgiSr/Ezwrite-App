@@ -13,6 +13,7 @@ import {
   deleteChapter,
   publishChapter,
   unpublishChapter,
+  getTags,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -80,6 +81,8 @@ router
     );
     res.status(StatusCodes.OK).json({ file: req.file.id });
   });
+
+router.route("/suggestions").get(getTags);
 // Routes that include specific actions should come first
 router.route("/update/:story_id").post(updateStory);
 router.route("/delete/:story_id").delete(deleteStory);
@@ -98,6 +101,7 @@ router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
 router.route("/:story_id").get(getMyChapters).patch(createChapter);
 
 // And finally, the most general path
+
 router.route("/").post(createStory).get(getMyStories);
 
 export default router;

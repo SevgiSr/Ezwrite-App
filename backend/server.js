@@ -57,6 +57,8 @@ import mongoose from "mongoose";
 
 //for res.flush() so that it sends stream responses immediately instead of buffering
 import compression from "compression";
+import Trie from "./utils/Trie.js";
+import Tag from "./db/models/Tag.js";
 
 /* if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -81,6 +83,26 @@ app.use(mongoSanitize());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(compression());
+
+export const client = redis.createClient({
+  host: "localhost", // Replace with your Redis host
+  port: 6379, // Replace with your Redis port
+});
+
+export const trie = new Trie();
+const loadTagsToMemory = async (trie) => {
+  try {
+    console.log("loading tags");
+    const tags = await Tag.find({});
+    console.log(tags.map((tag) => tag.name));
+    for (const tag of tags) {
+      trie.insert(tag.name);
+      await client.hSet("tags", tag.name, String(tag.count));
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 ////  ROUTES  ////
 //  api route
@@ -142,9 +164,9 @@ const listener = (socket) => {
   });
 };
 
-const port = process.env.PORT || 5000;
+client.on("error", (err) => console.log("Redis Client Error", err));
 
-const client = redis.createClient();
+const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
@@ -159,9 +181,8 @@ const start = async () => {
 
     httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
     io.on("connection", listener);
-    client.on("connect", () => {
-      console.log("connected to Redis");
-    });
+    await client.connect();
+    await loadTagsToMemory(trie);
   } catch (error) {
     console.log(error);
   }

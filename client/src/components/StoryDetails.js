@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { AiFillPicture, AiOutlinePlus } from "react-icons/ai";
 import StyledStoryDetails from "./styles/StoryDetails.styled";
+import { MyStoryContext } from "../context/myStoryContext";
 
 const StoryDetails = ({
   storyDetails,
@@ -98,12 +99,30 @@ const StoryDetails = ({
 };
 
 function TagsField({ tags, setTags }) {
+  const [input, setInput] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [tagInputVisible, setTagInputVisible] = useState(false);
+  const { getTags } = useContext(MyStoryContext);
 
   const tagInputRef = useRef(null);
 
+  const handleTagInputChange = async (event) => {
+    const newInput = event.target.value;
+    setInput(newInput);
+    console.log(newInput);
+    if (newInput.length > 0) {
+      const tagCounts = await getTags(newInput);
+      console.log(tagCounts);
+      setSuggestions(tagCounts);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
   const handleAddTag = () => {
     setTagInputVisible(true);
+    setInput("");
+    setSuggestions([]);
     setTimeout(() => {
       tagInputRef.current.focus();
     }, 0);
@@ -127,6 +146,11 @@ function TagsField({ tags, setTags }) {
     setTags([...newTags]);
   };
 
+  const handleSuggestionClick = (tag) => {
+    setInput(tag + " ");
+    tagInputRef.current.focus();
+  };
+
   return (
     <div className="item tags">
       <label htmlFor="tags">Tags</label>
@@ -145,14 +169,30 @@ function TagsField({ tags, setTags }) {
       </div>
 
       {tagInputVisible ? (
-        <input
-          id="tags"
-          className="tag-input"
-          ref={tagInputRef}
-          type="text"
-          placeholder="Separate tags with a space"
-          onKeyDown={handleKeyDown}
-        />
+        <div id="tags">
+          <input
+            className="tag-input"
+            ref={tagInputRef}
+            type="text"
+            placeholder="Separate tags with a space"
+            value={input}
+            onKeyDown={handleKeyDown}
+            onChange={handleTagInputChange}
+            autocomplete="off"
+          />
+          <div className="tag-suggestions">
+            {suggestions?.map((s, index) => (
+              <div
+                key={index}
+                className="tag-suggestion"
+                onClick={() => handleSuggestionClick(s.tag)}
+              >
+                <span>{s.tag}</span>
+                <span>({s.count})</span>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <button className="tag-btn" onClick={handleAddTag}>
           <span>Add a tag</span>

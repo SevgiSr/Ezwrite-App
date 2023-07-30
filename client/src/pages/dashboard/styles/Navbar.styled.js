@@ -28,6 +28,28 @@ const StyledNavbar = styled.header`
     color: var(--font2);
   }
 
+  #actions {
+    .nav-items {
+      display: flex;
+      list-style: none;
+      .nav-item {
+        :hover {
+          background-color: var(--background4);
+        }
+        .nav-link {
+          font-size: 23px;
+          color: var(--font2);
+          display: block;
+          text-decoration: none;
+          padding: 5px 23px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+
   #write-dropdown,
   #discover-dropdown {
     margin: 0 3em;
@@ -64,10 +86,12 @@ const StyledNavbar = styled.header`
 
     button {
       border: none;
-      font-size: 20px;
-      padding: 0;
-      margin: 0;
-      color: var(--icons);
+      font-size: 23px;
+      color: var(--font2);
+      padding: 5px 23px;
+      :hover {
+        background-color: var(--background4);
+      }
     }
 
     input {
@@ -87,7 +111,7 @@ const StyledNavbar = styled.header`
 
   #search-form input {
     border: none;
-    margin-left: 1em;
+    margin-left: 5px;
   }
 
   .logo {

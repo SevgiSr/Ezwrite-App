@@ -8,7 +8,6 @@ const register = async (req, res) => {
   try {
     // request from frontend ->
     const { name, password } = req.body;
-    console.log(name, password);
 
     if (!name || !password) {
       throw new BadRequestError("please provide all values");

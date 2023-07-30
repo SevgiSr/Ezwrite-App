@@ -7,20 +7,16 @@ const StyledStoryCardDetailed = styled.div`
   border-radius: 4px;
   width: 470px;
   height: 290px;
-  cursor: pointer;
+  display: flex;
 
   div {
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
 
-  .link {
-    display: flex;
-    flex-direction: row;
-  }
-
   .cover {
     margin-right: 8px;
+    cursor: pointer;
     > * {
       border-radius: 5px;
     }
@@ -39,6 +35,10 @@ const StyledStoryCardDetailed = styled.div`
       font-size: 22px;
       line-height: 24px;
       color: var(--font1);
+      cursor: pointer;
+      :hover {
+        color: var(--font2);
+      }
     }
 
     .author {

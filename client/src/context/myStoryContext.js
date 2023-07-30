@@ -81,6 +81,20 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const getTags = async (prefix) => {
+    try {
+      console.log(prefix);
+      const { data } = await authFetch.get("/myStories/suggestions", {
+        params: { prefix },
+      });
+      const { tagCounts } = data;
+      console.log(tagCounts);
+      return tagCounts;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const createStory = async (file, storyDetails) => {
     try {
       let fileData = new FormData();
@@ -322,6 +336,7 @@ export const MyStoryProvider = ({ children }) => {
         alertState,
         getMyStories,
         setMyStory,
+        getTags,
         createStory,
         deleteStory,
         updateCover,

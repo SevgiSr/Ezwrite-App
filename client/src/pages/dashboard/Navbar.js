@@ -9,6 +9,9 @@ import { AiFillCaretDown } from "react-icons/ai";
 import socket from "../../socket.js";
 import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
+import { BsPencilSquare } from "react-icons/bs";
+import { BiNetworkChart } from "react-icons/bi";
+import { FaUserClock } from "react-icons/fa";
 
 function Navbar() {
   const { userState, logoutUser } = useContext(UserContext);
@@ -74,105 +77,45 @@ function Navbar() {
         <Link to={"/"} className="logo">
           <img src={src} alt="" />
         </Link>
-        <nav id="discover-dropdown">
-          <DropdownMenu
-            button={
-              <>
-                Browse
-                <AiFillCaretDown
-                  style={{ marginLeft: "8px", fontSize: "10px" }}
+      </div>
+
+      <div className="section">
+        <nav id="actions">
+          <ul className="nav-items">
+            <li className="nav-item">
+              <Link to={`/myStories`} className="nav-link">
+                <BsPencilSquare />
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="" className="nav-link">
+                <BiNetworkChart />
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="" className="nav-link">
+                <FaUserClock />
+              </Link>
+            </li>
+            <li>
+              <form onSubmit={handleSubmit} id="search-form">
+                <button type="submit">
+                  <FiSearch />
+                </button>
+                <input
+                  onChange={handleChange}
+                  name="query"
+                  value={query}
+                  placeholder="Search..."
+                  type="text"
                 />
-              </>
-            }
-            menu={
-              <>
-                <div className="dropdown-item">
-                  <div className="symbol">😍</div>
-                  <Link to={"/stories/fantasy"}>Fantasy</Link>
-                  <Link to={"/stories/romance"}>Romance</Link>
-                  <Link to={"/stories/action"}>Action</Link>
-                  <Link to={"/stories/fanfiction"}>Fanfinction</Link>
-                </div>
-                <div className="dropdown-item">
-                  <div className="symbol">💀</div>
-                  <Link to={"/stories/horror"}>Horror</Link>
-                  <Link to={"/stories/mystery"}>Mystery</Link>
-                  <Link to={"/stories/paranormal"}>Paranormal</Link>
-                  <Link to={"/stories/vampire"}>Vampire/Werewolf</Link>
-                </div>
-                <div className="dropdown-item">
-                  <div className="symbol">🤓</div>
-                  <Link to={"/stories/educational"}>Educational</Link>
-                  <Link to={"/stories/debate"}>Debate</Link>
-                  <Link to={"/stories/humor"}>Humor</Link>
-                  <Link to={"/stories/nonFiction"}>Non-fiction</Link>
-                </div>
-              </>
-            }
-          />
+              </form>
+            </li>
+          </ul>
         </nav>
       </div>
 
-      <form onSubmit={handleSubmit} id="search-form">
-        <button type="submit">
-          <FiSearch />
-        </button>
-        <input
-          onChange={handleChange}
-          name="query"
-          value={query}
-          placeholder="Search..."
-          type="text"
-        />
-      </form>
-
-      <div className="section">
-        <nav id="read-dropdown">
-          <DropdownMenu
-            button={
-              <>
-                Read
-                <AiFillCaretDown
-                  style={{ marginLeft: "8px", fontSize: "10px" }}
-                />
-              </>
-            }
-            menu={
-              <>
-                <Link to={`/library`} className="dropdown-item">
-                  Continue Reading
-                </Link>
-                <Link to={`/library`} className="dropdown-item">
-                  Reading List
-                </Link>
-              </>
-            }
-          />
-        </nav>
-
-        <nav id="write-dropdown">
-          <DropdownMenu
-            button={
-              <>
-                Write
-                <AiFillCaretDown
-                  style={{ marginLeft: "8px", fontSize: "10px" }}
-                />
-              </>
-            }
-            menu={
-              <>
-                <Link to={`/newStory`} className="dropdown-item">
-                  New Story
-                </Link>
-                <Link to={`/myStories`} className="dropdown-item">
-                  My Stories
-                </Link>
-              </>
-            }
-          />
-        </nav>
-
+      <section>
         <nav id="profile-dropdown">
           <DropdownMenu
             button={
@@ -220,7 +163,7 @@ function Navbar() {
             }
           />
         </nav>
-      </div>
+      </section>
     </StyledNavbar>
   );
 }

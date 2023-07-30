@@ -15,6 +15,8 @@ import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 import mongoose from "mongoose";
 
+import { client, trie } from "../server.js";
+
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
 import dotenv from "dotenv";
@@ -29,6 +31,43 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import checkPermissions from "../utils/checkPermissions.js";
+import Trie from "../utils/Trie.js";
+
+const getTags = async (req, res) => {
+  try {
+    console.log("getting tags");
+    const { prefix } = req.query;
+    console.log("prefix: ", prefix);
+    const suggestions = trie.searchPrefix(prefix);
+    console.log("suggestions: ", suggestions);
+
+    await client.set("test", "value", function (err, reply) {
+      console.log(err); // Check if there's an error
+      console.log(reply); // If connected properly, it should log 'OK'
+    });
+    console.log(client);
+    const getTagCount = async (tag) => {
+      try {
+        console.log("getting count for tag: ", tag);
+        const count = await client.hGet("tags", tag);
+        console.log("got count: ", count);
+        return { tag, count: Number(count) };
+      } catch (err) {
+        console.log("error getting count: ", err);
+        throw err;
+      }
+    };
+
+    const tagCounts = await Promise.all(suggestions.map(getTagCount));
+    console.log("tagCounts before sorting: ", tagCounts);
+    tagCounts.sort((a, b) => b.count - a.count);
+    console.log("tagCounts after sorting: ", tagCounts);
+    res.json({ tagCounts });
+  } catch (error) {
+    console.log("error in getTags: ", error);
+    res.status(500).json({ error: error.toString() });
+  }
+};
 
 async function deleteCommentAndSubcomments(commentId) {
   const comment = await Comment.findById(commentId);
@@ -608,6 +647,7 @@ export {
   deleteChapter,
   publishChapter,
   unpublishChapter,
+  getTags,
 };
 
 /* 
