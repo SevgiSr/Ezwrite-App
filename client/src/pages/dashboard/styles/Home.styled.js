@@ -5,9 +5,9 @@ const StyledHome = styled.div`
 
   .items-row {
     margin: 2rem 0;
-    h1 {
+    h2 {
       padding-left: 2rem;
-      color: #000;
+      color: var(--font1);
     }
   }
   .row {

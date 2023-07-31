@@ -31,9 +31,13 @@ const StoryCardDetailed = ({ story }) => {
         <Cover filename={story._id} width="160px" />
       </div>
       <div className="content">
-        <h3 className="title">{story.title}</h3>
+        <div className="link" onClick={handleClick}>
+          <h3 className="title">{story.title}</h3>
+        </div>
 
-        <div className="author">{story.author.name}sevgi tarafından</div>
+        <div className="author">
+          <UserLine user={story.author} />
+        </div>
 
         <div className="meta-data">
           <div>

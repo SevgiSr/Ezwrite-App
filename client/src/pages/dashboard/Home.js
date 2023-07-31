@@ -20,49 +20,55 @@ function Home() {
     () => getAllStories()
   );
 
-  const { data: users = [], isUsersLoading } = useQuery(["all", "users"], () =>
-    getAllUsers()
-  );
-
-  console.log(users, stories);
-
-  if (isStoriesLoading || isUsersLoading) return null;
+  if (isStoriesLoading) return null;
 
   return (
     <StyledHome>
       <main>
         <div className="items-row">
-          <h1>Explore Users</h1>
-          <ScrollRow items={users} type="user" />
+          <h2>Popular</h2>
+          <ScrollRow items={stories} />
         </div>
         <div className="items-row">
-          <h1>Popular</h1>
-          <ScrollRow items={stories} type="story" />
+          <h2>Recommended For You</h2>
+          <ScrollRow items={stories} />
         </div>
         <div className="items-row">
-          <h1>Recommended For You</h1>
-          <ScrollRow items={stories} type="story" />
-        </div>
-        <div className="items-row">
-          <h1>New & Hot</h1>
-          <ScrollRow items={stories} type="story" />
+          <h2>New & Hot</h2>
+          <ScrollRow items={stories} />
         </div>
       </main>
     </StyledHome>
   );
 }
 
-const ScrollRow = ({ items, type }) => {
+const ScrollRow = ({ items }) => {
   const [scrollX, setScrollX] = useState(0);
   const rowRef = useRef(null);
   const itemRef = useRef(null);
   const [listWidth, setListWidth] = useState(0);
   const listWidthRef = useRef(listWidth);
+  const [innerWindowWidth, setInnerWindowWidth] = useState(
+    window.innerWidth - 230
+  );
 
   const setListWidthState = (state) => {
     listWidthRef.current = state;
     setListWidth(state);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setInnerWindowWidth(window.innerWidth - 230);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []); // Empty array ensures that effect is only run on mount and unmount
 
   useEffect(() => {
     setListWidthState(items.length * itemRef.current?.offsetWidth);
@@ -74,7 +80,7 @@ const ScrollRow = ({ items, type }) => {
 
   //marginLeft icreases as you scroll to the left, and is zero if you're at the beginning of the list
   const handleLeftArrow = () => {
-    let x = scrollX + Math.round(window.innerWidth / 2); // scroll by the half of the screen size
+    let x = scrollX + Math.round(innerWindowWidth / 2); // scroll by the half of the screen size
     if (x > 0) {
       // if new margin is positive we scrolled too much. set to zero.
       x = 0;
@@ -84,11 +90,11 @@ const ScrollRow = ({ items, type }) => {
 
   //marginLeft decreases as you scroll to the right
   const handleRightArrow = () => {
-    let x = scrollX - Math.round(window.innerWidth / 2);
-    if (window.innerWidth - listWidth > x) {
+    let x = scrollX - Math.round(innerWindowWidth / 2);
+    if (innerWindowWidth - listWidth > x) {
       // if the calculated new margin is more than the lenght of non-visible items it means we scrolled too much
       // and items cannot be scrolled further
-      x = window.innerWidth - listWidth - 120; // the margin from left edge should be list width minus screen size so than only the last screen-sized part is visible. plus the margin for last item
+      x = innerWindowWidth - listWidth - 120; // the margin from left edge should be list width minus screen size so than only the last screen-sized part is visible. plus the margin for last item
     }
     setScrollX(x);
   };
@@ -101,7 +107,7 @@ const ScrollRow = ({ items, type }) => {
         </div>
       )}
 
-      {window.innerWidth - listWidth <= scrollX && (
+      {innerWindowWidth - listWidth <= scrollX && (
         <div className="row--right" onClick={handleRightArrow}>
           <FaAngleRight />
         </div>
@@ -118,11 +124,7 @@ const ScrollRow = ({ items, type }) => {
             {items.map((item) => {
               return (
                 <div className="row--item" ref={itemRef}>
-                  {type === "story" ? (
-                    <StoryCardDetailed key={uuidv4()} story={item} />
-                  ) : (
-                    <UserCard key={item._id} user={item} />
-                  )}
+                  <StoryCardDetailed key={uuidv4()} story={item} />
                 </div>
               );
             })}

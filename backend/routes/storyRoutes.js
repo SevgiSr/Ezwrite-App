@@ -24,6 +24,7 @@ import {
   getByTag,
   addConvComment,
   deleteConvComment,
+  getTagSuggestions,
 } from "../controllers/storyController.js";
 
 router.route("/library").get(getLibrary);
@@ -31,6 +32,7 @@ router.route("/:category").get(getByCategory);
 router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
 router.route("/search/tags/:tag").get(getByTag);
+router.route("/suggestions/tags").get(getTagSuggestions);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
 router.route("/story/:story_id/:conv_id").delete(deleteStoryConv);

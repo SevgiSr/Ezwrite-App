@@ -8,6 +8,7 @@ import Progress from "../db/models/Progress.js";
 import Paragraph from "../db/models/Paragraph.js";
 import ReadingList from "../db/models/ReadingList.js";
 import Trie from "../utils/Trie.js";
+import Tag from "../db/models/Tag.js";
 
 function populateStory(mode) {
   const populateOptions = {
@@ -243,6 +244,40 @@ const getByTag = async (req, res) => {
       tags: { $in: tag },
     }).populate("author progress tags");
     res.status(StatusCodes.OK).json({ stories });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getCategorySuggestions = async (req, res) => {
+  try {
+    const stories = await Story.find({
+      tags: { $in: tag },
+    }).populate("author progress tags");
+    res.status(StatusCodes.OK).json({ stories });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getTagSuggestions = async (req, res) => {
+  try {
+    const tags = await Tag.find()
+      .sort({ count: -1 }) // Sort in descending order by count
+      .limit(10); // Limit to 10 documents
+
+    let stories = [];
+    for (const tag of tags) {
+      let story = await Story.findOne({ tags: { $in: tag } })
+        .sort({ score: -1 })
+        .populate("author progress tags");
+
+      if (story) {
+        stories.push(story);
+      }
+    }
+
+    res.status(StatusCodes.OK).json({ tags, stories });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -842,4 +877,5 @@ export {
   setCurrentChapter,
   deleteConvComment,
   addConvComment,
+  getTagSuggestions,
 };

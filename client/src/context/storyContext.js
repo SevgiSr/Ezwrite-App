@@ -77,6 +77,18 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
+  const getCategorySuggestions = async () => {};
+
+  const getTagSuggestions = async () => {
+    try {
+      const { data } = await authFetch.get(`/stories/suggestions/tags`);
+      const { stories, tags } = data;
+      return { stories, tags };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   /*   const getChapter = async (story_id, chapter_id) => {
     try {
       const { data } = await authFetch.get(
@@ -523,6 +535,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         addToReadingList,
         addStoryConv,
         getByTag,
+        getTagSuggestions,
 
         useSetProgress,
         useAddChapterConv,

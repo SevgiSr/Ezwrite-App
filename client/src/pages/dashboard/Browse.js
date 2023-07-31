@@ -12,6 +12,8 @@ function Browse() {
     ["all", "stories"],
     () => getAllStories()
   );
+
+  if (isStoriesLoading) return null;
   return (
     <StyledBrowse>
       <Categories stories={stories} />
@@ -59,36 +61,31 @@ function Categories({ stories }) {
   );
 }
 
-function Tags({ stories }) {
+function Tags() {
+  const { getTagSuggestions } = useContext(StoryContext);
+  const { data: { stories, tags } = {}, isStoriesLoading } = useQuery(
+    ["suggestions", "tags"],
+    () => getTagSuggestions()
+  );
+
+  console.log(stories);
+
+  if (isStoriesLoading) return null;
+
   return (
     <section className="explore-tags">
       <div className="tag-list list">
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
-        <div className="tag">meme</div>
+        {tags?.map((tag) => {
+          return (
+            <div className="tag">
+              {tag.name} ({tag.count})
+            </div>
+          );
+        })}
       </div>
 
       <div className="story-list">
-        {stories.map((story) => {
+        {stories?.map((story) => {
           return (
             <div key={story._id} className="story">
               <StoryCardRanked story={story} />
