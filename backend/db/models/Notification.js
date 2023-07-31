@@ -8,12 +8,6 @@ const NotificationSchema = new mongoose.Schema(
     activity: {
       type: String,
     },
-    type: {
-      type: String, //conversation, story, profile
-    },
-    location: {
-      type: String,
-    },
     route: {
       type: String,
     },

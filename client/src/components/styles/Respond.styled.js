@@ -29,7 +29,7 @@ const StyledRespondParent = styled.div`
       color: var(--font1);
       background-color: var(--background4);
       width: 84%;
-      height: 30px;
+      height: 45px;
       border: none;
       padding: 0.5rem 0.8rem;
       -webkit-transition: height 0.5s;

@@ -36,9 +36,7 @@ function Conversations() {
         <Respond
           text={`<strong>${userState.user.name}</strong> posted a message to your feed`}
           activity={`<strong>${userState.user.name}</strong> posted a message to <strong>${profileState.profile.name}</strong>'s feed`}
-          type="profile"
           sender={userState.user._id}
-          location={profileState.profile._id}
           route={location.pathname}
           to={username}
           dest={username}

@@ -159,7 +159,6 @@ function Chapter() {
             id={chapter_id}
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            type="story"
             sender={userState.user._id}
             location={state.story._id}
             route={location.pathname}
@@ -175,6 +174,7 @@ function Chapter() {
                 <Conversation
                   conv={comment}
                   dest={state.chapter._id}
+                  location={state.story._id}
                   useAddConvComment={useAddConvComment}
                   useDeleteConv={useDeleteChapterConv}
                   useDeleteConvComment={useDeleteConvComment}
@@ -284,6 +284,7 @@ function Paragraph({ paragraph, index }) {
                     id={comment._id}
                     conv={comment}
                     dest={paragraph._id}
+                    location={state.story._id}
                     useAddConvComment={useAddConvComment}
                     useDeleteConv={useDeleteParagraphConv}
                     useDeleteConvComment={useDeleteConvComment}

@@ -8,15 +8,28 @@ import { FaTrash } from "react-icons/fa";
 import { BsFlagFill } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
 
-const Comment = ({ comment, conv_id, useDeleteConvComment }) => {
+const Comment = ({
+  comment,
+  conv_id,
+  location = null,
+  useDeleteConvComment,
+}) => {
   const deleteConvCommentMutation = useDeleteConvComment();
 
   const handleDeleteClick = () => {
     console.log("deleting...");
-    deleteConvCommentMutation.mutate({
-      conv_id: conv_id,
-      comment_id: comment._id,
-    });
+    if (location) {
+      deleteConvCommentMutation.mutate({
+        location,
+        conv_id: conv_id,
+        comment_id: comment._id,
+      });
+    } else {
+      deleteConvCommentMutation.mutate({
+        conv_id: conv_id,
+        comment_id: comment._id,
+      });
+    }
   };
 
   return (

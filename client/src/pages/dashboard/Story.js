@@ -94,7 +94,6 @@ function Story() {
               id={story_id}
               text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
               activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
-              type="story"
               sender={userState.user._id}
               location={story_id}
               route={location.pathname}
@@ -110,6 +109,7 @@ function Story() {
                       key={comment._id}
                       conv={comment}
                       dest={state.story._id}
+                      location={story_id}
                       useAddConvComment={useAddConvComment}
                       useDeleteConv={useDeleteStoryConv}
                       useDeleteConvComment={useDeleteConvComment}

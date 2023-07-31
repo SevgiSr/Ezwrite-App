@@ -185,11 +185,14 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const addChapterConv = async (chapter_id, comment_content) => {
+  const addChapterConv = async (story_id, chapter_id, comment_content) => {
     try {
-      const { data } = await authFetch.post(`/stories/chapter/${chapter_id}`, {
-        comment_content,
-      });
+      const { data } = await authFetch.post(
+        `/stories/${story_id}/chapters/${chapter_id}/conversations`,
+        {
+          comment_content,
+        }
+      );
       const { newConv } = data;
       return newConv;
     } catch (error) {
@@ -198,19 +201,21 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const deleteChapterConv = async (chapter_id, conv_id) => {
+  const deleteChapterConv = async (story_id, chapter_id, conv_id) => {
     try {
-      await authFetch.delete(`/stories/chapter/${chapter_id}/${conv_id}`);
+      await authFetch.delete(
+        `/stories/${story_id}/chapters/${chapter_id}/conversations/${conv_id}`
+      );
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
     }
   };
 
-  const addParagraphConv = async (paragraph_id, comment_content) => {
+  const addParagraphConv = async (story_id, paragraph_id, comment_content) => {
     try {
       const { data } = await authFetch.post(
-        `/stories/chapter/comments/${paragraph_id}`,
+        `/stories/${story_id}/paragraphs/${paragraph_id}/conversations`,
         {
           comment_content,
         }
@@ -223,10 +228,10 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const deleteParagraphConv = async (paragraph_id, conv_id) => {
+  const deleteParagraphConv = async (story_id, paragraph_id, conv_id) => {
     try {
       await authFetch.delete(
-        `/stories/chapter/comments/${paragraph_id}/${conv_id}`
+        `/stories/${story_id}/paragraphs/${paragraph_id}/conversations/${conv_id}`
       );
     } catch (error) {
       console.log(error);
@@ -242,7 +247,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       dispatch({ type: VOTE_CHAPTER_SUCCESS, payload: { vote_value } });
       //backend request
       const { data } = await authFetch.patch(
-        `/stories/vote/${story_id}/${chapter_id}`,
+        `/stories/${story_id}/vote/chapters/${chapter_id}`,
         {
           vote_value,
         }
@@ -260,7 +265,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     try {
       dispatch({ type: UNVOTE_CHAPTER_SUCCESS, payload: { vote_value } });
       const { data } = await authFetch.delete(
-        `/stories/vote/${story_id}/${chapter_id}`
+        `/stories/${story_id}/vote/chapters/${chapter_id}`
       );
 
       alertDispatch({ type: SUCCESS, payload: { msg: "unvoted!" } });
@@ -281,11 +286,14 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const addConvComment = async (conv_id, comment_content) => {
+  const addConvComment = async (story_id, conv_id, comment_content) => {
     try {
-      const { data } = await authFetch.post(`/conversations/${conv_id}`, {
-        comment_content,
-      });
+      const { data } = await authFetch.post(
+        `/stories/${story_id}/conversations/${conv_id}`,
+        {
+          comment_content,
+        }
+      );
       const { newConv } = data;
 
       return newConv;
@@ -294,9 +302,11 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const deleteConvComment = async (conv_id, comment_id) => {
+  const deleteConvComment = async (story_id, conv_id, comment_id) => {
     try {
-      await authFetch.delete(`/conversations/${conv_id}/${comment_id}`);
+      await authFetch.delete(
+        `/stories/${story_id}/conversations/${conv_id}/comments/${comment_id}`
+      );
     } catch (error) {
       console.log(error);
     }
@@ -403,48 +413,63 @@ Given that the backend seems to handle only one request at a time (as evidenced 
   };
 
   const useAddChapterConv = () => {
-    return useMutation((data) => addChapterConv(data.dest, data.comment), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["progress"]);
-      },
-    });
+    return useMutation(
+      (data) => addChapterConv(data.location, data.dest, data.comment),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
   };
 
   const useDeleteChapterConv = () => {
-    return useMutation((data) => deleteChapterConv(data.dest, data.conv_id), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["progress"]);
-      },
-    });
+    return useMutation(
+      (data) => deleteChapterConv(data.location, data.dest, data.conv_id),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
   };
 
   const useAddParagraphConv = () => {
-    return useMutation((data) => addParagraphConv(data.dest, data.comment), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["progress"]);
-      },
-    });
+    return useMutation(
+      (data) => addParagraphConv(data.location, data.dest, data.comment),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
   };
 
   const useDeleteParagraphConv = () => {
-    return useMutation((data) => deleteParagraphConv(data.dest, data.conv_id), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["progress"]);
-      },
-    });
+    return useMutation(
+      (data) => deleteParagraphConv(data.location, data.dest, data.conv_id),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
   };
 
   const useAddConvComment = () => {
-    return useMutation((data) => addConvComment(data.dest, data.comment), {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["progress"]);
-      },
-    });
+    return useMutation(
+      (data) => addConvComment(data.location, data.dest, data.comment),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["progress"]);
+        },
+      }
+    );
   };
 
   const useDeleteConvComment = () => {
     return useMutation(
-      (data) => deleteConvComment(data.conv_id, data.comment_id),
+      (data) => deleteConvComment(data.location, data.conv_id, data.comment_id),
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["progress"]);

@@ -65,6 +65,10 @@ const StorySchema = new mongoose.Schema(
       type: Object,
       default: { published: 0, draft: 0 },
     },
+    score: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

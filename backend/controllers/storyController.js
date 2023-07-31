@@ -116,6 +116,70 @@ export async function getStoryViews(story) {
   return totalViews;
 }
 
+export async function getChapterComments(chapter) {
+  let totalComments = 0;
+
+  totalComments = chapter.paragraphs?.reduce((total, paragraph) => {
+    for (const comment of paragraph.comments) {
+      total += comment.subcomments.length;
+    }
+    total += paragraph.comments.length;
+    return total;
+  }, 0);
+
+  for (const comment of chapter.comments) {
+    totalComments += comment.subcomments.length;
+  }
+  totalComments += chapter.comments.length;
+
+  return totalComments;
+}
+
+export async function getStoryComments(story) {
+  let totalComments = 0;
+
+  for (let i = 0; i < story.chapters?.length; i++) {
+    const chapterComments = await getChapterComments(story.chapters[i]);
+    totalComments += chapterComments;
+  }
+
+  for (const comment of story.comments) {
+    totalComments += comment.subcomments.length;
+  }
+  totalComments += story.comments.length;
+
+  return totalComments;
+}
+
+async function calculateStoryScore(story) {
+  const { views, votesCount } = story;
+  const { upvotes, downvotes } = votesCount;
+  const comments = await getStoryComments(story);
+  console.log(views, votesCount, upvotes, downvotes, comments);
+  if (views === 0) {
+    return 0; // To avoid division by zero
+  }
+  let score = (2 * upvotes + 1.5 * comments - downvotes) / views;
+  return score;
+}
+
+async function updateStoryScore(story_id) {
+  const story = await Story.findById(story_id).populate([
+    {
+      path: "chapters",
+      populate: [
+        { path: "paragraphs", populate: "comments" },
+        { path: "comments" },
+      ],
+    },
+    { path: "comments" },
+  ]);
+  const score = await calculateStoryScore(story);
+  story.score = score;
+  await story.save();
+  console.log("STORY SCORE: " + story.score);
+}
+
 const addMyVote = async (progress, userId) => {
   try {
     const iterateProgress = JSON.parse(JSON.stringify(progress));
@@ -412,6 +476,8 @@ const addChapterConv = async (req, res) => {
       { runValidators: true }
     );
 
+    await updateStoryScore(req.params.story_id);
+
     res.status(StatusCodes.OK).json({ newConv });
   } catch (error) {
     throw new Error(error.message);
@@ -433,6 +499,7 @@ const deleteChapterConv = async (req, res) => {
       await conv.delete();
     }
 
+    await updateStoryScore(req.params.story_id);
     res
       .status(StatusCodes.OK)
       .json({ message: "comment deleted successfully." });
@@ -456,6 +523,8 @@ const addParagraphConv = async (req, res) => {
       { new: true, runValidators: true }
     );
 
+    await updateStoryScore(req.params.story_id);
+
     res.status(StatusCodes.OK).json({ comment });
   } catch (error) {
     throw new Error(error.message);
@@ -476,6 +545,8 @@ const deleteParagraphConv = async (req, res) => {
 
       await conv.delete();
     }
+
+    await updateStoryScore(req.params.story_id);
 
     res
       .status(StatusCodes.OK)
@@ -504,6 +575,8 @@ const addStoryConv = async (req, res) => {
       { runValidators: true }
     );
 
+    await updateStoryScore(req.params.id);
+
     res.status(StatusCodes.OK).json({ newConv });
   } catch (error) {
     throw new Error(error.message);
@@ -523,11 +596,62 @@ const deleteStoryConv = async (req, res) => {
       });
 
       await conv.delete();
+
+      await updateStoryScore(req.params.story_id);
     }
 
     res
       .status(StatusCodes.OK)
       .json({ message: "comment deleted successfully." });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const addConvComment = async (req, res) => {
+  try {
+    const { comment_content } = req.body;
+    const { conv_id, story_id } = req.params;
+
+    const comment = await Comment.create({
+      author: req.user.userId,
+      content: comment_content,
+      subcomments: [],
+    });
+    console.log(req.params.conv_id);
+    const newConv = await Comment.findOneAndUpdate(
+      { _id: conv_id },
+      { $push: { subcomments: comment._id } },
+      { new: true, runValidators: true }
+    )
+      .populate("author")
+      .populate({ path: "subcomments", populate: "author" });
+
+    await updateStoryScore(story_id);
+    res.status(StatusCodes.OK).json({ newConv });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+//FOR ALL OF CONVERSATIONS' SUBCOMMENTS
+const deleteConvComment = async (req, res) => {
+  try {
+    const { conv_id, comment_id, story_id } = req.params;
+
+    // First, remove the subcomment document
+    await Comment.findByIdAndRemove(comment_id);
+
+    // Then, remove the reference to the subcomment from the parent comment
+    await Comment.findByIdAndUpdate(conv_id, {
+      $pull: { subcomments: comment_id },
+    });
+
+    await updateStoryScore(story_id);
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Subcomment deleted successfully." });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -566,6 +690,8 @@ const voteChapter = async (req, res) => {
     story.votesCount = await getStoryVotes(story);
     await story.save();
 
+    await updateStoryScore(story._id);
+
     res.status(StatusCodes.OK).json({ value: Number(req.body.vote_value) });
   } catch (error) {
     throw new Error(error.message);
@@ -595,6 +721,7 @@ const unvoteChapter = async (req, res) => {
       });
       story.votesCount = await getStoryVotes(story);
       await story.save();
+      await updateStoryScore(story._id);
     }
 
     res.status(StatusCodes.OK).json({ newChapter: chapter });
@@ -713,4 +840,6 @@ export {
   deleteParagraphConv,
   deleteStoryConv,
   setCurrentChapter,
+  deleteConvComment,
+  addConvComment,
 };

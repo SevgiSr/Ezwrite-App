@@ -22,6 +22,8 @@ import {
   deleteStoryConv,
   setCurrentChapter,
   getByTag,
+  addConvComment,
+  deleteConvComment,
 } from "../controllers/storyController.js";
 
 router.route("/library").get(getLibrary);
@@ -37,8 +39,12 @@ router.route("/story/:id").post(addStoryConv);
 router.route("/readingLists/:readingListId").patch(addToReadingList);
 router.route("/readingLists").post(createReadingList);
 
-router.route("/chapter/:chapter_id/:conv_id").delete(deleteChapterConv);
-router.route("/chapter/:chapter_id").post(addChapterConv);
+router
+  .route("/:story_id/chapters/:chapter_id/conversations/:conv_id")
+  .delete(deleteChapterConv);
+router
+  .route("/:story_id/chapters/:chapter_id/conversations")
+  .post(addChapterConv);
 
 router.route("/progress/:story_id").get(getProgress);
 router
@@ -47,14 +53,22 @@ router
   .patch(setCurrentChapter);
 
 router
-  .route("/vote/:story_id/:chapter_id")
+  .route("/:story_id/vote/chapters/:chapter_id")
   .patch(voteChapter)
   .delete(unvoteChapter);
 
 router
-  .route("/chapter/comments/:paragraph_id/:conv_id")
+  .route("/:story_id/paragraphs/:paragraph_id/conversations/:conv_id")
   .delete(deleteParagraphConv);
-router.route("/chapter/comments/:paragraph_id").post(addParagraphConv);
+
+router
+  .route("/:story_id/paragraphs/:paragraph_id/conversations")
+  .post(addParagraphConv);
+
+router.route("/:story_id/conversations/:conv_id").post(addConvComment);
+router
+  .route("/:story_id/conversations/:conv_id/comments/:comment_id")
+  .delete(deleteConvComment);
 
 router.route("/view/:story_id/:chapter_id").post(incrementViewCount);
 

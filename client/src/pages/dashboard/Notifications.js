@@ -70,8 +70,7 @@ function Notifications() {
                           }}
                         ></header>
                         <div className="row">
-                          {(nt.type === "conversation" ||
-                            nt.type === "chapter") && (
+                          {nt.type === "story" && (
                             <div className="icon">
                               <FaComment />
                             </div>

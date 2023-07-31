@@ -15,13 +15,12 @@ function Respond({
   activity,
   type,
   sender,
-  location,
+  location = null,
   route,
   to,
   dest,
   useAddConv,
 }) {
-  const queryClient = useQueryClient();
   const { sendNotification, profileState } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const [comment, setComment] = useState("");
@@ -69,15 +68,17 @@ function Respond({
     if (!comment) return;
     setShow(initialState);
 
-    await addConvMutation.mutateAsync({ dest, comment });
+    if (location) {
+      await addConvMutation.mutateAsync({ location, dest, comment });
+    } else {
+      await addConvMutation.mutateAsync({ dest, comment });
+    }
 
     setComment("");
     const notification = {
       text: text,
       activity: activity,
-      type: type,
       sender: sender,
-      location: location,
       route: route,
       content: comment,
     };

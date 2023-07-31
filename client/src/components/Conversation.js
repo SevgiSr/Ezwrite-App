@@ -19,13 +19,14 @@ import { ClipLoader } from "react-spinners";
 const Conversation = ({
   conv,
   dest,
+  location = null,
   useAddConvComment,
   useDeleteConv,
   useDeleteConvComment,
 }) => {
   const { userState } = useContext(UserContext);
   const deleteConvMutation = useDeleteConv();
-  const location = useLocation();
+  const { story_id } = useParams();
 
   /*
   I want convs to refetch when I add a comment under conv. 
@@ -36,7 +37,11 @@ const Conversation = ({
   */
 
   const handleDeleteClick = () => {
-    deleteConvMutation.mutate({ dest, conv_id: conv._id });
+    if (location) {
+      deleteConvMutation.mutate({ location, dest, conv_id: conv._id });
+    } else {
+      deleteConvMutation.mutate({ dest, conv_id: conv._id });
+    }
   };
 
   if (!conv) return null;
@@ -95,6 +100,7 @@ const Conversation = ({
             <Comment
               key={sc._id}
               comment={sc}
+              location={location}
               conv_id={conv._id}
               useDeleteConvComment={useDeleteConvComment}
             />
@@ -117,9 +123,8 @@ const Conversation = ({
           0,
           20
         )}...</strong>`}
-        type="conversation"
         sender={userState.user._id}
-        location={conv._id}
+        location={story_id}
         route={location.pathname}
         to={conv.author.name}
         dest={conv._id}
