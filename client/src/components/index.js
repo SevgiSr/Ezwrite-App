@@ -16,6 +16,7 @@ import ModalCenter from "./ModalCenter";
 import Metadata from "./Metadata";
 import UserLine from "./UserLine";
 import Tag from "./Tag";
+import StoryModal from "./StoryModal";
 
 export {
   Navbar,
@@ -36,4 +37,5 @@ export {
   Metadata,
   UserLine,
   Tag,
+  StoryModal,
 };

@@ -283,6 +283,25 @@ const getTagSuggestions = async (req, res) => {
   }
 };
 
+const getRecommendations = async (req, res) => {
+  try {
+    console.log("getting recommendations");
+    const popular = await Story.find()
+      .sort({ score: -1 })
+      .limit(25)
+      .populate("author progress tags");
+
+    const newAndPopular = await Story.find()
+      .sort({ createdAt: -1, score: -1 }) // Order matters
+      .limit(25)
+      .populate("author progress tags");
+
+    res.status(StatusCodes.OK).json({ popular, newAndPopular });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const getAll = async (req, res) => {
   /*   console.log("deleting");
   await User.updateMany({}, { $set: { activity: [] } });
@@ -878,4 +897,5 @@ export {
   deleteConvComment,
   addConvComment,
   getTagSuggestions,
+  getRecommendations,
 };

@@ -12,13 +12,11 @@ import { ProfileContext } from "../../context/profileContext";
 import SideNavbar from "./SideNavbar";
 
 function Home() {
-  const { getAllStories } = useContext(StoryContext);
+  const { getAllStories, getRecommendations } = useContext(StoryContext);
   const { getAllUsers } = useContext(ProfileContext);
 
-  const { data: stories = [], isStoriesLoading } = useQuery(
-    ["all", "stories"],
-    () => getAllStories()
-  );
+  const { data: { popular = [], newAndPopular = [] } = {}, isStoriesLoading } =
+    useQuery(["all", "recommendations"], () => getRecommendations());
 
   if (isStoriesLoading) return null;
 
@@ -27,15 +25,15 @@ function Home() {
       <main>
         <div className="items-row">
           <h2>Popular</h2>
-          <ScrollRow items={stories} />
-        </div>
-        <div className="items-row">
-          <h2>Recommended For You</h2>
-          <ScrollRow items={stories} />
+          <ScrollRow items={popular} />
         </div>
         <div className="items-row">
           <h2>New & Hot</h2>
-          <ScrollRow items={stories} />
+          <ScrollRow items={newAndPopular} />
+        </div>
+        <div className="items-row">
+          <h2>Recommended For You</h2>
+          <ScrollRow items={popular} />
         </div>
       </main>
     </StyledHome>
@@ -98,6 +96,8 @@ const ScrollRow = ({ items }) => {
     }
     setScrollX(x);
   };
+
+  if (!items) return null;
 
   return (
     <div className="row">

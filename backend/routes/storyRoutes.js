@@ -25,8 +25,10 @@ import {
   addConvComment,
   deleteConvComment,
   getTagSuggestions,
+  getRecommendations,
 } from "../controllers/storyController.js";
 
+router.route("/recommendations").get(getRecommendations);
 router.route("/library").get(getLibrary);
 router.route("/:category").get(getByCategory);
 router.route("/search/all").get(getAll);
