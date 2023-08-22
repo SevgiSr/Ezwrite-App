@@ -7,6 +7,7 @@ import StoryModal from "./StoryModal";
 
 function StoryCardRanked({ story }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(story.rank);
   return (
     <StyledStoryCardRanked>
       <div className={"details-modal " + (isModalOpen && "close")}>
@@ -21,7 +22,11 @@ function StoryCardRanked({ story }) {
           />
         </div>
       </div>
+
       <div className="story-ranked" onClick={() => setIsModalOpen(true)}>
+        <div className="rank">
+          <span>1st</span> in {story.rank}
+        </div>
         <div className="cover">
           <Cover filename={story._id} width="135px" />
         </div>

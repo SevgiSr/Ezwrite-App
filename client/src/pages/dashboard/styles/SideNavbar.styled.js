@@ -6,7 +6,7 @@ const StyledSideNavbar = styled.div`
     top: 0;
     bottom: 0;
     width: 230px;
-    background-color: var(--background3);
+    background-color: var(--background4);
     display: flex;
     justify-content: start;
     align-items: center;

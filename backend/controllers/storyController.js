@@ -268,11 +268,12 @@ const getTagSuggestions = async (req, res) => {
 
     let stories = [];
     for (const tag of tags) {
-      let story = await Story.findOne({ tags: { $in: tag } })
+      const story = await Story.findOne({ tags: { $in: tag } })
         .sort({ score: -1 })
         .populate("author progress tags");
 
       if (story) {
+        story.rank = tag.name;
         stories.push(story);
       }
     }

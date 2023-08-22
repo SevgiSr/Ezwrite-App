@@ -68,8 +68,6 @@ function Tags() {
     () => getTagSuggestions()
   );
 
-  console.log(stories);
-
   if (isStoriesLoading) return null;
 
   return (

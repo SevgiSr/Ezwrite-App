@@ -14,7 +14,7 @@ function SideNavbar() {
           </li>
           <li>
             <Link to="/library" className="link">
-              Read
+              Library
             </Link>
           </li>
         </ul>

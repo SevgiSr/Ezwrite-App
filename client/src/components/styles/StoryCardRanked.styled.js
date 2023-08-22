@@ -24,6 +24,12 @@ const StyledStoryCardRanked = styled.div`
       color: var(--font2);
       background-color: var(--background3);
     }
+
+    .rank {
+      span {
+        background-color: #d4af37;
+      }
+    }
   }
 
   .details-modal {

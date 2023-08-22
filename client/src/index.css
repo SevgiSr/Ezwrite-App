@@ -28,7 +28,7 @@ button>* {
 }
 
 html {
-  font-size: 14px;
+  font-size: 13px;
   color: #fff;
   background-color: var(--background4);
   border-color: #36393F;
@@ -51,6 +51,8 @@ html {
   --background3: #2f3136;
   --background4: #37393f;
   --background5: #42464e;
+
+  --hover: #202225;
 
   --font1: #eaeaeb;
   --font2: #9da1a4;

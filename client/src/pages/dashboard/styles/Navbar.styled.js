@@ -14,7 +14,19 @@ const StyledNavbar = styled.header`
   padding: 0px 20px;
   box-sizing: border-box;
 
+  > :nth-child(2) {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
   .section {
+    display: flex;
+    align-items: center;
+  }
+
+  ul {
+    list-style-type: none;
     display: flex;
     align-items: center;
   }
@@ -28,6 +40,52 @@ const StyledNavbar = styled.header`
     color: var(--font2);
   }
 
+  #logo-and-search {
+    display: flex;
+    .logo {
+      width: 70px;
+      img {
+        width: 100%;
+        height: 100%;
+        vertical-align: middle;
+        overflow-clip-margin: content-box;
+        overflow: clip;
+      }
+    }
+
+    #search-form {
+      height: fit-content;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      button {
+        border: none;
+        font-size: 23px;
+        color: var(--font2);
+        padding: 5px 7px;
+        margin-left: 30px;
+        :hover {
+          background-color: var(--background4);
+        }
+      }
+
+      input {
+        padding: 9px 13px;
+        border-radius: 9px;
+        width: 270px;
+        background-color: var(--background1);
+        color: var(--font1);
+
+        ::placeholder {
+          color: var(--font2);
+          font-size: 15px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
   #actions {
     .nav-items {
       display: flex;
@@ -37,7 +95,7 @@ const StyledNavbar = styled.header`
           background-color: var(--background4);
         }
         .nav-link {
-          font-size: 23px;
+          font-size: 26px;
           color: var(--font2);
           display: block;
           text-decoration: none;
@@ -78,51 +136,9 @@ const StyledNavbar = styled.header`
     }
   }
 
-  #search-form {
-    height: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    button {
-      border: none;
-      font-size: 23px;
-      color: var(--font2);
-      padding: 5px 23px;
-      :hover {
-        background-color: var(--background4);
-      }
-    }
-
-    input {
-      padding: 9px 13px;
-      border-radius: 9px;
-      width: 270px;
-      background-color: var(--background1);
-      color: var(--font1);
-
-      ::placeholder {
-        color: var(--font2);
-        font-size: 15px;
-        font-weight: 500;
-      }
-    }
-  }
-
   #search-form input {
     border: none;
     margin-left: 5px;
-  }
-
-  .logo {
-    width: 70px;
-    img {
-      width: 100%;
-      height: 100%;
-      vertical-align: middle;
-      overflow-clip-margin: content-box;
-      overflow: clip;
-    }
   }
 
   #profile-dropdown {

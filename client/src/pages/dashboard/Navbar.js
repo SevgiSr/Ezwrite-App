@@ -74,9 +74,26 @@ function Navbar() {
   return (
     <StyledNavbar>
       <div className="section">
-        <Link to={"/"} className="logo">
-          <img src={src} alt="" />
-        </Link>
+        <nav id="logo-and-search">
+          <div className="logo">
+            <Link to={"/"}>
+              <img src={src} alt="" />
+            </Link>
+          </div>
+
+          <form onSubmit={handleSubmit} id="search-form">
+            <button type="submit">
+              <FiSearch />
+            </button>
+            <input
+              onChange={handleChange}
+              name="query"
+              value={query}
+              placeholder="Search..."
+              type="text"
+            />
+          </form>
+        </nav>
       </div>
 
       <div className="section">
@@ -97,25 +114,11 @@ function Navbar() {
                 <FaUserClock />
               </Link>
             </li>
-            <li>
-              <form onSubmit={handleSubmit} id="search-form">
-                <button type="submit">
-                  <FiSearch />
-                </button>
-                <input
-                  onChange={handleChange}
-                  name="query"
-                  value={query}
-                  placeholder="Search..."
-                  type="text"
-                />
-              </form>
-            </li>
           </ul>
         </nav>
       </div>
 
-      <section>
+      <section className="section">
         <nav id="profile-dropdown">
           <DropdownMenu
             button={
