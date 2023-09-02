@@ -32,7 +32,7 @@ function NewStory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     storyDetails.tags = tags;
-    navigate("/myStories");
+    navigate("/workspace/myStories");
     createStoryMutation.mutateAsync({ cover, storyDetails });
   };
 

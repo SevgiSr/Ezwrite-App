@@ -26,6 +26,7 @@ import {
   deleteConvComment,
   getTagSuggestions,
   getRecommendations,
+  requestCollab,
 } from "../controllers/storyController.js";
 
 router.route("/recommendations").get(getRecommendations);
@@ -42,6 +43,8 @@ router.route("/story/:id").post(addStoryConv);
 
 router.route("/readingLists/:readingListId").patch(addToReadingList);
 router.route("/readingLists").post(createReadingList);
+
+router.route("/collaborations/:story_id/:user_id").patch(requestCollab);
 
 router
   .route("/:story_id/chapters/:chapter_id/conversations/:conv_id")

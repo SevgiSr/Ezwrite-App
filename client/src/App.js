@@ -7,8 +7,9 @@ import {
   MyStories,
   NewStory,
   MyStoryChapters,
+  EditStoryDetails,
+  ProtectedRoute,
 } from "./pages";
-import ProtectedRoute from "./pages/ProtectedRoute";
 
 import {
   About,
@@ -31,8 +32,9 @@ import {
   Library,
   ReadingList,
   Browse,
+  WorkspaceLayout,
+  MyForks,
 } from "./pages/dashboard";
-import EditStoryDetails from "./pages/EditStoryDetails";
 
 function App() {
   return (
@@ -55,7 +57,10 @@ function App() {
             <Route path="following" element={<Following />} />
             <Route path="activity" element={<Activity />} />
           </Route>
-          <Route path="/myStories" element={<MyStories />} />
+          <Route path="/workspace" element={<WorkspaceLayout />}>
+            <Route path="myStories" element={<MyStories />} />
+            <Route path="forks" element={<MyForks />} />
+          </Route>
           <Route path="/library" element={<Library />} />
           <Route path="/list/:list_id" element={<ReadingList />} />
           <Route path="/stories/:category" element={<Search />} />
@@ -71,7 +76,15 @@ function App() {
         </Route>
 
         <Route
-          path="/:story_id/:chapter_id/writing"
+          path="/myworks/:story_id/:chapter_id/writing"
+          element={
+            <ProtectedRoute>
+              <Writing />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/myforks/:fork_id/:chapter_id/writing"
           element={
             <ProtectedRoute>
               <Writing />

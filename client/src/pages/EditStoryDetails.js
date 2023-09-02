@@ -115,7 +115,7 @@ function EditStoryDetails() {
     });
     const tagNames = myStory.tags.map((tag) => tag.name);
     setTags(tagNames);
-    navigate("/myStories");
+    navigate("/workspace/myStories");
   };
 
   const handleSubmit = (e) => {
@@ -195,7 +195,7 @@ function Navbar({ handleCancel }) {
   return (
     <nav className="story-navbar">
       <header>
-        <Link to="/myStories" className="back-btn">
+        <Link to="/workspace/myStories" className="back-btn">
           <div className="icon">
             <IoIosArrowBack />
           </div>
@@ -230,7 +230,7 @@ function Contents() {
     const data = await addChapterMutation.mutateAsync({
       story_id: story_id,
     });
-    navigate(`/${data.story_id}/${data.chapter_id}/writing`);
+    navigate(`/myworks/${data.story_id}/${data.chapter_id}/writing`);
   };
 
   const handleDeleteClick = async (chapter_id) => {
@@ -255,7 +255,7 @@ function Contents() {
             <div className="chapter">
               <Link
                 style={{ textDecoration: "none" }}
-                to={`/${story_id}/${chapter._id}/writing`}
+                to={`/myworks/${story_id}/${chapter._id}/writing`}
               >
                 <h3 className="title">{chapter.title}</h3>
               </Link>

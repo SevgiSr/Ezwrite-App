@@ -1,22 +1,12 @@
 import styled from "styled-components";
 
-const StyledMyStories = styled.div`
+const StyledMyForks = styled.div`
   nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
-
-    .header-loader {
-      margin-left: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      span {
-        margin-left: 5px;
-      }
-    }
   }
 
   .stories-container {
@@ -35,6 +25,12 @@ const StyledMyStories = styled.div`
       font-weight: 400;
       line-height: 30px;
     }
+
+    .smaller-text {
+      margin-top: 15px;
+      color: var(--font2);
+      font-size: 15px;
+    }
     .icon {
       font-size: 250px;
       margin: 0 auto;
@@ -46,4 +42,4 @@ const StyledMyStories = styled.div`
   }
 `;
 
-export default StyledMyStories;
+export default StyledMyForks;

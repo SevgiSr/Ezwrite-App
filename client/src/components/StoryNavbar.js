@@ -1,65 +1,142 @@
 //read from database
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledStoryNavbar from "./styles/StoryNavbar.styled";
 import { ClipLoader } from "react-spinners";
 import Cover from "./Cover";
 import { FiChevronDown } from "react-icons/fi";
 import DropdownMenu from "./DropdownMenu";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiMoreFill } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
+import { AiOutlineHistory } from "react-icons/ai";
+import he from "he";
+import getDate from "../utils/getDate";
+import { MyForkContext } from "../context/myForkContext";
 
 const Navbar = () => {
   const {
     storyState,
     useAddChapter,
-    mutationState,
+    mutationState: mutationStateStory,
     useDeleteChapter,
     usePublishChapter,
     useUnpublishChapter,
+    useRestoreChapterHistory,
   } = useContext(MyStoryContext);
+
+  const {
+    forkState,
+    mutationState: mutationStateFork,
+    useAddForkChapter,
+    useDeleteForkChapter,
+    useRestoreForkChapterHistory,
+  } = useContext(MyForkContext);
+
   const navigate = useNavigate();
-  const { story_id, chapter_id } = useParams();
+  const params = useParams();
+  const { story_id, fork_id, chapter_id } = params;
+  const [myWork, setMyWork] = useState("");
+  const [state, setState] = useState({ chapters: [], story: {}, chapter: {} });
+  const location = useLocation();
 
   const addChapterMutation = useAddChapter();
   const deleteChapterMutation = useDeleteChapter();
   const publishChapterMutation = usePublishChapter();
   const unpublishChapterMutation = useUnpublishChapter();
+  const restoreChapterHistoryMutation = useRestoreChapterHistory();
+
+  const addForkChapterMutation = useAddForkChapter();
+  const deleteForkChapterMutation = useDeleteForkChapter();
+  const restoreForkChapterHistoryMutation = useRestoreForkChapterHistory();
+
+  useEffect(() => {
+    if (location.pathname.split("/")[1] === "myworks") {
+      setMyWork("story");
+      setState({
+        chapters: storyState.story.chapters,
+        story: storyState.story,
+        chapter: storyState.chapter,
+      });
+    } else if (location.pathname.split("/")[1] === "myforks") {
+      setMyWork("fork");
+      setState({
+        chapters: forkState.chapters,
+        story: forkState.story,
+        chapter: forkState.chapter,
+      });
+    }
+  }, [location, forkState, storyState]);
 
   const handleNewPartClick = async () => {
-    const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
-      story_id: storyState.story._id,
-    });
+    if (myWork === "story") {
+      const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
+        story_id: storyState.story._id,
+      });
 
-    navigate(`/${story_id}/${chapter_id}/writing`);
+      navigate(`/myworks/${story_id}/${chapter_id}/writing`);
+    } else if (myWork === "fork") {
+      const { chapter_id, fork_id } = await addForkChapterMutation.mutateAsync({
+        fork_id: params.fork_id,
+      });
+
+      navigate(`/myforks/${fork_id}/${chapter_id}/writing`);
+    }
   };
 
   //YOU HAVE TO
   //if you want to navigate only after mutation ended:
   const handleDeleteClick = async () => {
-    await deleteChapterMutation.mutateAsync({ story_id, chapter_id });
-    navigate(`/${story_id}`);
+    if (myWork === "story") {
+      await deleteChapterMutation.mutateAsync({ story_id, chapter_id });
+      navigate(`/${story_id}`);
+    } else if (myWork === "fork") {
+      await deleteForkChapterMutation.mutateAsync({ fork_id, chapter_id });
+    }
   };
 
   const handlePublishClick = () => {
-    console.log("publishing");
-    publishChapterMutation.mutate({ story_id, chapter_id });
+    if (myWork === "story") {
+      publishChapterMutation.mutate({ story_id, chapter_id });
+    }
   };
 
   const handleUnpublishClick = () => {
-    unpublishChapterMutation.mutate({ story_id, chapter_id });
+    if (myWork === "story") {
+      unpublishChapterMutation.mutate({ story_id, chapter_id });
+    }
   };
 
-  if (!storyState.story) return null;
-  if (!storyState.chapter) return null;
+  const handleRestoreHistoryClick = (history_id) => {
+    if (myWork === "story") {
+      restoreChapterHistoryMutation.mutate({
+        story_id,
+        chapter_id,
+        history_id,
+      });
+    } else if (myWork === "fork") {
+      restoreForkChapterHistoryMutation.mutate({
+        fork_id,
+        chapter_id,
+        history_id,
+      });
+    }
+  };
+
+  if (!state.story) return null;
+  if (!state.chapter) return null;
   return (
     <StyledStoryNavbar>
       <nav className="navbarContainer">
         <section className="story-section">
-          <Link to="/myStories" className="back-btn">
+          <Link
+            to={
+              myWork === "story" ? "/workspace/myStories" : "/workspace/forks"
+            }
+            className="back-btn"
+          >
             <div className="icon">
               <IoIosArrowBack />
             </div>
@@ -70,17 +147,17 @@ const Navbar = () => {
             menuClass="write-dropdown-menu"
             button={
               <div className="story-card">
-                <Cover width="40px" filename={storyState.story._id} />
+                <Cover width="40px" filename={state.story._id} />
                 <div className="story-info">
                   <p className="story-title">
-                    <span>{storyState.story.title}</span>
+                    <span>{state.story.title}</span>
                     <span className="icon">
                       <FiChevronDown />
                     </span>
                   </p>
-                  <h4 className="chapter-title">{storyState.chapter.title}</h4>
+                  <h4 className="chapter-title">{state.chapter.title}</h4>
                   <p className="update-info">
-                    {storyState.chapter.visibility?.toUpperCase()}{" "}
+                    {state.chapter.visibility?.toUpperCase()}{" "}
                     <span>(Saved)</span>
                   </p>
                 </div>
@@ -88,18 +165,22 @@ const Navbar = () => {
             }
             menu={
               <>
-                {storyState.story.chapters?.map((chapter) => {
+                {state.chapters?.map((chapter) => {
                   return (
                     <div
                       key={chapter._id}
                       className={
                         `dropdown-item ` +
-                        (chapter._id === storyState.chapter._id && `active`)
+                        (chapter._id === state.chapter._id && `active`)
                       }
                     >
                       <Link
                         className="link"
-                        to={`/${storyState.story._id}/${chapter._id}/writing`}
+                        to={
+                          (myWork === "story"
+                            ? `/myworks/${state.story._id}`
+                            : `/myforks/${fork_id}`) + `/${chapter._id}/writing`
+                        }
                       >
                         <div>{chapter.title}</div>
                       </Link>
@@ -121,38 +202,68 @@ const Navbar = () => {
         </section>
 
         <section className="buttons">
-          {mutationState.isLoading && (
+          {(mutationStateStory.isLoading || mutationStateFork.isLoading) && (
             <div style={{ marginRight: "15px" }}>
               <ClipLoader size={15} color="#fff" />
             </div>
           )}
 
-          {storyState.chapter.visibility === "draft" && (
-            <button
-              onClick={handlePublishClick}
-              type="submit"
-              className="btn orange-button"
-            >
-              Publish
-            </button>
-          )}
+          <DropdownMenu
+            buttonClass="btn"
+            button={
+              <>
+                <div className="icon">
+                  <AiOutlineHistory />
+                </div>
+                History
+              </>
+            }
+            menu={
+              <>
+                {!state.chapter.history && (
+                  <div style={{ height: "50px", width: "100%" }}></div>
+                )}
+                {state.chapter.history?.map((history) => {
+                  return (
+                    <div key={history._id}>
+                      <div
+                        onClick={() => handleRestoreHistoryClick(history._id)}
+                      >
+                        {getDate(history?.createdAt)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            }
+          />
 
-          {storyState.chapter.visibility === "published" && (
-            <button
-              onClick={handleUnpublishClick}
-              type="submit"
-              className="btn orange-button"
-            >
-              Unpublish
-            </button>
-          )}
+          {myWork === "story" &&
+            (storyState.chapter.visibility === "draft" ? (
+              <button
+                onClick={handlePublishClick}
+                type="submit"
+                className="btn orange-button"
+              >
+                Publish
+              </button>
+            ) : (
+              <button
+                onClick={handleUnpublishClick}
+                type="submit"
+                className="btn orange-button"
+              >
+                Unpublish
+              </button>
+            ))}
 
           <button type="submit" id="saveButton" className="btn btn-grey">
             Save
           </button>
           <button className="btn btn-grey">Preview</button>
           <div className="options">
-            {deleteChapterMutation.isLoading ? (
+            {deleteChapterMutation.isLoading ||
+            deleteForkChapterMutation.isLoading ? (
               <ClipLoader color="rgb(0, 178, 178)" size={18} />
             ) : (
               <DropdownMenu

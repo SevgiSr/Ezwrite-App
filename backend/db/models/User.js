@@ -34,6 +34,14 @@ const UserSchema = new mongoose.Schema(
         ref: "Story",
       },
     ],
+    forkedStories: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Fork",
+      },
+    ],
+    collabRequests: { type: Array, default: [] },
+    pendingForkRequests: { type: Array, default: [] },
     comments: [
       {
         type: mongoose.Types.ObjectId,

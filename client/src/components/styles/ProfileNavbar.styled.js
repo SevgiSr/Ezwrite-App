@@ -29,6 +29,59 @@ const StyledProfileNavbar = styled.div`
     border: var(--background3);
   }
 
+  .collab-modal {
+    padding: 20px 15px;
+    .collab-title {
+      margin: 0 auto;
+      width: fit-content;
+      font-size: 23px;
+    }
+
+    .collab-stories-row {
+      display: flex;
+      align-items: center;
+      height: fit-content;
+    }
+
+    .story-card-minimal {
+      display: flex;
+      flex-direction: row;
+      padding: 1rem;
+      box-sizing: border-box;
+      border-radius: 4px;
+      width: 100%;
+
+      .content {
+        margin-left: 10px;
+
+        .title {
+          color: var(--font1);
+          text-decoration: none;
+          font-size: 25px;
+          font-weight: 600;
+          border-bottom: 2px solid transparent;
+        }
+
+        .meta-data {
+          color: var(--font2);
+          display: flex;
+          font-size: 12px;
+          width: fit-content;
+          > * {
+            display: flex;
+            margin-right: 10px;
+            .icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 3px;
+            }
+          }
+        }
+      }
+    }
+  }
+
   @media only screen and (max-width: 500px) {
     button {
       .btn-text {

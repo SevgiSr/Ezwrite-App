@@ -9,6 +9,7 @@ import Paragraph from "../db/models/Paragraph.js";
 import ReadingList from "../db/models/ReadingList.js";
 import Trie from "../utils/Trie.js";
 import Tag from "../db/models/Tag.js";
+import { v4 as uuidv4 } from "uuid";
 
 function populateStory(mode) {
   const populateOptions = {
@@ -873,6 +874,31 @@ const addToReadingList = async (req, res) => {
   }
 };
 
+const requestCollab = async (req, res) => {
+  try {
+    const { story_id, user_id } = req.params;
+    const mainUser = await User.findById(req.user.userId);
+    const reqUser = await User.findById(user_id);
+    const story = await Story.findById(story_id);
+
+    const request = { story: story, user: mainUser };
+    if (mainUser.pendingForkRequests.find((r) => r.story._id === story_id)) {
+      throw new Error(
+        "Your request has already been sent. Please wait until it gets evaluated by the author of this book."
+      );
+    }
+    mainUser.pendingForkRequests.push(story);
+    reqUser.collabRequests.push(request);
+    await mainUser.save();
+    await reqUser.save();
+
+    res.status(StatusCodes.OK).json({ msg: "success" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 export {
   getByCategory,
   getByQuery,
@@ -899,4 +925,5 @@ export {
   addConvComment,
   getTagSuggestions,
   getRecommendations,
+  requestCollab,
 };

@@ -373,6 +373,15 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
+  const requestCollab = async (story_id, user_id) => {
+    try {
+      console.log("requesting");
+      await authFetch.patch(`/stories/collaborations/${story_id}/${user_id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   /* PROGRESS MUTATIONS */
 
   const useSetProgress = () => {
@@ -548,6 +557,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         getByTag,
         getTagSuggestions,
         getRecommendations,
+        requestCollab,
 
         useSetProgress,
         useAddChapterConv,

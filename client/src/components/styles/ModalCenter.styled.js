@@ -1,16 +1,15 @@
 import styled from "styled-components";
 
 const StyledModalCenter = styled.div`
-  .content {
+  .modal-content {
     position: fixed; /* Changed from absolute to fixed */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Changed from 50% to -50% */
-    width: 550px;
+    width: ${(props) => (props.width ? props.width : "550px")};
     z-index: 1000;
     background-color: var(--background3);
     border-radius: 5px;
-    padding: 35px 40px;
 
     .close-modal-btn {
       border: none;

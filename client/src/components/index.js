@@ -17,6 +17,7 @@ import Metadata from "./Metadata";
 import UserLine from "./UserLine";
 import Tag from "./Tag";
 import StoryModal from "./StoryModal";
+import AIForm from "./AIForm";
 
 export {
   Navbar,
@@ -38,4 +39,5 @@ export {
   UserLine,
   Tag,
   StoryModal,
+  AIForm,
 };

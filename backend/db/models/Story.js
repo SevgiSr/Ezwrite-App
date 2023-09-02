@@ -2,6 +2,17 @@ import mongoose from "mongoose";
 
 const StorySchema = new mongoose.Schema(
   {
+    author: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: [true, "please provide user"],
+    },
+    collaborators: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     title: {
       type: String,
       required: [true, "please provide title"],
@@ -31,11 +42,19 @@ const StorySchema = new mongoose.Schema(
         ref: "Chapter",
       },
     ],
-    author: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: [true, "please provide user"],
-    },
+    forks: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Fork",
+      },
+    ],
+    forkHistory: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Fork",
+      },
+    ],
+
     progress: [
       {
         type: mongoose.Types.ObjectId,

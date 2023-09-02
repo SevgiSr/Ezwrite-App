@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 
 const ChapterSchema = new mongoose.Schema(
   {
-    story: {
-      type: mongoose.Types.ObjectId,
-      ref: "Story",
-      required: true,
-    },
     author: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -20,6 +15,10 @@ const ChapterSchema = new mongoose.Schema(
     content: {
       type: String,
       default: "",
+    },
+    history: {
+      type: Array,
+      default: [],
     },
     paragraphs: [
       {

@@ -8,12 +8,14 @@ import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ColorRing, Dna, FallingLines } from "react-loader-spinner";
+import OrangeLinks from "../../components/OrangeLinks";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
-  const { storyState, getMyStories, mutationState } =
+  const { storyState, getMyStories, mutationState, getMyForks } =
     useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
+  const [activeTab, setActiveTab] = useState("stories");
 
   //staleTime is infitiy so that is stays fresh until mutation
   //because this data will not be updated unless user updated it himself
@@ -30,29 +32,67 @@ function MyStories({ show }) {
 
   return (
     <StyledMyStories>
-      <div className="container">
-        <header>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <h2>My Stories</h2>
-            {mutationState.isLoading && (
-              <div className="header-loader">
-                <Dna
-                  visible={true}
-                  height="50"
-                  width="50"
-                  ariaLabel="dna-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="dna-wrapper"
-                />
-                <span>Loading...</span>
-              </div>
-            )}
+      <nav>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <OrangeLinks
+            links={[
+              {
+                label: "My Stories",
+                handleClick: () => setActiveTab("stories"),
+              },
+              {
+                label: "Collaboration Requests",
+                handleClick: () => setActiveTab("collabs"),
+              },
+            ]}
+          />
+          {mutationState.isLoading && (
+            <div className="header-loader">
+              <Dna
+                visible={true}
+                height="50"
+                width="50"
+                ariaLabel="dna-loading"
+                wrapperStyle={{}}
+                wrapperClass="dna-wrapper"
+              />
+              <span>Loading...</span>
+            </div>
+          )}
+        </div>
+        <button
+          className="btn orange-button"
+          onClick={() => navigate("/newStory")}
+        >
+          + Create story
+        </button>
+      </nav>
+      {activeTab === "stories" && (
+        <Stories myStories={myStories} isLoading={isLoading} />
+      )}
+      {activeTab === "collabs" && <Collabs />}
+    </StyledMyStories>
+  );
+}
+
+function Stories({ myStories, isLoading }) {
+  const { userState } = useContext(UserContext);
+  const navigate = useNavigate();
+  return (
+    <div>
+      {!isLoading && myStories.length === 0 ? (
+        <div className="no-stories">
+          <div className="icon">
+            <ImBooks />
+          </div>
+          <div className="text">
+            Hi, {userState.user.name}! You haven't written any stories yet.
           </div>
           <button
             className="btn orange-button"
@@ -60,41 +100,59 @@ function MyStories({ show }) {
           >
             + Create story
           </button>
-        </header>
-        {!isLoading && myStories.length === 0 ? (
-          <div className="no-stories">
-            <div className="icon">
-              <ImBooks />
-            </div>
-            <div className="text">
-              Hi, {userState.user.name}! You haven't written any stories yet.
-            </div>
-            <button
-              className="btn orange-button"
-              onClick={() => navigate("/newStory")}
-            >
-              + Create story
+        </div>
+      ) : (
+        <div className="stories-container">
+          {isLoading ? (
+            <StoriesFallback />
+          ) : (
+            <>
+              {myStories.map((story) => {
+                return (
+                  <div key={story._id} className="my-story">
+                    <MyStory key={story._id} story={story} />
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Collabs() {
+  const { getCollabRequests, grantCollaboratorAccess } =
+    useContext(MyStoryContext);
+
+  const { data: collabRequests = [], isLoading } = useQuery(
+    ["collabRequests"],
+    getCollabRequests,
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const handleAcceptRequestClick = (r) => {
+    grantCollaboratorAccess(r.story._id, r.user._id);
+  };
+
+  if (isLoading) return null;
+
+  return (
+    <div className="collab-requests">
+      {collabRequests.map((c) => {
+        return (
+          <div key={c._id}>
+            <div>{c.story.title}</div>
+            <button onClick={() => handleAcceptRequestClick(c)}>
+              Accept Request
             </button>
           </div>
-        ) : (
-          <div className="stories-container">
-            {isLoading ? (
-              <StoriesFallback />
-            ) : (
-              <>
-                {myStories.map((story) => {
-                  return (
-                    <div key={story._id} className="my-story">
-                      <MyStory key={story._id} story={story} />
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </StyledMyStories>
+        );
+      })}
+    </div>
   );
 }
 

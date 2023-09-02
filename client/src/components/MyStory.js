@@ -72,7 +72,7 @@ const MyStory = ({ story }) => {
                 <Link
                   className="dropdown-item"
                   key={chapter._id}
-                  to={`/${story._id}/${chapter._id}/writing`}
+                  to={`/myworks/${story._id}/${chapter._id}/writing`}
                 >
                   <div>
                     {chapter.title}

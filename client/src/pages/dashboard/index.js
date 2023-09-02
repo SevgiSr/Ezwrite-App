@@ -10,6 +10,8 @@ import Settings from "./Settings";
 import Library from "./Library";
 import ReadingList from "./ReadingList";
 import Browse from "./Browse";
+import MyForks from "./MyForks";
+import WorkspaceLayout from "./WorkspaceLayout";
 
 export {
   Home,
@@ -24,4 +26,6 @@ export {
   Library,
   ReadingList,
   Browse,
+  MyForks,
+  WorkspaceLayout,
 };

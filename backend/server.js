@@ -45,6 +45,7 @@ import messageRoutes from "./routes/messageRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js";
 import gptRoutes from "./routes/gptRoutes.js";
+import myForkRoutes from "./routes/myForkRoutes.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
@@ -107,6 +108,7 @@ const loadTagsToMemory = async (trie) => {
 //  api route
 app.use("/api/auth", authRoutes);
 app.use("/api/myStories", jwtAuthentication, myStoryRoutes);
+app.use("/api/myForks", jwtAuthentication, myForkRoutes);
 app.use("/api/user", jwtAuthentication, profileRoutes);
 app.use("/api/stories", jwtAuthentication, storyRoutes);
 app.use("/api/messages", jwtAuthentication, messageRoutes);

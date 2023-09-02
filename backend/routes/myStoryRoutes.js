@@ -14,6 +14,11 @@ import {
   publishChapter,
   unpublishChapter,
   getTags,
+  restoreChapterHistory,
+  grantCollaboratorAccess,
+  revokeCollaboratorAccess,
+  getPendingForkRequests,
+  getCollabRequests,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -82,11 +87,26 @@ router
     res.status(StatusCodes.OK).json({ file: req.file.id });
   });
 
+router.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 router.route("/suggestions").get(getTags);
+
+router.route("/collaborations/pendingForkRequests").get(getPendingForkRequests);
+router.route("/collaborations/collabRequests").get(getCollabRequests);
+
 // Routes that include specific actions should come first
 router.route("/update/:story_id").post(updateStory);
 router.route("/delete/:story_id").delete(deleteStory);
 router.route("/edit/:story_id").get(getMyStory);
+// collabs
+
+router
+  .route("/collaborations/:story_id/user/:user_id")
+  .patch(grantCollaboratorAccess)
+  .delete(revokeCollaboratorAccess);
 
 // Then we have routes that also include chapter id
 router
@@ -96,6 +116,7 @@ router
   .delete(deleteChapter);
 router.route("/publish/:story_id/:chapter_id").patch(publishChapter);
 router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
+router.route("/history/:story_id/:chapter_id").patch(restoreChapterHistory);
 
 // Then the more general routes with only story id
 router.route("/:story_id").get(getMyChapters).patch(createChapter);

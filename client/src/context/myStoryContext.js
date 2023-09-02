@@ -181,6 +181,17 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const restoreChapterHistory = async (story_id, chapter_id, history_id) => {
+    try {
+      await authFetch.patch(`/myStories/history/${story_id}/${chapter_id}`, {
+        history_id,
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   const addChapter = async (id) => {
     try {
       const { data } = await authFetch.patch(`/myStories/${id}`);
@@ -228,6 +239,45 @@ export const MyStoryProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
+    }
+  };
+
+  const grantCollaboratorAccess = async (story_id, user_id) => {
+    try {
+      const { data } = await authFetch.patch(
+        `/myStories/collaborations/${story_id}/user/${user_id}`
+      );
+      const { fork } = data;
+      console.log(fork);
+      return fork;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getPendingForkRequests = async () => {
+    try {
+      const { data } = await authFetch.get(
+        `/myStories/collaborations/pendingForkRequests`
+      );
+      const { pendingForkRequests } = data;
+      console.log(pendingForkRequests);
+      return pendingForkRequests;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCollabRequests = async () => {
+    try {
+      const { data } = await authFetch.get(
+        `/myStories/collaborations/collabRequests`
+      );
+      const { collabRequests } = data;
+      console.log(collabRequests);
+      return collabRequests;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -279,6 +329,18 @@ export const MyStoryProvider = ({ children }) => {
         onSuccess: () => {
           mutationDispatch({ type: MUTATION_SUCCESS });
           queryClient.invalidateQueries(["myStories"]);
+        },
+      }
+    );
+  };
+
+  const useRestoreChapterHistory = () => {
+    return useMutation(
+      (data) =>
+        restoreChapterHistory(data.story_id, data.chapter_id, data.history_id),
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries([`myStories`]);
         },
       }
     );
@@ -346,10 +408,14 @@ export const MyStoryProvider = ({ children }) => {
         addChapter,
         updateStory,
         sendGptPrompt,
+        getCollabRequests,
+        getPendingForkRequests,
+        grantCollaboratorAccess,
 
         useCreateStory,
         useDeleteStory,
         useSaveChapter,
+        useRestoreChapterHistory,
         useAddChapter,
         mutationState,
         useDeleteChapter,

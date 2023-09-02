@@ -100,7 +100,7 @@ function Navbar() {
         <nav id="actions">
           <ul className="nav-items">
             <li className="nav-item">
-              <Link to={`/myStories`} className="nav-link">
+              <Link to={`/workspace/myStories`} className="nav-link">
                 <BsPencilSquare />
               </Link>
             </li>

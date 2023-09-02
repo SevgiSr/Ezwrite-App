@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-const ModalCenter = ({ isOpen, setIsOpen, content }) => {
+const ModalCenter = ({ isOpen, setIsOpen, content, width }) => {
   const overlayRef = useRef(null);
   const isOpenRef = useRef(isOpen);
 
@@ -32,9 +32,9 @@ const ModalCenter = ({ isOpen, setIsOpen, content }) => {
   }
 
   return (
-    <StyledModalCenter>
+    <StyledModalCenter width={width}>
       <div ref={overlayRef} className="overlay"></div>
-      <div className="content">
+      <div className="modal-content">
         {content}
         <div className="close-modal-btn" onClick={() => setIsOpen(false)}>
           <AiOutlineClose />

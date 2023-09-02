@@ -1,14 +1,20 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { FcSettings } from "react-icons/fc";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "../context/profileContext";
 import OrangeLinks from "./OrangeLinks";
 import StyledProfileNavbar from "./styles/ProfileNavbar.styled";
-import { BsPersonPlusFill } from "react-icons/bs";
+import { BsFillStarFill, BsPersonPlusFill } from "react-icons/bs";
 import { BsPersonCheckFill } from "react-icons/bs";
-import { AiFillMessage } from "react-icons/ai";
+import { AiFillDislike, AiFillMessage, AiOutlineBars } from "react-icons/ai";
 import { io } from "socket.io-client";
 import socket from "../socket.js";
+import { UserContext } from "../context/userContext";
+import ModalCenter from "./ModalCenter";
+import StoryCardDetailed from "./StoryCardDetailed";
+import Cover from "./Cover";
+import { GoEye } from "react-icons/go";
+import { StoryContext } from "../context/storyContext";
 
 const ProfileNavbar = ({ links, profileData }) => {
   //profileData has isFollowing and visited user's followers info
@@ -23,7 +29,12 @@ const ProfileNavbar = ({ links, profileData }) => {
     sendNotification,
   } = useContext(ProfileContext);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { requestCollab } = useContext(StoryContext);
+
+  const [isCollabModalOpen, setIsCollabModalOpen] = useState(false);
+
+  const { userState } = useContext(UserContext);
+  const { user } = userState;
 
   const followProfileMutation = useFollowProfile();
   const unfollowProfileMutation = useUnfollowProfile();
@@ -60,8 +71,41 @@ const ProfileNavbar = ({ links, profileData }) => {
     navigate(`/inbox/${username}`);
   };
 
+  const handleSendCollabClick = () => {
+    setIsCollabModalOpen(true);
+  };
+
+  const handleSendCollabRequest = (story_id) => {
+    requestCollab(story_id, profileData.profile._id);
+  };
+
   return (
     <StyledProfileNavbar>
+      <ModalCenter
+        isOpen={isCollabModalOpen}
+        setIsOpen={setIsCollabModalOpen}
+        width={"600px"}
+        content={
+          <div className="collab-modal">
+            <h3 className="collab-title">{username}'s Stories</h3>
+            {profileData.profile.stories.map((story) => {
+              return (
+                <div className="collab-stories-row">
+                  <Story story={story} />
+                  <button
+                    onClick={() => handleSendCollabRequest(story._id)}
+                    className="btn"
+                    type="button"
+                  >
+                    Ask to collaborate
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        }
+      />
+
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
       <div className="media-container parent">
         <OrangeLinks links={links} className="orange-links" />
@@ -75,6 +119,9 @@ const ProfileNavbar = ({ links, profileData }) => {
           </button>
         ) : (
           <div className="buttons">
+            <button onClick={handleSendCollabClick} className="btn">
+              Send Collab Request
+            </button>
             {profileData.isFollowing ? (
               <button
                 onClick={handleUnfollowClick}
@@ -120,5 +167,48 @@ const ProfileNavbar = ({ links, profileData }) => {
     </StyledProfileNavbar>
   );
 };
+
+function Story({ story }) {
+  return (
+    <div className="story-card-minimal">
+      <div className="cover">
+        <Cover filename={story._id} width="80px" />
+      </div>
+      <div className="content">
+        <div className="title">{story.title}</div>
+        <div className="meta-data">
+          <div>
+            <div className="icon">
+              <GoEye />
+            </div>
+            <div className="count">{story.views}</div>
+          </div>
+          <div>
+            <div className="icon">
+              <BsFillStarFill />
+            </div>
+            <div className="count">{story.votesCount.upvotes}</div>
+          </div>
+          <div>
+            <div className="icon">
+              <AiFillDislike />
+            </div>
+            <div className="count">{story.votesCount.downvotes}</div>
+          </div>
+          <div>
+            <div className="icon">
+              <AiOutlineBars />
+            </div>
+            <div className="count">{story.chapters.length}</div>
+          </div>
+        </div>
+        <div className="description">
+          {story.description.slice(0, 286)}
+          {story.description.length > 286 && "..."}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default ProfileNavbar;

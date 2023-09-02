@@ -23,6 +23,7 @@ import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import he from "he";
+import { v4 as uuidv4 } from "uuid";
 
 const window = new JSDOM("").window;
 const DOMPurifySanitizer = DOMPurify(window);
@@ -32,6 +33,7 @@ const __dirname = dirname(__filename);
 
 import checkPermissions from "../utils/checkPermissions.js";
 import Trie from "../utils/Trie.js";
+import Fork from "../db/models/Fork.js";
 
 const getTags = async (req, res) => {
   try {
@@ -218,7 +220,6 @@ const createStory = async (req, res) => {
 
     const chapter = await Chapter.create({
       content: "",
-      story: story._id,
       author: req.user.userId,
     });
 
@@ -451,7 +452,7 @@ const saveChapter = async (req, res) => {
     const { title, paragraphContents } = req.body;
 
     //backend sanitizes by default. unsanitize it
-    const decodedParagraphContents = paragraphContents.map((content) =>
+    const decodedParagraphContents = paragraphContents?.map((content) =>
       he.decode(content)
     );
 
@@ -462,9 +463,10 @@ const saveChapter = async (req, res) => {
 
     for (let paragraphId of chapterObj.paragraphs) {
       const paragraph = await Paragraph.findById(paragraphId);
-
-      for (let commentId of paragraph.comments) {
-        await deleteCommentAndSubcomments(commentId);
+      if (paragraph) {
+        for (let commentId of paragraph.comments) {
+          await deleteCommentAndSubcomments(commentId);
+        }
       }
 
       await Paragraph.findByIdAndRemove(paragraphId);
@@ -497,10 +499,49 @@ const saveChapter = async (req, res) => {
     chapterObj.title = title;
     chapterObj.content = content;
     chapterObj.paragraphs = paragraphs;
+
+    const history = {};
+    history._id = uuidv4();
+    history.title = title;
+    history.content = content;
+    history.paragraphs = paragraphs;
+    history.createdAt = new Date();
+
+    chapterObj.history.push(history);
     await chapterObj.save();
 
     res.status(StatusCodes.OK).json({ updatedChapter: chapterObj });
   } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const restoreChapterHistory = async (req, res) => {
+  try {
+    const { story_id, chapter_id } = req.params;
+    const { history_id } = req.body;
+
+    const chapter = await Chapter.findOne({
+      _id: chapter_id,
+      author: req.user.userId,
+    });
+
+    console.log(history_id);
+
+    const history = chapter.history.find((h) => h._id === history_id);
+
+    console.log(history);
+
+    chapter.title = history.title;
+    chapter.content = history.content;
+    chapter.paragraphs = history.paragraphs;
+
+    await chapter.save();
+
+    res.status(StatusCodes.OK).json({ updatedChapter: chapter });
+  } catch (error) {
+    console.log(error);
     throw new Error(error.message);
   }
 };
@@ -571,14 +612,8 @@ const createChapter = async (req, res) => {
     const chapter = await Chapter.create({
       content: "",
       author: req.user.userId,
-      story: story._id,
     });
 
-    /* 
-if you don't need the updated document, 
-then "updateOne" will be a more efficient choice 
-as it will consume fewer resources than the "findOneAndUpdate" 
-*/
     story.chapters.push(chapter._id);
     await story.save();
 
@@ -634,6 +669,101 @@ const unpublishChapter = async (req, res) => {
   }
 };
 
+const grantCollaboratorAccess = async (req, res) => {
+  try {
+    console.log("GRANTINGGGGGGG");
+    const { story_id, user_id } = req.params;
+    const user = await User.findById(user_id);
+    const mainUser = await User.findById(req.user.userId);
+
+    if (user_id === req.user.userId) {
+      throw new Error("You cannot grant yourself collaborator access.");
+    }
+
+    if (user.forkedStories.find((f) => f.story == story_id)) {
+      throw new Error("This user is already a collaborator.");
+    }
+
+    const story = await Story.findById(story_id, null, {
+      excludeVisibilityCheck: true,
+    }).populate("chapters");
+
+    const newChapters = await Promise.all(
+      story.chapters.map(async (chapter) => {
+        const chapterData = chapter.toObject();
+        delete chapterData._id;
+        const newChapter = new Chapter({
+          ...chapterData,
+          author: req.user.userId,
+        });
+        return newChapter.save();
+      })
+    );
+
+    const newChapterIds = newChapters.map((chapter) => chapter._id);
+
+    story.collaborators.push(user_id);
+    await story.save();
+
+    const newFork = await Fork.create({
+      story: story_id,
+      collaborator: user_id,
+      chapters: newChapterIds,
+    });
+
+    const fork = await Fork.findById(newFork._id).populate(
+      "story collaborator"
+    );
+
+    user.forkedStories.push(fork._id);
+    user.pendingForkRequests = user.pendingForkRequests.filter(
+      (r) => r._id != story_id
+    );
+    mainUser.collabRequests = mainUser.collabRequests.filter(
+      (c) => !(c.story._id == story_id && c.user._id == user_id)
+    );
+
+    await user.save();
+    await mainUser.save();
+
+    res.status(StatusCodes.OK).json({ fork: fork });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const revokeCollaboratorAccess = async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const getPendingForkRequests = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    res
+      .status(StatusCodes.OK)
+      .json({ pendingForkRequests: user.pendingForkRequests });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const getCollabRequests = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    console.log(user.collabRequests);
+    res.status(StatusCodes.OK).json({ collabRequests: user.collabRequests });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 export {
   getMyStories,
   createStory,
@@ -641,6 +771,7 @@ export {
   getMyChapters,
   editChapter,
   saveChapter,
+  restoreChapterHistory,
   createChapter,
   getMyStory,
   updateStory,
@@ -648,6 +779,10 @@ export {
   publishChapter,
   unpublishChapter,
   getTags,
+  grantCollaboratorAccess,
+  revokeCollaboratorAccess,
+  getPendingForkRequests,
+  getCollabRequests,
 };
 
 /* 
