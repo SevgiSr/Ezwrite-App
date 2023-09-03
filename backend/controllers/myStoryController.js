@@ -762,17 +762,31 @@ const getCollabRequests = async (req, res) => {
   }
 };
 
-// when I merge, private chapters become visible to me because I reigistered myself as author of that chapter.
-// but even then when I click on chapter it gives error
 const mergeFork = async (req, res) => {
   try {
     const { fork_id } = req.params;
-    const fork = await Fork.findById(fork_id);
+    const fork = await Fork.findById(fork_id).populate("chapters");
     const story = await Story.findById(fork.story);
     const user = await User.findById(req.user.userId);
 
     story.forkHistory.push(story.chapters);
-    story.chapters = fork.chapters;
+
+    // create new chaptrs, dont assign fork chapters to story chapters directly
+    // or from now on the collaborator will be able to change chapters without pull request
+    const newChapters = await Promise.all(
+      fork.chapters.map(async (chapter) => {
+        const chapterData = chapter.toObject();
+        delete chapterData._id;
+        const newChapter = new Chapter(chapterData);
+        newChapter.author = req.user.userId;
+        return newChapter.save();
+      })
+    );
+
+    const newChapterIds = newChapters.map((chapter) => chapter._id);
+
+    story.chapters = newChapterIds;
+
     user.pullRequests = user.pullRequests.filter((p) => p !== fork_id);
 
     await story.save();
