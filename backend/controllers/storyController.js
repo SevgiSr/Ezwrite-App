@@ -16,11 +16,11 @@ function populateStory(mode) {
     path: "story",
     populate: [
       { path: "author" },
-      { path: "tags" },
       {
         path: "chapters",
         select: "title votesCount views",
       },
+      { path: "tags" },
       {
         path: "comments",
         populate: [

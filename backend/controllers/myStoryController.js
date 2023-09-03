@@ -762,6 +762,8 @@ const getCollabRequests = async (req, res) => {
   }
 };
 
+// when I merge, private chapters become visible to me because I reigistered myself as author of that chapter.
+// but even then when I click on chapter it gives error
 const mergeFork = async (req, res) => {
   try {
     const { fork_id } = req.params;

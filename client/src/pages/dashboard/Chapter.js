@@ -539,6 +539,7 @@ function StoryDropdown() {
         menu={
           <>
             {state.story.chapters?.map((chapter) => {
+              console.log(chapter);
               return (
                 <Link
                   className="link"
