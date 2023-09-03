@@ -87,6 +87,7 @@ export const MyForkProvider = ({ children }) => {
     chapter_id
   ) => {
     try {
+      console.log("saving fork");
       await authFetch.patch(`/myForks/${fork_id}/${chapter_id}`, {
         title,
         paragraphContents,
@@ -122,6 +123,15 @@ export const MyForkProvider = ({ children }) => {
   const deleteForkChapter = async (fork_id, chapter_id) => {
     try {
       await authFetch.delete(`/myForks/${fork_id}/${chapter_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const sendPullRequest = async (fork_id) => {
+    try {
+      await authFetch.patch(`/myForks/pull/${fork_id}`);
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -216,6 +226,7 @@ export const MyForkProvider = ({ children }) => {
         mutationState,
         setEditForkChapter,
         forkState,
+        sendPullRequest,
 
         useDeleteFork,
         useSaveForkChapter,

@@ -684,18 +684,14 @@ const grantCollaboratorAccess = async (req, res) => {
       throw new Error("This user is already a collaborator.");
     }
 
-    const story = await Story.findById(story_id, null, {
-      excludeVisibilityCheck: true,
-    }).populate("chapters");
+    const story = await Story.findById(story_id).populate("chapters");
 
     const newChapters = await Promise.all(
       story.chapters.map(async (chapter) => {
         const chapterData = chapter.toObject();
         delete chapterData._id;
-        const newChapter = new Chapter({
-          ...chapterData,
-          author: req.user.userId,
-        });
+        const newChapter = new Chapter(chapterData);
+        newChapter.author = user_id;
         return newChapter.save();
       })
     );
@@ -757,7 +753,32 @@ const getCollabRequests = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     console.log(user.collabRequests);
+    user.pullRequests = [];
+    await user.save();
     res.status(StatusCodes.OK).json({ collabRequests: user.collabRequests });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const mergeFork = async (req, res) => {
+  try {
+    const { fork_id } = req.params;
+    const fork = await Fork.findById(fork_id);
+    const story = await Story.findById(fork.story);
+    const user = await User.findById(req.user.userId);
+
+    story.forkHistory.push(story.chapters);
+    story.chapters = fork.chapters;
+    user.pullRequests = user.pullRequests.filter((p) => p !== fork_id);
+
+    await story.save();
+    await user.save();
+
+    console.log(user.pullRequests);
+
+    res.status(StatusCodes.OK).json({ story });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);
@@ -783,6 +804,7 @@ export {
   revokeCollaboratorAccess,
   getPendingForkRequests,
   getCollabRequests,
+  mergeFork,
 };
 
 /* 

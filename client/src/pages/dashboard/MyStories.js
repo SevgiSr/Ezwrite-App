@@ -1,7 +1,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
-import { MyStory } from "../../components";
+import { MyStory, Story, UserLine } from "../../components";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import StyledMyStories from "./styles/MyStories.styled";
 import { ImBooks } from "react-icons/im";
@@ -9,6 +9,7 @@ import { UserContext } from "../../context/userContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ColorRing, Dna, FallingLines } from "react-loader-spinner";
 import OrangeLinks from "../../components/OrangeLinks";
+import { MyForkContext } from "../../context/myForkContext";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
@@ -50,6 +51,10 @@ function MyStories({ show }) {
                 label: "Collaboration Requests",
                 handleClick: () => setActiveTab("collabs"),
               },
+              {
+                label: "Pull Requests",
+                handleClick: () => setActiveTab("pulls"),
+              },
             ]}
           />
           {mutationState.isLoading && (
@@ -77,6 +82,7 @@ function MyStories({ show }) {
         <Stories myStories={myStories} isLoading={isLoading} />
       )}
       {activeTab === "collabs" && <Collabs />}
+      {activeTab === "pulls" && <Pulls />}
     </StyledMyStories>
   );
 }
@@ -149,6 +155,40 @@ function Collabs() {
             <button onClick={() => handleAcceptRequestClick(c)}>
               Accept Request
             </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Pulls() {
+  const { getPullRequests, mergeFork } = useContext(MyStoryContext);
+  const navigate = useNavigate();
+  const { data: pullRequests = [], isLoading } = useQuery(
+    ["pullRequests"],
+    getPullRequests,
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const handleMergeChanges = async (fork) => {
+    await mergeFork(fork._id);
+    navigate(`/myworks/${fork.story._id}/${fork.story.chapters[0]}/writing`);
+  };
+
+  if (isLoading) return null;
+
+  return (
+    <div className="pull-requests">
+      {pullRequests.map((p) => {
+        return (
+          <div key={p._id}>
+            <UserLine user={p.collaborator} />
+            <span>wants to propose these changes to you story</span>
+            <Story story={p.story} />
+            <button onClick={() => handleMergeChanges(p)}>Merge Changes</button>
           </div>
         );
       })}

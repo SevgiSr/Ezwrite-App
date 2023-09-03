@@ -391,6 +391,26 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
+  const getPullRequests = async (fork_id) => {
+    try {
+      const { data } = await authFetch.get(`/myForks/pull/${fork_id}`);
+      const { forks } = data;
+      return forks;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const mergeFork = async (fork_id) => {
+    try {
+      await authFetch.patch(`/myStories/collaborations/forks/${fork_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   return (
     <MyStoryContext.Provider
       value={{
@@ -411,6 +431,8 @@ export const MyStoryProvider = ({ children }) => {
         getCollabRequests,
         getPendingForkRequests,
         grantCollaboratorAccess,
+        getPullRequests,
+        mergeFork,
 
         useCreateStory,
         useDeleteStory,

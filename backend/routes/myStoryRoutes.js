@@ -19,6 +19,7 @@ import {
   revokeCollaboratorAccess,
   getPendingForkRequests,
   getCollabRequests,
+  mergeFork,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -103,6 +104,7 @@ router.route("/delete/:story_id").delete(deleteStory);
 router.route("/edit/:story_id").get(getMyStory);
 // collabs
 
+router.route("/collaborations/forks/:fork_id").patch(mergeFork);
 router
   .route("/collaborations/:story_id/user/:user_id")
   .patch(grantCollaboratorAccess)

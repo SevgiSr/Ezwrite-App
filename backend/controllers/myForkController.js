@@ -72,6 +72,7 @@ const deleteFork = async (req, res) => {
 };
 const saveChapter = async (req, res) => {
   try {
+    console.log("save chapteer");
     const { title, paragraphContents } = req.body;
 
     //backend sanitizes by default. unsanitize it
@@ -83,15 +84,17 @@ const saveChapter = async (req, res) => {
       _id: req.params.chapter_id,
       author: req.user.userId,
     });
+    console.log(chapterObj);
 
-    for (let paragraphId of chapterObj.paragraphs) {
+    for (let paragraphId of chapterObj?.paragraphs) {
       await Paragraph.findByIdAndRemove(paragraphId);
     }
+
     //if text is sanitized innerHTML will turn them into their original shape but in string
     // &lt; => ">"  (innerHTML)
     //if text actually looks like a tag "<p></p>" innerHTML will trun it into an actual tag
     //that's why you should sanitize user input and not sanitize the styling tags
-    const paragraphs = await decodedParagraphContents.map((content) => {
+    const paragraphs = await decodedParagraphContents?.map((content) => {
       let cleanContent = DOMPurifySanitizer.sanitize(content, {
         ALLOWED_TAGS: ["h2", "b", "u", "i", "br", "p"],
       });
@@ -213,6 +216,33 @@ const restoreChapterHistory = async (req, res) => {
   }
 };
 
+const sendPullRequest = async (req, res) => {
+  try {
+    const { fork_id } = req.params;
+    const fork = await Fork.findById(fork_id).populate("story");
+    const user = await User.findById(fork.story.author);
+    user.pullRequests.push(fork_id);
+    await user.save();
+    res.status(StatusCodes.OK).json({ msg: "request sent!" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const getPullRequests = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    const forks = await Fork.find({ _id: { $in: user.pullRequests } }).populate(
+      "story collaborator chapters"
+    );
+    res.status(StatusCodes.OK).json({ forks });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 export {
   getMyForks,
   deleteFork,
@@ -220,4 +250,6 @@ export {
   deleteChapter,
   createChapter,
   restoreChapterHistory,
+  sendPullRequest,
+  getPullRequests,
 };

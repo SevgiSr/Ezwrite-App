@@ -142,12 +142,17 @@ function StoriesFallback() {
 }
 
 function MyFork({ fork }) {
-  const { useDeleteFork } = useContext(MyForkContext);
+  const { useDeleteFork, sendPullRequest } = useContext(MyForkContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const deleteForkMutation = useDeleteFork();
   const handleDeleteClick = () => {
     deleteForkMutation.mutate({ fork_id: fork._id });
   };
+
+  const handleSendPullRequest = () => {
+    sendPullRequest(fork._id);
+  };
+
   return (
     <div className="my-fork">
       <div className="cover">
@@ -164,12 +169,17 @@ function MyFork({ fork }) {
       </div>
       <div className="buttons">
         <div>
+          <button onClick={handleSendPullRequest}>
+            Send Updates to Author
+          </button>
+        </div>
+        <div>
           <DropdownMenu
             buttonClass="orange-button btn story-btn"
             menuClass="chapters-dropdown"
             button={
               <>
-                <span className="text">Edit Story</span>
+                <span className="text">Edit Fork</span>
                 <span className="down-icon">
                   <FiChevronDown />
                 </span>
@@ -209,7 +219,7 @@ function MyFork({ fork }) {
                   setIsModalOpen(true);
                 }}
               >
-                Delete Story
+                Delete Fork
               </div>
             </div>
           }

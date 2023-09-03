@@ -42,6 +42,7 @@ const UserSchema = new mongoose.Schema(
     ],
     collabRequests: { type: Array, default: [] },
     pendingForkRequests: { type: Array, default: [] },
+    pullRequests: { type: Array, default: [] },
     comments: [
       {
         type: mongoose.Types.ObjectId,

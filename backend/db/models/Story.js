@@ -48,12 +48,9 @@ const StorySchema = new mongoose.Schema(
         ref: "Fork",
       },
     ],
-    forkHistory: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Fork",
-      },
-    ],
+    forkHistory: {
+      type: Array,
+    },
 
     progress: [
       {
