@@ -168,24 +168,6 @@ const getMyStories = async (req, res) => {
   }
 };
 
-const getMyStory = async (req, res) => {
-  try {
-    const myStory = await Story.findOne(
-      { _id: req.params.story_id, author: req.user.userId },
-      null,
-      {
-        excludeVisibilityCheck: true,
-      }
-    ).populate({
-      path: "author chapters tags",
-    });
-
-    res.status(StatusCodes.OK).json({ myStory });
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
-
 const createStory = async (req, res) => {
   try {
     console.log("creating story");
@@ -400,48 +382,6 @@ const updateStory = async (req, res) => {
     console.log(story.tags.map((tag) => tag.name));
 
     res.status(StatusCodes.CREATED).json({ story });
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
-
-const getMyChapters = async (req, res) => {
-  try {
-    const story = await Story.findOne(
-      { _id: req.params.id, author: req.user.userId },
-      null,
-      {
-        excludeVisibilityCheck: true,
-      }
-    ).populate({
-      path: "chapters",
-      select: "title",
-    });
-
-    res.status(StatusCodes.OK).json({ story });
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
-
-const editChapter = async (req, res) => {
-  try {
-    const story = await Story.findOne(
-      { _id: req.params.story_id, author: req.user.userId },
-      null,
-      {
-        excludeVisibilityCheck: true,
-      }
-    ).populate({
-      path: "chapters",
-      select: "title content",
-    });
-
-    const chapter = story.chapters.find(
-      (chapter) => String(chapter._id) === req.params.chapter_id
-    );
-
-    res.status(StatusCodes.OK).json({ story, chapter });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -805,12 +745,9 @@ export {
   getMyStories,
   createStory,
   deleteStory,
-  getMyChapters,
-  editChapter,
   saveChapter,
   restoreChapterHistory,
   createChapter,
-  getMyStory,
   updateStory,
   deleteChapter,
   publishChapter,

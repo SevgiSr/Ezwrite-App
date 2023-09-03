@@ -3,11 +3,8 @@ const router = express.Router();
 import {
   createStory,
   getMyStories,
-  getMyChapters,
-  editChapter,
   saveChapter,
   createChapter,
-  getMyStory,
   updateStory,
   deleteStory,
   deleteChapter,
@@ -101,7 +98,6 @@ router.route("/collaborations/collabRequests").get(getCollabRequests);
 // Routes that include specific actions should come first
 router.route("/update/:story_id").post(updateStory);
 router.route("/delete/:story_id").delete(deleteStory);
-router.route("/edit/:story_id").get(getMyStory);
 // collabs
 
 router.route("/collaborations/forks/:fork_id").patch(mergeFork);
@@ -111,17 +107,13 @@ router
   .delete(revokeCollaboratorAccess);
 
 // Then we have routes that also include chapter id
-router
-  .route("/:story_id/:chapter_id")
-  .get(editChapter)
-  .patch(saveChapter)
-  .delete(deleteChapter);
+router.route("/:story_id/:chapter_id").patch(saveChapter).delete(deleteChapter);
 router.route("/publish/:story_id/:chapter_id").patch(publishChapter);
 router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
 router.route("/history/:story_id/:chapter_id").patch(restoreChapterHistory);
 
 // Then the more general routes with only story id
-router.route("/:story_id").get(getMyChapters).patch(createChapter);
+router.route("/:story_id").patch(createChapter);
 
 // And finally, the most general path
 

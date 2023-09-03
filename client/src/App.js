@@ -5,7 +5,6 @@ import {
   Landing,
   Register,
   NewStory,
-  MyStoryChapters,
   EditStoryDetails,
   ProtectedRoute,
 } from "./pages";
