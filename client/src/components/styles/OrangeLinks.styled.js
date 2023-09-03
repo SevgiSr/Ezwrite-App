@@ -31,6 +31,11 @@ const StyledOrangeLinks = styled.nav`
       font-weight: 700;
       border-bottom: 4px solid #ff6122;
     }
+
+    .active {
+      font-weight: 700;
+      border-bottom: 4px solid #ff6122;
+    }
   }
 `;
 

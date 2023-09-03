@@ -1,15 +1,25 @@
 import styled from "styled-components";
 import OrangeLinks from "../../components/OrangeLinks";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 function WorkspaceLayout() {
+  const location = useLocation();
+  const tab = location.pathname.split("/")[2];
   return (
     <StyledWorkspaceLayout>
       <nav className="main-nav">
         <OrangeLinks
           links={[
-            { label: "My Works", to: "myStories" },
-            { label: "My Forks", to: "forks" },
+            {
+              label: "My Works",
+              to: "myStories/stories",
+              active: tab === "myStories",
+            },
+            {
+              label: "My Forks",
+              to: "myForks/forks",
+              active: tab === "myForks",
+            },
           ]}
         />
       </nav>
@@ -31,7 +41,7 @@ const StyledWorkspaceLayout = styled.div`
     align-items: center;
     padding: 5px 0;
     .link {
-      font-size: 20px;
+      font-size: 23px;
     }
   }
 

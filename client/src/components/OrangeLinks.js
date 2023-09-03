@@ -12,7 +12,7 @@ const OrangeLinks = ({ links }) => {
             <NavLink
               key={links.indexOf(link)}
               to={link.to}
-              className="link"
+              className={"link " + (link.active && "active")}
               onClick={link.handleClick}
             >
               {link.label}

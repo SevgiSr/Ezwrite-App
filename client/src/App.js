@@ -4,7 +4,6 @@ import {
   Writing,
   Landing,
   Register,
-  MyStories,
   NewStory,
   MyStoryChapters,
   EditStoryDetails,
@@ -34,6 +33,12 @@ import {
   Browse,
   WorkspaceLayout,
   MyForks,
+  ForkedStories,
+  Pending,
+  MyStories,
+  Stories,
+  Collabs,
+  Pulls,
 } from "./pages/dashboard";
 
 function App() {
@@ -58,8 +63,15 @@ function App() {
             <Route path="activity" element={<Activity />} />
           </Route>
           <Route path="/workspace" element={<WorkspaceLayout />}>
-            <Route path="myStories" element={<MyStories />} />
-            <Route path="forks" element={<MyForks />} />
+            <Route path="myStories" element={<MyStories />}>
+              <Route path="stories" element={<Stories />} />
+              <Route path="collab-requests" element={<Collabs />} />
+              <Route path="pull-requests" element={<Pulls />} />
+            </Route>
+            <Route path="myForks" element={<MyForks />}>
+              <Route path="forks" element={<ForkedStories />} />
+              <Route path="pending" element={<Pending />} />
+            </Route>
           </Route>
           <Route path="/library" element={<Library />} />
           <Route path="/list/:list_id" element={<ReadingList />} />

@@ -2,7 +2,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
 import { MyStory, Story, UserLine } from "../../components";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import StyledMyStories from "./styles/MyStories.styled";
 import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
@@ -13,23 +13,14 @@ import { MyForkContext } from "../../context/myForkContext";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
-  const { storyState, getMyStories, mutationState, getMyForks } =
-    useContext(MyStoryContext);
-  const { userState } = useContext(UserContext);
-  const [activeTab, setActiveTab] = useState("stories");
+  const { mutationState } = useContext(MyStoryContext);
+  const location = useLocation();
+  const tab = location.pathname.split("/")[3];
 
   //staleTime is infitiy so that is stays fresh until mutation
   //because this data will not be updated unless user updated it himself
   //now it does not have to make backend request each time this component is rendered
   //and it will not make slow backend requests when user navigates between stories
-  const { data: myStories = [], isLoading } = useQuery(
-    ["myStories"],
-    getMyStories,
-    {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-    }
-  );
 
   return (
     <StyledMyStories>
@@ -45,15 +36,18 @@ function MyStories({ show }) {
             links={[
               {
                 label: "My Stories",
-                handleClick: () => setActiveTab("stories"),
+                to: "stories",
+                active: tab === "stories",
               },
               {
                 label: "Collaboration Requests",
-                handleClick: () => setActiveTab("collabs"),
+                to: "collab-requests",
+                active: tab === "collab-requests",
               },
               {
                 label: "Pull Requests",
-                handleClick: () => setActiveTab("pulls"),
+                to: "pull-requests",
+                active: tab === "pull-requests",
               },
             ]}
           />
@@ -78,18 +72,25 @@ function MyStories({ show }) {
           + Create story
         </button>
       </nav>
-      {activeTab === "stories" && (
-        <Stories myStories={myStories} isLoading={isLoading} />
-      )}
-      {activeTab === "collabs" && <Collabs />}
-      {activeTab === "pulls" && <Pulls />}
+      <Outlet />
     </StyledMyStories>
   );
 }
 
-function Stories({ myStories, isLoading }) {
+function Stories() {
   const { userState } = useContext(UserContext);
+  const { getMyStories } = useContext(MyStoryContext);
   const navigate = useNavigate();
+  const { data: myStories = [], isLoading } = useQuery(
+    ["myStories"],
+    getMyStories,
+    {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    }
+  );
+
+  if (isLoading) return null;
   return (
     <div>
       {!isLoading && myStories.length === 0 ? (
@@ -209,4 +210,4 @@ function StoriesFallback() {
   );
 }
 
-export default MyStories;
+export { MyStories, Stories, Collabs, Pulls };

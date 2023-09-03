@@ -10,8 +10,9 @@ import Settings from "./Settings";
 import Library from "./Library";
 import ReadingList from "./ReadingList";
 import Browse from "./Browse";
-import MyForks from "./MyForks";
 import WorkspaceLayout from "./WorkspaceLayout";
+import { MyStories, Stories, Collabs, Pulls } from "./MyStories";
+import { MyForks, ForkedStories, Pending } from "./MyForks";
 
 export {
   Home,
@@ -28,4 +29,10 @@ export {
   Browse,
   MyForks,
   WorkspaceLayout,
+  MyStories,
+  Stories,
+  Collabs,
+  Pulls,
+  ForkedStories,
+  Pending,
 };

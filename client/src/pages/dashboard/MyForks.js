@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import StyledMyForks from "./styles/MyForks.styled";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
 import OrangeLinks from "../../components/OrangeLinks";
@@ -16,16 +16,10 @@ import { FaTrashAlt } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 
 function MyForks() {
-  const { getMyForks } = useContext(MyForkContext);
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("forks");
+  const location = useLocation();
+  const tab = location.pathname.split("/")[3];
 
-  const { data: myForks = [], isLoading } = useQuery(["myForks"], getMyForks, {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  });
-
-  if (isLoading) return null;
   return (
     <StyledMyForks>
       <nav>
@@ -38,10 +32,11 @@ function MyForks() {
         >
           <OrangeLinks
             links={[
-              { label: "My Forks", handleClick: () => setActiveTab("forks") },
+              { label: "My Forks", to: "forks", active: tab === "forks" },
               {
                 label: "Pending Fork Requests",
-                handleClick: () => setActiveTab("pending"),
+                to: "pending",
+                active: tab === "pending",
               },
             ]}
           />
@@ -53,17 +48,21 @@ function MyForks() {
           + Create story
         </button>
       </nav>
-      {activeTab === "forks" && (
-        <ForkedStories myForks={myForks} isLoading={isLoading} />
-      )}
-      {activeTab === "pending" && <Pending />}
+      <Outlet />
     </StyledMyForks>
   );
 }
 
-function ForkedStories({ myForks, isLoading }) {
+function ForkedStories() {
+  const { getMyForks } = useContext(MyForkContext);
   const { userState } = useContext(UserContext);
-  const navigate = useNavigate();
+
+  const { data: myForks = [], isLoading } = useQuery(["myForks"], getMyForks, {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
+
+  if (isLoading) return null;
   return (
     <div>
       {!isLoading && myForks.length === 0 ? (
@@ -263,4 +262,4 @@ function MyFork({ fork }) {
   );
 }
 
-export default MyForks;
+export { MyForks, ForkedStories, Pending };

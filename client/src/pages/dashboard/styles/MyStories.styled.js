@@ -29,6 +29,7 @@ const StyledMyStories = styled.div`
   .no-stories {
     padding: 30px 50px;
     background-color: var(--background5);
+    text-align: center;
 
     .text {
       font-size: 24px;
