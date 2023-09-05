@@ -255,19 +255,6 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const getPendingForkRequests = async () => {
-    try {
-      const { data } = await authFetch.get(
-        `/myStories/collaborations/pendingForkRequests`
-      );
-      const { pendingForkRequests } = data;
-      console.log(pendingForkRequests);
-      return pendingForkRequests;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getCollabRequests = async () => {
     try {
       const { data } = await authFetch.get(
@@ -429,7 +416,6 @@ export const MyStoryProvider = ({ children }) => {
         updateStory,
         sendGptPrompt,
         getCollabRequests,
-        getPendingForkRequests,
         grantCollaboratorAccess,
         getPullRequests,
         mergeFork,

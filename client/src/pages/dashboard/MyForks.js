@@ -108,7 +108,7 @@ function ForkedStories() {
 }
 
 function Pending() {
-  const { getPendingForkRequests } = useContext(MyStoryContext);
+  const { getPendingForkRequests } = useContext(MyForkContext);
   const { userState } = useContext(UserContext);
   const { data: myPendingRequests = [], isLoading } = useQuery(
     ["pendingForkRequests"],

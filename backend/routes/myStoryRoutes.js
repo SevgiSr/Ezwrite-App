@@ -14,7 +14,6 @@ import {
   restoreChapterHistory,
   grantCollaboratorAccess,
   revokeCollaboratorAccess,
-  getPendingForkRequests,
   getCollabRequests,
   mergeFork,
 } from "../controllers/myStoryController.js";
@@ -92,7 +91,6 @@ router.use((req, res, next) => {
 
 router.route("/suggestions").get(getTags);
 
-router.route("/collaborations/pendingForkRequests").get(getPendingForkRequests);
 router.route("/collaborations/collabRequests").get(getCollabRequests);
 
 // Routes that include specific actions should come first

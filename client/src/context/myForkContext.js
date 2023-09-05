@@ -60,6 +60,17 @@ export const MyForkProvider = ({ children }) => {
       console.log(error);
     }
   };
+  const getPendingForkRequests = async () => {
+    try {
+      const { data } = await authFetch.get(`/myForks/pending`);
+      const { pendingForkRequests } = data;
+      console.log(pendingForkRequests);
+      return pendingForkRequests;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteFork = async (fork_id) => {
     try {
       await authFetch.delete(`/myForks/delete/${fork_id}`);
@@ -227,6 +238,7 @@ export const MyForkProvider = ({ children }) => {
         setEditForkChapter,
         forkState,
         sendPullRequest,
+        getPendingForkRequests,
 
         useDeleteFork,
         useSaveForkChapter,

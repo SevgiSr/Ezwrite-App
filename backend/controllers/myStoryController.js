@@ -300,6 +300,45 @@ const deleteStory = async (req, res) => {
         }
       }
 
+      //find the user that's author of story
+      const author = await User.findById(req.user.userId);
+
+      //delete all forks story has, pull those fork id's from every users' forkedStories field.
+      if (story?.forks) {
+        for (let forkId of story.forks) {
+          const fork = await Fork.findById(forkId);
+          // remove forkedStories for that story
+          await User.updateOne(
+            { _id: fork.collaborator },
+            {
+              $pull: { forkedStories: fork._id },
+            }
+          );
+          //remove pullRequests for every fork for that story
+          author.pullRequests = author.pullRequests.filter(
+            (p) => p.toString() !== fork._id.toString()
+          );
+          await author.save();
+          await fork.delete();
+        }
+      }
+
+      //remove pendingForkRequests for that story from 2nd user
+      await Promise.all(
+        author.collabRequests.map(async (c) => {
+          const user = await User.findById(c.user);
+          user.pendingForkRequests = user.pendingForkRequests.filter(
+            (storyId) => storyId.toString() !== story._id.toString()
+          );
+          await user.save();
+        })
+      );
+      //remove collabRequests for that story from me
+      author.collabRequests = author.collabRequests.filter(
+        (c) => c.story.toString() !== story._id.toString()
+      );
+      await author.save();
+
       await User.updateOne(
         { _id: req.user.userId },
         { $pull: { stories: story._id } }
@@ -489,9 +528,7 @@ const restoreChapterHistory = async (req, res) => {
 const deleteChapter = async (req, res) => {
   try {
     const { story_id, chapter_id } = req.params;
-    console.log("amkkkkkkkkkkkkkk");
-    console.log("deletiing");
-    console.log(story_id, chapter_id);
+
     const chapter = await Chapter.findOne({
       _id: chapter_id,
       author: req.user.userId,
@@ -509,9 +546,7 @@ const deleteChapter = async (req, res) => {
       await recalculateChapterCounts(story);
 
       for (let paragraphId of chapter.paragraphs) {
-        console.log(paragraphId);
         const paragraph = await Paragraph.findById(paragraphId);
-        console.log(paragraph);
 
         for (let commentId of paragraph?.comments) {
           await deleteCommentAndSubcomments(commentId);
@@ -611,10 +646,8 @@ const unpublishChapter = async (req, res) => {
 
 const grantCollaboratorAccess = async (req, res) => {
   try {
-    console.log("GRANTINGGGGGGG");
     const { story_id, user_id } = req.params;
-    const user = await User.findById(user_id);
-    const mainUser = await User.findById(req.user.userId);
+    const user = await User.findById(user_id).populate("forkedStories");
 
     if (user_id === req.user.userId) {
       throw new Error("You cannot grant yourself collaborator access.");
@@ -629,6 +662,7 @@ const grantCollaboratorAccess = async (req, res) => {
       populate: "paragraphs",
     });
 
+    //copy all the chapters without affecting original
     const newChapters = await Promise.all(
       story.chapters.map(async (chapter) => {
         // Deep clone the chapter object
@@ -655,31 +689,44 @@ const grantCollaboratorAccess = async (req, res) => {
 
     const newChapterIds = newChapters.map((chapter) => chapter._id);
 
-    story.collaborators.push(user_id);
-    await story.save();
-
+    //create fork
     const newFork = await Fork.create({
+      author: user_id,
       story: story_id,
       collaborator: user_id,
       chapters: newChapterIds,
     });
 
-    const fork = await Fork.findById(newFork._id).populate(
-      "story collaborator"
-    );
+    //add user as collaborator and fork to story
+    story.collaborators.push(user_id);
+    story.forks.push(newFork._id);
+    await story.save();
 
-    user.forkedStories.push(fork._id);
+    //save for user's forked stories
+    user.forkedStories.push(newFork._id);
+
+    //remove pending fork request since we're now collaborator
     user.pendingForkRequests = user.pendingForkRequests.filter(
-      (r) => r._id != story_id
-    );
-    mainUser.collabRequests = mainUser.collabRequests.filter(
-      (c) => !(c.story._id == story_id && c.user._id == user_id)
+      (storyId) => storyId.toString() !== story_id.toString()
     );
 
     await user.save();
-    await mainUser.save();
 
-    res.status(StatusCodes.OK).json({ fork: fork });
+    //remove collab request since we already approved it
+    await User.findByIdAndUpdate(
+      req.user.userId,
+      {
+        $pull: {
+          collabRequests: {
+            user: user_id,
+            story: story_id,
+          },
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(StatusCodes.OK).json({ fork: newFork });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);
@@ -694,24 +741,11 @@ const revokeCollaboratorAccess = async (req, res) => {
   }
 };
 
-const getPendingForkRequests = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId);
-    res
-      .status(StatusCodes.OK)
-      .json({ pendingForkRequests: user.pendingForkRequests });
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
-};
-
 const getCollabRequests = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
-    console.log(user.collabRequests);
-    user.pullRequests = [];
-    await user.save();
+    const user = await User.findById(req.user.userId).populate(
+      "collabRequests.story collabRequests.user"
+    );
     res.status(StatusCodes.OK).json({ collabRequests: user.collabRequests });
   } catch (error) {
     console.log(error);
@@ -744,12 +778,12 @@ const mergeFork = async (req, res) => {
 
     story.chapters = newChapterIds;
 
-    user.pullRequests = user.pullRequests.filter((p) => p !== fork_id);
+    user.pullRequests = user.pullRequests.filter(
+      (p) => p.toString() !== fork_id.toString()
+    );
 
     await story.save();
     await user.save();
-
-    console.log(user.pullRequests);
 
     res.status(StatusCodes.OK).json({ story });
   } catch (error) {
@@ -772,7 +806,6 @@ export {
   getTags,
   grantCollaboratorAccess,
   revokeCollaboratorAccess,
-  getPendingForkRequests,
   getCollabRequests,
   mergeFork,
 };

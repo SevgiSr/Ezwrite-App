@@ -6,6 +6,7 @@ import {
   deleteChapter,
   deleteFork,
   getMyForks,
+  getPendingForkRequests,
   getPullRequests,
   restoreChapterHistory,
   saveChapter,
@@ -21,6 +22,7 @@ import {
   getFork,
 } from "../controllers/forkController.js";
 
+router.route("/pending").get(getPendingForkRequests);
 router.route("/delete/:fork_id").delete(deleteFork);
 router.route("/pull/:fork_id").patch(sendPullRequest).get(getPullRequests);
 

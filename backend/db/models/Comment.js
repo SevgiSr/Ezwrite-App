@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// CHECKED: Gets deleted and pulled from referense correctly
 const CommentSchema = new mongoose.Schema(
   {
     author: {

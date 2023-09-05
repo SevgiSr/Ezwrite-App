@@ -30,6 +30,20 @@ const getMyForks = async (req, res) => {
   }
 };
 
+const getPendingForkRequests = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate(
+      "pendingForkRequests"
+    );
+    res
+      .status(StatusCodes.OK)
+      .json({ pendingForkRequests: user.pendingForkRequests });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 const deleteFork = async (req, res) => {
   try {
     const { fork_id } = req.params;
@@ -268,9 +282,9 @@ const sendPullRequest = async (req, res) => {
   try {
     const { fork_id } = req.params;
     const fork = await Fork.findById(fork_id).populate("story");
-    const user = await User.findById(fork.story.author);
-    user.pullRequests.push(fork_id);
-    await user.save();
+    const author = await User.findById(fork.story.author);
+    author.pullRequests.push(fork_id);
+    await author.save();
     res.status(StatusCodes.OK).json({ msg: "request sent!" });
   } catch (error) {
     console.log(error);
@@ -280,11 +294,13 @@ const sendPullRequest = async (req, res) => {
 
 const getPullRequests = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
-    const forks = await Fork.find({ _id: { $in: user.pullRequests } }).populate(
-      "story collaborator chapters"
-    );
-    res.status(StatusCodes.OK).json({ forks });
+    const user = await User.findById(req.user.userId).populate({
+      path: "pullRequests",
+      populate: "story collaborator chapters",
+      model: "Fork",
+    });
+
+    res.status(StatusCodes.OK).json({ forks: user.pullRequests });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);
@@ -293,6 +309,7 @@ const getPullRequests = async (req, res) => {
 
 export {
   getMyForks,
+  getPendingForkRequests,
   deleteFork,
   saveChapter,
   deleteChapter,

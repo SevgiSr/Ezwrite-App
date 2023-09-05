@@ -763,19 +763,21 @@ const requestCollab = async (req, res) => {
   try {
     const { story_id, user_id } = req.params;
     const mainUser = await User.findById(req.user.userId);
-    const reqUser = await User.findById(user_id);
-    const story = await Story.findById(story_id);
 
-    const request = { story: story, user: mainUser };
-    if (mainUser.pendingForkRequests.find((r) => r.story._id === story_id)) {
+    const request = { story: story_id, user: mainUser._id };
+    if (mainUser.pendingForkRequests.find((storyId) => storyId === story_id)) {
       throw new Error(
         "Your request has already been sent. Please wait until it gets evaluated by the author of this book."
       );
     }
-    mainUser.pendingForkRequests.push(story);
-    reqUser.collabRequests.push(request);
+    mainUser.pendingForkRequests.push(story_id);
     await mainUser.save();
-    await reqUser.save();
+
+    await User.updateOne(
+      { _id: user_id },
+      { $push: { collabRequests: request } },
+      { new: true, runValidators: true }
+    );
 
     res.status(StatusCodes.OK).json({ msg: "success" });
   } catch (error) {
