@@ -138,17 +138,6 @@ export const MyForkProvider = ({ children }) => {
     }
   };
 
-  const getFork = async (fork_id) => {
-    try {
-      const { data } = await authFetch.get(`/myForks/${fork_id}`);
-      const { fork } = data;
-      return fork;
-    } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
-    }
-  };
-
   /* MUTATIONS */
   const queryClient = useQueryClient();
 
@@ -238,7 +227,6 @@ export const MyForkProvider = ({ children }) => {
         setEditForkChapter,
         forkState,
         sendPullRequest,
-        getFork,
 
         useDeleteFork,
         useSaveForkChapter,

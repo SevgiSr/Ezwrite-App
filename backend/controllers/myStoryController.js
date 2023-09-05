@@ -71,7 +71,7 @@ const getTags = async (req, res) => {
   }
 };
 
-async function deleteCommentAndSubcomments(commentId) {
+export async function deleteCommentAndSubcomments(commentId) {
   const comment = await Comment.findById(commentId);
 
   if (comment) {

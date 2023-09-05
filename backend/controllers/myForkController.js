@@ -8,6 +8,8 @@ import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
+import { deleteCommentAndSubcomments } from "./myStoryController.js";
+import Vote from "../db/models/Vote.js";
 
 const window = new JSDOM("").window;
 const DOMPurifySanitizer = DOMPurify(window);
@@ -29,11 +31,12 @@ const getMyForks = async (req, res) => {
 };
 
 const deleteFork = async (req, res) => {
-  console.log("delete fork");
   try {
+    const { fork_id } = req.params;
+
     const fork = await Fork.findOne({
-      _id: req.params.fork_id,
-      collaborator: req.user.userId,
+      _id: fork_id,
+      author: req.user.userId,
     });
 
     if (fork) {
@@ -45,10 +48,39 @@ const deleteFork = async (req, res) => {
           if (chapter?.paragraphs) {
             //delete paragraphs and their comments
             for (let paragraphId of chapter.paragraphs) {
+              const paragraph = await Paragraph.findById(paragraphId);
+
+              if (paragraph?.comments) {
+                for (let commentId of paragraph.comments) {
+                  await deleteCommentAndSubcomments(commentId);
+                }
+              }
               await Paragraph.findByIdAndRemove(paragraphId);
             }
           }
+
+          if (chapter?.votes) {
+            //delete chapter cotes
+            for (let voteId of chapter.votes) {
+              await Vote.findByIdAndRemove(voteId);
+            }
+          }
+
+          if (chapter?.comments) {
+            //delete chapter comments
+            for (let commentId of chapter.comments) {
+              await deleteCommentAndSubcomments(commentId);
+            }
+          }
+
           await Chapter.findByIdAndRemove(chapterId);
+        }
+      }
+
+      if (fork?.comments) {
+        // Delete all comment documents
+        for (let commentId of fork.comments) {
+          await deleteCommentAndSubcomments(commentId);
         }
       }
 
@@ -58,8 +90,8 @@ const deleteFork = async (req, res) => {
       );
 
       await Story.updateOne(
-        { _id: req.user.userId },
-        { $pull: { forks: fork._id, collaborators: req.user.userId } }
+        { _id: fork.story },
+        { $pull: { collaborators: req.user.userId, forks: fork_id } }
       );
 
       await fork.delete();
@@ -70,6 +102,7 @@ const deleteFork = async (req, res) => {
     throw new Error(error.message);
   }
 };
+
 const saveChapter = async (req, res) => {
   try {
     console.log("save chapteer");
@@ -146,7 +179,7 @@ const deleteChapter = async (req, res) => {
     });
 
     if (chapter) {
-      await Fork.updateOne(
+      const fork = await Fork.findOneAndUpdate(
         { _id: fork_id },
         {
           $pull: { chapters: chapter._id },
@@ -155,7 +188,22 @@ const deleteChapter = async (req, res) => {
       );
 
       for (let paragraphId of chapter.paragraphs) {
+        const paragraph = await Paragraph.findById(paragraphId);
+
+        for (let commentId of paragraph?.comments) {
+          await deleteCommentAndSubcomments(commentId);
+        }
         await Paragraph.findByIdAndRemove(paragraphId);
+      }
+
+      //delete chapter cotes
+      for (let voteId of chapter.votes) {
+        await Vote.findByIdAndRemove(voteId);
+      }
+
+      //delete chapter comments
+      for (let commentId of chapter.comments) {
+        await deleteCommentAndSubcomments(commentId);
       }
 
       await chapter.delete();

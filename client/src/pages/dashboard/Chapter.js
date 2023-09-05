@@ -19,7 +19,7 @@ import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClipLoader, SyncLoader } from "react-spinners";
-import { MyForkContext } from "../../context/myForkContext";
+import { ForkContext } from "../../context/forkContext";
 
 function Chapter() {
   const {
@@ -34,7 +34,13 @@ function Chapter() {
     getProgress,
     setChapter,
   } = useContext(StoryContext);
-  const { getFork } = useContext(MyForkContext);
+  const {
+    useAddForkChapterConv,
+    useDeleteForkChapterConv,
+    useAddForkConvComment,
+    useDeleteForkConvComment,
+    getFork,
+  } = useContext(ForkContext);
 
   const { story_id, fork_id, chapter_id } = useParams();
   const location = useLocation();
@@ -197,11 +203,11 @@ function Chapter() {
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             sender={userState.user._id}
-            location={state.story._id}
+            location={isFork ? fork_id : story_id}
             route={location.pathname}
             dest={chapter_id}
             to={state.story.author?.name}
-            useAddConv={useAddChapterConv}
+            useAddConv={isFork ? useAddForkChapterConv : useAddChapterConv}
           />
         </div>
         <div className="column-reverse">
@@ -212,9 +218,15 @@ function Chapter() {
                   conv={comment}
                   dest={state.chapter._id}
                   location={state.story._id}
-                  useAddConvComment={useAddConvComment}
-                  useDeleteConv={useDeleteChapterConv}
-                  useDeleteConvComment={useDeleteConvComment}
+                  useAddConvComment={
+                    isFork ? useAddForkConvComment : useAddConvComment
+                  }
+                  useDeleteConv={
+                    isFork ? useDeleteForkChapterConv : useDeleteChapterConv
+                  }
+                  useDeleteConvComment={
+                    isFork ? useDeleteForkConvComment : useDeleteConvComment
+                  }
                 />
               </div>
             );
@@ -230,6 +242,9 @@ function Paragraph({ paragraph, index }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { userState } = useContext(UserContext);
   const location = useLocation();
+  const { story_id, fork_id } = useParams();
+  const isFork = location.pathname.split("/")[1] === "fork";
+
   const {
     state,
     useAddConvComment,
@@ -237,6 +252,13 @@ function Paragraph({ paragraph, index }) {
     useAddParagraphConv,
     useDeleteParagraphConv,
   } = useContext(StoryContext);
+
+  const {
+    useAddForkConvComment,
+    useDeleteForkConvComment,
+    useAddForkParagraphConv,
+    useDeleteForkParagraphConv,
+  } = useContext(ForkContext);
 
   const modalRef = useRef(null);
   const buttonRef = useRef(null);
@@ -304,11 +326,11 @@ function Paragraph({ paragraph, index }) {
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             type="story"
             sender={userState.user._id}
-            location={state.story._id}
+            location={isFork ? fork_id : story_id}
             route={location.pathname}
             dest={paragraph._id}
             to={state.story.author.name}
-            useAddConv={useAddParagraphConv}
+            useAddConv={isFork ? useAddForkParagraphConv : useAddParagraphConv}
           />
           <div className="column-reverse">
             {paragraph.comments?.map((comment) => {
@@ -322,9 +344,17 @@ function Paragraph({ paragraph, index }) {
                     conv={comment}
                     dest={paragraph._id}
                     location={state.story._id}
-                    useAddConvComment={useAddConvComment}
-                    useDeleteConv={useDeleteParagraphConv}
-                    useDeleteConvComment={useDeleteConvComment}
+                    useAddConvComment={
+                      isFork ? useAddForkConvComment : useAddConvComment
+                    }
+                    useDeleteConv={
+                      isFork
+                        ? useDeleteForkParagraphConv
+                        : useDeleteParagraphConv
+                    }
+                    useDeleteConvComment={
+                      isFork ? useDeleteForkConvComment : useDeleteConvComment
+                    }
                   />
                 </div>
               );

@@ -15,6 +15,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { MyForkProvider } from "./context/myForkContext";
+import { ForkProvider } from "./context/forkContext";
 
 const queryClient = new QueryClient();
 
@@ -24,13 +25,15 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <StoryProvider>
-          <MyForkProvider>
-            <MyStoryProvider>
-              <ProfileProvider>
-                <App />
-              </ProfileProvider>
-            </MyStoryProvider>
-          </MyForkProvider>
+          <ForkProvider>
+            <MyForkProvider>
+              <MyStoryProvider>
+                <ProfileProvider>
+                  <App />
+                </ProfileProvider>
+              </MyStoryProvider>
+            </MyForkProvider>
+          </ForkProvider>
         </StoryProvider>
       </UserProvider>
 
