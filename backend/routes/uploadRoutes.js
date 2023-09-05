@@ -10,6 +10,7 @@ import { StatusCodes } from "http-status-codes";
 import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
 import mongoose from "mongoose";
+
 dotenv.config();
 
 const conn = mongoose.connection;
@@ -81,7 +82,10 @@ const checkFileType = (file, cb) => {
 router
   .route("/profilePicture")
   .post(userUpload.single("file"), async (req, res) => {
-    const newUser = await User.findOneAndUpdate(
+    const oldUser = await User.findOne({ _id: req.user.userId });
+
+    // Update the user model
+    await User.updateOne(
       { _id: req.user.userId },
       {
         profilePicture: {
@@ -89,10 +93,17 @@ router
           fileId: req.file.id,
         },
       },
-      { upsert: true, new: true, runValidators: true }
+      { new: true, runValidators: true }
     );
 
-    deleteImage(req.user.userId);
+    // Delete the old image file
+    if (oldUser && oldUser.profilePicture && oldUser.profilePicture.fileId) {
+      await deleteImage(
+        "profile",
+        oldUser.profilePicture.filename,
+        req.file.id
+      );
+    }
 
     res.status(StatusCodes.OK).json({ profilePicture: req.file.filename });
   });
@@ -100,7 +111,10 @@ router
 router
   .route("/backgroundPicture")
   .post(userBcUpload.single("file"), async (req, res) => {
-    const newUser = await User.findOneAndUpdate(
+    const oldUser = await User.findOne({ _id: req.user.userId });
+
+    // Update the user model
+    await User.updateOne(
       { _id: req.user.userId },
       {
         backgroundPicture: {
@@ -108,21 +122,64 @@ router
           fileId: req.file.id,
         },
       },
-      { upsert: true, new: true, runValidators: true }
+      { new: true, runValidators: true }
     );
 
-    deleteImage(req.user.userId);
+    // Delete the old image file
+    if (
+      oldUser &&
+      oldUser.backgroundPicture &&
+      oldUser.backgroundPicture.fileId
+    ) {
+      await deleteImage(
+        "background",
+        oldUser.backgroundPicture.filename,
+        req.file.id
+      );
+    }
 
     res.status(StatusCodes.OK).json({ backgroundPicture: req.file.filename });
   });
 
-const deleteImage = (filename) => {
-  if (!filename) return console.log("no image filename");
-  gfs.delete({ filename: filename }, (err) => {
-    if (err) {
-      console.log("couldnt delete image");
-    }
-  });
+const deleteImage = async (type, filename, newFileId) => {
+  if (!filename) return console.log("No image filename");
+  let gfs_var;
+  if (type === "background") {
+    gfs_var = gfs_bc;
+  } else if (type === "profile") {
+    gfs_var = gfs;
+  }
+
+  try {
+    console.log("GFS OBJECTT: " + gfs_bc);
+    // Find all files by filename
+    gfs_var.find({ filename: filename }).toArray((err, files) => {
+      if (err) {
+        console.log("Couldn't find the files", err);
+        return;
+      }
+
+      if (!files || files.length === 0) {
+        console.log("No files with such filename");
+        return;
+      }
+
+      // Loop through all files and delete them
+      files.forEach((file) => {
+        if (file._id.toString() !== newFileId.toString()) {
+          gfs_var.delete(file._id, (err) => {
+            if (err) {
+              console.log("Couldn't delete the file", err);
+              return;
+            }
+            console.log(`Successfully deleted the file with id ${file._id}`);
+          });
+        }
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default router;
