@@ -1,15 +1,15 @@
-import { useEffect, useState, Suspense } from "react";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
 import { MyStory, Story, UserLine } from "../../components";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import StyledMyStories from "./styles/MyStories.styled";
 import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ColorRing, Dna, FallingLines } from "react-loader-spinner";
+import { useQuery } from "@tanstack/react-query";
+import { Dna, FallingLines } from "react-loader-spinner";
 import OrangeLinks from "../../components/OrangeLinks";
-import { MyForkContext } from "../../context/myForkContext";
+import { MdOutlineGroupOff } from "react-icons/md";
+import { BiGitPullRequest } from "react-icons/bi";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
@@ -36,8 +36,8 @@ function MyStories({ show }) {
             links={[
               {
                 label: "My Stories",
-                to: "stories",
-                active: tab === "stories",
+                to: "/workspace/myStories/",
+                active: location.pathname === "/workspace/myStories/",
               },
               {
                 label: "Collaboration Requests",
@@ -94,7 +94,7 @@ function Stories() {
   return (
     <div>
       {!isLoading && myStories.length === 0 ? (
-        <div className="no-stories">
+        <div className="no-content-container">
           <div className="icon">
             <ImBooks />
           </div>
@@ -132,6 +132,8 @@ function Stories() {
 function Collabs() {
   const { getCollabRequests, grantCollaboratorAccess } =
     useContext(MyStoryContext);
+  const { userState } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const { data: collabRequests = [], isLoading } = useQuery(
     ["collabRequests"],
@@ -148,17 +150,31 @@ function Collabs() {
   if (isLoading) return null;
 
   return (
-    <div className="collab-requests">
-      {collabRequests.map((c) => {
-        return (
-          <div key={c._id}>
-            <div>{c.story.title}</div>
-            <button onClick={() => handleAcceptRequestClick(c)}>
-              Accept Request
-            </button>
+    <div>
+      {!isLoading && collabRequests.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <MdOutlineGroupOff />
           </div>
-        );
-      })}
+          <div className="text">
+            Hi, {userState.user.name}! You haven't got any collaboration
+            requests yet.
+          </div>
+        </div>
+      ) : (
+        <div className="collab-requests">
+          {collabRequests.map((c) => {
+            return (
+              <div key={c._id}>
+                <div>{c.story.title}</div>
+                <button onClick={() => handleAcceptRequestClick(c)}>
+                  Accept Request
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -166,6 +182,8 @@ function Collabs() {
 function Pulls() {
   const { getPullRequests, mergeFork } = useContext(MyStoryContext);
   const navigate = useNavigate();
+  const { userState } = useContext(UserContext);
+
   const { data: pullRequests = [], isLoading } = useQuery(
     ["pullRequests"],
     getPullRequests,
@@ -182,17 +200,33 @@ function Pulls() {
   if (isLoading) return null;
 
   return (
-    <div className="pull-requests">
-      {pullRequests.map((p) => {
-        return (
-          <div key={p._id}>
-            <UserLine user={p.collaborator} />
-            <span>wants to propose these changes to you story</span>
-            <Story story={p.story} />
-            <button onClick={() => handleMergeChanges(p)}>Merge Changes</button>
+    <div>
+      {!isLoading && pullRequests.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <BiGitPullRequest />
           </div>
-        );
-      })}
+          <div className="text">
+            Hi, {userState.user.name}! You haven't got any pull requests yet.
+          </div>
+        </div>
+      ) : (
+        <div className="pull-requests">
+          {pullRequests.map((p) => {
+            return (
+              <div key={p._id}>
+                <UserLine user={p.collaborator} />
+                <span>wants to propose these changes to you story</span>
+                <Story story={p.story} />
+                <button onClick={() => handleMergeChanges(p)}>
+                  Merge Changes
+                </button>
+                <Link to={`/fork/${p._id}/${p.chapters[0]._id}`}>Preview</Link>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

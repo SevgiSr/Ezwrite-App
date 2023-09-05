@@ -152,11 +152,11 @@ export const MyStoryProvider = ({ children }) => {
     dispatch({ type: SET_EDIT_STORY, payload: { id } });
   };
 
-  const setEditChapter = async (story, chapter) => {
+  const setEditChapter = async (story, chapters, chapter) => {
     try {
       dispatch({
         type: EDIT_MY_CHAPTER_SUCCESS,
-        payload: { story, chapter },
+        payload: { story, chapters, chapter },
       });
     } catch (error) {
       console.log(error);

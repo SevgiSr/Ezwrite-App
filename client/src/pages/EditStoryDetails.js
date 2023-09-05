@@ -115,7 +115,7 @@ function EditStoryDetails() {
     });
     const tagNames = myStory.tags.map((tag) => tag.name);
     setTags(tagNames);
-    navigate("/workspace/myStories");
+    navigate("/workspace/myStories/");
   };
 
   const handleSubmit = (e) => {
@@ -195,7 +195,7 @@ function Navbar({ handleCancel }) {
   return (
     <nav className="story-navbar">
       <header>
-        <Link to="/workspace/myStories" className="back-btn">
+        <Link to="/workspace/myStories/" className="back-btn">
           <div className="icon">
             <IoIosArrowBack />
           </div>

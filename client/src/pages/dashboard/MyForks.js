@@ -6,7 +6,7 @@ import { MyStoryContext } from "../../context/myStoryContext";
 import OrangeLinks from "../../components/OrangeLinks";
 import { useState } from "react";
 import { UserContext } from "../../context/userContext";
-import { MdGroup } from "react-icons/md";
+import { MdGroup, MdOutlineTimerOff } from "react-icons/md";
 import { DropdownMenu, ModalCenter, MyStory } from "../../components";
 import { FallingLines } from "react-loader-spinner";
 import { FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
@@ -14,11 +14,15 @@ import Cover from "../../components/Cover";
 import { MyForkContext } from "../../context/myForkContext";
 import { FaTrashAlt } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
+import { BiGitRepoForked } from "react-icons/bi";
+import { VscRepoForked } from "react-icons/vsc";
 
 function MyForks() {
   const navigate = useNavigate();
   const location = useLocation();
   const tab = location.pathname.split("/")[3];
+
+  console.log(location.pathname === "/workspace/myForks/");
 
   return (
     <StyledMyForks>
@@ -32,7 +36,11 @@ function MyForks() {
         >
           <OrangeLinks
             links={[
-              { label: "My Forks", to: "forks", active: tab === "forks" },
+              {
+                label: "My Forks",
+                to: "/workspace/myForks/",
+                active: location.pathname === "/workspace/myForks/",
+              },
               {
                 label: "Pending Fork Requests",
                 to: "pending",
@@ -66,19 +74,16 @@ function ForkedStories() {
   return (
     <div>
       {!isLoading && myForks.length === 0 ? (
-        <div className="no-stories">
+        <div className="no-content-container">
           <div className="icon">
-            <MdGroup />
+            <VscRepoForked />
           </div>
           <div className="text">
-            Hi, {userState.user.name}! You haven't collaborated in any stories
-            yet.
+            Hi, {userState.user.name}! You haven't forked any stories yet!
           </div>
           <div className="smaller-text">
-            Collaboration is when user sends a request to the original author to
-            collaborate in a book. As a collaborator you receive a copy of the
-            book to change as you wish, but you cannot directly apply these
-            changes to the original book.{" "}
+            A fork of a story, is full copy of original story, both public and
+            private chapters. You can obtain fork by collaborating in a story.{" "}
           </div>
         </div>
       ) : (
@@ -104,6 +109,7 @@ function ForkedStories() {
 
 function Pending() {
   const { getPendingForkRequests } = useContext(MyStoryContext);
+  const { userState } = useContext(UserContext);
   const { data: myPendingRequests = [], isLoading } = useQuery(
     ["pendingForkRequests"],
     getPendingForkRequests,
@@ -115,14 +121,34 @@ function Pending() {
   if (isLoading) return null;
 
   return (
-    <div className="collab-requests">
-      {myPendingRequests.map((r) => {
-        return (
-          <>
-            <div>{r.title}</div>
-          </>
-        );
-      })}
+    <div>
+      {!isLoading && myPendingRequests.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <MdOutlineTimerOff />
+          </div>
+          <div className="text">
+            Hi, {userState.user.name}! You haven't sent a collaboration request
+            yet!
+          </div>
+          <div className="smaller-text">
+            You can send a collaboration request from someone's profile for a
+            story. This gives you full copy of the story that you can change
+            locally. If you want those changes to be applied in original story
+            you have to send pull request to the author.{" "}
+          </div>
+        </div>
+      ) : (
+        <div className="collab-requests">
+          {myPendingRequests.map((r) => {
+            return (
+              <>
+                <div>{r.title}</div>
+              </>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -63,12 +63,12 @@ function App() {
           </Route>
           <Route path="/workspace" element={<WorkspaceLayout />}>
             <Route path="myStories" element={<MyStories />}>
-              <Route path="stories" element={<Stories />} />
+              <Route index element={<Stories />} />
               <Route path="collab-requests" element={<Collabs />} />
               <Route path="pull-requests" element={<Pulls />} />
             </Route>
             <Route path="myForks" element={<MyForks />}>
-              <Route path="forks" element={<ForkedStories />} />
+              <Route index element={<ForkedStories />} />
               <Route path="pending" element={<Pending />} />
             </Route>
           </Route>
@@ -79,6 +79,7 @@ function App() {
           <Route path="/stories/search/tags/:tag" element={<Search />} />
           <Route path="/story/:story_id" element={<Story />} />
           <Route path="/:story_id/:chapter_id" element={<Chapter />} />
+          <Route path="/fork/:fork_id/:chapter_id" element={<Chapter />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:username" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />

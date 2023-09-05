@@ -10,6 +10,14 @@ import ReadingList from "../db/models/ReadingList.js";
 import Trie from "../utils/Trie.js";
 import Tag from "../db/models/Tag.js";
 import { v4 as uuidv4 } from "uuid";
+import {
+  handleAddChapterConv,
+  handleAddConvComment,
+  handleAddParagraphConv,
+  handleDeleteChapterConv,
+  handleDeleteConvComment,
+  handleDeleteParagraphConv,
+} from "./commentControllers.js";
 
 function populateStory(mode) {
   const populateOptions = {
@@ -514,102 +522,19 @@ const setCurrentChapter = async (req, res) => {
 };
 
 const addChapterConv = async (req, res) => {
-  try {
-    const { comment_content } = req.body;
-    const comment = await Comment.create({
-      author: req.user.userId,
-      content: comment_content,
-      subcomments: [],
-    });
-
-    const newConv = await Comment.findById(comment._id)
-      .populate("author")
-      .populate({ path: "subcomments", populate: "author" });
-
-    await Chapter.updateOne(
-      { _id: req.params.chapter_id },
-      { $push: { comments: comment._id } },
-      { runValidators: true }
-    );
-
-    await updateStoryScore(req.params.story_id);
-
-    res.status(StatusCodes.OK).json({ newConv });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleAddChapterConv(req, res, updateStoryScore);
 };
 
 const deleteChapterConv = async (req, res) => {
-  try {
-    const conv = await Comment.findById(req.params.conv_id);
-
-    if (conv) {
-      for (let commentId of conv.subcomments) {
-        await Comment.findByIdAndRemove(commentId);
-      }
-      await Chapter.findByIdAndUpdate(req.params.chapter_id, {
-        $pull: { comments: conv._id },
-      });
-
-      await conv.delete();
-    }
-
-    await updateStoryScore(req.params.story_id);
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "comment deleted successfully." });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleDeleteChapterConv(req, res, updateStoryScore);
 };
 
 const addParagraphConv = async (req, res) => {
-  try {
-    const { comment_content } = req.body;
-    const comment = await Comment.create({
-      author: req.user.userId,
-      content: comment_content,
-      subcomments: [],
-    });
-
-    await Paragraph.updateOne(
-      { _id: req.params.paragraph_id },
-      { $push: { comments: comment._id } },
-      { new: true, runValidators: true }
-    );
-
-    await updateStoryScore(req.params.story_id);
-
-    res.status(StatusCodes.OK).json({ comment });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleAddParagraphConv(req, res, updateStoryScore);
 };
 
 const deleteParagraphConv = async (req, res) => {
-  try {
-    const conv = await Comment.findById(req.params.conv_id);
-
-    if (conv) {
-      for (let commentId of conv.subcomments) {
-        await Comment.findByIdAndRemove(commentId);
-      }
-      await Paragraph.findByIdAndUpdate(req.params.paragraph_id, {
-        $pull: { comments: conv._id },
-      });
-
-      await conv.delete();
-    }
-
-    await updateStoryScore(req.params.story_id);
-
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "comment deleted successfully." });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleDeleteParagraphConv(req, res, updateStoryScore);
 };
 
 const addStoryConv = async (req, res) => {
@@ -665,52 +590,12 @@ const deleteStoryConv = async (req, res) => {
 };
 
 const addConvComment = async (req, res) => {
-  try {
-    const { comment_content } = req.body;
-    const { conv_id, story_id } = req.params;
-
-    const comment = await Comment.create({
-      author: req.user.userId,
-      content: comment_content,
-      subcomments: [],
-    });
-    console.log(req.params.conv_id);
-    const newConv = await Comment.findOneAndUpdate(
-      { _id: conv_id },
-      { $push: { subcomments: comment._id } },
-      { new: true, runValidators: true }
-    )
-      .populate("author")
-      .populate({ path: "subcomments", populate: "author" });
-
-    await updateStoryScore(story_id);
-    res.status(StatusCodes.OK).json({ newConv });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleAddConvComment(req, res, updateStoryScore);
 };
 
 //FOR ALL OF CONVERSATIONS' SUBCOMMENTS
 const deleteConvComment = async (req, res) => {
-  try {
-    const { conv_id, comment_id, story_id } = req.params;
-
-    // First, remove the subcomment document
-    await Comment.findByIdAndRemove(comment_id);
-
-    // Then, remove the reference to the subcomment from the parent comment
-    await Comment.findByIdAndUpdate(conv_id, {
-      $pull: { subcomments: comment_id },
-    });
-
-    await updateStoryScore(story_id);
-
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Subcomment deleted successfully." });
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await handleDeleteConvComment(req, res, updateStoryScore);
 };
 
 const voteChapter = async (req, res) => {

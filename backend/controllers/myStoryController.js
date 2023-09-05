@@ -624,14 +624,31 @@ const grantCollaboratorAccess = async (req, res) => {
       throw new Error("This user is already a collaborator.");
     }
 
-    const story = await Story.findById(story_id).populate("chapters");
+    const story = await Story.findById(story_id).populate({
+      path: "chapters",
+      populate: "paragraphs",
+    });
 
     const newChapters = await Promise.all(
       story.chapters.map(async (chapter) => {
-        const chapterData = chapter.toObject();
+        // Deep clone the chapter object
+        const chapterData = JSON.parse(JSON.stringify(chapter.toObject()));
+
+        // Reset the comments for each paragraph
+        chapterData.paragraphs.forEach((p) => {
+          p.comments = [];
+        });
+
+        // Remove the original MongoDB _id so a new one is generated
         delete chapterData._id;
-        const newChapter = new Chapter(chapterData);
-        newChapter.author = user_id;
+
+        // Create new chapter instance with the modified data
+        const newChapter = new Chapter({
+          author: user_id,
+          content: chapterData.content,
+          title: chapterData.title,
+          paragraphs: chapterData.paragraphs,
+        });
         return newChapter.save();
       })
     );

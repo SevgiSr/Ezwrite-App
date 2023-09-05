@@ -19,12 +19,10 @@ const initialState = {
   users: [],
   stories: [],
   story: {},
+  chapters: [],
   chapter: {},
-  author: {},
-  votes: {},
-  myVote: {},
-  chapterConvs: [],
-  paragraphConv: [],
+  votes: [],
+  myVote: 0,
 };
 
 export const StoryContext = React.createContext();
@@ -100,24 +98,11 @@ export const StoryProvider = ({ children }) => {
     }
   };
 
-  /*   const getChapter = async (story_id, chapter_id) => {
-    try {
-      const { data } = await authFetch.get(
-        `/stories/story/${story_id}/${chapter_id}`
-      );
-      const { chapter, story, votes, myVote, author, chapterConvs } = data;
-
-      dispatch({
-        type: GET_CHAPTER_SUCCESS,
-        payload: { chapter, story, votes, myVote, author, chapterConvs },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }; */
-
-  const setChapter = (chapter, story) => {
-    dispatch({ type: GET_CHAPTER_SUCCESS, payload: { chapter, story } });
+  const setChapter = (story, chapters, chapter) => {
+    dispatch({
+      type: GET_CHAPTER_SUCCESS,
+      payload: { story, chapters, chapter },
+    });
   };
 
   const getProgress = async (story_id) => {

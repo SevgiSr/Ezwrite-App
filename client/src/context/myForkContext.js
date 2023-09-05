@@ -68,11 +68,11 @@ export const MyForkProvider = ({ children }) => {
     }
   };
 
-  const setEditForkChapter = async (story, chapter, chapters) => {
+  const setEditForkChapter = async (story, chapters, chapter) => {
     try {
       dispatch({
         type: EDIT_MY_CHAPTER_SUCCESS,
-        payload: { story, chapter, chapters },
+        payload: { story, chapters, chapter },
       });
     } catch (error) {
       console.log(error);
@@ -132,6 +132,17 @@ export const MyForkProvider = ({ children }) => {
   const sendPullRequest = async (fork_id) => {
     try {
       await authFetch.patch(`/myForks/pull/${fork_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const getFork = async (fork_id) => {
+    try {
+      const { data } = await authFetch.get(`/myForks/${fork_id}`);
+      const { fork } = data;
+      return fork;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -227,6 +238,7 @@ export const MyForkProvider = ({ children }) => {
         setEditForkChapter,
         forkState,
         sendPullRequest,
+        getFork,
 
         useDeleteFork,
         useSaveForkChapter,

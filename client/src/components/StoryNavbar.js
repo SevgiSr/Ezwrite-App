@@ -39,7 +39,7 @@ const Navbar = () => {
   const params = useParams();
   const { story_id, fork_id, chapter_id } = params;
   const [myWork, setMyWork] = useState("");
-  const [state, setState] = useState({ chapters: [], story: {}, chapter: {} });
+  const [state, setState] = useState({ story: {}, chapters: [], chapter: {} });
   const location = useLocation();
 
   const addChapterMutation = useAddChapter();
@@ -55,25 +55,17 @@ const Navbar = () => {
   useEffect(() => {
     if (location.pathname.split("/")[1] === "myworks") {
       setMyWork("story");
-      setState({
-        chapters: storyState.story.chapters,
-        story: storyState.story,
-        chapter: storyState.chapter,
-      });
+      setState(storyState);
     } else if (location.pathname.split("/")[1] === "myforks") {
       setMyWork("fork");
-      setState({
-        chapters: forkState.chapters,
-        story: forkState.story,
-        chapter: forkState.chapter,
-      });
+      setState(forkState);
     }
   }, [location, forkState, storyState]);
 
   const handleNewPartClick = async () => {
     if (myWork === "story") {
       const { chapter_id, story_id } = await addChapterMutation.mutateAsync({
-        story_id: storyState.story._id,
+        story_id: params.story_id,
       });
 
       navigate(`/myworks/${story_id}/${chapter_id}/writing`);
@@ -133,7 +125,9 @@ const Navbar = () => {
         <section className="story-section">
           <Link
             to={
-              myWork === "story" ? "/workspace/myStories" : "/workspace/forks"
+              myWork === "story"
+                ? "/workspace/myStories/"
+                : "/workspace/myForks/"
             }
             className="back-btn"
           >
@@ -239,7 +233,7 @@ const Navbar = () => {
           />
 
           {myWork === "story" &&
-            (storyState.chapter.visibility === "draft" ? (
+            (state.chapter.visibility === "draft" ? (
               <button
                 onClick={handlePublishClick}
                 type="submit"

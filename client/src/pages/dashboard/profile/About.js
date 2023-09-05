@@ -46,7 +46,7 @@ function About() {
               <h3>
                 <span>Stories by {profileName}</span>
                 <span className="edit-icon">
-                  <Link to="/myStories">
+                  <Link to="/workspace/myStories/">
                     <MdSettings />
                   </Link>
                 </span>

@@ -19,9 +19,9 @@ import DropdownMenu from "../../components/DropdownMenu";
 import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClipLoader, SyncLoader } from "react-spinners";
+import { MyForkContext } from "../../context/myForkContext";
 
 function Chapter() {
-  const queryClient = useQueryClient();
   const {
     state,
     incrementViewCount,
@@ -34,10 +34,13 @@ function Chapter() {
     getProgress,
     setChapter,
   } = useContext(StoryContext);
-  const { story_id, chapter_id } = useParams();
+  const { getFork } = useContext(MyForkContext);
+
+  const { story_id, fork_id, chapter_id } = useParams();
+  const location = useLocation();
+  const isFork = location.pathname.split("/")[1] === "fork";
 
   const { userState } = useContext(UserContext);
-  const location = useLocation();
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
   const scrollRef = useRef(null);
@@ -47,12 +50,26 @@ function Chapter() {
     isLoading,
     isFetching,
     status,
-    refetch,
   } = useQuery({
     queryKey: ["progress", story_id],
     queryFn: () => getProgress(story_id),
     refetchOnWindowFocus: false,
+    enabled: !isFork,
   });
+
+  const {
+    data: fork = {},
+    isLoading: isForkLoading,
+    isFetching: isForkFetching,
+    status: forkStatus,
+  } = useQuery({
+    queryKey: ["fork", fork_id],
+    queryFn: () => getFork(fork_id),
+    refetchOnWindowFocus: false,
+    enabled: isFork,
+  });
+
+  console.log(status, forkStatus, isLoading, isForkLoading);
 
   const setProgressMutation = useSetProgress();
   const setCurrentChapterMutation = useSetCurrentChapter();
@@ -64,47 +81,67 @@ function Chapter() {
 
   useEffect(() => {
     return () => {
-      console.log("SAVING PROGRESS.....");
-      setCurrentChapterMutation.mutate({ story_id, chapter_id });
-      console.log("saved progress");
+      if (!isFork) {
+        console.log("SAVING PROGRESS.....");
+        setCurrentChapterMutation.mutate({ story_id, chapter_id });
+        console.log("saved progress");
+      }
     };
   }, []);
 
   useEffect(() => {
-    if (!isFetching && status === "success") {
-      const currentChapter = chapters.find(
-        (chapter) => chapter._id === chapter_id
-      );
-      if (currentChapter) {
-        console.log("accessing");
-        setChapter(currentChapter, story);
-      } else {
-        console.log("mutating");
-        setProgressMutation.mutate({ story_id, chapter_id });
+    if (!isFork) {
+      if (!isFetching && status === "success") {
+        const currentChapter = chapters.find(
+          (chapter) => chapter._id === chapter_id
+        );
+        if (currentChapter) {
+          console.log("accessing");
+          setChapter(story, story.chapters, currentChapter);
+        } else {
+          console.log("mutating");
+          setProgressMutation.mutate({ story_id, chapter_id });
+        }
       }
     }
   }, [location, isFetching]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("incrementing view");
-      incrementViewCount(story_id, chapter_id); // Send a request to the backend to increment the view count
-    }, 30000); // Change the time interval as needed
-    setViewTimer(timer);
+    if (isFork) {
+      if (!isForkFetching && forkStatus === "success") {
+        const currentChapter = fork.chapters.find(
+          (chapter) => chapter._id === chapter_id
+        );
+        if (currentChapter) {
+          setChapter(fork.story, fork.chapters, currentChapter);
+        }
+      }
+    }
+  }, [location, isForkFetching]);
 
-    return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
+  useEffect(() => {
+    if (!isFork) {
+      const timer = setTimeout(() => {
+        console.log("incrementing view");
+        incrementViewCount(story_id, chapter_id); // Send a request to the backend to increment the view count
+      }, 30000); // Change the time interval as needed
+      setViewTimer(timer);
+
+      return () => clearTimeout(timer); // Cleanup function to cancel timer on unmount
+    }
   }, []);
 
-  if (isLoading) {
+  if ((!isFork && isLoading) || (isFork && isForkLoading)) {
     return <h1>loading...</h1>;
   }
+
+  console.log(state);
 
   return (
     <StyledChapter ref={scrollRef}>
       <ChapterHeader
         isChapterLoading={setProgressMutation.isLoading}
         scrollRef={scrollRef}
-        refetch={refetch}
         user={user}
       />
 
@@ -301,6 +338,9 @@ function Paragraph({ paragraph, index }) {
 
 function ChapterHeader({ isChapterLoading, user }) {
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const isFork = location.pathname.split("/")[1] === "fork";
+
   const {
     state,
     alertState,
@@ -344,6 +384,7 @@ function ChapterHeader({ isChapterLoading, user }) {
       onSuccess: () => {
         //change cache too so that the vote is consistent everywhere
         queryClient.invalidateQueries(["progress"]);
+        queryClient.invalidateQueries(["fork"]);
       },
     }
   );
@@ -353,6 +394,7 @@ function ChapterHeader({ isChapterLoading, user }) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["progress"]);
+        queryClient.invalidateQueries(["fork"]);
       },
     }
   );
@@ -415,55 +457,57 @@ function ChapterHeader({ isChapterLoading, user }) {
           </div>
         )}
 
-        <DropdownMenu
-          buttonClass="add-list-btn orange-button"
-          menuClass="add-list-menu"
-          button={<span>+</span>}
-          menu={
-            <>
-              <div className="title">Reading Lists</div>
-              {user.readingLists?.map((readingList) => {
-                return (
-                  <div key={readingList._id} className="dropdown-item">
-                    <button
-                      className="reading-list"
-                      onClick={() => handleAddToList(readingList._id)}
-                    >
-                      <div>{readingList.title}</div>
-                    </button>
-                    <div className="icon">
-                      {mutatedListId === readingList._id &&
-                        addToListMutation.isLoading && (
-                          <ClipLoader size={18} color="rgb(0, 178, 178)" />
-                        )}
-                      {mutatedListId === readingList._id &&
-                        addToListMutation.status === "success" && (
-                          <AiOutlineCheckCircle
-                            size={20}
-                            color="rgb(0, 178, 178)"
-                          />
-                        )}
+        {!isFork && (
+          <DropdownMenu
+            buttonClass="add-list-btn orange-button"
+            menuClass="add-list-menu"
+            button={<span>+</span>}
+            menu={
+              <>
+                <div className="title">Reading Lists</div>
+                {user.readingLists?.map((readingList) => {
+                  return (
+                    <div key={readingList._id} className="dropdown-item">
+                      <button
+                        className="reading-list"
+                        onClick={() => handleAddToList(readingList._id)}
+                      >
+                        <div>{readingList.title}</div>
+                      </button>
+                      <div className="icon">
+                        {mutatedListId === readingList._id &&
+                          addToListMutation.isLoading && (
+                            <ClipLoader size={18} color="rgb(0, 178, 178)" />
+                          )}
+                        {mutatedListId === readingList._id &&
+                          addToListMutation.status === "success" && (
+                            <AiOutlineCheckCircle
+                              size={20}
+                              color="rgb(0, 178, 178)"
+                            />
+                          )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-              <div className="new-reading-list">
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  type="text"
-                  placeholder="Add new reading list..."
-                />
-                <button
-                  onClick={() => handleCreateList(title)}
-                  className="orange-button btn"
-                >
-                  +
-                </button>
-              </div>
-            </>
-          }
-        />
+                  );
+                })}
+                <div className="new-reading-list">
+                  <input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    type="text"
+                    placeholder="Add new reading list..."
+                  />
+                  <button
+                    onClick={() => handleCreateList(title)}
+                    className="orange-button btn"
+                  >
+                    +
+                  </button>
+                </div>
+              </>
+            }
+          />
+        )}
 
         <button
           onClick={(e) => {
@@ -517,6 +561,9 @@ function ChapterHeader({ isChapterLoading, user }) {
 
 function StoryDropdown() {
   const { state } = useContext(StoryContext);
+  const location = useLocation();
+  const isFork = location.pathname.split("/")[1] === "fork";
+  const { fork_id, story_id } = useParams();
 
   return (
     <>
@@ -538,13 +585,16 @@ function StoryDropdown() {
         }
         menu={
           <>
-            {state.story.chapters?.map((chapter) => {
+            {state.chapters?.map((chapter) => {
               console.log(chapter);
               return (
                 <Link
                   className="link"
                   key={chapter._id}
-                  to={`/${state.story._id}/${chapter._id}`}
+                  to={
+                    (isFork ? `/fork/${fork_id}` : `/${story_id}`) +
+                    `/${chapter._id}`
+                  }
                 >
                   <div
                     className={

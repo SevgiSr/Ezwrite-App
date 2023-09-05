@@ -12,12 +12,12 @@ function WorkspaceLayout() {
           links={[
             {
               label: "My Works",
-              to: "myStories/stories",
+              to: "myStories/",
               active: tab === "myStories",
             },
             {
               label: "My Forks",
-              to: "myForks/forks",
+              to: "myForks/",
               active: tab === "myForks",
             },
           ]}

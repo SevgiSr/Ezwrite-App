@@ -87,7 +87,7 @@ function Writing() {
   } = useQuery(["myStories"], getMyStories, {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
-    enable: location.pathname.split("/")[1] === "myworks",
+    enabled: location.pathname.split("/")[1] === "myworks",
   });
 
   const {
@@ -98,7 +98,7 @@ function Writing() {
   } = useQuery(["myForks"], getMyForks, {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
-    enable: location.pathname.split("/")[1] === "myforks",
+    enabled: location.pathname.split("/")[1] === "myforks",
   });
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function Writing() {
         if (chapter.content.trim() !== "") {
           editor.focus();
         }
-        setEditForkChapter(myFork.story, chapter, myFork.chapters);
+        setEditForkChapter(myFork.story, myFork.chapters, chapter);
       }
     }
   }, [location, isForkFetching, myWork]);
@@ -136,7 +136,7 @@ function Writing() {
         if (chapter.content.trim() !== "") {
           editor.focus();
         }
-        setEditChapter(myStory, chapter);
+        setEditChapter(myStory, myStory.chapters, chapter);
       }
     }
   }, [location, isFetching, myWork]);
