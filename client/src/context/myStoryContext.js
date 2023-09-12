@@ -30,8 +30,6 @@ const initialStoryState = {
   //all stories
   myStories: [],
 
-  myStory: {},
-
   //chapters
   story: {},
   chapters: [],
@@ -68,12 +66,12 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const setMyStory = async (myStory) => {
+  const setMyStory = async (story) => {
     try {
       dispatch({
         type: GET_MY_STORY_SUCCESS,
         payload: {
-          myStory,
+          story,
         },
       });
     } catch (error) {
@@ -378,9 +376,9 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
-  const getPullRequests = async (fork_id) => {
+  const getPullRequests = async () => {
     try {
-      const { data } = await authFetch.get(`/myForks/pull/${fork_id}`);
+      const { data } = await authFetch.get(`/myForks/pull`);
       const { forks } = data;
       return forks;
     } catch (error) {

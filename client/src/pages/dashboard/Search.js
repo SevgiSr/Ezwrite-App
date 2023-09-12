@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { Link, useParams } from "react-router-dom";
-import Story from "../../components/Story";
+import { Story, StoryCardDetailed } from "../../components";
 import StyledStories from "./styles/Stories.styled";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserCard } from "../../components";
-import StoryCardDetailed from "../../components/StoryCardDetailed";
 
 function Option({ id, label, selectedValue, onChange }) {
   const isSelected = selectedValue === id;

@@ -11,8 +11,16 @@ import Library from "./Library";
 import ReadingList from "./ReadingList";
 import Browse from "./Browse";
 import WorkspaceLayout from "./WorkspaceLayout";
-import { MyStories, Stories, Collabs, Pulls } from "./MyStories";
+import { MyStories, Stories } from "./MyStories";
 import { MyForks, ForkedStories, Pending } from "./MyForks";
+import MobileSideNavbar from "./MobileSideNavbar";
+import {
+  ManageStory,
+  ManageChapters,
+  ManagePulls,
+  ManageHistory,
+  ManageCollabs,
+} from "./ManageStory";
 
 export {
   Home,
@@ -31,8 +39,12 @@ export {
   WorkspaceLayout,
   MyStories,
   Stories,
-  Collabs,
-  Pulls,
   ForkedStories,
   Pending,
+  ManageStory,
+  ManageChapters,
+  ManagePulls,
+  ManageHistory,
+  ManageCollabs,
+  MobileSideNavbar,
 };

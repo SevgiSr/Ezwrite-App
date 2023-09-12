@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import ProfilePicture from "./ProfilePicture";
-import StyledUserLine from "./styles/UserLine.styled";
+import ProfilePicture from "../ProfilePicture";
+import StyledUserLine from "../styles/UserLine.styled";
 
-function UserLine({ user }) {
+function UserLineMini({ user }) {
   return (
     <StyledUserLine>
       <div className="flex-item">
@@ -12,12 +12,9 @@ function UserLine({ user }) {
         <Link to={`/user/${user.name}`} className="name">
           {user.name}
         </Link>
-        <div className="details">
-          Followers: {user.followers.length} • Works: {user.stories.length}
-        </div>
       </div>
     </StyledUserLine>
   );
 }
 
-export default UserLine;
+export default UserLineMini;

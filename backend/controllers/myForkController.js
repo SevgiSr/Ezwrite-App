@@ -32,9 +32,10 @@ const getMyForks = async (req, res) => {
 
 const getPendingForkRequests = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).populate(
-      "pendingForkRequests"
-    );
+    const user = await User.findById(req.user.userId).populate({
+      path: "pendingForkRequests",
+      populate: "author",
+    });
     res
       .status(StatusCodes.OK)
       .json({ pendingForkRequests: user.pendingForkRequests });
@@ -100,12 +101,18 @@ const deleteFork = async (req, res) => {
 
       await User.updateOne(
         { _id: req.user.userId },
-        { $pull: { forkedStories: fork._id } }
+        { $pull: { forkedStories: fork._id, pullRequests: { fork: fork_id } } }
       );
 
       await Story.updateOne(
         { _id: fork.story },
-        { $pull: { collaborators: req.user.userId, forks: fork_id } }
+        {
+          $pull: {
+            collaborators: req.user.userId,
+            forks: fork_id,
+            pullRequests: { fork: fork_id },
+          },
+        }
       );
 
       await fork.delete();
@@ -281,10 +288,24 @@ const restoreChapterHistory = async (req, res) => {
 const sendPullRequest = async (req, res) => {
   try {
     const { fork_id } = req.params;
+    const { title, description } = req.body;
+    console.log(title, description);
+
     const fork = await Fork.findById(fork_id).populate("story");
+    const story = await Story.findById(fork.story._id);
     const author = await User.findById(fork.story.author);
-    author.pullRequests.push(fork_id);
+
+    const pullRequest = {
+      title,
+      description,
+      fork: fork._id,
+    };
+
+    author.pullRequests.push(pullRequest);
+    story.pullRequests.push(pullRequest);
+
     await author.save();
+    await story.save();
     res.status(StatusCodes.OK).json({ msg: "request sent!" });
   } catch (error) {
     console.log(error);
@@ -295,9 +316,8 @@ const sendPullRequest = async (req, res) => {
 const getPullRequests = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
-      path: "pullRequests",
+      path: "pullRequests.fork",
       populate: "story collaborator chapters",
-      model: "Fork",
     });
 
     res.status(StatusCodes.OK).json({ forks: user.pullRequests });

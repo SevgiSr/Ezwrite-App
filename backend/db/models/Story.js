@@ -49,6 +49,29 @@ const StorySchema = new mongoose.Schema(
         ref: "Fork",
       },
     ],
+    pullRequests: {
+      type: [
+        {
+          title: {
+            type: String,
+          },
+          description: {
+            type: String,
+          },
+          fork: {
+            type: mongoose.Types.ObjectId,
+            ref: "Fork",
+          },
+        },
+      ],
+      default: [],
+    },
+    collabRequests: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     forkHistory: {
       type: Array,
     },

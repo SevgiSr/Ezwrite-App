@@ -1,13 +1,13 @@
-import StyledStory from "./styles/Story.styled";
+import StyledStory from "../styles/Story.styled";
 import { GoEye } from "react-icons/go";
 import { BsFillStarFill } from "react-icons/bs";
 import { AiFillDislike, AiOutlineBars, AiOutlineDown } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import Cover from "./Cover";
+import Cover from "../Cover";
 import { useEffect, useState } from "react";
-import Metadata from "./Metadata";
-import ModalCenter from "./ModalCenter";
-import UserLine from "./UserLine";
+import Metadata from "../Metadata";
+import ModalCenter from "../ModalCenter";
+import UserLine from "../UserUI/UserLine";
 
 const Story = ({ story }) => {
   const [viewCount, setViewCount] = useState(0);

@@ -9,7 +9,7 @@ const myStoryReducer = (state, action) => {
   if (action.type === GET_MY_STORY_SUCCESS) {
     return {
       ...state,
-      myStory: action.payload.myStory,
+      story: action.payload.story,
     };
   }
 

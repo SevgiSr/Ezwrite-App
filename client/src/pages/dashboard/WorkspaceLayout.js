@@ -29,7 +29,7 @@ function WorkspaceLayout() {
 }
 
 const StyledWorkspaceLayout = styled.div`
-  padding: 5rem 0;
+  padding: 3rem 20px;
   position: relative;
   color: var(--font1);
   margin: 0 auto;
@@ -45,10 +45,10 @@ const StyledWorkspaceLayout = styled.div`
     }
   }
 
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: 320px) {
     width: 100%;
   }
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 1024px) {
     width: 680px;
   }
   @media only screen and (min-width: 1350px) {

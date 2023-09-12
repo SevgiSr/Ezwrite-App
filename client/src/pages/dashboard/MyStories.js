@@ -1,6 +1,12 @@
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
-import { MyStory, Story, UserLine } from "../../components";
+import {
+  MyStory,
+  Story,
+  StoryCardMini,
+  UserLine,
+  UserLineMini,
+} from "../../components";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import StyledMyStories from "./styles/MyStories.styled";
 import { ImBooks } from "react-icons/im";
@@ -10,6 +16,7 @@ import { Dna, FallingLines } from "react-loader-spinner";
 import OrangeLinks from "../../components/OrangeLinks";
 import { MdOutlineGroupOff } from "react-icons/md";
 import { BiGitPullRequest } from "react-icons/bi";
+import { VscRepoForked } from "react-icons/vsc";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
@@ -38,16 +45,6 @@ function MyStories({ show }) {
                 label: "My Stories",
                 to: "/workspace/myStories/",
                 active: location.pathname === "/workspace/myStories/",
-              },
-              {
-                label: "Collaboration Requests",
-                to: "collab-requests",
-                active: tab === "collab-requests",
-              },
-              {
-                label: "Pull Requests",
-                to: "pull-requests",
-                active: tab === "pull-requests",
               },
             ]}
           />
@@ -129,108 +126,6 @@ function Stories() {
   );
 }
 
-function Collabs() {
-  const { getCollabRequests, grantCollaboratorAccess } =
-    useContext(MyStoryContext);
-  const { userState } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  const { data: collabRequests = [], isLoading } = useQuery(
-    ["collabRequests"],
-    getCollabRequests,
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  const handleAcceptRequestClick = (r) => {
-    grantCollaboratorAccess(r.story._id, r.user._id);
-  };
-
-  if (isLoading) return null;
-
-  return (
-    <div>
-      {!isLoading && collabRequests.length === 0 ? (
-        <div className="no-content-container">
-          <div className="icon">
-            <MdOutlineGroupOff />
-          </div>
-          <div className="text">
-            Hi, {userState.user.name}! You haven't got any collaboration
-            requests yet.
-          </div>
-        </div>
-      ) : (
-        <div className="collab-requests">
-          {collabRequests.map((c) => {
-            return (
-              <div key={c._id}>
-                <div>{c.story.title}</div>
-                <button onClick={() => handleAcceptRequestClick(c)}>
-                  Accept Request
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Pulls() {
-  const { getPullRequests, mergeFork } = useContext(MyStoryContext);
-  const navigate = useNavigate();
-  const { userState } = useContext(UserContext);
-
-  const { data: pullRequests = [], isLoading } = useQuery(
-    ["pullRequests"],
-    getPullRequests,
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  const handleMergeChanges = async (fork) => {
-    await mergeFork(fork._id);
-    navigate(`/myworks/${fork.story._id}/${fork.story.chapters[0]}/writing`);
-  };
-
-  if (isLoading) return null;
-
-  return (
-    <div>
-      {!isLoading && pullRequests.length === 0 ? (
-        <div className="no-content-container">
-          <div className="icon">
-            <BiGitPullRequest />
-          </div>
-          <div className="text">
-            Hi, {userState.user.name}! You haven't got any pull requests yet.
-          </div>
-        </div>
-      ) : (
-        <div className="pull-requests">
-          {pullRequests.map((p) => {
-            return (
-              <div key={p._id}>
-                <UserLine user={p.collaborator} />
-                <span>wants to propose these changes to you story</span>
-                <Story story={p.story} />
-                <button onClick={() => handleMergeChanges(p)}>
-                  Merge Changes
-                </button>
-                <Link to={`/fork/${p._id}/${p.chapters[0]._id}`}>Preview</Link>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function StoriesFallback() {
   return (
     <div style={{ margin: "5rem 0" }}>
@@ -244,4 +139,4 @@ function StoriesFallback() {
   );
 }
 
-export { MyStories, Stories, Collabs, Pulls };
+export { MyStories, Stories };

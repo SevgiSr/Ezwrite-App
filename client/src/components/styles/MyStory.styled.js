@@ -6,6 +6,8 @@ const StyledMyStory = styled.div`
   position: relative;
 
   .story-title {
+    text-decoration: none;
+    font-size: 17px;
     width: fit-content;
     border-bottom: 2px solid transparent;
     color: var(--font1);

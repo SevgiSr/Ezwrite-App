@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 const StyledUserLine = styled.div`
   display: flex;
+  align-items: center;
 
   .flex-item {
     .name {

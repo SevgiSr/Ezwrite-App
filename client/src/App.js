@@ -36,8 +36,12 @@ import {
   Pending,
   MyStories,
   Stories,
-  Collabs,
-  Pulls,
+  ManageStory,
+  ManageChapters,
+  ManagePulls,
+  ManageHistory,
+  ManageCollabs,
+  MobileSideNavbar,
 } from "./pages/dashboard";
 
 function App() {
@@ -55,6 +59,7 @@ function App() {
           }
         >
           <Route index element={<Home />} />
+          <Route path="/more-nav" element={<MobileSideNavbar />} />
           <Route path="/user/:username" element={<ProfileLayout />}>
             <Route index element={<About />} />
             <Route path="conversations" element={<Conversations />} />
@@ -64,8 +69,6 @@ function App() {
           <Route path="/workspace" element={<WorkspaceLayout />}>
             <Route path="myStories" element={<MyStories />}>
               <Route index element={<Stories />} />
-              <Route path="collab-requests" element={<Collabs />} />
-              <Route path="pull-requests" element={<Pulls />} />
             </Route>
             <Route path="myForks" element={<MyForks />}>
               <Route index element={<ForkedStories />} />
@@ -85,6 +88,12 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/browse" element={<Browse />} />
+          <Route path="/manage/:story_id" element={<ManageStory />}>
+            <Route index element={<ManageChapters />} />
+            <Route path="pull-requests" element={<ManagePulls />} />
+            <Route path="collab-requests" element={<ManageCollabs />} />
+            <Route path="merge-history" element={<ManageHistory />} />
+          </Route>
         </Route>
 
         <Route

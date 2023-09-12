@@ -2,16 +2,16 @@ import { AiFillDislike, AiOutlineBars, AiOutlineDown } from "react-icons/ai";
 import { BsFillArrowRightCircleFill, BsFillStarFill } from "react-icons/bs";
 import { GoEye } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
-import Cover from "./Cover";
-import StyledStoryCardDetailed from "./styles/StoryCardDetailed.styled";
+import Cover from "../Cover";
+import StyledStoryCardDetailed from "../styles/StoryCardDetailed.styled";
 import { useContext, useState } from "react";
-import ModalCenter from "./ModalCenter";
-import ProfilePicture from "./ProfilePicture";
-import UserLine from "./UserLine";
-import Metadata from "./Metadata";
-import { UserContext } from "../context/userContext";
-import Tag from "./Tag";
-import StoryModal from "./StoryModal";
+import ModalCenter from "../ModalCenter";
+import ProfilePicture from "../ProfilePicture";
+import UserLine from "../UserUI/UserLine";
+import Metadata from "../Metadata";
+import { UserContext } from "../../context/userContext";
+import Tag from "../Tag";
+import StoryModal from "../StoryModal";
 
 const StoryCardDetailed = ({ story }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

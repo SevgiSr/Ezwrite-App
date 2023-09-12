@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Cover from "./Cover";
-import Metadata from "./Metadata";
-import UserLine from "./UserLine";
-import StyledStoryCardRanked from "./styles/StoryCardRanked.styled";
-import StoryModal from "./StoryModal";
+import Cover from "../Cover";
+import Metadata from "../Metadata";
+import UserLine from "../UserUI/UserLine";
+import StyledStoryCardRanked from "../styles/StoryCardRanked.styled";
+import StoryModal from "../StoryModal";
 
 function StoryCardRanked({ story }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

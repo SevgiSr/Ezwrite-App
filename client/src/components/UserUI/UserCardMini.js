@@ -1,13 +1,13 @@
-import ProfilePicture from "./ProfilePicture";
+import ProfilePicture from "../ProfilePicture";
 import { io } from "socket.io-client";
-import { ProfileContext } from "../context/profileContext";
+import { ProfileContext } from "../../context/profileContext";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BsPersonPlusFill } from "react-icons/bs";
-import StyledUserCardMini from "./styles/UserCardMini.styled";
-import socket from "../socket.js";
+import StyledUserCardMini from "../styles/UserCardMini.styled";
+import socket from "../../socket.js";
 
-const UserCard = ({ user }) => {
+const UserCardMini = ({ user }) => {
   const { alertState, followProfile, unfollowProfile, sendNotification } =
     useContext(ProfileContext);
 
@@ -91,4 +91,4 @@ const UserCard = ({ user }) => {
   );
 };
 
-export default UserCard;
+export default UserCardMini;

@@ -1,14 +1,14 @@
-import ProfilePicture from "./ProfilePicture";
-import StyledUserCard from "./styles/UserCard.styled";
+import ProfilePicture from "../ProfilePicture";
+import StyledUserCard from "../styles/UserCard.styled";
 import { io } from "socket.io-client";
-import { ProfileContext } from "../context/profileContext";
+import { ProfileContext } from "../../context/profileContext";
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { BsPersonPlusFill } from "react-icons/bs";
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../../context/userContext";
 import { useQuery } from "@tanstack/react-query";
-import socket from "../socket.js";
-import BackgroundPicture from "./BackgroundPicture";
+import socket from "../../socket.js";
+import BackgroundPicture from "../BackgroundPicture";
 
 const UserCard = ({ user }) => {
   const {

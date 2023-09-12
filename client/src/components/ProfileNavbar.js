@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 import socket from "../socket.js";
 import { UserContext } from "../context/userContext";
 import ModalCenter from "./ModalCenter";
-import StoryCardDetailed from "./StoryCardDetailed";
+import StoryCardDetailed from "./";
 import Cover from "./Cover";
 import { GoEye } from "react-icons/go";
 import { StoryContext } from "../context/storyContext";

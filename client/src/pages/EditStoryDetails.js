@@ -15,10 +15,9 @@ import {
   SyncLoader,
 } from "react-spinners";
 import getDate from "../utils/getDate";
-import StoryDetails from "../components/StoryDetails";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DropdownMenu, Metadata } from "../components";
+import { DropdownMenu, Metadata, StoryDetails } from "../components";
 import { RiMoreFill } from "react-icons/ri";
 
 function EditStoryDetails() {

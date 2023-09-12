@@ -26,10 +26,6 @@ const MyStory = ({ story }) => {
       setTimestamp(Date.now());
     }, 10);
   }, []);
-  const handleClick = () => {
-    navigate(`/${story._id}`);
-    setEditStory(story._id);
-  };
 
   const handleDeleteClick = () => {
     setIsModalOpen(false);
@@ -40,13 +36,14 @@ const MyStory = ({ story }) => {
 
   return (
     <StyledMyStory>
-      <div className="cover">
+      <Link className="cover" to={`/manage/${story._id}`}>
         <Cover filename={story._id} width="80px" timestamp={timestamp} />
-      </div>
+      </Link>
+
       <div className="info">
-        <h3 className="story-title" onClick={handleClick}>
+        <Link className="story-title" to={`/manage/${story._id}`}>
           {story.title}
-        </h3>
+        </Link>
         <div className="publish-count">3 Taslak</div>
         <div className="update-date">
           <div className="date">Güncellenme Zamanı Oca 27, 2023</div>

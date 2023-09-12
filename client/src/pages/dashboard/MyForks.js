@@ -7,7 +7,15 @@ import OrangeLinks from "../../components/OrangeLinks";
 import { useState } from "react";
 import { UserContext } from "../../context/userContext";
 import { MdGroup, MdOutlineTimerOff } from "react-icons/md";
-import { DropdownMenu, ModalCenter, MyStory } from "../../components";
+import {
+  DropdownMenu,
+  ModalCenter,
+  MyStory,
+  StoryCardMini,
+  StoryCardRanked,
+  UserLine,
+  UserLineMini,
+} from "../../components";
 import { FallingLines } from "react-loader-spinner";
 import { FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
 import Cover from "../../components/Cover";
@@ -139,12 +147,24 @@ function Pending() {
           </div>
         </div>
       ) : (
-        <div className="collab-requests">
+        <div className="pending-forks">
           {myPendingRequests.map((r) => {
             return (
-              <>
-                <div>{r.title}</div>
-              </>
+              <div key={r._id} className="pending-fork">
+                <div className="collab-icon">
+                  <VscRepoForked />
+                </div>
+                <div className="content">
+                  You've requested to collaborate in{" "}
+                  <span className="user">
+                    <UserLineMini user={r.author} />
+                  </span>
+                  's story
+                </div>
+                <Link className="story" to={`/story/${r._id}`}>
+                  <strong>{r.title}</strong>
+                </Link>
+              </div>
             );
           })}
         </div>
@@ -168,14 +188,19 @@ function StoriesFallback() {
 
 function MyFork({ fork }) {
   const { useDeleteFork, sendPullRequest } = useContext(MyForkContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPullModalOpen, setIsPullModalOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+
   const deleteForkMutation = useDeleteFork();
   const handleDeleteClick = () => {
     deleteForkMutation.mutate({ fork_id: fork._id });
   };
 
-  const handleSendPullRequest = () => {
-    sendPullRequest(fork._id);
+  const handlePullClick = () => {
+    setIsPullModalOpen(false);
+    sendPullRequest(fork._id, title, desc);
   };
 
   return (
@@ -194,7 +219,7 @@ function MyFork({ fork }) {
       </div>
       <div className="buttons">
         <div>
-          <button onClick={handleSendPullRequest}>
+          <button onClick={() => setIsPullModalOpen(true)}>
             Send Updates to Author
           </button>
         </div>
@@ -241,7 +266,7 @@ function MyFork({ fork }) {
               </span>
               <div
                 onClick={() => {
-                  setIsModalOpen(true);
+                  setIsDeleteModalOpen(true);
                 }}
               >
                 Delete Fork
@@ -251,12 +276,12 @@ function MyFork({ fork }) {
         />
       </div>
       <ModalCenter
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
         content={
           <>
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => setIsDeleteModalOpen(false)}
               className="close-modal-btn icon"
             >
               <AiOutlineClose />
@@ -275,7 +300,51 @@ function MyFork({ fork }) {
               <button
                 className="btn-grey btn"
                 onClick={() => {
-                  setIsModalOpen(false);
+                  setIsDeleteModalOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        }
+      />
+      <ModalCenter
+        isOpen={isPullModalOpen}
+        setIsOpen={setIsPullModalOpen}
+        content={
+          <>
+            <button
+              onClick={() => setIsPullModalOpen(false)}
+              className="close-modal-btn icon"
+            >
+              <AiOutlineClose />
+            </button>
+            <form className="pull-form">
+              <label htmlFor="title">Request Title</label>
+              <input
+                id="title"
+                type="text"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+              />
+              <label htmlFor="desc">Request Description</label>
+              <textarea
+                id="desc"
+                cols="30"
+                rows="10"
+                onChange={(e) => setDesc(e.target.value)}
+                value={desc}
+              />
+            </form>
+            <div className="buttons flex-row">
+              <button className="orange-button btn" onClick={handlePullClick}>
+                Confirm
+              </button>
+              <button
+                className="btn-grey btn"
+                onClick={() => {
+                  setIsPullModalOpen(false);
                 }}
               >
                 Cancel

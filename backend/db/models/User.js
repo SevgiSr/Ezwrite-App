@@ -64,13 +64,24 @@ const UserSchema = new mongoose.Schema(
         ref: "Story",
       },
     ],
-    //fork id
-    pullRequests: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Fork",
-      },
-    ],
+
+    pullRequests: {
+      type: [
+        {
+          title: {
+            type: String,
+          },
+          description: {
+            type: String,
+          },
+          fork: {
+            type: mongoose.Types.ObjectId,
+            ref: "Fork",
+          },
+        },
+      ],
+      default: [],
+    },
 
     comments: [
       {

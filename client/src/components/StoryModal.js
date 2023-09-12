@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Cover from "./Cover";
 import Metadata from "./Metadata";
 import ModalCenter from "./ModalCenter";
-import UserLine from "./UserLine";
+import UserLine from "./UserUI/UserLine";
 import StyledStoryModal from "./styles/StoryModal.styled";
 import { AiOutlineDown } from "react-icons/ai";
 import { useContext } from "react";

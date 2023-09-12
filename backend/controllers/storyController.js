@@ -779,6 +779,12 @@ const requestCollab = async (req, res) => {
       { new: true, runValidators: true }
     );
 
+    await Story.updateOne(
+      { _id: story_id },
+      { $push: { collabRequests: mainUser._id } },
+      { new: true, runValidators: true }
+    );
+
     res.status(StatusCodes.OK).json({ msg: "success" });
   } catch (error) {
     console.log(error);

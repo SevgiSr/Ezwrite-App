@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { UserContext } from "../../context/userContext";
 import OrangeLinks from "../../components/OrangeLinks";
-import { ReadingLists } from "../../components";
+import { ReadingLists, StoryCardMini } from "../../components";
 import { Link } from "react-router-dom";
 import Cover from "../../components/Cover";
 import { GoEye } from "react-icons/go";
@@ -48,7 +48,7 @@ function Continue({ continueReading }) {
           console.log(progress);
           return (
             <div key={progress._id} className="item">
-              <Story story={progress.story} />
+              <StoryCardMini story={progress.story} />
               <div className="progress">
                 <div
                   style={{
@@ -67,38 +67,6 @@ function Continue({ continueReading }) {
           );
         })}
       </div>
-    </div>
-  );
-}
-
-function Story({ story }) {
-  if (!story) return null;
-  return (
-    <div className="story">
-      <Link to={`/story/${story._id}`} style={{ textDecoration: "none" }}>
-        <Cover filename={story._id} width={"123px"} />
-        <div className="title">{story.title}</div>
-        <div className="meta-data">
-          <div>
-            <div className="icon">
-              <GoEye />
-            </div>
-            <div className="count">0</div>
-          </div>
-          <div>
-            <div className="icon">
-              <BsFillStarFill />
-            </div>
-            <div className="count">106</div>
-          </div>
-          <div>
-            <div className="icon">
-              <AiOutlineBars />
-            </div>
-            <div className="count">9</div>
-          </div>
-        </div>
-      </Link>
     </div>
   );
 }

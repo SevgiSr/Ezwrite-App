@@ -159,6 +159,8 @@ const getMyStories = async (req, res) => {
         },
         { path: "chapters", populate: "paragraphs" },
         { path: "tags" },
+        { path: "pullRequests.fork", populate: "collaborator story chapters" },
+        { path: "collabRequests" },
       ])
       .sort("-updatedAt");
 
@@ -316,7 +318,7 @@ const deleteStory = async (req, res) => {
           );
           //remove pullRequests for every fork for that story
           author.pullRequests = author.pullRequests.filter(
-            (p) => p.toString() !== fork._id.toString()
+            (p) => p.fork.toString() !== fork._id.toString()
           );
           await author.save();
           await fork.delete();
@@ -700,6 +702,9 @@ const grantCollaboratorAccess = async (req, res) => {
     //add user as collaborator and fork to story
     story.collaborators.push(user_id);
     story.forks.push(newFork._id);
+    story.collabRequests = story.collabRequests.filter(
+      (c) => c.toString() !== user_id.toString()
+    );
     await story.save();
 
     //save for user's forked stories
@@ -778,8 +783,12 @@ const mergeFork = async (req, res) => {
 
     story.chapters = newChapterIds;
 
+    story.pullRequests = story.pullRequests.filter(
+      (p) => p.fork.toString() !== fork_id.toString()
+    );
+
     user.pullRequests = user.pullRequests.filter(
-      (p) => p.toString() !== fork_id.toString()
+      (p) => p.fork.toString() !== fork_id.toString()
     );
 
     await story.save();

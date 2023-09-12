@@ -1,13 +1,12 @@
 import { useContext, useEffect, useRef } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
-import { Alert, FormRow, LoadingScreen } from "../components";
+import { Alert, FormRow, LoadingScreen, StoryDetails } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import StyledNewStory from "./styles/NewStory.styled";
 import OrangeLinks from "../components/OrangeLinks";
 import { ProfileContext } from "../context/profileContext";
 import { AiFillPicture } from "react-icons/ai";
-import StoryDetails from "../components/StoryDetails";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function NewStory() {

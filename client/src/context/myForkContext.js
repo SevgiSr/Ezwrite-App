@@ -140,9 +140,9 @@ export const MyForkProvider = ({ children }) => {
     }
   };
 
-  const sendPullRequest = async (fork_id) => {
+  const sendPullRequest = async (fork_id, title, description) => {
     try {
-      await authFetch.patch(`/myForks/pull/${fork_id}`);
+      await authFetch.patch(`/myForks/pull/${fork_id}`, { title, description });
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);

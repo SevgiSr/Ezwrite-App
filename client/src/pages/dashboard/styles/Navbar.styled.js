@@ -58,13 +58,16 @@ const StyledNavbar = styled.header`
       display: flex;
       flex-direction: row;
       align-items: center;
+      position: relative;
+      margin-left: 30px;
 
       button {
         border: none;
         font-size: 23px;
         color: var(--font2);
         padding: 5px 7px;
-        margin-left: 30px;
+
+        border-radius: 100%;
         :hover {
           background-color: var(--background4);
         }
@@ -81,6 +84,20 @@ const StyledNavbar = styled.header`
           color: var(--font2);
           font-size: 15px;
           font-weight: 500;
+        }
+      }
+      .modal-search-form {
+        background-color: var(--background5);
+        box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+        padding: 10px 0;
+        border-radius: 10px;
+        position: absolute;
+        left: 0;
+        width: 330px;
+        display: flex;
+        z-index: 999;
+        input {
+          display: block;
         }
       }
     }
@@ -103,6 +120,7 @@ const StyledNavbar = styled.header`
           display: flex;
           justify-content: center;
           align-items: center;
+          cursor: pointer;
         }
       }
     }
@@ -196,10 +214,14 @@ const StyledNavbar = styled.header`
     .username {
       display: none;
     }
-
+  }
+  @media only screen and (max-width: 1024px) {
     #search-form {
       input {
-        width: auto;
+        display: none;
+      }
+      button {
+        background-color: var(--background5);
       }
     }
   }

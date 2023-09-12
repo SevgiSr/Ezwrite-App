@@ -1,10 +1,8 @@
-import Story from "../../../components/Story";
 import StyledAbout from "./styles/About.styled";
 import { HiLocationMarker } from "react-icons/hi";
 import { MdSettings } from "react-icons/md";
 import { Link, useOutletContext } from "react-router-dom";
-import StoryDetails from "../../../components/StoryDetails";
-import { ReadingLists, StoryCardDetailed } from "../../../components";
+import { ReadingLists, Story } from "../../../components";
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import getDate from "../../../utils/getDate";

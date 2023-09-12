@@ -5,16 +5,28 @@ import src from "./logo.png";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserContext } from "../../context/userContext";
 import { FiSearch } from "react-icons/fi";
-import { AiFillCaretDown } from "react-icons/ai";
+import { AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
 import socket from "../../socket.js";
 import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
 import { BsPencilSquare } from "react-icons/bs";
-import { BiNetworkChart } from "react-icons/bi";
+import { BiArrowBack, BiNetworkChart } from "react-icons/bi";
 import { FaUserClock } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
+import SideNavbar from "./SideNavbar";
 
 function Navbar() {
   const { userState, logoutUser } = useContext(UserContext);
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   //for notifications
   const [ntCount, setNtCount] = useState(0);
@@ -31,9 +43,20 @@ function Navbar() {
     setQuery(e.target.value);
   };
 
+  const handleOpenSearch = () => {
+    setIsSearchOpen(true);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     navigate(`/stories/search/${query}`);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e);
+    }
   };
 
   //for notification
@@ -81,8 +104,11 @@ function Navbar() {
             </Link>
           </div>
 
-          <form onSubmit={handleSubmit} id="search-form">
-            <button type="submit">
+          <form id="search-form">
+            <button
+              type="button"
+              onClick={windowWidth > 1024 ? handleSubmit : handleOpenSearch}
+            >
               <FiSearch />
             </button>
             <input
@@ -91,7 +117,16 @@ function Navbar() {
               value={query}
               placeholder="Search..."
               type="text"
+              onKeyDown={handleKeyDown}
             />
+            {isSearchOpen && (
+              <SearchForm
+                handleChange={handleChange}
+                query={query}
+                setIsSearchOpen={setIsSearchOpen}
+                handleKeyDown={handleKeyDown}
+              />
+            )}
           </form>
         </nav>
       </div>
@@ -114,6 +149,13 @@ function Navbar() {
                 <FaUserClock />
               </Link>
             </li>
+            {windowWidth <= 900 && (
+              <li className="nav-item">
+                <Link to="/more-nav" className="nav-link">
+                  <AiOutlineMenu />
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </div>
@@ -168,6 +210,24 @@ function Navbar() {
         </nav>
       </section>
     </StyledNavbar>
+  );
+}
+
+function SearchForm({ handleChange, query, setIsSearchOpen, handleKeyDown }) {
+  return (
+    <div className="modal-search-form">
+      <button type="button" onClick={() => setIsSearchOpen(false)}>
+        <BiArrowBack />
+      </button>
+      <input
+        onChange={handleChange}
+        name="query"
+        value={query}
+        placeholder="Search..."
+        type="text"
+        onKeyDown={handleKeyDown}
+      />
+    </div>
   );
 }
 
