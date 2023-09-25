@@ -43,9 +43,8 @@ html {
 
 :root {
   /* fonts */
-  --big-text: 1.5rem;
-  --medium-text: 1rem;
-  --small-text: 0.7;
+
+
   --background1: #202225;
   --background2: #292b2f;
   --background3: #2f3136;
@@ -120,7 +119,7 @@ html {
 
 
 .icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: fit-content;
@@ -226,25 +225,11 @@ html {
   color: var(--text-dark-orange);
 }
 
-/*btn*/
-/* .btn {
-  cursor: pointer;
-  color: white;
-  background: var(--button-main);
-  font-size: 1.2rem;
-  letter-spacing: 0.02rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: var(--borderRadius);
-  transition: var(--transition);
-  text-transform: capitalize;
-  border: transparent;
-} */
-
-
-
 .btn {
+  color: var(--font2);
+  background-color: var(--background4);
   padding: 5px 15px;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 18px;
   border-radius: 6px;
   margin: 3px 5px;
@@ -257,6 +242,28 @@ html {
   white-space: nowrap;
   -webkit-transition: all .1s ease-in-out;
   transition: all .1s ease-in-out;
+}
+
+.btn-link {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--font2);
+  background-color: transparent;
+  text-decoration: none;
+  border-radius: 0;
+}
+
+.btn-link:hover {
+  color: var(--font1);
+}
+
+.btn-basic {
+  background-color: var(--background4);
+}
+
+
+
+.btn-basic:hover {
+  background-color: var(--background3);
 }
 
 .orange-button {

@@ -40,7 +40,6 @@ const StyledMyStories = styled.div`
   }
 
   .stories-container {
-    min-height: fit-content;
     background-color: var(--background5);
     padding: 1rem;
     box-shadow: 0 1px 10px 0 rgb(34 34 34 / 8%), 0 4px 5px 0 rgb(34 34 34 / 10%);

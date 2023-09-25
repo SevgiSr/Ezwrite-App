@@ -9,6 +9,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalCenter from "./ModalCenter";
+import getDate from "../utils/getDate.js";
 
 const MyStory = ({ story }) => {
   const navigate = useNavigate();
@@ -46,19 +47,18 @@ const MyStory = ({ story }) => {
         </Link>
         <div className="publish-count">3 Taslak</div>
         <div className="update-date">
-          <div className="date">Güncellenme Zamanı Oca 27, 2023</div>
-          <div className="time">02:38PM</div>
+          <div className="date">Updated - {getDate(story.updatedAt)}</div>
         </div>
         <div className="meta-data"></div>
       </div>
       <div className="buttons">
         <div>
           <DropdownMenu
-            buttonClass="orange-button btn story-btn"
+            buttonClass="orange-button btn edit-chapters-btn"
             menuClass="chapters-dropdown"
             button={
               <>
-                <span className="text">Edit Story</span>
+                <span className="text">Edit Chapters</span>
                 <span className="down-icon">
                   <FiChevronDown />
                 </span>
@@ -74,7 +74,7 @@ const MyStory = ({ story }) => {
                   <div>
                     {chapter.title}
 
-                    <p>Taslak - Ocak 11, 2023</p>
+                    <p>{getDate(chapter.updatedAt)}</p>
                   </div>
                 </Link>
               );

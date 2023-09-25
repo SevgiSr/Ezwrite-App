@@ -141,8 +141,6 @@ function Chapter() {
     return <h1>loading...</h1>;
   }
 
-  console.log(state);
-
   return (
     <StyledChapter ref={scrollRef}>
       <ChapterHeader

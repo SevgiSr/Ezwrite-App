@@ -33,6 +33,7 @@ const StyledWorkspaceLayout = styled.div`
   position: relative;
   color: var(--font1);
   margin: 0 auto;
+  max-width: 790px;
 
   .main-nav {
     display: flex;
@@ -43,16 +44,6 @@ const StyledWorkspaceLayout = styled.div`
     .link {
       font-size: 23px;
     }
-  }
-
-  @media only screen and (min-width: 320px) {
-    width: 100%;
-  }
-  @media only screen and (min-width: 1024px) {
-    width: 680px;
-  }
-  @media only screen and (min-width: 1350px) {
-    width: 790px;
   }
 `;
 

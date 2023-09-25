@@ -32,6 +32,7 @@ function EditStoryDetails() {
     updateStory,
   } = useContext(MyStoryContext);
   const { story_id } = useParams();
+  const { story } = storyState;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,26 +70,26 @@ function EditStoryDetails() {
   useEffect(() => {
     if (!isFetching && status === "success") {
       const myStory = myStories.find((story) => story._id === story_id);
-      console.log(myStory);
+      console.log("STORYY: " + myStory);
       setMyStory(myStory);
     }
   }, [location, isFetching]);
 
   useEffect(() => {
-    const { myStory } = storyState;
-    if (myStory && Object.keys(myStory).length !== 0) {
-      console.log(myStory);
+    const { story } = storyState;
+    if (story && Object.keys(story).length !== 0) {
+      console.log(story);
 
       setStoryDetails({
-        title: myStory.title,
-        description: myStory.description,
-        category: myStory.category,
-        language: myStory.language,
+        title: story.title,
+        description: story.description,
+        category: story.category,
+        language: story.language,
       });
-      const tagNames = myStory.tags?.map((tag) => tag.name);
+      const tagNames = story.tags?.map((tag) => tag.name);
       setTags(tagNames);
     }
-  }, [storyState.myStory]);
+  }, [storyState]);
 
   const mutation = useMutation(
     (data) => updateStory(data.story_id, data.storyDetails),
@@ -105,14 +106,13 @@ function EditStoryDetails() {
   };
 
   const handleCancel = () => {
-    const { myStory } = storyState;
     setStoryDetails({
-      title: myStory.title,
-      description: myStory.description,
-      category: myStory.category,
-      language: myStory.language,
+      title: story.title,
+      description: story.description,
+      category: story.category,
+      language: story.language,
     });
-    const tagNames = myStory.tags.map((tag) => tag.name);
+    const tagNames = story.tags.map((tag) => tag.name);
     setTags(tagNames);
     navigate("/workspace/myStories/");
   };
@@ -123,6 +123,8 @@ function EditStoryDetails() {
     console.log(storyDetails);
     mutation.mutate({ story_id, storyDetails });
   };
+
+  if (isLoading) return null;
 
   return (
     <StyledEditStoryDetails>
@@ -138,7 +140,7 @@ function EditStoryDetails() {
               <Cover filename={story_id} width="280px" timestamp={timestamp} />
             )}
           </div>
-          <h1 className="title">{storyState.myStory.title}</h1>
+          <h1 className="title">{story.title}</h1>
           <label htmlFor="upload" className="upload-picture">
             <div className="edit-cover-btn">Edit Your Cover</div>
             <input
@@ -191,6 +193,7 @@ function EditStoryDetails() {
 
 function Navbar({ handleCancel }) {
   const { storyState } = useContext(MyStoryContext);
+  const { story } = storyState;
   return (
     <nav className="story-navbar">
       <header>
@@ -201,7 +204,7 @@ function Navbar({ handleCancel }) {
         </Link>
         <div className="story">
           <span>Edit Story Details</span>
-          <div className="title">{storyState.myStory.title}</div>
+          <div className="title">{story.title}</div>
         </div>
       </header>
       <div className="buttons">
@@ -219,6 +222,7 @@ function Navbar({ handleCancel }) {
 function Contents() {
   const { storyState, useAddChapter, useDeleteChapter } =
     useContext(MyStoryContext);
+  const { story } = storyState;
   const { story_id } = useParams();
   const navigate = useNavigate();
 
@@ -245,7 +249,7 @@ function Contents() {
       >
         New Part
       </button>
-      {storyState.myStory?.chapters?.map((chapter) => {
+      {story.chapters?.map((chapter) => {
         return (
           <div key={chapter._id} className="row">
             <div className="bars-icon icon">

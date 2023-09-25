@@ -17,7 +17,7 @@ const StyledNavbar = styled.header`
   > :nth-child(2) {
     position: absolute;
     left: 50%;
-    transform: translate(-50%, 0);
+    transform: translateX(-50%);
   }
 
   .section {
@@ -215,7 +215,7 @@ const StyledNavbar = styled.header`
       display: none;
     }
   }
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1280px) {
     #search-form {
       input {
         display: none;

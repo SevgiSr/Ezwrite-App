@@ -5,7 +5,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { Cover, UserLine } from "../../components";
+import { Cover, UserLine, UserLineMini } from "../../components";
 import StyledManageStory from "./styles/ManageStory.styled";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
@@ -13,9 +13,11 @@ import { MyStoryContext } from "../../context/myStoryContext";
 import OrangeLinks from "../../components/OrangeLinks";
 import { MdOutlineGroupOff } from "react-icons/md";
 import { UserContext } from "../../context/userContext";
-import { AiOutlineFieldTime } from "react-icons/ai";
-import { BiGitPullRequest } from "react-icons/bi";
+import { AiOutlineFieldTime, AiOutlineInfoCircle } from "react-icons/ai";
+import { BiEditAlt, BiGitPullRequest } from "react-icons/bi";
 import { ImFilesEmpty } from "react-icons/im";
+import getDate from "../../utils/getDate";
+import { BsFillEyeFill } from "react-icons/bs";
 
 function ManageStory() {
   const { story_id } = useParams();
@@ -46,20 +48,27 @@ function ManageStory() {
   return (
     <StyledManageStory>
       <div className="info">
-        <Cover filename={story._id} width="130px" />
-        <div className="title">{story.title}</div>
-        <Link to={`/${story._id}`}>Edit Story Details</Link>
+        <Cover filename={story._id} width="210px" />
+        <div className="story-title">{story.title}</div>
+        <Link className="btn btn-link edit-story-btn" to={`/${story._id}`}>
+          <div className="icon">
+            <AiOutlineInfoCircle />
+          </div>
+          Edit Story Details
+        </Link>
       </div>
 
       <div className="main">
-        <OrangeLinks
-          links={[
-            { to: "", label: "Chapters" },
-            { to: "pull-requests/", label: "Pull Requests" },
-            { to: "collab-requests/", label: "Collab Requests" },
-            { to: "merge-history/", label: "Merge History" },
-          ]}
-        />
+        <div className="story-nav">
+          <OrangeLinks
+            links={[
+              { to: "", label: "Chapters" },
+              { to: "pull-requests/", label: "Pull Requests" },
+              { to: "collab-requests/", label: "Collab Requests" },
+              { to: "merge-history/", label: "Merge History" },
+            ]}
+          />
+        </div>
         <Outlet />
       </div>
     </StyledManageStory>
@@ -73,7 +82,7 @@ function ManageChapters() {
   const { story } = storyState;
   return (
     <div className="chapters-container">
-      {story.pullRequests?.length === 0 ? (
+      {story.chapters?.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
             <ImFilesEmpty />
@@ -83,7 +92,17 @@ function ManageChapters() {
       ) : (
         <div className="chapters">
           {story.chapters?.map((chapter) => {
-            return <div className="chapter">{chapter.title}</div>;
+            return (
+              <div className="chapter">
+                <header>
+                  <div className="title">{chapter.title}</div>
+                  <div className="status">{chapter.visibility}</div>
+                </header>
+                <div className="updated">
+                  Updated - {getDate(chapter.updatedAt)}
+                </div>
+              </div>
+            );
           })}
         </div>
       )}
@@ -118,15 +137,34 @@ function ManagePulls() {
           {story.pullRequests?.map((p) => {
             return (
               <div className="pull-request">
-                <div className="pull-title">{p.title}</div>
-                <div className="pull-desc">{p.description}</div>
-                <div className="fork">
-                  <button onClick={() => handleMergeChanges(p.fork)}>
-                    Merge Changes
-                  </button>
-                  <Link to={`/fork/${p.fork._id}/${p.fork.chapters[0]._id}`}>
+                <div className="pull-main">
+                  <div className="title">{p.title} </div>
+                  <div className="desc">{p.description}</div>
+                  <div className="author">
+                    <div className="text">sent by</div>
+                    <UserLineMini
+                      user={p.fork.collaborator}
+                      width="21px"
+                      fontSize="14px"
+                    />
+                  </div>
+                </div>
+                <div className="actions">
+                  <Link
+                    className="preview-btn btn btn-link"
+                    to={`/fork/${p.fork._id}/${p.fork.chapters[0]._id}`}
+                  >
+                    <div className="icon">
+                      <BsFillEyeFill />
+                    </div>
                     Preview
                   </Link>
+                  <button
+                    className="btn btn-basic"
+                    onClick={() => handleMergeChanges(p.fork)}
+                  >
+                    Merge Changes
+                  </button>
                 </div>
               </div>
             );
@@ -164,8 +202,13 @@ function ManageCollabs() {
             return (
               <div className="collab">
                 <UserLine user={collab} />
-                wants to collaborate in this story.
-                <button onClick={() => handleAcceptRequestClick(collab)}>
+                <div className="collab-text">
+                  wants to collaborate in this story.
+                </div>
+                <button
+                  className="collab-btn btn"
+                  onClick={() => handleAcceptRequestClick(collab)}
+                >
                   Accept Request
                 </button>
               </div>

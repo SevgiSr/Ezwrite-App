@@ -5,13 +5,13 @@ import src from "./logo.png";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserContext } from "../../context/userContext";
 import { FiSearch } from "react-icons/fi";
-import { AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
+import { AiFillBell, AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
 import socket from "../../socket.js";
 import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
-import { BsPencilSquare } from "react-icons/bs";
+import { BsEnvelope, BsFillEnvelopeFill, BsPencilSquare } from "react-icons/bs";
 import { BiArrowBack, BiNetworkChart } from "react-icons/bi";
-import { FaUserClock } from "react-icons/fa";
+import { FaBell, FaUserClock } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import SideNavbar from "./SideNavbar";
 
@@ -107,7 +107,7 @@ function Navbar() {
           <form id="search-form">
             <button
               type="button"
-              onClick={windowWidth > 1024 ? handleSubmit : handleOpenSearch}
+              onClick={windowWidth > 1280 ? handleSubmit : handleOpenSearch}
             >
               <FiSearch />
             </button>
@@ -139,16 +139,26 @@ function Navbar() {
                 <BsPencilSquare />
               </Link>
             </li>
+            {windowWidth > 768 && (
+              <li className="nav-item">
+                <Link to="" className="nav-link">
+                  <BiNetworkChart />
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
-              <Link to="" className="nav-link">
-                <BiNetworkChart />
+              <Link to="/notifications" className="nav-link">
+                {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
+                <FaBell />
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="" className="nav-link">
-                <FaUserClock />
-              </Link>
-            </li>
+            {windowWidth > 768 && (
+              <li className="nav-item">
+                <Link to="/inbox" className="nav-link">
+                  <BsFillEnvelopeFill />
+                </Link>
+              </li>
+            )}
             {windowWidth <= 900 && (
               <li className="nav-item">
                 <Link to="/more-nav" className="nav-link">
@@ -178,15 +188,13 @@ function Navbar() {
             menu={
               <>
                 <Link
-                  to={`/user/${userState.user.name}`}
+                  to=""
                   className="dropdown-item"
                   style={{ borderBottom: "1px solid #eee" }}
                 >
-                  <span>My Profile</span>
+                  <span>Profile Info</span>
                 </Link>
-                <Link to={`/inbox`} className="dropdown-item">
-                  <span>Inbox</span>
-                </Link>
+
                 <Link to={`/notifications`} className="dropdown-item">
                   <span>
                     {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}

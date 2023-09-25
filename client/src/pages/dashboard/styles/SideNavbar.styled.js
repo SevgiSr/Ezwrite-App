@@ -15,8 +15,9 @@ const StyledSideNavbar = styled.div`
       flex-direction: column;
       list-style: none;
       width: 100%;
+
       li {
-        font-size: 26px;
+        font-size: 24px;
 
         cursor: pointer;
         :hover {
@@ -24,9 +25,14 @@ const StyledSideNavbar = styled.div`
         }
         .link {
           color: var(--font2);
-          display: block;
+          display: flex;
+          align-items: center;
           text-decoration: none;
-          padding: 15px 23px;
+          padding: 23px 20px;
+
+          .icon {
+            margin-right: 10px;
+          }
         }
       }
     }

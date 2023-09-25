@@ -70,18 +70,22 @@ const StyledMyStory = styled.div`
     display: flex;
     flex-direction: column;
     align-items: end;
-    .story-btn {
+    .edit-chapters-btn {
       position: relative;
-      padding: 9px 50px;
+      padding: 6px 18px;
       margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+
       .text {
-        padding-right: 20px;
+        font-size: 14px;
       }
+
       .down-icon {
         font-size: 20px;
-        position: absolute;
-        right: 10px;
-        padding-left: 16px;
+        position: relative;
+        right: -15px;
+        padding-left: 5px;
         border-left: 1px solid #fafafa;
       }
     }
@@ -90,10 +94,11 @@ const StyledMyStory = styled.div`
       font-size: 30px;
       font-weight: 600;
       border-radius: 5px;
-      padding: 6px 8px;
+      padding: 2px 4px;
       width: fit-content;
       color: #6f6f6f;
-      border: 3px solid #eee;
+      background-color: var(--background4);
+      border: none;
     }
     .more-menu {
       overflow: hidden;
