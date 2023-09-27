@@ -253,19 +253,6 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const getCollabRequests = async () => {
-    try {
-      const { data } = await authFetch.get(
-        `/myStories/collaborations/collabRequests`
-      );
-      const { collabRequests } = data;
-      console.log(collabRequests);
-      return collabRequests;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   /* MUTATIONS */
 
   const queryClient = useQueryClient();
@@ -376,17 +363,6 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
-  const getPullRequests = async () => {
-    try {
-      const { data } = await authFetch.get(`/myForks/pull`);
-      const { forks } = data;
-      return forks;
-    } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
-    }
-  };
-
   const mergeFork = async (fork_id) => {
     try {
       await authFetch.patch(`/myStories/collaborations/forks/${fork_id}`);
@@ -413,9 +389,7 @@ export const MyStoryProvider = ({ children }) => {
         addChapter,
         updateStory,
         sendGptPrompt,
-        getCollabRequests,
         grantCollaboratorAccess,
-        getPullRequests,
         mergeFork,
 
         useCreateStory,

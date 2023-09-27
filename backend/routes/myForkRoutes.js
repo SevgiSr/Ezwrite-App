@@ -5,9 +5,9 @@ import {
   createChapter,
   deleteChapter,
   deleteFork,
+  getCollabNotifications,
   getMyForks,
   getPendingForkRequests,
-  getPullRequests,
   restoreChapterHistory,
   saveChapter,
   sendPullRequest,
@@ -23,8 +23,8 @@ import {
 } from "../controllers/forkController.js";
 
 router.route("/pending").get(getPendingForkRequests);
+router.route("/notifications").get(getCollabNotifications);
 router.route("/delete/:fork_id").delete(deleteFork);
-router.route("/pull").get(getPullRequests);
 router.route("/pull/:fork_id").patch(sendPullRequest);
 
 router.route("/history/:fork_id/:chapter_id").patch(restoreChapterHistory);

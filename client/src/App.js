@@ -42,6 +42,7 @@ import {
   ManageHistory,
   ManageCollabs,
   MobileSideNavbar,
+  Collaborations,
 } from "./pages/dashboard";
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
               <Route path="pending" element={<Pending />} />
             </Route>
           </Route>
+          <Route path="/collaborations" element={<Collaborations />} />
           <Route path="/library" element={<Library />} />
           <Route path="/list/:list_id" element={<ReadingList />} />
           <Route path="/stories/:category" element={<Search />} />

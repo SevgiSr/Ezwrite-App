@@ -93,7 +93,7 @@ function ManageChapters() {
         <div className="chapters">
           {story.chapters?.map((chapter) => {
             return (
-              <div className="chapter">
+              <div className="chapter" key={chapter._id}>
                 <header>
                   <div className="title">{chapter.title}</div>
                   <div className="status">{chapter.visibility}</div>
@@ -136,7 +136,7 @@ function ManagePulls() {
         <div className="pull-requests">
           {story.pullRequests?.map((p) => {
             return (
-              <div className="pull-request">
+              <div className="pull-request" key={p._id}>
                 <div className="pull-main">
                   <div className="title">{p.title} </div>
                   <div className="desc">{p.description}</div>
@@ -181,7 +181,7 @@ function ManageCollabs() {
   const { story } = storyState;
 
   const handleAcceptRequestClick = (collab) => {
-    grantCollaboratorAccess(story._id, collab._id);
+    grantCollaboratorAccess(collab.story._id, collab.user._id);
   };
 
   return (
@@ -200,8 +200,8 @@ function ManageCollabs() {
         <div className="collab-requests">
           {story.collabRequests?.map((collab) => {
             return (
-              <div className="collab">
-                <UserLine user={collab} />
+              <div className="collab" key={collab._id}>
+                <UserLine user={collab.user} />
                 <div className="collab-text">
                   wants to collaborate in this story.
                 </div>
@@ -225,6 +225,8 @@ function ManageHistory() {
   const { userState } = useContext(UserContext);
   const { story } = storyState;
 
+  if (!story) return null;
+
   return (
     <div className="history-container">
       {story.forkHistory?.length === 0 ? (
@@ -238,8 +240,12 @@ function ManageHistory() {
         </div>
       ) : (
         <div className="history">
-          {story.forkHistory.map((h) => {
-            return <div className="history-record">{h}</div>;
+          {story.forkHistory?.map((h) => {
+            return (
+              <div className="history-record" key={h._id}>
+                {h}
+              </div>
+            );
           })}
         </div>
       )}

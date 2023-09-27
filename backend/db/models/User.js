@@ -34,55 +34,18 @@ const UserSchema = new mongoose.Schema(
         ref: "Story",
       },
     ],
-    forkedStories: [
+    collabNotifications: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Fork",
+        ref: "CollabNotification",
       },
     ],
-    // {storyId: ___, userId: ___}
-    //User.findById(__).populate('collabRequests.story collabRequests.user')
-    collabRequests: {
-      type: [
-        {
-          story: {
-            type: mongoose.Types.ObjectId,
-            ref: "Story", // Replace with your Story model name
-          },
-          user: {
-            type: mongoose.Types.ObjectId,
-            ref: "User", // Replace with your User model name
-          },
-        },
-      ],
-      default: [],
-    },
-    //fork id
     pendingForkRequests: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Story",
+        ref: "CollabRequest",
       },
     ],
-
-    pullRequests: {
-      type: [
-        {
-          title: {
-            type: String,
-          },
-          description: {
-            type: String,
-          },
-          fork: {
-            type: mongoose.Types.ObjectId,
-            ref: "Fork",
-          },
-        },
-      ],
-      default: [],
-    },
-
     comments: [
       {
         type: mongoose.Types.ObjectId,

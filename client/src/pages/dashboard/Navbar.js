@@ -141,7 +141,7 @@ function Navbar() {
             </li>
             {windowWidth > 768 && (
               <li className="nav-item">
-                <Link to="" className="nav-link">
+                <Link to="/collaborations" className="nav-link">
                   <BiNetworkChart />
                 </Link>
               </li>

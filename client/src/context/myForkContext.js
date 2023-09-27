@@ -149,6 +149,17 @@ export const MyForkProvider = ({ children }) => {
     }
   };
 
+  const getCollabNotifications = async () => {
+    try {
+      const { data } = await authFetch.get("/myForks/notifications");
+      const { notifications } = data;
+      return notifications;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
   /* MUTATIONS */
   const queryClient = useQueryClient();
 
@@ -239,6 +250,7 @@ export const MyForkProvider = ({ children }) => {
         forkState,
         sendPullRequest,
         getPendingForkRequests,
+        getCollabNotifications,
 
         useDeleteFork,
         useSaveForkChapter,

@@ -10,6 +10,8 @@ import User from "../db/models/User.js";
 import Story from "../db/models/Story.js";
 import { deleteCommentAndSubcomments } from "./myStoryController.js";
 import Vote from "../db/models/Vote.js";
+import PullRequest from "../db/models/PullRequest.js";
+import CollabNotification from "../db/models/CollabNotification.js";
 
 const window = new JSDOM("").window;
 const DOMPurifySanitizer = DOMPurify(window);
@@ -32,9 +34,10 @@ const getMyForks = async (req, res) => {
 
 const getPendingForkRequests = async (req, res) => {
   try {
+    //you need pendingForkRequests field because there's no way of fetching requests sent by us that weren't approved yet
     const user = await User.findById(req.user.userId).populate({
       path: "pendingForkRequests",
-      populate: "author",
+      populate: { path: "story", populate: "author" },
     });
     res
       .status(StatusCodes.OK)
@@ -51,8 +54,8 @@ const deleteFork = async (req, res) => {
 
     const fork = await Fork.findOne({
       _id: fork_id,
-      author: req.user.userId,
-    });
+      collaborator: req.user.userId,
+    }).populate({ path: "story", populate: "author" });
 
     if (fork) {
       // Delete all chapters and their paragraphs
@@ -99,21 +102,33 @@ const deleteFork = async (req, res) => {
         }
       }
 
+      //find all pullrequests related to deleted fork
+      const pullReqs = await PullRequest.find({ fork: fork_id });
+      const pullReqIds = pullReqs.map((p) => p._id);
+      //find all notifications made by those pull requests
+      const notifications = await CollabNotification.find({
+        request: { $in: pullReqIds },
+      });
+      const notificationIds = notifications.map((n) => n._id);
+
+      //DELETE PULL REQUESTS SENT FROM THİS FORK TO STORY AUTHOR
       await User.updateOne(
-        { _id: req.user.userId },
-        { $pull: { forkedStories: fork._id, pullRequests: { fork: fork_id } } }
+        { _id: fork.story.author },
+        { $pull: { collabNotifications: { $in: notificationIds } } }
       );
 
       await Story.updateOne(
-        { _id: fork.story },
+        { _id: fork.story._id },
         {
           $pull: {
             collaborators: req.user.userId,
-            forks: fork_id,
-            pullRequests: { fork: fork_id },
+            pullRequests: { $in: pullReqIds },
           },
         }
       );
+
+      await PullRequest.deleteMany({ _id: { $in: pullReqIds } });
+      await CollabNotification.deleteMany({ _id: { $in: notificationIds } });
 
       await fork.delete();
     }
@@ -289,20 +304,24 @@ const sendPullRequest = async (req, res) => {
   try {
     const { fork_id } = req.params;
     const { title, description } = req.body;
-    console.log(title, description);
 
     const fork = await Fork.findById(fork_id).populate("story");
     const story = await Story.findById(fork.story._id);
     const author = await User.findById(fork.story.author);
 
-    const pullRequest = {
+    const pullRequest = await PullRequest.create({
       title,
       description,
       fork: fork._id,
-    };
+    });
 
-    author.pullRequests.push(pullRequest);
-    story.pullRequests.push(pullRequest);
+    const notification = await CollabNotification.create({
+      type: "PullRequest",
+      request: pullRequest._id,
+    });
+
+    author.collabNotifications.push(notification._id);
+    story.pullRequests.push(pullRequest._id);
 
     await author.save();
     await story.save();
@@ -313,14 +332,19 @@ const sendPullRequest = async (req, res) => {
   }
 };
 
-const getPullRequests = async (req, res) => {
+const getCollabNotifications = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
-      path: "pullRequests.fork",
-      populate: "story collaborator chapters",
+      path: "collabNotifications",
+      populate: {
+        path: "request",
+        populate: { path: "story user fork", strictPopulate: false },
+      },
     });
 
-    res.status(StatusCodes.OK).json({ forks: user.pullRequests });
+    res
+      .status(StatusCodes.OK)
+      .json({ notifications: user.collabNotifications });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);
@@ -336,5 +360,5 @@ export {
   createChapter,
   restoreChapterHistory,
   sendPullRequest,
-  getPullRequests,
+  getCollabNotifications,
 };

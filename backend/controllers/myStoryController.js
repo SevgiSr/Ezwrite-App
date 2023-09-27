@@ -34,6 +34,9 @@ const __dirname = dirname(__filename);
 import checkPermissions from "../utils/checkPermissions.js";
 import Trie from "../utils/Trie.js";
 import Fork from "../db/models/Fork.js";
+import CollabRequest from "../db/models/CollabRequest.js";
+import CollabNotification from "../db/models/CollabNotification.js";
+import PullRequest from "../db/models/PullRequest.js";
 
 const getTags = async (req, res) => {
   try {
@@ -159,8 +162,11 @@ const getMyStories = async (req, res) => {
         },
         { path: "chapters", populate: "paragraphs" },
         { path: "tags" },
-        { path: "pullRequests.fork", populate: "collaborator story chapters" },
-        { path: "collabRequests" },
+        {
+          path: "pullRequests",
+          populate: { path: "fork", populate: "collaborator story chapters" },
+        },
+        { path: "collabRequests", populate: "story user" },
       ])
       .sort("-updatedAt");
 
@@ -235,7 +241,7 @@ const deleteStory = async (req, res) => {
       },
       null,
       { excludeVisibilityCheck: true }
-    );
+    ).populate("pullRequests collabRequests");
 
     if (story) {
       // Delete all chapters and their paragraphs
@@ -302,44 +308,8 @@ const deleteStory = async (req, res) => {
         }
       }
 
-      //find the user that's author of story
-      const author = await User.findById(req.user.userId);
-
-      //delete all forks story has, pull those fork id's from every users' forkedStories field.
-      if (story?.forks) {
-        for (let forkId of story.forks) {
-          const fork = await Fork.findById(forkId);
-          // remove forkedStories for that story
-          await User.updateOne(
-            { _id: fork.collaborator },
-            {
-              $pull: { forkedStories: fork._id },
-            }
-          );
-          //remove pullRequests for every fork for that story
-          author.pullRequests = author.pullRequests.filter(
-            (p) => p.fork.toString() !== fork._id.toString()
-          );
-          await author.save();
-          await fork.delete();
-        }
-      }
-
-      //remove pendingForkRequests for that story from 2nd user
-      await Promise.all(
-        author.collabRequests.map(async (c) => {
-          const user = await User.findById(c.user);
-          user.pendingForkRequests = user.pendingForkRequests.filter(
-            (storyId) => storyId.toString() !== story._id.toString()
-          );
-          await user.save();
-        })
-      );
-      //remove collabRequests for that story from me
-      author.collabRequests = author.collabRequests.filter(
-        (c) => c.story.toString() !== story._id.toString()
-      );
-      await author.save();
+      //delete all forks associated
+      await Fork.deleteMany({ story: story._id });
 
       await User.updateOne(
         { _id: req.user.userId },
@@ -348,7 +318,7 @@ const deleteStory = async (req, res) => {
 
       await ReadingList.updateMany({}, { $pull: { stories: story._id } });
 
-      await story.delete();
+      await story.remove();
     }
 
     res.status(StatusCodes.OK).json({ response: "deleted!" });
@@ -648,21 +618,23 @@ const unpublishChapter = async (req, res) => {
 
 const grantCollaboratorAccess = async (req, res) => {
   try {
+    //give the access of story_id to the user user_id
     const { story_id, user_id } = req.params;
-    const user = await User.findById(user_id).populate("forkedStories");
 
+    //I cant give access to myself
     if (user_id === req.user.userId) {
       throw new Error("You cannot grant yourself collaborator access.");
-    }
-
-    if (user.forkedStories.find((f) => f.story == story_id)) {
-      throw new Error("This user is already a collaborator.");
     }
 
     const story = await Story.findById(story_id).populate({
       path: "chapters",
       populate: "paragraphs",
     });
+
+    //dont let same story to be forked twice
+    if (story.collaborators.find((c) => c.toString() === user_id.toString())) {
+      throw new Error("This user is already a collaborator.");
+    }
 
     //copy all the chapters without affecting original
     const newChapters = await Promise.all(
@@ -693,43 +665,47 @@ const grantCollaboratorAccess = async (req, res) => {
 
     //create fork
     const newFork = await Fork.create({
-      author: user_id,
       story: story_id,
       collaborator: user_id,
       chapters: newChapterIds,
     });
 
-    //add user as collaborator and fork to story
+    //add user as collaborator
     story.collaborators.push(user_id);
-    story.forks.push(newFork._id);
+    //find collabrequest and notification
+    const collabRequest = await CollabRequest.findOne({
+      story: story_id,
+      user: user_id,
+    });
+    const notification = await CollabNotification.findOne({
+      request: collabRequest._id,
+    });
+
+    //remove collabrequest from story and user notifications
     story.collabRequests = story.collabRequests.filter(
-      (c) => c.toString() !== user_id.toString()
+      (c) => c.toString() !== collabRequest._id.toString()
     );
     await story.save();
 
-    //save for user's forked stories
-    user.forkedStories.push(newFork._id);
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $pull: { collabNotifications: notification._id } },
+      { runValidators: true }
+    );
 
     //remove pending fork request since we're now collaborator
-    user.pendingForkRequests = user.pendingForkRequests.filter(
-      (storyId) => storyId.toString() !== story_id.toString()
-    );
-
-    await user.save();
-
-    //remove collab request since we already approved it
-    await User.findByIdAndUpdate(
-      req.user.userId,
+    await User.updateOne(
+      { _id: user_id },
       {
         $pull: {
-          collabRequests: {
-            user: user_id,
-            story: story_id,
-          },
+          pendingForkRequests: collabRequest._id,
         },
       },
-      { new: true, runValidators: true }
+      { runValidators: true } // return the updated document
     );
+
+    await collabRequest.remove();
+    await notification.remove();
 
     res.status(StatusCodes.OK).json({ fork: newFork });
   } catch (error) {
@@ -746,23 +722,11 @@ const revokeCollaboratorAccess = async (req, res) => {
   }
 };
 
-const getCollabRequests = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).populate(
-      "collabRequests.story collabRequests.user"
-    );
-    res.status(StatusCodes.OK).json({ collabRequests: user.collabRequests });
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
-};
-
 const mergeFork = async (req, res) => {
   try {
     const { fork_id } = req.params;
     const fork = await Fork.findById(fork_id).populate("chapters");
-    const story = await Story.findById(fork.story);
+    const story = await Story.findById(fork.story).populate("pullRequests");
     const user = await User.findById(req.user.userId);
 
     story.forkHistory.push(story.chapters);
@@ -783,16 +747,28 @@ const mergeFork = async (req, res) => {
 
     story.chapters = newChapterIds;
 
+    //find pull request and notification
+    const pullRequest = await PullRequest.findOne({
+      fork: fork_id,
+    });
+    const notification = await CollabNotification.findOne({
+      request: pullRequest._id,
+    });
+
+    //remove pullrequest from story pullrequests and my notifcations
     story.pullRequests = story.pullRequests.filter(
-      (p) => p.fork.toString() !== fork_id.toString()
+      (c) => c.toString() !== pullRequest._id.toString()
     );
 
-    user.pullRequests = user.pullRequests.filter(
-      (p) => p.fork.toString() !== fork_id.toString()
+    user.collabNotifications = user.collabNotifications.filter(
+      (c) => c.toString() !== notification._id.toString()
     );
 
     await story.save();
     await user.save();
+
+    await pullRequest.delete();
+    await notification.delete();
 
     res.status(StatusCodes.OK).json({ story });
   } catch (error) {
@@ -815,7 +791,6 @@ export {
   getTags,
   grantCollaboratorAccess,
   revokeCollaboratorAccess,
-  getCollabRequests,
   mergeFork,
 };
 

@@ -18,6 +18,8 @@ import {
   handleDeleteConvComment,
   handleDeleteParagraphConv,
 } from "./commentControllers.js";
+import CollabRequest from "../db/models/CollabRequest.js";
+import CollabNotification from "../db/models/CollabNotification.js";
 
 function populateStory(mode) {
   const populateOptions = {
@@ -762,26 +764,41 @@ const addToReadingList = async (req, res) => {
 const requestCollab = async (req, res) => {
   try {
     const { story_id, user_id } = req.params;
+
     const mainUser = await User.findById(req.user.userId);
 
-    const request = { story: story_id, user: mainUser._id };
-    if (mainUser.pendingForkRequests.find((storyId) => storyId === story_id)) {
+    //if collab request exists give error
+    if (mainUser.pendingForkRequests.find((r) => r.story === story_id)) {
       throw new Error(
         "Your request has already been sent. Please wait until it gets evaluated by the author of this book."
       );
     }
-    mainUser.pendingForkRequests.push(story_id);
+    //create collab request
+    const request = await CollabRequest.create({
+      story: story_id,
+      user: mainUser._id,
+    });
+
+    //save to my pending fork requests
+    mainUser.pendingForkRequests.push(request);
     await mainUser.save();
 
-    await User.updateOne(
-      { _id: user_id },
-      { $push: { collabRequests: request } },
+    //save to collab requests in story
+    await Story.updateOne(
+      { _id: story_id },
+      { $push: { collabRequests: request._id } },
       { new: true, runValidators: true }
     );
 
-    await Story.updateOne(
-      { _id: story_id },
-      { $push: { collabRequests: mainUser._id } },
+    //send notification to author
+    const notification = await CollabNotification.create({
+      type: "CollabRequest",
+      request: request._id,
+    });
+
+    await User.updateOne(
+      { _id: user_id },
+      { $push: { collabNotifications: notification._id } },
       { new: true, runValidators: true }
     );
 

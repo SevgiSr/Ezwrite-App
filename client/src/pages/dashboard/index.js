@@ -22,6 +22,8 @@ import {
   ManageCollabs,
 } from "./ManageStory";
 
+import Collaborations from "./Collaborations";
+
 export {
   Home,
   SharedLayout,
@@ -47,4 +49,5 @@ export {
   ManageHistory,
   ManageCollabs,
   MobileSideNavbar,
+  Collaborations,
 };

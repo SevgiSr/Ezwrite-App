@@ -14,7 +14,6 @@ import {
   restoreChapterHistory,
   grantCollaboratorAccess,
   revokeCollaboratorAccess,
-  getCollabRequests,
   mergeFork,
 } from "../controllers/myStoryController.js";
 
@@ -90,8 +89,6 @@ router.use((req, res, next) => {
 });
 
 router.route("/suggestions").get(getTags);
-
-router.route("/collaborations/collabRequests").get(getCollabRequests);
 
 // Routes that include specific actions should come first
 router.route("/update/:story_id").post(updateStory);
