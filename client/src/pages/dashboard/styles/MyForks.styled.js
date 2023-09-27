@@ -1,31 +1,6 @@
 import styled from "styled-components";
 
 const StyledMyForks = styled.div`
-  .no-content-container {
-    padding: 30px 50px;
-    background-color: var(--background5);
-    text-align: center;
-
-    .text {
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 30px;
-    }
-    .smaller-text {
-      font-size: 14px;
-      color: var(--font2);
-      margin-top: 10px;
-    }
-    .icon {
-      font-size: 150px;
-      margin: 0 auto;
-    }
-
-    button {
-      margin-top: 2.5rem;
-    }
-  }
-
   nav {
     display: flex;
     flex-direction: row;

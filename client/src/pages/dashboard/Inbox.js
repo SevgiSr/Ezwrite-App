@@ -8,6 +8,7 @@ import getDate from "../../utils/getDate";
 import { BsEnvelopeOpen } from "react-icons/bs";
 import { useQuery } from "@tanstack/react-query";
 import { ClipLoader } from "react-spinners";
+import { BiEnvelope } from "react-icons/bi";
 
 function Inbox() {
   const { getInbox, profileState } = useContext(ProfileContext);
@@ -17,10 +18,11 @@ function Inbox() {
 
   return (
     <StyledInbox>
+      <h1>Private Messages</h1>
       {!isLoading && inbox.length === 0 ? (
-        <div className="no-messages">
+        <div className="no-content-container">
           <div className="icon">
-            <BsEnvelopeOpen />
+            <BiEnvelope />
           </div>
           <div className="text">
             Hi, {userState.user.name}! You haven't had any messages yet!

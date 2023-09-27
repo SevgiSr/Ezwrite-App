@@ -26,72 +26,70 @@ function Notifications() {
 
   return (
     <StyledNotifications>
-      <div className="nt-parent">
-        <div className="header">
-          <h1>Notifications</h1>
-        </div>
-        {!isLoading && profileData.profile.notifications.length === 0 ? (
-          <h3 className="no-notifications">
-            <div className="icon">
-              <IoIosNotificationsOutline />
-            </div>
-            <div className="text">
-              You haven't received any notifications yet.
-            </div>
-          </h3>
-        ) : (
-          <div className="notifications-container">
-            {isLoading ? (
-              <NotificationsFallback />
-            ) : (
-              <>
-                {profileData.profile.notifications.map((nt) => {
-                  console.log(nt);
-                  return (
-                    <Link
-                      key={nt._id}
-                      to={nt.route}
-                      style={{ textDecoration: "none" }}
-                      className="notification"
-                    >
-                      <div className="profilePicture">
-                        <ProfilePicture
-                          filename={nt.sender?._id}
-                          width="35px"
-                          height="35px"
-                        />
-                      </div>
-                      <div>
-                        <header
-                          dangerouslySetInnerHTML={{
-                            __html: `<div>${
-                              nt.text ? he.decode(nt.text) : ""
-                            }</div>`,
-                          }}
-                        ></header>
-                        <div className="row">
-                          {nt.type === "story" && (
-                            <div className="icon">
-                              <FaComment />
-                            </div>
-                          )}
-                          {nt.type === "profile" && (
-                            <div className="icon">
-                              <FaEnvelope />
-                            </div>
-                          )}
-                          <div className="date">{getDate(nt.createdAt)}</div>
-                        </div>
-                        <div className="content">{nt.content}</div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </>
-            )}
-          </div>
-        )}
+      <div className="header">
+        <h1>Notifications</h1>
       </div>
+      {!isLoading && profileData.profile.notifications.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <IoIosNotificationsOutline />
+          </div>
+          <div className="text">
+            You haven't received any notifications yet.
+          </div>
+        </div>
+      ) : (
+        <div className="notifications-container">
+          {isLoading ? (
+            <NotificationsFallback />
+          ) : (
+            <>
+              {profileData.profile.notifications.map((nt) => {
+                console.log(nt);
+                return (
+                  <Link
+                    key={nt._id}
+                    to={nt.route}
+                    style={{ textDecoration: "none" }}
+                    className="notification"
+                  >
+                    <div className="profilePicture">
+                      <ProfilePicture
+                        filename={nt.sender?._id}
+                        width="35px"
+                        height="35px"
+                      />
+                    </div>
+                    <div>
+                      <header
+                        dangerouslySetInnerHTML={{
+                          __html: `<div>${
+                            nt.text ? he.decode(nt.text) : ""
+                          }</div>`,
+                        }}
+                      ></header>
+                      <div className="row">
+                        {nt.type === "story" && (
+                          <div className="icon">
+                            <FaComment />
+                          </div>
+                        )}
+                        {nt.type === "profile" && (
+                          <div className="icon">
+                            <FaEnvelope />
+                          </div>
+                        )}
+                        <div className="date">{getDate(nt.createdAt)}</div>
+                      </div>
+                      <div className="content">{nt.content}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </>
+          )}
+        </div>
+      )}
     </StyledNotifications>
   );
 }

@@ -23,6 +23,8 @@ import Tag from "./Tag";
 import StoryModal from "./StoryModal";
 import AIForm from "./AIForm";
 import Cover from "./Cover";
+import CollabRequest from "./RequestUI/CollabRequest";
+import PullRequest from "./RequestUI/PullRequest";
 
 export {
   Navbar,
@@ -50,4 +52,6 @@ export {
   UserLineMini,
   StoryDetails,
   Cover,
+  CollabRequest,
+  PullRequest,
 };

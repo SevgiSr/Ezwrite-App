@@ -338,7 +338,14 @@ const getCollabNotifications = async (req, res) => {
       path: "collabNotifications",
       populate: {
         path: "request",
-        populate: { path: "story user fork", strictPopulate: false },
+        populate: [
+          { path: "story user", strictPopulate: false },
+          {
+            path: "fork",
+            populate: "story collaborator",
+            strictPopulate: false,
+          },
+        ],
       },
     });
 

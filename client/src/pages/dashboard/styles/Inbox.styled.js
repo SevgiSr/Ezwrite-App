@@ -1,32 +1,14 @@
 import styled from "styled-components";
 
 const StyledInbox = styled.div`
+  padding: 2rem 20px;
   margin: 0 auto;
-  width: fit-content;
-  padding-top: 5rem;
-  width: 680px;
-  color: var(--font1);
+  max-width: 900px;
 
-  .no-messages {
-    padding: 40px 50px;
-    background-color: var(--background5);
-    text-align: center;
-    border-radius: 7px;
-
-    .text {
-      margin-top: 35px;
-      font-size: 24px;
-      font-weight: 400;
-      line-height: 30px;
-    }
-    .icon {
-      font-size: 230px;
-      margin: 0 auto;
-    }
-
-    button {
-      margin-top: 2.5rem;
-    }
+  h1 {
+    font-weight: 600;
+    margin-bottom: 1.7rem;
+    color: #6f6f6f;
   }
 
   .inbox {

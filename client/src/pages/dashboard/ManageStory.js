@@ -5,7 +5,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { Cover, UserLine, UserLineMini } from "../../components";
+import { CollabRequest, Cover, PullRequest } from "../../components";
 import StyledManageStory from "./styles/ManageStory.styled";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
@@ -111,15 +111,11 @@ function ManageChapters() {
 }
 
 function ManagePulls() {
-  const { storyState, mergeFork } = useContext(MyStoryContext);
+  const { storyState } = useContext(MyStoryContext);
   const { story } = storyState;
   const { userState } = useContext(UserContext);
 
-  const navigate = useNavigate();
-  const handleMergeChanges = async (fork) => {
-    await mergeFork(fork._id);
-    navigate(`/myworks/${fork.story._id}/${fork.story.chapters[0]}/writing`);
-  };
+  if (!story) return null;
 
   return (
     <div className="pulls-container">
@@ -137,35 +133,7 @@ function ManagePulls() {
           {story.pullRequests?.map((p) => {
             return (
               <div className="pull-request" key={p._id}>
-                <div className="pull-main">
-                  <div className="title">{p.title} </div>
-                  <div className="desc">{p.description}</div>
-                  <div className="author">
-                    <div className="text">sent by</div>
-                    <UserLineMini
-                      user={p.fork.collaborator}
-                      width="21px"
-                      fontSize="14px"
-                    />
-                  </div>
-                </div>
-                <div className="actions">
-                  <Link
-                    className="preview-btn btn btn-link"
-                    to={`/fork/${p.fork._id}/${p.fork.chapters[0]._id}`}
-                  >
-                    <div className="icon">
-                      <BsFillEyeFill />
-                    </div>
-                    Preview
-                  </Link>
-                  <button
-                    className="btn btn-basic"
-                    onClick={() => handleMergeChanges(p.fork)}
-                  >
-                    Merge Changes
-                  </button>
-                </div>
+                <PullRequest pull={p} />
               </div>
             );
           })}
@@ -176,13 +144,11 @@ function ManagePulls() {
 }
 
 function ManageCollabs() {
-  const { storyState, grantCollaboratorAccess } = useContext(MyStoryContext);
+  const { storyState } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
   const { story } = storyState;
 
-  const handleAcceptRequestClick = (collab) => {
-    grantCollaboratorAccess(collab.story._id, collab.user._id);
-  };
+  if (!story) return null;
 
   return (
     <div className="collabs-container">
@@ -201,16 +167,7 @@ function ManageCollabs() {
           {story.collabRequests?.map((collab) => {
             return (
               <div className="collab" key={collab._id}>
-                <UserLine user={collab.user} />
-                <div className="collab-text">
-                  wants to collaborate in this story.
-                </div>
-                <button
-                  className="collab-btn btn"
-                  onClick={() => handleAcceptRequestClick(collab)}
-                >
-                  Accept Request
-                </button>
+                <CollabRequest collab={collab} />
               </div>
             );
           })}
