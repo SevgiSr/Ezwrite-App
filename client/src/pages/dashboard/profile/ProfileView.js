@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import { PulseLoader, SyncLoader } from "react-spinners";
 import BackgroundPicture from "../../../components/BackgroundPicture";
+import { FcSettings } from "react-icons/fc";
 
 function ProfileView({ handleChange, state, profileData, refetch }) {
   const {
@@ -19,6 +20,7 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
     uploadImage,
     uploadBcImage,
     displayImage,
+    openEditMode,
   } = useContext(ProfileContext);
 
   const { username } = useParams();
@@ -61,6 +63,10 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
     setShowModal(true);
   };
 
+  const handleEditClick = () => {
+    openEditMode();
+  };
+
   return (
     <StyledProfileView>
       {profileState.isEditMode && (
@@ -84,7 +90,7 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
         <BackgroundPicture
           filename={profileData.profile?._id}
           timestamp={bcTimestamp}
-          height="370px"
+          height="270px"
         />
       )}
 
@@ -106,68 +112,86 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
         </label>
       )}
 
-      <div className="profile-picture">
-        {profileState.isEditMode && (
-          <label htmlFor="upload_profile" className="upload-picture">
-            <div className="icon">
-              <FaCamera />
-            </div>
-            <input
-              id="upload_profile"
-              type="file"
-              accept="image/png, image/jpg, image/gif, image/jpeg"
-              name="file"
-              onChange={handleUploadChange}
-            />
-          </label>
-        )}
-        {alertState.isLoading && alertState.id === "profile" ? (
-          <SyncLoader />
-        ) : (
-          <ProfilePicture
-            filename={profileData.profile?._id}
-            width="90px"
-            height="90px"
-            timestamp={timestamp}
-          />
-        )}
+      <div id="profile-info">
+        <div className="main-profile-info">
+          <div className="profile-picture">
+            {profileState.isEditMode && (
+              <label htmlFor="upload_profile" className="upload-picture">
+                <div className="icon">
+                  <FaCamera />
+                </div>
+                <input
+                  id="upload_profile"
+                  type="file"
+                  accept="image/png, image/jpg, image/gif, image/jpeg"
+                  name="file"
+                  onChange={handleUploadChange}
+                />
+              </label>
+            )}
+            {alertState.isLoading && alertState.id === "profile" ? (
+              <SyncLoader />
+            ) : (
+              <ProfilePicture
+                filename={profileData.profile?._id}
+                width="90px"
+                height="90px"
+                timestamp={timestamp}
+              />
+            )}
+          </div>
+
+          <div className="usernames">
+            <h1 className="profile-name">
+              <span>{profileData.profile?.profileName}</span>
+              {profileState.isEditMode && (
+                <input
+                  ref={inputRef}
+                  type="text"
+                  name="profileName"
+                  value={state.profileName}
+                  onChange={editedHandleChange}
+                />
+              )}
+            </h1>
+            <h2 className="username">@{profileData.profile?.name}</h2>
+          </div>
+        </div>
+
+        <div className="extra-profile-info">
+          <ul className="user-metadata">
+            <li>
+              <button onClick={handleShowModal} className="info-btn">
+                <p className="count">
+                  {profileData.profile?.followers?.length}
+                </p>
+                <p className="label">followers</p>
+              </button>
+            </li>
+            <li>
+              <button className="info-btn">
+                <p className="count">0</p>
+                <p className="label">works</p>
+              </button>
+            </li>
+            <li>
+              <button className="info-btn">
+                <p className="count">1</p>
+                <p className="label">reading lists</p>
+              </button>
+            </li>
+          </ul>
+        </div>
+        <button
+          className="edit-profile-btn btn btn-basic"
+          onClick={handleEditClick}
+        >
+          <span className="icon">
+            <FcSettings />
+          </span>
+          <span className="btn-text">Edit Profile</span>
+        </button>
       </div>
-
-      <h1 className="profile-name">
-        <span>{profileData.profile?.profileName}</span>
-        {profileState.isEditMode && (
-          <input
-            ref={inputRef}
-            type="text"
-            name="profileName"
-            value={state.profileName}
-            onChange={editedHandleChange}
-          />
-        )}
-      </h1>
-
-      <h2 className="username">@{profileData.profile?.name}</h2>
-
-      <ul id="user-info">
-        <li>
-          <button className="info-btn">
-            <p>0</p>
-            <p>works</p>
-          </button>
-        </li>
-        <li>
-          <button className="info-btn">
-            <p>1</p>
-            <p>reading lists</p>
-          </button>
-        </li>
-        <li>
-          <button onClick={handleShowModal} className="info-btn">
-            <p>{profileData.profile?.followers?.length}</p>
-            <p>followers</p>
-          </button>
-        </li>
-      </ul>
     </StyledProfileView>
   );
 }

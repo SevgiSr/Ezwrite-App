@@ -125,7 +125,7 @@ const Conversation = ({
         )}...</strong>`}
         sender={userState.user._id}
         location={story_id}
-        route={location.pathname}
+        route={location?.pathname}
         to={conv.author.name}
         dest={conv._id}
         useAddConv={useAddConvComment}

@@ -73,10 +73,18 @@ function SharedLayout() {
       <ProfileNavbar
         profileData={profileData}
         links={[
-          { to: "", label: "About" },
-          { to: "conversations", label: "Conversations" },
-          { to: "following", label: "Following" },
-          { to: "activity", label: "Activity" },
+          { to: "", label: "About", className: "profile-nav-link" },
+          {
+            to: "conversations/",
+            label: "Conversations",
+            className: "profile-nav-link",
+          },
+          {
+            to: "following/",
+            label: "Following",
+            className: "profile-nav-link",
+          },
+          { to: "activity/", label: "Activity", className: "profile-nav-link" },
         ]}
       />
       {profileData.isMainUser ? (
@@ -84,10 +92,14 @@ function SharedLayout() {
         profileState.isEditMode ? (
           <EditProfile handleChange={handleChange} state={profileInfo} />
         ) : (
-          <Outlet context={{ profileData, convs }} />
+          <div className="outlet">
+            <Outlet context={{ profileData, convs }} />
+          </div>
         )
       ) : (
-        <Outlet context={{ profileData, convs }} />
+        <div className="outlet">
+          <Outlet context={{ profileData, convs }} />
+        </div>
       )}
     </StyledProfileLayout>
   );

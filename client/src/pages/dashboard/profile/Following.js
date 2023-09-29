@@ -7,15 +7,13 @@ function Following() {
 
   return (
     <StyledFollowing>
-      <div className="media-container">
-        {profileData.profile.following?.map((f) => {
-          return (
-            <div key={f._id} className="user">
-              <UserCard user={f} />
-            </div>
-          );
-        })}
-      </div>
+      {profileData.profile.following?.map((f) => {
+        return (
+          <div key={f._id} className="user">
+            <UserCard user={f} />
+          </div>
+        );
+      })}
     </StyledFollowing>
   );
 }

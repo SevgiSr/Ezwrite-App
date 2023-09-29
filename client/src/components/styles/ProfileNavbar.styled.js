@@ -3,13 +3,21 @@ import styled from "styled-components";
 const StyledProfileNavbar = styled.div`
   border-bottom: 1px solid var(--background1);
   margin-bottom: 1.5rem;
+  padding-top: 1.6rem;
+  padding-left: 23px;
+  padding-right: 23px;
   display: flex;
   justify-content: center;
   position: relative;
   background-color: var(--background3);
   color: var(--font2);
 
+  .profile-nav-link {
+    font-weight: 600 !important;
+  }
+
   .parent {
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -82,13 +90,24 @@ const StyledProfileNavbar = styled.div`
     }
   }
 
-  @media only screen and (max-width: 500px) {
+  @media only screen and (max-width: 740px) {
+    .parent {
+      flex-direction: column-reverse;
+      align-items: start;
+    }
+    .buttons {
+      padding-top: 1.3rem;
+    }
+  }
+
+  @media only screen and (max-width: 1024px) {
     button {
       .btn-text {
         display: none;
       }
       .icon {
         font-size: 20px;
+        margin: 0;
       }
     }
   }

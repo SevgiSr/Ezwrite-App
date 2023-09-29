@@ -1,18 +1,15 @@
 import styled from "styled-components";
 
 const StyledAbout = styled.div`
-  .media-container {
-    padding-bottom: 3rem;
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-  }
+  display: flex;
+  justify-content: space-between;
 
   .info {
     box-sizing: border-box;
     font-size: 15px;
     color: var(--font1);
     background-color: var(--background5);
+    border-radius: 9px;
     width: 28%;
     padding: 1rem;
     height: fit-content;
@@ -30,7 +27,6 @@ const StyledAbout = styled.div`
       }
     }
     .joined {
-      border-bottom: 1px solid var(--font2);
       padding: 10px 0;
 
       span {
@@ -60,6 +56,7 @@ const StyledAbout = styled.div`
   .work-info {
     width: 68%;
     background-color: var(--background5);
+    border-radius: 9px;
     color: var(--font1);
     .stories {
       padding: 1rem;
@@ -125,18 +122,14 @@ const StyledAbout = styled.div`
   }
 
   @media only screen and (max-width: 768px) {
-    .media-container {
-      flex-direction: column;
-      align-items: center;
-      overflow: hidden;
-      padding: 0 20px;
-      .info {
-        width: 100%;
-        margin-bottom: 1rem;
-      }
-      .work-info {
-        width: 100%;
-      }
+    flex-direction: column;
+    align-items: center;
+    .info {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .work-info {
+      width: 100%;
     }
   }
 `;

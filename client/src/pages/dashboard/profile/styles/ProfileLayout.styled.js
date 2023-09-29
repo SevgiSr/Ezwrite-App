@@ -1,13 +1,17 @@
 import styled from "styled-components";
 
 const StyledProfileLayout = styled.div`
-  width: 100%;
-  .media-container {
-    margin: 0 auto;
-    box-sizing: border-box;
+  max-width: 960px;
+  margin: 0 auto;
+  background-color: var(--background3);
+  padding-bottom: 3rem;
+  min-height: 100vh;
+
+  .outlet {
+    padding: 10px 23px;
   }
 
-  @media only screen and (max-width: 768px) {
+  /*   @media only screen and (max-width: 768px) {
     .media-container {
       width: 100%;
       padding: 0 20px;
@@ -28,7 +32,7 @@ const StyledProfileLayout = styled.div`
     .media-container {
       width: 1160px;
     }
-  }
+  } */
 `;
 
 export default StyledProfileLayout;

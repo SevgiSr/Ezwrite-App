@@ -42,10 +42,6 @@ const ProfileNavbar = ({ links, profileData }) => {
   const navigate = useNavigate();
   const { username } = useParams();
 
-  const handleEditClick = () => {
-    openEditMode();
-  };
-
   const handleFollowClick = () => {
     console.log(user.name, username);
     if (user.name === username) return;
@@ -114,20 +110,13 @@ const ProfileNavbar = ({ links, profileData }) => {
       />
 
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
-      <div className="media-container parent">
-        <OrangeLinks links={links} className="orange-links" />
+      <div className="parent">
+        <OrangeLinks links={links} />
 
-        {profileData.isMainUser ? (
-          <button className="profile-button" onClick={handleEditClick}>
-            <span className="icon">
-              <FcSettings />
-            </span>
-            <span className="btn-text">Edit Profile</span>
-          </button>
-        ) : (
+        {!profileData.isMainUser && (
           <div className="buttons">
             <button onClick={handleSendCollabClick} className="btn">
-              Send Collab Request
+              Collaborate
             </button>
             {profileData.isFollowing ? (
               <button
@@ -136,7 +125,7 @@ const ProfileNavbar = ({ links, profileData }) => {
                   unfollowProfileMutation.isLoading ||
                   followProfileMutation.isLoading
                 }
-                className="following profile-button"
+                className="following profile-button btn"
               >
                 <span className="icon">
                   <BsPersonCheckFill />
@@ -150,7 +139,7 @@ const ProfileNavbar = ({ links, profileData }) => {
                   followProfileMutation.isLoading ||
                   unfollowProfileMutation.isLoading
                 }
-                className="follow profile-button"
+                className="follow profile-button btn"
               >
                 <span className="icon">
                   <BsPersonPlusFill />
@@ -160,7 +149,7 @@ const ProfileNavbar = ({ links, profileData }) => {
             )}
             <button
               onClick={handleMessageClick}
-              className="message profile-button"
+              className="message profile-button btn"
             >
               <span className="icon">
                 <AiFillMessage />
