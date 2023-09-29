@@ -14,9 +14,11 @@ import { BiArrowBack, BiNetworkChart } from "react-icons/bi";
 import { FaBell, FaUserClock } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import SideNavbar from "./SideNavbar";
+import { ProfileContext } from "../../context/profileContext";
 
 function Navbar() {
   const { userState, logoutUser } = useContext(UserContext);
+  const { queryClient } = useContext(ProfileContext);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -30,6 +32,7 @@ function Navbar() {
 
   //for notifications
   const [ntCount, setNtCount] = useState(0);
+  const [ntCollabCount, setNtCollabCount] = useState(0);
   const location = useLocation();
 
   ///////for query///////
@@ -75,9 +78,16 @@ function Navbar() {
       }
     });
 
+    //TASK: make notifications mutate
     socket.on("receive notification", (notification) => {
-      console.log(notification);
-      setNtCount((prev) => prev + 1);
+      setNtCount(ntCount + 1); // increments notification count on instant but you still cant see new nt
+      queryClient.invalidateQueries(["notifications"]); // invalidate queries so that I see the new notifications
+    });
+
+    socket.on("receive collab notification", (notification) => {
+      setNtCollabCount(ntCollabCount + 1);
+      queryClient.invalidateQueries(["notifications", "collab"]);
+      queryClient.invalidateQueries(["myStories"]); // update collabRequests inside of my stories
     });
 
     return () => {
@@ -92,7 +102,10 @@ function Navbar() {
     if (location.pathname === "/notifications") {
       setNtCount(0);
     }
-  }, [location.pathname]);
+    if (location.pathname === "/collaborations") {
+      setNtCollabCount(0);
+    }
+  }, [location]);
 
   return (
     <StyledNavbar>
@@ -142,6 +155,9 @@ function Navbar() {
             {windowWidth > 768 && (
               <li className="nav-item">
                 <Link to="/collaborations" className="nav-link">
+                  {ntCollabCount !== 0 && (
+                    <div className="nt-count">{ntCollabCount}</div>
+                  )}
                   <BiNetworkChart />
                 </Link>
               </li>
@@ -181,7 +197,6 @@ function Navbar() {
                   height="40px"
                 />
                 <div className="username">{user.name}</div>
-                {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
                 <AiFillCaretDown style={{ fontSize: "10px" }} />
               </div>
             }

@@ -5,6 +5,7 @@ import PrivateConv from "../db/models/PrivateConv.js";
 import User from "../db/models/User.js";
 import Notification from "../db/models/Notification.js";
 import mongoose from "mongoose";
+import CollabNotification from "../db/models/CollabNotification.js";
 const getPrivateConvs = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
@@ -66,21 +67,38 @@ const sendMessage = async (req, res) => {
   }
 };
 
-const openNotifications = async (req, res) => {
+const getNotifications = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
       path: "notifications",
-      populate: "sender location",
+      populate: "sender",
+      options: {
+        sort: { createdAt: -1 },
+      },
     });
 
-    const notifications = user.notifications.sort(
-      (a, b) => b.createdAt - a.createdAt
-    );
-
-    console.log(notifications);
-
-    res.status(StatusCodes.OK).json({ notifications });
+    res.status(StatusCodes.OK).json({ notifications: user.notifications });
   } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const readNotifications = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    const unreadNotificationIds = user.notifications
+      .filter((n) => !n.isRead)
+      .map((n) => n._id);
+
+    if (unreadNotificationIds.length > 0) {
+      await Notification.updateMany(
+        { _id: { $in: unreadNotificationIds } },
+        { $set: { isRead: true } }
+      );
+    }
+  } catch (error) {
+    console.log(error);
     throw new Error(error.message);
   }
 };
@@ -111,10 +129,62 @@ const sendNotification = async (req, res) => {
   }
 };
 
+const getCollabNotifications = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate({
+      path: "collabNotifications",
+      populate: {
+        path: "request",
+        populate: [
+          { path: "story user", strictPopulate: false },
+          {
+            path: "fork",
+            populate: "story collaborator",
+            strictPopulate: false,
+          },
+        ],
+      },
+      options: {
+        sort: { createdAt: -1 },
+      },
+    });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ notifications: user.collabNotifications });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const readCollabNotifications = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    const unreadNotificationIds = user.collabNotifications
+      .filter((n) => !n.isRead)
+      .map((n) => n._id);
+
+    if (unreadNotificationIds.length > 0) {
+      await CollabNotification.updateMany(
+        { _id: { $in: unreadNotificationIds } },
+        { $set: { isRead: true } }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 export {
   getPrivateConvs,
   openPrivateConv,
   sendMessage,
-  openNotifications,
+  getNotifications,
   sendNotification,
+  readNotifications,
+  getCollabNotifications,
+  readCollabNotifications,
 };

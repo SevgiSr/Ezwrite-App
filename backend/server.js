@@ -159,6 +159,11 @@ const listener = (socket) => {
     socket.to(room).emit("receive notification", notification);
   });
 
+  socket.on("send collab notification", ({ notification, room }) => {
+    console.log(notification, room);
+    socket.to(room).emit("receive collab notification", notification);
+  });
+
   socket.on("disconnect", () => {
     rooms = [];
   });

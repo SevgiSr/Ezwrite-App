@@ -332,32 +332,6 @@ const sendPullRequest = async (req, res) => {
   }
 };
 
-const getCollabNotifications = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).populate({
-      path: "collabNotifications",
-      populate: {
-        path: "request",
-        populate: [
-          { path: "story user", strictPopulate: false },
-          {
-            path: "fork",
-            populate: "story collaborator",
-            strictPopulate: false,
-          },
-        ],
-      },
-    });
-
-    res
-      .status(StatusCodes.OK)
-      .json({ notifications: user.collabNotifications });
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
-  }
-};
-
 export {
   getMyForks,
   getPendingForkRequests,
@@ -367,5 +341,4 @@ export {
   createChapter,
   restoreChapterHistory,
   sendPullRequest,
-  getCollabNotifications,
 };

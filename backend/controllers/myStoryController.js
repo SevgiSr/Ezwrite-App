@@ -714,6 +714,53 @@ const grantCollaboratorAccess = async (req, res) => {
   }
 };
 
+const declineCollaboratorAccess = async (req, res) => {
+  try {
+    const { story_id, user_id } = req.params;
+
+    const story = await Story.findById(story_id);
+
+    //find collabrequest and notification
+    const collabRequest = await CollabRequest.findOne({
+      story: story_id,
+      user: user_id,
+    });
+    const notification = await CollabNotification.findOne({
+      request: collabRequest._id,
+    });
+
+    //remove collabrequest from story and user notifications
+    story.collabRequests = story.collabRequests.filter(
+      (c) => c.toString() !== collabRequest._id.toString()
+    );
+    await story.save();
+
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $pull: { collabNotifications: notification._id } },
+      { runValidators: true }
+    );
+
+    //remove pending fork request since we're now collaborator
+    await User.updateOne(
+      { _id: user_id },
+      {
+        $pull: {
+          pendingForkRequests: collabRequest._id,
+        },
+      },
+      { runValidators: true } // return the updated document
+    );
+
+    await collabRequest.remove();
+    await notification.remove();
+    res.status(StatusCodes.OK).json({ msg: "success" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 const revokeCollaboratorAccess = async (req, res) => {
   try {
   } catch (error) {
@@ -790,6 +837,7 @@ export {
   unpublishChapter,
   getTags,
   grantCollaboratorAccess,
+  declineCollaboratorAccess,
   revokeCollaboratorAccess,
   mergeFork,
 };

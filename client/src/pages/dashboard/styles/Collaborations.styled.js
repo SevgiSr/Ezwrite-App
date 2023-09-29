@@ -14,6 +14,10 @@ const StyledCollaborations = styled.div`
   .notification {
     margin-bottom: 1.5rem;
   }
+
+  .unread {
+    border: 1.3px solid var(--dark-orange);
+  }
 `;
 
 export default StyledCollaborations;

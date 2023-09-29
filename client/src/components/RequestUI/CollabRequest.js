@@ -7,9 +7,18 @@ import StoryCardMini from "../StoryUI/StoryCardMini";
 import Cover from "../Cover";
 
 function CollabRequest({ collab, isOverview }) {
-  const { grantCollaboratorAccess } = useContext(MyStoryContext);
+  const { grantCollaboratorAccess, useDeclineCollaboratorAccess } =
+    useContext(MyStoryContext);
+  const declineCollaboratorAccessMutation = useDeclineCollaboratorAccess();
   const handleAcceptRequestClick = (collab) => {
     grantCollaboratorAccess(collab.story._id, collab.user._id);
+  };
+  const handleDeclineRequestClick = (collab) => {
+    //mutating because I want to invaalidate queries on success
+    console.log("decline click");
+    declineCollaboratorAccessMutation.mutate({
+      collab,
+    });
   };
   return (
     <StyledCollabRequest>
@@ -28,12 +37,22 @@ function CollabRequest({ collab, isOverview }) {
         <div className="detailed">
           <UserLine user={collab.user} />
           <div className="collab-text">wants to collaborate in this story.</div>
-          <button
-            className="collab-btn btn"
-            onClick={() => handleAcceptRequestClick(collab)}
-          >
-            Accept Request
-          </button>
+          <div className="actions">
+            <button
+              className="collab-btn btn"
+              type="button"
+              onClick={() => handleDeclineRequestClick(collab)}
+            >
+              Decline Request
+            </button>
+            <button
+              className="collab-btn btn"
+              type="button"
+              onClick={() => handleAcceptRequestClick(collab)}
+            >
+              Accept Request
+            </button>
+          </div>
         </div>
       )}
     </StyledCollabRequest>
@@ -51,7 +70,7 @@ const StyledCollabRequest = styled.div`
   .collab-text {
     margin: 0 10px;
   }
-  .collab-btn {
+  .actions {
     margin-left: auto;
   }
 

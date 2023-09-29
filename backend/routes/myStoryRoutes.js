@@ -15,6 +15,7 @@ import {
   grantCollaboratorAccess,
   revokeCollaboratorAccess,
   mergeFork,
+  declineCollaboratorAccess,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -99,7 +100,7 @@ router.route("/collaborations/forks/:fork_id").patch(mergeFork);
 router
   .route("/collaborations/:story_id/user/:user_id")
   .patch(grantCollaboratorAccess)
-  .delete(revokeCollaboratorAccess);
+  .delete(declineCollaboratorAccess);
 
 // Then we have routes that also include chapter id
 router.route("/:story_id/:chapter_id").patch(saveChapter).delete(deleteChapter);

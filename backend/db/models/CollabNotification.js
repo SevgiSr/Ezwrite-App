@@ -1,14 +1,21 @@
 import mongoose from "mongoose";
 
-const CollabNotificationSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    enum: ["CollabRequest", "PullRequest"], // Define the possible types here
+const CollabNotificationSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["CollabRequest", "PullRequest"], // Define the possible types here
+    },
+    request: {
+      type: mongoose.Types.ObjectId,
+      refPath: "type",
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
   },
-  request: {
-    type: mongoose.Types.ObjectId,
-    refPath: "type",
-  },
-});
+  { timestamps: true }
+);
 
 export default mongoose.model("CollabNotification", CollabNotificationSchema);

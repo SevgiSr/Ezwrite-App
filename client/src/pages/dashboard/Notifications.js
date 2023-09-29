@@ -12,24 +12,31 @@ import { ClipLoader } from "react-spinners";
 import { IoIosNotificationsOutline } from "react-icons/io";
 
 function Notifications() {
-  const { getProfile } = useContext(ProfileContext);
+  const { getNotifications, useReadNotifications } = useContext(ProfileContext);
 
-  const { userState } = useContext(UserContext);
-
-  const { data: profileData = {}, isLoading } = useQuery(
-    ["profile", userState.user.name],
-    () => getProfile(userState.user.name),
+  const { data: notifications = [], isLoading } = useQuery(
+    ["notifications"],
+    () => getNotifications(),
     {
       refetchOnWindowFocus: false,
     }
   );
+
+  const readNotificationsMutation = useReadNotifications();
+
+  useEffect(() => {
+    return async () => {
+      console.log("unmount");
+      await readNotificationsMutation.mutate();
+    };
+  }, []);
 
   return (
     <StyledNotifications>
       <div className="header">
         <h1>Notifications</h1>
       </div>
-      {!isLoading && profileData.profile.notifications.length === 0 ? (
+      {!isLoading && notifications.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
             <IoIosNotificationsOutline />
@@ -44,14 +51,13 @@ function Notifications() {
             <NotificationsFallback />
           ) : (
             <>
-              {profileData.profile.notifications.map((nt) => {
-                console.log(nt);
+              {notifications?.map((nt) => {
                 return (
                   <Link
                     key={nt._id}
                     to={nt.route}
                     style={{ textDecoration: "none" }}
-                    className="notification"
+                    className={"notification " + (!nt.isRead && "unread")}
                   >
                     <div className="profilePicture">
                       <ProfilePicture

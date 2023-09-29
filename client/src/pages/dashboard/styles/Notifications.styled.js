@@ -30,6 +30,9 @@ const StyledNotifications = styled.div`
       padding: 30px 50px;
       text-align: center;
     }
+    .unread {
+      border: 1.3px solid var(--dark-orange);
+    }
     .notification {
       color: var(--font1);
       background-color: var(--background5);

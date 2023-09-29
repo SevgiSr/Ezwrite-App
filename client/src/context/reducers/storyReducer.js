@@ -28,8 +28,8 @@ const storyReducer = (state, action) => {
       story: action.payload.story,
       chapters: action.payload.chapters,
       chapter: action.payload.chapter,
-      votes: action.payload.chapter.votesCount,
-      myVote: action.payload.chapter.myVote,
+      votes: action.payload.chapter?.votesCount,
+      myVote: action.payload.chapter?.myVote,
     };
   }
 

@@ -112,6 +112,7 @@ const StyledNavbar = styled.header`
           background-color: var(--background4);
         }
         .nav-link {
+          position: relative;
           font-size: 26px;
           color: var(--font2);
           display: block;
@@ -121,6 +122,21 @@ const StyledNavbar = styled.header`
           justify-content: center;
           align-items: center;
           cursor: pointer;
+
+          .nt-count {
+            position: absolute;
+            font-size: 15px;
+            top: 0;
+            left: 3px;
+            background-color: #ff6122;
+            width: 17px;
+            height: 17px;
+            color: #fff;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
     }
@@ -169,19 +185,7 @@ const StyledNavbar = styled.header`
         margin: 0 5px;
       }
     }
-    .nt-count {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background-color: #ff6122;
-      width: 17px;
-      height: 17px;
-      color: #fff;
-      border-radius: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+
     .dropdown-item {
       span {
         position: relative;

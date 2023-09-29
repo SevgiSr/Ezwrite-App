@@ -763,12 +763,24 @@ const addToReadingList = async (req, res) => {
 
 const requestCollab = async (req, res) => {
   try {
+    console.log("REQUESTING COLLAB ON BACKEND");
     const { story_id, user_id } = req.params;
+
+    if (user_id.toString() !== req.user.userId.toString()) {
+      throw new Error("Something went wrong. Try again later.");
+    }
 
     const mainUser = await User.findById(req.user.userId);
 
+    const story = await Story.findById(story_id);
+
+    const existingRequest = await CollabRequest.findOne({
+      story: story_id,
+      user: mainUser._id,
+    });
+
     //if collab request exists give error
-    if (mainUser.pendingForkRequests.find((r) => r.story === story_id)) {
+    if (existingRequest) {
       throw new Error(
         "Your request has already been sent. Please wait until it gets evaluated by the author of this book."
       );
@@ -797,12 +809,12 @@ const requestCollab = async (req, res) => {
     });
 
     await User.updateOne(
-      { _id: user_id },
+      { _id: story.author },
       { $push: { collabNotifications: notification._id } },
       { new: true, runValidators: true }
     );
 
-    res.status(StatusCodes.OK).json({ msg: "success" });
+    res.status(StatusCodes.OK).json({ ntCollab: notification });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);

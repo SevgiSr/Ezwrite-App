@@ -32,16 +32,16 @@ function ManageStory() {
     status,
   } = useQuery(["myStories"], getMyStories, {
     refetchOnWindowFocus: false,
-    staleTime: Infinity,
   });
 
   //right after getting it from the cache update global myStory state to use
   useEffect(() => {
     if (!isFetching && status === "success") {
+      console.log("UPDATING STORY ON UI");
       const myStory = myStories.find((story) => story._id === story_id);
       setMyStory(myStory);
     }
-  }, [location, isFetching]);
+  }, [location, isFetching, status]);
 
   if (isLoading || !story) return null;
 

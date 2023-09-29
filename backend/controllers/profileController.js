@@ -33,13 +33,6 @@ const getProfile = async (req, res) => {
         populate: "author",
       })
       .populate("followers following")
-      .populate({
-        path: "notifications",
-        populate: "sender",
-        options: {
-          sort: { createdAt: -1 },
-        },
-      })
       .populate({ path: "activity", populate: "sender" })
       .populate({
         path: "readingLists",

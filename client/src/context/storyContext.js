@@ -91,7 +91,6 @@ export const StoryProvider = ({ children }) => {
     try {
       const { data } = await authFetch.get(`/stories/recommendations`);
       const { popular, newAndPopular } = data;
-      console.log(popular);
       return { popular, newAndPopular };
     } catch (error) {
       console.log(error);
@@ -360,8 +359,12 @@ Given that the backend seems to handle only one request at a time (as evidenced 
 
   const requestCollab = async (story_id, user_id) => {
     try {
-      console.log("requesting");
-      await authFetch.patch(`/stories/collaborations/${story_id}/${user_id}`);
+      const { data } = await authFetch.patch(
+        `/stories/collaborations/${story_id}/${user_id}`
+      );
+      const { ntCollab } = data;
+      console.log(ntCollab);
+      return ntCollab;
     } catch (error) {
       console.log(error);
     }

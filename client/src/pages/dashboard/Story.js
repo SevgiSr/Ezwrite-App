@@ -40,7 +40,7 @@ function Story() {
   useEffect(() => {
     if (!isFetching && status === "success") {
       const { chapters, story } = progress;
-      setChapter(chapters[0], story);
+      setChapter(story, story.chapters, chapters[0]);
     }
   }, [location, isFetching]);
 

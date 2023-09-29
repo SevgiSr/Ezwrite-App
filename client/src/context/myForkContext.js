@@ -151,9 +151,18 @@ export const MyForkProvider = ({ children }) => {
 
   const getCollabNotifications = async () => {
     try {
-      const { data } = await authFetch.get("/myForks/notifications");
+      const { data } = await authFetch.get("/messages/notifications/collab");
       const { notifications } = data;
       return notifications;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const readCollabNotifications = async () => {
+    try {
+      await authFetch.patch("/messages/notifications/collab");
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -236,6 +245,14 @@ export const MyForkProvider = ({ children }) => {
     );
   };
 
+  const useReadCollabNotifications = () => {
+    return useMutation(() => readCollabNotifications(), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+    });
+  };
+
   return (
     <MyForkContext.Provider
       value={{
@@ -257,6 +274,7 @@ export const MyForkProvider = ({ children }) => {
         useRestoreForkChapterHistory,
         useAddForkChapter,
         useDeleteForkChapter,
+        useReadCollabNotifications,
       }}
     >
       {children}

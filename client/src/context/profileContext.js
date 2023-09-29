@@ -271,11 +271,19 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
-  const openNotifications = async () => {
+  const getNotifications = async () => {
     try {
       const { data } = await authFetch.get(`/messages/notifications`);
       const { notifications } = data;
       return notifications;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const readNotifications = async () => {
+    try {
+      await authFetch.patch(`/messages/notifications`);
     } catch (error) {
       console.log(error);
     }
@@ -381,11 +389,20 @@ export const ProfileProvider = ({ children }) => {
     });
   };
 
+  const useReadNotifications = () => {
+    return useMutation(() => readNotifications(), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["notifications"]);
+      },
+    });
+  };
+
   return (
     <ProfileContext.Provider
       value={{
         profileState,
         alertState,
+        queryClient,
         getAllUsers,
         getProfile,
         uploadImage,
@@ -403,7 +420,7 @@ export const ProfileProvider = ({ children }) => {
         getInbox,
         openMessages,
         sendMessage,
-        openNotifications,
+        getNotifications,
         sendNotification,
 
         useAddProfileConv,
@@ -413,6 +430,7 @@ export const ProfileProvider = ({ children }) => {
         useEditProfileInfo,
         useDeleteConvComment,
         useDeleteProfileConv,
+        useReadNotifications,
       }}
     >
       {children}

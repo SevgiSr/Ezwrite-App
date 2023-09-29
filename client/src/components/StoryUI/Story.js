@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Metadata from "../Metadata";
 import ModalCenter from "../ModalCenter";
 import UserLine from "../UserUI/UserLine";
+import StoryModal from "../StoryModal";
 
 const Story = ({ story }) => {
   const [viewCount, setViewCount] = useState(0);
@@ -77,46 +78,10 @@ const Story = ({ story }) => {
           {story.description.length > 286 && "..."}
         </div>
       </div>
-      <ModalCenter
+      <StoryModal
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
-        content={
-          <div className="modal-content">
-            <div className="modal-main">
-              <Cover filename={story._id} width="200px" />
-              <Metadata
-                views={story.views}
-                upvotes={story.votesCount.upvotes}
-                downvotes={story.votesCount.downvotes}
-                comments={story.comments.length}
-              />
-            </div>
-            <div className="modal-details">
-              <h3 className="modal-title">{story.title}</h3>
-              <div className="user-line">
-                <UserLine user={story.author} />
-              </div>
-              <div className="modal-description">
-                {story.description.slice(0, 368)}
-                {story.description.length > 370 && "..."}
-              </div>
-              <Link to={`/story/${story._id}`} className="details-btn">
-                <span>See Details</span>{" "}
-                <span className="icon details-icon">
-                  <AiOutlineDown />
-                </span>
-              </Link>
-              <button
-                className="btn orange-button read-btn"
-                onClick={() =>
-                  navigate(`/${story._id}/${story.chapters[0]._id}`)
-                }
-              >
-                Start Reading
-              </button>
-            </div>
-          </div>
-        }
+        story={story}
       />
     </StyledStory>
   );

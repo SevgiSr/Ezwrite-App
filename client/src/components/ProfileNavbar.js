@@ -76,7 +76,14 @@ const ProfileNavbar = ({ links, profileData }) => {
   };
 
   const handleSendCollabRequest = (story_id) => {
-    requestCollab(story_id, profileData.profile._id);
+    // you need to save to backend first, because we have some checks on there
+    const ntCollab = requestCollab(story_id, user._id);
+    if (ntCollab) {
+      socket.emit("send collab notification", {
+        notification: ntCollab,
+        room: username,
+      });
+    }
   };
 
   return (

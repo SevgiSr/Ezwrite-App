@@ -253,6 +253,26 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
+  const mergeFork = async (fork_id) => {
+    try {
+      await authFetch.patch(`/myStories/collaborations/forks/${fork_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const declineCollaboratorAccess = async (collab) => {
+    try {
+      // in mutations, frontend functions doesnt have to return anything. on backend controllers have to return a response
+      await authFetch.delete(
+        `/myStories/collaborations/${collab.story._id}/user/${collab.user._id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   /* MUTATIONS */
 
   const queryClient = useQueryClient();
@@ -363,13 +383,28 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
-  const mergeFork = async (fork_id) => {
-    try {
-      await authFetch.patch(`/myStories/collaborations/forks/${fork_id}`);
-    } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
-    }
+  const useDeclineCollaboratorAccess = () => {
+    return useMutation((data) => declineCollaboratorAccess(data.collab), {
+      /*  onMutate: (variables) => {
+        console.log("MUTATION BEGINS");
+        const stories = queryClient.getQueryData(["myStories"]);
+        console.log(variables);
+        const newStories = stories.map((story) => {
+          const newStory = { ...story }; // Shallow copy
+          newStory.collabRequests = story.collabRequests.filter(
+            (cr) => String(cr._id) !== String(variables.collab._id)
+          );
+          return newStory;
+        });
+        queryClient.setQueryData(["myStories"], () => [...newStories]);
+        console.log("SET QUERY DATA");
+      }, */
+      onSuccess: (data) => {
+        console.log("DECLINE SUCCESS");
+        queryClient.invalidateQueries(["myStories"]);
+        queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+    });
   };
 
   return (
@@ -390,6 +425,7 @@ export const MyStoryProvider = ({ children }) => {
         updateStory,
         sendGptPrompt,
         grantCollaboratorAccess,
+        declineCollaboratorAccess,
         mergeFork,
 
         useCreateStory,
@@ -401,6 +437,7 @@ export const MyStoryProvider = ({ children }) => {
         useDeleteChapter,
         usePublishChapter,
         useUnpublishChapter,
+        useDeclineCollaboratorAccess,
       }}
     >
       {children}
