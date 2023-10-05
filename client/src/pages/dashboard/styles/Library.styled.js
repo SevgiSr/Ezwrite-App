@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 const StyledLibrary = styled.div`
-  padding: 0 20px;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 3rem 20px;
 
   h2 {
     margin-bottom: 3rem;
@@ -20,7 +22,7 @@ const StyledLibrary = styled.div`
       display: flex;
     }
     .item {
-      margin-right: 10px;
+      margin-right: 25px;
 
       .progress {
         position: relative;

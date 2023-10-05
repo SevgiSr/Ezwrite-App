@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { StoryCardDetailed } from "../../components";
+import { AiTwotoneEdit } from "react-icons/ai";
 
 function ReadingList() {
   const location = useLocation();
@@ -37,10 +38,24 @@ function ReadingList() {
 
   return (
     <StyledReadingList>
-      <h1>{readingList.title}</h1>
-      {readingList.stories?.map((story) => {
-        return <StoryCardDetailed key={story._id} story={story} />;
-      })}
+      <header>
+        <h2>Reading List</h2>
+        <h1>
+          {readingList.title}{" "}
+          <icon>
+            <AiTwotoneEdit />
+          </icon>
+        </h1>
+      </header>
+      <div className="main">
+        {readingList.stories?.map((story) => {
+          return (
+            <div className="item">
+              <StoryCardDetailed key={story._id} story={story} />
+            </div>
+          );
+        })}
+      </div>
     </StyledReadingList>
   );
 }

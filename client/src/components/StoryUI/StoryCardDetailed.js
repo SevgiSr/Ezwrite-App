@@ -29,7 +29,7 @@ const StoryCardDetailed = ({ story }) => {
   return (
     <StyledStoryCardDetailed>
       <div className="cover link" onClick={handleClick}>
-        <Cover filename={story._id} width="160px" />
+        <Cover filename={story._id} width="150px" />
       </div>
       <div className="content">
         <div className="link" onClick={handleClick}>

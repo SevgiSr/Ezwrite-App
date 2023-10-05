@@ -5,8 +5,34 @@ const StyledReadingLists = styled.div`
   font-weight: 600;
   color: var(--font1);
 
+  .main {
+    display: flex;
+  }
+
+  .reading-list {
+    display: flex;
+    position: relative;
+    margin-right: 100px;
+    > :nth-child(1) {
+      z-index: 10;
+    }
+    > :nth-child(2) {
+      position: absolute;
+      left: 30px;
+      top: 10px;
+      z-index: 9;
+    }
+    > :nth-child(3) {
+      position: absolute;
+      left: 60px;
+      top: 20px;
+      z-index: 8;
+    }
+  }
+
   .readingList {
     margin-bottom: 2rem;
+
     .stories {
       display: flex;
       padding: 0;

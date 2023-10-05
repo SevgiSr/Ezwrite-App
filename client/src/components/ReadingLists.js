@@ -5,60 +5,52 @@ import Cover from "./Cover";
 import { BsChevronRight, BsFillStarFill } from "react-icons/bs";
 import { GoEye } from "react-icons/go";
 import { AiOutlineBars } from "react-icons/ai";
+import { useContext } from "react";
+import { UserContext } from "../context/userContext";
+import { ImBooks } from "react-icons/im";
 
 function ReadingLists({ readingLists }) {
+  const { userState } = useContext(UserContext);
   return (
     <StyledReadingLists>
-      <div className="main">
-        {readingLists?.map((readingList) => {
-          return (
-            <div key={readingList._id} className="readingList">
-              <Link to={`/list/${readingList._id}`} className="title">
-                <span className="text">{readingList.title}</span>
-                <span className="icon">
-                  <BsChevronRight />
-                </span>
-              </Link>
-              <div className="stories">
-                {readingList.stories?.map((story) => {
-                  return <Story key={story._id} story={story} />;
-                })}
+      {readingLists.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <ImBooks />
+          </div>
+          <div className="text">
+            Hi, {userState.user.name}! You haven't read any stories yet!
+          </div>
+        </div>
+      ) : (
+        <div className="main">
+          {readingLists?.map((readingList) => {
+            return (
+              <div key={readingList._id} className="readingList">
+                <Link to={`/list/${readingList._id}`} className="title">
+                  <span className="text">{readingList.title}</span>
+                  <span className="icon">
+                    <BsChevronRight />
+                  </span>
+                </Link>
+                <div className="stories">
+                  <ReadingList stories={readingList.stories} />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </StyledReadingLists>
   );
 }
 
-function Story({ story }) {
+function ReadingList({ stories }) {
   return (
-    <div className="story">
-      <Link to={`/story/${story._id}`} style={{ textDecoration: "none" }}>
-        <Cover filename={story._id} width={"123px"} />
-        <div className="title">{story.title}</div>
-        <div className="meta-data">
-          <div>
-            <div className="icon">
-              <GoEye />
-            </div>
-            <div className="count">0</div>
-          </div>
-          <div>
-            <div className="icon">
-              <BsFillStarFill />
-            </div>
-            <div className="count">106</div>
-          </div>
-          <div>
-            <div className="icon">
-              <AiOutlineBars />
-            </div>
-            <div className="count">9</div>
-          </div>
-        </div>
-      </Link>
+    <div className="reading-list">
+      <Cover filename={stories[stories.length - 1]?._id} width={"123px"} />
+      <Cover filename={stories[stories.length - 2]?._id} width={"123px"} />
+      <Cover filename={stories[stories.length - 3]?._id} width={"123px"} />
     </div>
   );
 }

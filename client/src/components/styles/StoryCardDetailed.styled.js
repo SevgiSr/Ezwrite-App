@@ -4,10 +4,10 @@ const StyledStoryCardDetailed = styled.div`
   color: var(--font1);
   background-color: var(--background5);
   padding: 1.5rem;
-  border: 1px solid #fff;
+  border: 1px solid #6f6f6f;
   border-radius: 10px;
   width: 470px;
-  height: 290px;
+  height: 280px;
   display: flex;
 
   div {

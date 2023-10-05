@@ -1,15 +1,13 @@
 import styled from "styled-components";
 
 const StyledStoryCardMini = styled.div`
-  width: 90px;
-  margin-right: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--background4);
-  padding: 15px 30px;
+  background-color: var(--background5);
+  padding: 10px 15px;
   border-radius: 9px;
 
   .title {
@@ -18,7 +16,7 @@ const StyledStoryCardMini = styled.div`
     overflow-wrap: break-word; /* Same as word-wrap but more modern. Use both for maximum compatibility */
     white-space: normal; /* Ensures text can break into a new line */
     word-break: break-word;
-    font-size: 10px;
+    font-size: 13px;
     color: var(--font1);
     margin-top: 10px;
     text-decoration: underline transparent solid 2px;
