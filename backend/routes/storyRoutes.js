@@ -27,6 +27,9 @@ import {
   getTagSuggestions,
   getRecommendations,
   requestCollab,
+  removeFromReadingList,
+  deleteReadingList,
+  updateReadingListTitle,
 } from "../controllers/storyController.js";
 
 router.route("/recommendations").get(getRecommendations);
@@ -41,8 +44,17 @@ router.route("/date/:date").get(getByDate);
 router.route("/story/:story_id/:conv_id").delete(deleteStoryConv);
 router.route("/story/:id").post(addStoryConv);
 
-router.route("/readingLists/:readingListId").patch(addToReadingList);
 router.route("/readingLists").post(createReadingList);
+
+router
+  .route("/readingLists/:list_id")
+  .post(updateReadingListTitle)
+  .delete(deleteReadingList);
+
+router
+  .route("/readingLists/:list_id/story/:story_id")
+  .post(addToReadingList)
+  .patch(removeFromReadingList);
 
 router.route("/collaborations/:story_id/:user_id").patch(requestCollab);
 

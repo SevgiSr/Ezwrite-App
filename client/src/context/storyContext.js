@@ -329,21 +329,6 @@ Given that the backend seems to handle only one request at a time (as evidenced 
     }
   };
 
-  const addToReadingList = async (readingListId, story_id) => {
-    try {
-      const { data } = await authFetch.patch(
-        `/stories/readingLists/${readingListId}`,
-        {
-          story_id,
-        }
-      );
-      const { readingList } = data;
-      return readingList;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const createReadingList = async (title, story_id) => {
     try {
       const { data } = await authFetch.post(`/stories/readingLists`, {
@@ -352,6 +337,42 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       });
       const { readingList } = data;
       return readingList;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateReadingListTitle = async (list_id, title) => {
+    try {
+      await authFetch.post(`/stories/readingLists/${list_id}`, { title });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToReadingList = async (list_id, story_id) => {
+    try {
+      await authFetch.post(
+        `/stories/readingLists/${list_id}/story/${story_id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeFromReadingList = async (list_id, story_id) => {
+    try {
+      await authFetch.patch(
+        `/stories/readingLists/${list_id}/story/${story_id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteReadingList = async (list_id) => {
+    try {
+      await authFetch.delete(`/stories/readingLists/${list_id}`);
     } catch (error) {
       console.log(error);
     }
@@ -503,7 +524,26 @@ Given that the backend seems to handle only one request at a time (as evidenced 
   const useCreateList = () => {
     return useMutation((data) => createReadingList(data.title, data.story_id), {
       onSuccess: () => {
+        queryClient.invalidateQueries(["library"]);
         queryClient.invalidateQueries(["progress"]);
+      },
+    });
+  };
+
+  const useUpdateListTitle = () => {
+    return useMutation(
+      (data) => updateReadingListTitle(data.list_id, data.title),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["library"]);
+        },
+      }
+    );
+  };
+
+  const useDeleteList = () => {
+    return useMutation((data) => deleteReadingList(data.list_id), {
+      onSuccess: () => {
         queryClient.invalidateQueries(["library"]);
       },
     });
@@ -511,10 +551,20 @@ Given that the backend seems to handle only one request at a time (as evidenced 
 
   const useAddToList = () => {
     return useMutation(
-      (data) => addToReadingList(data.readingListId, data.story_id),
+      (data) => addToReadingList(data.list_id, data.story_id),
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(["progress"]);
+          queryClient.invalidateQueries(["library"]);
+        },
+      }
+    );
+  };
+
+  const useRemoveFromList = () => {
+    return useMutation(
+      (data) => removeFromReadingList(data.list_id, data.story_id),
+      {
+        onSuccess: () => {
           queryClient.invalidateQueries(["library"]);
         },
       }
@@ -553,7 +603,10 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         useAddParagraphConv,
         useAddConvComment,
         useCreateList,
+        useUpdateListTitle,
         useAddToList,
+        useRemoveFromList,
+        useDeleteList,
         useDeleteConvComment,
         useDeleteChapterConv,
         useDeleteStoryConv,

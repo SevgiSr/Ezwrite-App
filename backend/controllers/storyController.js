@@ -740,7 +740,20 @@ const createReadingList = async (req, res) => {
       );
     }
 
-    res.status(StatusCodes.OK).json({ readingList });
+    res.status(StatusCodes.OK).json({ msg: "success!" });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const updateReadingListTitle = async (req, res) => {
+  try {
+    const { list_id } = req.params;
+    const { title } = req.body;
+
+    await ReadingList.updateOne({ _id: list_id }, { title: title });
+
+    res.status(StatusCodes.OK).json({ msg: "deleted!" });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -748,14 +761,46 @@ const createReadingList = async (req, res) => {
 
 const addToReadingList = async (req, res) => {
   try {
+    const { list_id, story_id } = req.params;
     const readingList = await ReadingList.findByIdAndUpdate(
-      req.params.readingListId,
+      list_id,
       {
-        $addToSet: { stories: req.body.story_id },
+        $addToSet: { stories: story_id },
       },
       { new: true, runValidators: true }
     );
     res.status(StatusCodes.OK).json({ readingList });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const removeFromReadingList = async (req, res) => {
+  try {
+    const { list_id, story_id } = req.params;
+    const readingList = await ReadingList.findByIdAndUpdate(
+      list_id,
+      {
+        $pull: { stories: story_id },
+      },
+      { new: true, runValidators: true }
+    );
+    res.status(StatusCodes.OK).json({ readingList });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const deleteReadingList = async (req, res) => {
+  try {
+    const { list_id } = req.params;
+    await ReadingList.findByIdAndDelete(list_id);
+
+    await User.findByIdAndUpdate(req.user.userId, {
+      $pull: { readingLists: list_id },
+    });
+
+    res.status(StatusCodes.OK).json({ msg: "deleted!" });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -838,6 +883,9 @@ export {
   getLibrary,
   createReadingList,
   addToReadingList,
+  updateReadingListTitle,
+  removeFromReadingList,
+  deleteReadingList,
   addStoryConv,
   deleteChapterConv,
   deleteParagraphConv,

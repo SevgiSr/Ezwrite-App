@@ -25,6 +25,7 @@ import AIForm from "./AIForm";
 import Cover from "./Cover";
 import CollabRequest from "./RequestUI/CollabRequest";
 import PullRequest from "./RequestUI/PullRequest";
+import DynamicInput from "./DynamicInput";
 
 export {
   Navbar,
@@ -54,4 +55,5 @@ export {
   Cover,
   CollabRequest,
   PullRequest,
+  DynamicInput,
 };

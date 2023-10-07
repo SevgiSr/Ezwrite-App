@@ -459,10 +459,10 @@ function ChapterHeader({ isChapterLoading, user }) {
   //if its == 1 display voted
   //if its == -1 display downwoted
 
-  const handleAddToList = (readingListId) => {
-    setMutatedListId(readingListId);
+  const handleAddToList = (list_id) => {
+    setMutatedListId(list_id);
     addToListMutation.mutate({
-      readingListId,
+      list_id: list_id,
       story_id: state.story._id,
     });
   };
@@ -529,7 +529,11 @@ function ChapterHeader({ isChapterLoading, user }) {
                     onClick={() => handleCreateList(title)}
                     className="orange-button btn"
                   >
-                    +
+                    {createListMutation.isLoading ? (
+                      <ClipLoader size={13} color="#fff" />
+                    ) : (
+                      <span>+</span>
+                    )}
                   </button>
                 </div>
               </>
@@ -614,7 +618,6 @@ function StoryDropdown() {
         menu={
           <>
             {state.chapters?.map((chapter) => {
-              console.log(chapter);
               return (
                 <Link
                   className="link"
