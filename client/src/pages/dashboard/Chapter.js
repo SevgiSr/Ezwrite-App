@@ -487,7 +487,7 @@ function ChapterHeader({ isChapterLoading, user }) {
 
         {!isFork && (
           <DropdownMenu
-            buttonClass="add-list-btn orange-button"
+            buttonClass="btn btn-main add-list-btn"
             menuClass="add-list-menu"
             button={<span>+</span>}
             menu={
@@ -527,7 +527,7 @@ function ChapterHeader({ isChapterLoading, user }) {
                   />
                   <button
                     onClick={() => handleCreateList(title)}
-                    className="orange-button btn"
+                    className="btn btn-main"
                   >
                     {createListMutation.isLoading ? (
                       <ClipLoader size={13} color="#fff" />

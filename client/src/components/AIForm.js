@@ -101,7 +101,7 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
         rows="3"
       />
       <div className="button-row">
-        <button type="submit" className="orange-button btn">
+        <button type="submit" className="btn btn-main">
           <FaRegPaperPlane />
         </button>
       </div>
@@ -129,7 +129,7 @@ function AIForm({ sendGptPrompt, storyState, userState }) {
           <button
             type="button"
             onClick={handleApplyClick}
-            className="orange-button btn"
+            className="btn btn-main"
           >
             Apply
           </button>

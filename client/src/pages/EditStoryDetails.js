@@ -5,7 +5,7 @@ import { FaBars, FaComment, FaTrash } from "react-icons/fa";
 import { GoEye } from "react-icons/go";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Cover from "../components/Cover";
-import OrangeLinks from "../components/OrangeLinks";
+import NavLinks from "../components/NavLinks";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledEditStoryDetails from "./styles/EditStoryDetails.styled";
 import {
@@ -152,13 +152,13 @@ function EditStoryDetails() {
             />
           </label>
         </div>
-        <Link to={`/story/${story_id}/`} className="orange-button view-btn btn">
+        <Link to={`/story/${story_id}/`} className="view-btn btn btn-main">
           View as reader
         </Link>
       </div>
       <div className="chapters-main">
         <header>
-          <OrangeLinks
+          <NavLinks
             links={[
               {
                 to: "",
@@ -211,7 +211,7 @@ function Navbar({ handleCancel }) {
         <button onClick={handleCancel} className="white-button btn">
           Cancel
         </button>
-        <button form="story-details" className="orange-button btn">
+        <button form="story-details" className="btn btn-main">
           Save
         </button>
       </div>
@@ -245,7 +245,7 @@ function Contents() {
       <button
         disabled={deleteChapterMutation.isLoading}
         onClick={handleNewPartClick}
-        className="orange-button btn"
+        className="btn btn-main"
       >
         New Part
       </button>

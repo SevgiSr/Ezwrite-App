@@ -91,11 +91,11 @@ function ReadingList() {
             </div>
           </form>
         </div>
-        <button className="btn btn-basic" onClick={handleDeleteClick}>
+        <button className="btn btn-alert" onClick={handleDeleteClick}>
           <div className="icon">
             <FaTrash />
           </div>
-          <div className="text">Delete reading list</div>
+          <div className="text">Delete list</div>
         </button>
       </header>
       <div className="main">

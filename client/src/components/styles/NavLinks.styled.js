@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledOrangeLinks = styled.nav`
+const StyledNavLinks = styled.nav`
   .links {
     display: flex;
     align-items: center;
@@ -29,14 +29,14 @@ const StyledOrangeLinks = styled.nav`
 
     .link:focus {
       font-weight: 700;
-      border-bottom: 4px solid #ff6122;
+      border-bottom: 4px solid var(--accent);
     }
 
     .active {
       font-weight: 700;
-      border-bottom: 4px solid #ff6122;
+      border-bottom: 4px solid var(--accent);
     }
   }
 `;
 
-export default StyledOrangeLinks;
+export default StyledNavLinks;

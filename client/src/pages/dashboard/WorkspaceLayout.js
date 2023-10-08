@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import OrangeLinks from "../../components/OrangeLinks";
+import NavLinks from "../../components/NavLinks";
 import { Outlet, useLocation } from "react-router-dom";
 
 function WorkspaceLayout() {
@@ -8,7 +8,7 @@ function WorkspaceLayout() {
   return (
     <StyledWorkspaceLayout>
       <nav className="main-nav">
-        <OrangeLinks
+        <NavLinks
           links={[
             {
               label: "My Works",

@@ -175,7 +175,7 @@ const StoryCard = ({ story, progress }) => {
             <div className="value">{progress.story.chapters.length}</div>
           </div>
         </div>
-        <button className="orange-button btn" onClick={handleClick}>
+        <button className="btn btn-main" onClick={handleClick}>
           Start Reading
         </button>
       </div>

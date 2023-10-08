@@ -3,7 +3,7 @@ import StyledMyForks from "./styles/MyForks.styled";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
-import OrangeLinks from "../../components/OrangeLinks";
+import NavLinks from "../../components/NavLinks";
 import { useState } from "react";
 import { UserContext } from "../../context/userContext";
 import { MdGroup, MdOutlineTimerOff } from "react-icons/md";
@@ -42,7 +42,7 @@ function MyForks() {
             justifyContent: "center",
           }}
         >
-          <OrangeLinks
+          <NavLinks
             links={[
               {
                 label: "My Forks",
@@ -57,10 +57,7 @@ function MyForks() {
             ]}
           />
         </div>
-        <button
-          className="btn orange-button"
-          onClick={() => navigate("/newStory")}
-        >
+        <button className="btn btn-main" onClick={() => navigate("/newStory")}>
           + Create story
         </button>
       </nav>
@@ -225,7 +222,7 @@ function MyFork({ fork }) {
         </div>
         <div>
           <DropdownMenu
-            buttonClass="orange-button btn story-btn"
+            buttonClass="btn btn-main story-btn"
             menuClass="chapters-dropdown"
             button={
               <>
@@ -280,12 +277,6 @@ function MyFork({ fork }) {
         setIsOpen={setIsDeleteModalOpen}
         content={
           <>
-            <button
-              onClick={() => setIsDeleteModalOpen(false)}
-              className="close-modal-btn icon"
-            >
-              <AiOutlineClose />
-            </button>
             <div className="warning">
               <h2>Are you sure you want to permanently delete your story?</h2>
               Deleting your story is permanent and cannot be undone. If you're
@@ -294,7 +285,7 @@ function MyFork({ fork }) {
               or comments.
             </div>
             <div className="buttons flex-row">
-              <button className="orange-button btn" onClick={handleDeleteClick}>
+              <button className="btn btn-main" onClick={handleDeleteClick}>
                 Delete
               </button>
               <button
@@ -314,12 +305,6 @@ function MyFork({ fork }) {
         setIsOpen={setIsPullModalOpen}
         content={
           <>
-            <button
-              onClick={() => setIsPullModalOpen(false)}
-              className="close-modal-btn icon"
-            >
-              <AiOutlineClose />
-            </button>
             <form className="pull-form">
               <label htmlFor="title">Request Title</label>
               <input
@@ -338,7 +323,7 @@ function MyFork({ fork }) {
               />
             </form>
             <div className="buttons flex-row">
-              <button className="orange-button btn" onClick={handlePullClick}>
+              <button className="btn btn-main" onClick={handlePullClick}>
                 Confirm
               </button>
               <button

@@ -1,17 +1,14 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
-import { Alert, FormRow, LoadingScreen, StoryDetails } from "../components";
+import { Alert, StoryDetails } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import StyledNewStory from "./styles/NewStory.styled";
-import OrangeLinks from "../components/OrangeLinks";
-import { ProfileContext } from "../context/profileContext";
 import { AiFillPicture } from "react-icons/ai";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, useCreateStory, getTags } = useContext(MyStoryContext);
+  const { storyState, useCreateStory } = useContext(MyStoryContext);
 
   const createStoryMutation = useCreateStory();
 
@@ -81,7 +78,7 @@ function NewStory() {
           handleSubmit={handleSubmit}
           title={<h1>Story Details</h1>}
           submitButton={
-            <button className="create-btn orange-button btn" type="submit">
+            <button className="create-btn btn btn-main" type="submit">
               Create
             </button>
           }

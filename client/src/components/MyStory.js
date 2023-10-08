@@ -5,7 +5,7 @@ import StyledMyStory from "./styles/MyStory.styled";
 import Cover from "./Cover";
 import { FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
 import { FaTrashAlt } from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineDown } from "react-icons/ai";
 import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalCenter from "./ModalCenter";
@@ -52,15 +52,21 @@ const MyStory = ({ story }) => {
         <div className="meta-data"></div>
       </div>
       <div className="buttons">
+        <button
+          className="btn btn-basic"
+          onClick={() => navigate(`/manage/${story._id}`)}
+        >
+          Manage Story
+        </button>
         <div>
           <DropdownMenu
-            buttonClass="orange-button btn edit-chapters-btn"
+            buttonClass="btn btn-main edit-chapters-btn"
             menuClass="chapters-dropdown"
             button={
               <>
                 <span className="text">Edit Chapters</span>
-                <span className="down-icon">
-                  <FiChevronDown />
+                <span className="icon down-icon">
+                  <AiOutlineDown />
                 </span>
               </>
             }
@@ -82,28 +88,30 @@ const MyStory = ({ story }) => {
           />
         </div>
 
-        <DropdownMenu
-          buttonClass="white-button"
-          button={
-            <span className="icon">
-              <FiMoreHorizontal />
-            </span>
-          }
-          menu={
-            <div className="dropdown-item flex-row">
+        <div>
+          <DropdownMenu
+            buttonClass="btn btn-basic btn-delete"
+            button={
               <span className="icon">
-                <FaTrashAlt />
+                <FiMoreHorizontal />
               </span>
-              <div
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                Delete Story
+            }
+            menu={
+              <div className="dropdown-item flex-row">
+                <span className="icon">
+                  <FaTrashAlt />
+                </span>
+                <div
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Delete Story
+                </div>
               </div>
-            </div>
-          }
-        />
+            }
+          />
+        </div>
       </div>
 
       <ModalCenter
@@ -111,12 +119,6 @@ const MyStory = ({ story }) => {
         setIsOpen={setIsModalOpen}
         content={
           <>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="close-modal-btn icon"
-            >
-              <AiOutlineClose />
-            </button>
             <div className="warning">
               <h2>Are you sure you want to permanently delete your story?</h2>
               Deleting your story is permanent and cannot be undone. If you're
@@ -125,7 +127,7 @@ const MyStory = ({ story }) => {
               or comments.
             </div>
             <div className="buttons flex-row">
-              <button className="orange-button btn" onClick={handleDeleteClick}>
+              <button className="btn btn-main" onClick={handleDeleteClick}>
                 Delete
               </button>
               <button

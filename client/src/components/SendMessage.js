@@ -79,7 +79,7 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
           placeholder="Type your message..."
         ></textarea>
         <button
-          className={`${show.sendBtn} orange-button`}
+          className={`${show.sendBtn} btn btn-main`}
           ref={buttonRef}
           name="sendBtn"
           type="submit"

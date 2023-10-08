@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import OrangeLinks from "../../components/OrangeLinks";
+import NavLinks from "../../components/NavLinks";
 import StyledSettings from "./styles/Settings.styled";
 import { ProfileContext } from "../../context/profileContext";
 
@@ -23,7 +23,7 @@ function Settings() {
     <StyledSettings>
       <div className="main">
         <header>
-          <OrangeLinks
+          <NavLinks
             links={[
               {
                 to: "",

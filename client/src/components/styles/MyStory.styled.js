@@ -18,10 +18,9 @@ const StyledMyStory = styled.div`
   }
 
   .chapters-dropdown {
-    display: block;
-    padding: 0.75rem 0;
-    width: 250px;
+    width: 100%;
     border-radius: 0;
+
     max-height: 250px;
     max-width: 300px;
     overflow: auto;
@@ -34,6 +33,7 @@ const StyledMyStory = styled.div`
       align-items: center;
 
       .dropdown-item {
+        width: 100%;
         font-size: 12px;
         text-align: start;
         border-bottom: 1px solid var(--font2);
@@ -71,34 +71,19 @@ const StyledMyStory = styled.div`
     flex-direction: column;
     align-items: end;
     .edit-chapters-btn {
-      position: relative;
-      padding: 6px 18px;
       margin-bottom: 10px;
       display: flex;
-      justify-content: space-between;
-
-      .text {
-        font-size: 14px;
-      }
+      align-items: center;
 
       .down-icon {
-        font-size: 20px;
-        position: relative;
-        right: -15px;
-        padding-left: 5px;
-        border-left: 1px solid #fafafa;
+        font-size: 17px;
+        margin-left: 10px;
       }
     }
-    .white-button {
-      color: #222;
-      font-size: 30px;
-      font-weight: 600;
-      border-radius: 5px;
-      padding: 2px 4px;
-      width: fit-content;
-      color: #6f6f6f;
-      background-color: var(--background4);
-      border: none;
+    .btn-delete {
+      font-size: 20px;
+      padding: 3px 5px;
+      border: 1px solid #6f6f6f;
     }
     .more-menu {
       overflow: hidden;

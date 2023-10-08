@@ -9,7 +9,8 @@ function Cover({ width, filename, timestamp }) {
           width: width,
           height: height,
           backgroundColor: "var(--font2)",
-          boxShadow: "0 8px 12px rgb(18 18 18 / 16%)",
+          boxShadow: "0 8px 12px rgb(8 8 8 / 18%)",
+          borderRadius: "8px",
         }}
       ></div>
     );
@@ -20,7 +21,8 @@ function Cover({ width, filename, timestamp }) {
         width: width,
         height: height,
         objectFit: "cover",
-        boxShadow: "0 8px 12px rgb(18 18 18 / 16%)",
+        boxShadow: "0 8px 12px rgb(8 8 8 / 18%)",
+        borderRadius: "8px",
       }}
       src={imageUrl}
       alt=""

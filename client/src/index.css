@@ -51,21 +51,21 @@ html {
   --background4: #37393f;
   --background5: #42464e;
 
+  --accent: #007BFF;
+
+  --btn-main: #007BFF;
+  --btn-secondary: #339CFF;
+  --btn-alert: #FF4136;
+
+  --text-main: #0056CC;
+  --text-secondary: #0069D9;
+
   --hover: #202225;
 
   --font1: #eaeaeb;
   --font2: #9da1a4;
 
   --icons: #61646b;
-
-  --light-orange: #ffb041;
-  --dark-orange: #ff8400;
-
-
-  --text-dark-orange: #862702;
-  --text-main-orange: #ff6122;
-  --button-main: #ff6122;
-  --button-secondary: rgb(255, 195, 113);
 
   --green-ai-main: #47d147;
   /* rest of the colors */
@@ -243,7 +243,6 @@ html {
 }
 
 .form-row {
-
   margin-bottom: 1rem;
 }
 
@@ -256,6 +255,8 @@ html {
 }
 
 .btn {
+  display: flex;
+  align-items: center;
   color: var(--font2);
   background-color: var(--background4);
   padding: 5px 15px;
@@ -291,35 +292,35 @@ html {
   background-color: var(--background4);
 }
 
-
-
 .btn-basic:hover {
   background-color: var(--background3);
 }
 
-.orange-button {
-  color: #fff;
-  background-color: #ff6122;
+.btn-main {
+  background-color: var(--btn-main);
 }
 
-.orange-button:hover {
+.btn-main:hover {
   background-color: #fff;
-  color: #ff6122;
+  color: var(--btn-main);
 }
 
-.white-button {
-  border: 1px solid #222;
-  font-size: 15px;
-  line-height: 18px;
-  border-radius: 6px;
-  margin: 3px 5px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
+.btn-secondary {
+  background-color: var(--btn-secondary);
 }
 
-.white-button:hover {
-  border-color: #fff;
+.btn-secondary:hover {
+  background-color: #fff;
+  color: var(--btn-secondary);
+}
+
+.btn-alert {
+  background-color: var(--btn-alert);
+}
+
+.btn-alert:hover {
+  background-color: #fff;
+  color: var(--btn-alert);
 }
 
 .btn-grey {
@@ -330,10 +331,6 @@ html {
 .btn-grey:hover {
   color: #222;
   background-color: #e1e1e1;
-}
-
-.btn-secondary {
-  background: var(--button-secondary);
 }
 
 .btn-block {

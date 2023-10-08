@@ -187,7 +187,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleNewPartClick}
-                className="orange-button btn new-part-btn"
+                className="btn btn-main new-part-btn"
               >
                 + New Part
               </button>
@@ -237,7 +237,7 @@ const Navbar = () => {
               <button
                 onClick={handlePublishClick}
                 type="submit"
-                className="btn orange-button"
+                className="btn btn-main"
               >
                 Publish
               </button>
@@ -245,7 +245,7 @@ const Navbar = () => {
               <button
                 onClick={handleUnpublishClick}
                 type="submit"
-                className="btn orange-button"
+                className="btn btn-main"
               >
                 Unpublish
               </button>

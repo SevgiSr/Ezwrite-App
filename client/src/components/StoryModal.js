@@ -4,7 +4,7 @@ import Metadata from "./Metadata";
 import ModalCenter from "./ModalCenter";
 import UserLine from "./UserUI/UserLine";
 import StyledStoryModal from "./styles/StoryModal.styled";
-import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 
@@ -20,15 +20,25 @@ function StoryModal({ story, isOpen, setIsOpen }) {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         content={
-          <div className="modal-content">
+          <div className="modal-content-custom">
             <div className="modal-main">
-              <Cover filename={story._id} width="200px" />
-              <Metadata
-                views={story.views}
-                upvotes={story.votesCount.upvotes}
-                downvotes={story.votesCount.downvotes}
-                comments={story.comments.length}
-              />
+              <div className="cover">
+                <Cover filename={story._id} width="200px" />
+                <Link to={`/story/${story._id}`} className="details-btn">
+                  <span>See Details</span>{" "}
+                  <span className="icon details-icon">
+                    <AiOutlineRight />
+                  </span>
+                </Link>
+              </div>
+              <div className="metadata">
+                <Metadata
+                  views={story.views}
+                  upvotes={story.votesCount.upvotes}
+                  downvotes={story.votesCount.downvotes}
+                  comments={story.comments.length}
+                />
+              </div>
             </div>
             <div className="modal-details">
               <h3 className="modal-title">{story.title}</h3>
@@ -39,14 +49,9 @@ function StoryModal({ story, isOpen, setIsOpen }) {
                 {story.description.slice(0, 368)}
                 {story.description.length > 370 && "..."}
               </div>
-              <Link to={`/story/${story._id}`} className="details-btn">
-                <span>See Details</span>{" "}
-                <span className="icon details-icon">
-                  <AiOutlineDown />
-                </span>
-              </Link>
+
               <button
-                className="btn orange-button read-btn"
+                className="btn btn-main read-btn"
                 onClick={() => {
                   if (!myProgress) {
                     console.log("first chapter");

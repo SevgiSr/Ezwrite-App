@@ -1,12 +1,46 @@
 import styled from "styled-components";
 
 const StyledStoryModal = styled.div`
-  .modal-content {
+  .modal-content-custom {
     display: flex;
     flex-direction: row;
 
+    .modal-main {
+      .metadata {
+        margin-top: 10px;
+        color: var(--font2);
+      }
+
+      .cover {
+        position: relative;
+        .details-btn {
+          position: absolute;
+          background-color: var(--background5);
+          left: 0;
+          right: 0;
+          bottom: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1rem;
+          font-size: 18px;
+          text-decoration: none;
+          color: var(--font1);
+          cursor: pointer;
+          .details-icon {
+            padding-left: 0;
+            transition: padding-left 0.2s ease-in-out;
+          }
+        }
+        .details-btn:hover .details-icon {
+          padding-left: 10px;
+        }
+      }
+    }
+
     .modal-details {
-      position: relative;
+      display: flex;
+      flex-direction: column;
       margin-left: 1rem;
       color: var(--font1);
       overflow: hidden;
@@ -25,26 +59,9 @@ const StyledStoryModal = styled.div`
       }
       .modal-description {
       }
-      .details-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
-        font-size: 20px;
-        text-decoration: none;
-        color: var(--font1);
-        cursor: pointer;
-        .details-icon {
-          padding-top: 0;
-          transition: padding-top 0.2s ease-in-out;
-        }
-      }
-      .details-btn:hover .details-icon {
-        padding-top: 10px;
-      }
+
       .read-btn {
-        position: absolute;
-        bottom: 0;
+        margin-top: auto;
         width: 98%;
       }
     }

@@ -73,13 +73,13 @@ function Register() {
             name="password"
             handleChange={handleChange}
           />
-          <button className="btn submit-btn orange-button" type="submit">
+          <button className="btn submit-btn btn-main" type="submit">
             submit
           </button>
           <p className="isMember">
             {user.isMember ? "Not a member yet?" : "Already a member?"}
             <button
-              className="btn toggle-btn orange-button"
+              className="btn toggle-btn btn-main"
               type="button"
               onClick={toggleMember}
             >

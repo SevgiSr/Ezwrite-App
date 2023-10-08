@@ -13,7 +13,7 @@ import { ImBooks } from "react-icons/im";
 import { UserContext } from "../../context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { Dna, FallingLines } from "react-loader-spinner";
-import OrangeLinks from "../../components/OrangeLinks";
+import NavLinks from "../../components/NavLinks";
 import { MdOutlineGroupOff } from "react-icons/md";
 import { BiGitPullRequest } from "react-icons/bi";
 import { VscRepoForked } from "react-icons/vsc";
@@ -39,7 +39,7 @@ function MyStories({ show }) {
             justifyContent: "center",
           }}
         >
-          <OrangeLinks
+          <NavLinks
             links={[
               {
                 label: "My Stories",
@@ -62,10 +62,7 @@ function MyStories({ show }) {
             </div>
           )}
         </div>
-        <button
-          className="btn orange-button"
-          onClick={() => navigate("/newStory")}
-        >
+        <button className="btn btn-main" onClick={() => navigate("/newStory")}>
           + Create story
         </button>
       </nav>
@@ -99,7 +96,7 @@ function Stories() {
             Hi, {userState.user.name}! You haven't written any stories yet.
           </div>
           <button
-            className="btn orange-button"
+            className="btn btn-main"
             onClick={() => navigate("/newStory")}
           >
             + Create story

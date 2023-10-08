@@ -14,7 +14,7 @@ const StyledAbout = styled.div`
     padding: 1rem;
     height: fit-content;
     .pronouns {
-      border-bottom: 1px solid var(--text-main-orange);
+      border-bottom: 1px solid var(--text-main);
       margin-bottom: 10px;
       width: fit-content;
     }
@@ -23,7 +23,7 @@ const StyledAbout = styled.div`
       padding: 10px 0;
       .icon {
         margin-right: 5px;
-        color: var(--text-main-orange);
+        color: var(--text-main);
       }
     }
     .joined {
@@ -43,13 +43,13 @@ const StyledAbout = styled.div`
       .text {
         border-bottom: 1px solid transparent;
         :hover {
-          border-bottom: 1px solid var(--text-main-orange);
+          border-bottom: 1px solid var(--text-main);
         }
       }
 
       .icon {
         margin-right: 5px;
-        color: var(--text-main-orange);
+        color: var(--text-main);
       }
     }
   }

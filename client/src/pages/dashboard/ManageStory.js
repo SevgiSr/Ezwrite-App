@@ -10,7 +10,7 @@ import StyledManageStory from "./styles/ManageStory.styled";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
-import OrangeLinks from "../../components/OrangeLinks";
+import NavLinks from "../../components/NavLinks";
 import { MdOutlineGroupOff } from "react-icons/md";
 import { UserContext } from "../../context/userContext";
 import { AiOutlineFieldTime, AiOutlineInfoCircle } from "react-icons/ai";
@@ -60,7 +60,7 @@ function ManageStory() {
 
       <div className="main">
         <div className="story-nav">
-          <OrangeLinks
+          <NavLinks
             links={[
               { to: "", label: "Chapters" },
               { to: "pull-requests/", label: "Pull Requests" },

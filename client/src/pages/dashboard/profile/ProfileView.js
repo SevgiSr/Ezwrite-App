@@ -72,7 +72,7 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
       {profileState.isEditMode && (
         <div className="edit-mode">
           <nav>
-            <button className="orange-button" form="edit-profile" type="submit">
+            <button className="btn btn-main" form="edit-profile" type="submit">
               Save Changes
             </button>
             <button className="white-button" onClick={handleClick}>

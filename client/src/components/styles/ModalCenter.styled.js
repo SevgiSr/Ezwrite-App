@@ -10,16 +10,19 @@ const StyledModalCenter = styled.div`
     z-index: 1000;
     background-color: var(--background3);
     border-radius: 5px;
+    padding: 3rem 3.7rem;
+    border: 1px solid #6f6f6f;
 
     .close-modal-btn {
       border: none;
       position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 25px;
+      top: 15px;
+      right: 15px;
+      font-size: 23px;
       color: var(--button-main);
       cursor: pointer;
       background-color: var(--background3);
+      z-index: 999;
     }
   }
 
@@ -29,9 +32,9 @@ const StyledModalCenter = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: red;
+    background-color: #000;
     z-index: 999;
-    opacity: 8%;
+    opacity: 35%;
   }
 `;
 

@@ -114,7 +114,7 @@ function Respond({
           </div>
         )}
         <button
-          className={`${show.share} orange-button`}
+          className={`${show.share} btn btn-main`}
           name="share"
           ref={buttonRef}
           type="submit"

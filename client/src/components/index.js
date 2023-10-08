@@ -26,6 +26,7 @@ import Cover from "./Cover";
 import CollabRequest from "./RequestUI/CollabRequest";
 import PullRequest from "./RequestUI/PullRequest";
 import DynamicInput from "./DynamicInput";
+import NavLinks from "./NavLinks";
 
 export {
   Navbar,
@@ -56,4 +57,5 @@ export {
   CollabRequest,
   PullRequest,
   DynamicInput,
+  NavLinks,
 };

@@ -31,14 +31,21 @@ const ModalCenter = ({ isOpen, setIsOpen, content, width }) => {
     return null;
   }
 
+  /*  <button
+    onClick={() => setIsDeleteModalOpen(false)}
+    className="close-modal-btn icon"
+  >
+    <AiOutlineClose />
+  </button>; */
+
   return (
     <StyledModalCenter width={width}>
       <div ref={overlayRef} className="overlay"></div>
       <div className="modal-content">
         {content}
-        <div className="close-modal-btn" onClick={() => setIsOpen(false)}>
+        <button className="close-modal-btn" onClick={() => setIsOpen(false)}>
           <AiOutlineClose />
-        </div>
+        </button>
       </div>
     </StyledModalCenter>
   );

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { FcSettings } from "react-icons/fc";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "../context/profileContext";
-import OrangeLinks from "./OrangeLinks";
+import NavLinks from "./NavLinks";
 import StyledProfileNavbar from "./styles/ProfileNavbar.styled";
 import { BsFillStarFill, BsPersonPlusFill } from "react-icons/bs";
 import { BsPersonCheckFill } from "react-icons/bs";
@@ -111,7 +111,7 @@ const ProfileNavbar = ({ links, profileData }) => {
 
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
       <div className="parent">
-        <OrangeLinks links={links} />
+        <NavLinks links={links} />
 
         {!profileData.isMainUser && (
           <div className="buttons">

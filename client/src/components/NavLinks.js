@@ -1,11 +1,11 @@
 //read from database
 import { Link, NavLink } from "react-router-dom";
-import StyledOrangeLinks from "./styles/OrangeLinks.styled";
+import StyledNavLinks from "./styles/NavLinks.styled";
 import { FcSettings } from "react-icons/fc";
 
-const OrangeLinks = ({ links }) => {
+const NavLinks = ({ links }) => {
   return (
-    <StyledOrangeLinks>
+    <StyledNavLinks>
       <div className="links">
         {links.map((link) => {
           return (
@@ -24,8 +24,8 @@ const OrangeLinks = ({ links }) => {
           );
         })}
       </div>
-    </StyledOrangeLinks>
+    </StyledNavLinks>
   );
 };
 
-export default OrangeLinks;
+export default NavLinks;
