@@ -15,7 +15,8 @@ const initialUser = {
 function Register() {
   const navigate = useNavigate();
 
-  const { registerUser, loginUser, userState } = useContext(UserContext);
+  const { registerUser, loginUser, userState, alertState } =
+    useContext(UserContext);
   const [user, setUser] = useState(initialUser);
 
   const handleChange = (e) => {
@@ -52,7 +53,7 @@ function Register() {
   return (
     <StyledRegister>
       <div className="container">
-        {userState.showAlert && <Alert />}
+        <Alert state={alertState} />
         <form className="form glass" onSubmit={onSubmit}>
           <h3 className="orange-text">
             {user.isMember ? "Login" : "Register"} to start writing!

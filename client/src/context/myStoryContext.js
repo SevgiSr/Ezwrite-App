@@ -5,6 +5,7 @@ import axios from "axios";
 
 import {
   BEGIN,
+  CLEAR_ALERT,
   EDIT_MY_CHAPTER_SUCCESS,
   ERROR,
   GET_MY_STORY_SUCCESS,
@@ -20,11 +21,6 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import {
-  initialMutationState,
-  mutationAlertReducer,
-} from "./reducers/mutationAlertReducer";
 
 const initialStoryState = {
   //all stories
@@ -49,10 +45,11 @@ export const MyStoryProvider = ({ children }) => {
     initialAlertState
   );
 
-  const [mutationState, mutationDispatch] = useReducer(
-    mutationAlertReducer,
-    initialMutationState
-  );
+  const clearAlert = () => {
+    setTimeout(() => {
+      alertDispatch({ type: CLEAR_ALERT });
+    }, 3000);
+  };
 
   const { authFetch } = useContext(UserContext);
 
@@ -104,7 +101,7 @@ export const MyStoryProvider = ({ children }) => {
         fileData
       );
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -169,10 +166,13 @@ export const MyStoryProvider = ({ children }) => {
     chapter_id
   ) => {
     try {
-      await authFetch.patch(`/myStories/${story_id}/${chapter_id}`, {
-        title,
-        paragraphContents,
-      });
+      await authFetch.patch(
+        `/myStories/stories/${story_id}/chapters/${chapter_id}`,
+        {
+          title,
+          paragraphContents,
+        }
+      );
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -192,8 +192,9 @@ export const MyStoryProvider = ({ children }) => {
 
   const addChapter = async (id) => {
     try {
-      const { data } = await authFetch.patch(`/myStories/${id}`);
+      const { data } = await authFetch.patch(`/myStories/stories/${id}`);
       const { chapter_id, story_id } = data;
+      console.log(chapter_id, story_id);
       return { chapter_id, story_id };
     } catch (error) {
       console.log(error);
@@ -203,7 +204,9 @@ export const MyStoryProvider = ({ children }) => {
 
   const deleteChapter = async (story_id, chapter_id) => {
     try {
-      await authFetch.delete(`/myStories/${story_id}/${chapter_id}`);
+      await authFetch.delete(
+        `/myStories/stories/${story_id}/chapters/${chapter_id}`
+      );
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -262,12 +265,27 @@ export const MyStoryProvider = ({ children }) => {
     }
   };
 
-  const declineCollaboratorAccess = async (collab) => {
+  const restoreMergeHistory = async (history_id) => {
+    try {
+      await authFetch.patch(`/myStories/collaborations/history/${history_id}`);
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.msg);
+    }
+  };
+
+  const declineCollaboratorAccess = async (req_id) => {
     try {
       // in mutations, frontend functions doesnt have to return anything. on backend controllers have to return a response
-      await authFetch.delete(
-        `/myStories/collaborations/${collab.story._id}/user/${collab.user._id}`
-      );
+      await authFetch.delete(`/myStories/collaborations/collab/${req_id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const declinePullRequest = async (req_id) => {
+    try {
+      await authFetch.delete(`/myStories/collaborations/pull/${req_id}`);
     } catch (error) {
       console.log(error);
     }
@@ -280,11 +298,20 @@ export const MyStoryProvider = ({ children }) => {
   const useCreateStory = () => {
     return useMutation((data) => createStory(data.cover, data.storyDetails), {
       onMutate: () => {
-        mutationDispatch({ type: MUTATION_BEGIN });
+        alertDispatch({ type: BEGIN });
       },
       onSuccess: () => {
-        mutationDispatch({ type: MUTATION_SUCCESS });
+        alertDispatch({
+          type: SUCCESS,
+        });
         queryClient.invalidateQueries(["myStories"]);
+      },
+      onError: (error) => {
+        alertDispatch({
+          type: ERROR,
+          payload: { msg: error.message },
+        });
+        clearAlert();
       },
     });
   };
@@ -316,10 +343,10 @@ export const MyStoryProvider = ({ children }) => {
         ),
       {
         onMutate: () => {
-          mutationDispatch({ type: MUTATION_BEGIN });
+          alertDispatch({ type: BEGIN });
         },
         onSuccess: () => {
-          mutationDispatch({ type: MUTATION_SUCCESS });
+          alertDispatch({ type: SUCCESS });
           queryClient.invalidateQueries(["myStories"]);
         },
       }
@@ -341,10 +368,10 @@ export const MyStoryProvider = ({ children }) => {
   const useAddChapter = () => {
     return useMutation((data) => addChapter(data.story_id), {
       onMutate: () => {
-        mutationDispatch({ type: MUTATION_BEGIN });
+        alertDispatch({ type: BEGIN });
       },
       onSuccess: (data) => {
-        mutationDispatch({ type: MUTATION_SUCCESS });
+        alertDispatch({ type: SUCCESS });
         queryClient.invalidateQueries([`myStories`]);
       },
     });
@@ -384,7 +411,7 @@ export const MyStoryProvider = ({ children }) => {
   };
 
   const useDeclineCollaboratorAccess = () => {
-    return useMutation((data) => declineCollaboratorAccess(data.collab), {
+    return useMutation((data) => declineCollaboratorAccess(data.req_id), {
       /*  onMutate: (variables) => {
         console.log("MUTATION BEGINS");
         const stories = queryClient.getQueryData(["myStories"]);
@@ -403,6 +430,61 @@ export const MyStoryProvider = ({ children }) => {
         console.log("DECLINE SUCCESS");
         queryClient.invalidateQueries(["myStories"]);
         queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+    });
+  };
+
+  const useDeclinePullRequest = () => {
+    return useMutation((data) => declinePullRequest(data.req_id), {
+      /*  onMutate: (variables) => {
+        console.log("MUTATION BEGINS");
+        const stories = queryClient.getQueryData(["myStories"]);
+        console.log(variables);
+        const newStories = stories.map((story) => {
+          const newStory = { ...story }; // Shallow copy
+          newStory.collabRequests = story.collabRequests.filter(
+            (cr) => String(cr._id) !== String(variables.collab._id)
+          );
+          return newStory;
+        });
+        queryClient.setQueryData(["myStories"], () => [...newStories]);
+        console.log("SET QUERY DATA");
+      }, */
+      onSuccess: (data) => {
+        console.log("DECLINE SUCCESS");
+        queryClient.invalidateQueries(["myStories"]);
+        queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+    });
+  };
+
+  const useMergeFork = () => {
+    return useMutation((data) => mergeFork(data.fork_id), {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["myStories"]);
+        queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+    });
+  };
+
+  const useRestoreMergeHistory = () => {
+    return useMutation((data) => restoreMergeHistory(data.history_id), {
+      onMutate: () => {
+        console.log("begin!!!");
+        alertDispatch({ type: BEGIN });
+      },
+      onSuccess: (data) => {
+        console.log("success!!");
+        alertDispatch({
+          type: SUCCESS,
+        });
+
+        console.log("dispatched success");
+        queryClient.invalidateQueries(["myStories"]);
+      },
+      onError: (error) => {
+        console.log("an error!");
+        //alertDispatch({ type: ERROR, payload: { msg: error.msg } });
       },
     });
   };
@@ -426,18 +508,19 @@ export const MyStoryProvider = ({ children }) => {
         sendGptPrompt,
         grantCollaboratorAccess,
         declineCollaboratorAccess,
-        mergeFork,
 
         useCreateStory,
         useDeleteStory,
         useSaveChapter,
         useRestoreChapterHistory,
         useAddChapter,
-        mutationState,
         useDeleteChapter,
         usePublishChapter,
         useUnpublishChapter,
         useDeclineCollaboratorAccess,
+        useDeclinePullRequest,
+        useMergeFork,
+        useRestoreMergeHistory,
       }}
     >
       {children}

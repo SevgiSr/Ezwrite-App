@@ -478,6 +478,7 @@ function ChapterHeader({ isChapterLoading, user }) {
       <div className="dropdown">
         <StoryDropdown />
       </div>
+      {isFork && <div className="is-fork">You're viewing a fork.</div>}
       <div className="actions">
         {isChapterLoading && (
           <div style={{ marginRight: "15px" }}>

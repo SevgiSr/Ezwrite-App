@@ -37,6 +37,7 @@ import Fork from "../db/models/Fork.js";
 import CollabRequest from "../db/models/CollabRequest.js";
 import CollabNotification from "../db/models/CollabNotification.js";
 import PullRequest from "../db/models/PullRequest.js";
+import MergeHistory from "../db/models/MergeHistory.js";
 
 const getTags = async (req, res) => {
   try {
@@ -122,14 +123,13 @@ const recalculateChapterCounts = async (story) => {
 
     console.log("storyyyy3");
 
-    console.log(story);
-
     await story.save();
 
     console.log("storyyy4");
 
     console.log("Chapter counts recalculated successfully.");
   } catch (err) {
+    console.log(err);
     throw new Error(err.message);
   }
 };
@@ -167,6 +167,7 @@ const getMyStories = async (req, res) => {
           populate: { path: "fork", populate: "collaborator story chapters" },
         },
         { path: "collabRequests", populate: "story user" },
+        { path: "mergeHistory" },
       ])
       .sort("-updatedAt");
 
@@ -480,6 +481,10 @@ const restoreChapterHistory = async (req, res) => {
 
     console.log(history_id);
 
+    //chapter history is not a model, it's an array
+    //for every change in chapter we store paragraph id's
+    //?? weren't paragraphs deleted?
+
     const history = chapter.history.find((h) => h._id === history_id);
 
     console.log(history);
@@ -549,12 +554,13 @@ const createChapter = async (req, res) => {
   console.log("creating");
   try {
     const story = await Story.findOne(
-      { _id: String(req.params.story_id), author: req.user.userId },
+      { _id: req.params.story_id, author: req.user.userId },
       null,
       {
         excludeVisibilityCheck: true,
       }
     );
+    console.log(req.params.story_id);
 
     const chapter = await Chapter.create({
       content: "",
@@ -566,10 +572,12 @@ const createChapter = async (req, res) => {
 
     await recalculateChapterCounts(story);
 
-    res
-      .status(StatusCodes.OK)
-      .json({ story_id: String(story._id), chapter_id: String(chapter._id) });
+    res.status(StatusCodes.OK).json({
+      story_id: story._id.toString(),
+      chapter_id: chapter._id.toString(),
+    });
   } catch (error) {
+    console.log(error);
     throw new Error(error.message);
   }
 };
@@ -716,24 +724,23 @@ const grantCollaboratorAccess = async (req, res) => {
 
 const declineCollaboratorAccess = async (req, res) => {
   try {
-    const { story_id, user_id } = req.params;
+    const { req_id } = req.params;
 
-    const story = await Story.findById(story_id);
+    const collab = await CollabRequest.findById(req_id);
 
-    //find collabrequest and notification
-    const collabRequest = await CollabRequest.findOne({
-      story: story_id,
-      user: user_id,
-    });
-    const notification = await CollabNotification.findOne({
-      request: collabRequest._id,
-    });
+    if (!collab) {
+      throw new Error("You already declined this request.");
+    }
 
-    //remove collabrequest from story and user notifications
-    story.collabRequests = story.collabRequests.filter(
-      (c) => c.toString() !== collabRequest._id.toString()
+    await Story.updateOne(
+      { _id: collab.story },
+      { $pull: { collabRequests: collab._id } },
+      { runValidators: true }
     );
-    await story.save();
+
+    const notification = await CollabNotification.findOne({
+      request: collab._id,
+    });
 
     await User.updateOne(
       { _id: req.user.userId },
@@ -743,16 +750,16 @@ const declineCollaboratorAccess = async (req, res) => {
 
     //remove pending fork request since we're now collaborator
     await User.updateOne(
-      { _id: user_id },
+      { _id: collab.user },
       {
         $pull: {
-          pendingForkRequests: collabRequest._id,
+          pendingForkRequests: collab._id,
         },
       },
       { runValidators: true } // return the updated document
     );
 
-    await collabRequest.remove();
+    await collab.remove();
     await notification.remove();
     res.status(StatusCodes.OK).json({ msg: "success" });
   } catch (error) {
@@ -776,14 +783,19 @@ const mergeFork = async (req, res) => {
     const story = await Story.findById(fork.story).populate("pullRequests");
     const user = await User.findById(req.user.userId);
 
-    story.forkHistory.push(story.chapters);
+    // when I merge, I dont delete old chapters of story.
+    const mergeHistory = await MergeHistory.create({
+      story: story._id,
+      chapters: story.chapters,
+    });
+    story.mergeHistory.push(mergeHistory._id);
 
     // create new chaptrs, dont assign fork chapters to story chapters directly
     // or from now on the collaborator will be able to change chapters without pull request
     const newChapters = await Promise.all(
       fork.chapters.map(async (chapter) => {
         const chapterData = chapter.toObject();
-        delete chapterData._id;
+        delete chapterData._id; // delete id field from copied chapter
         const newChapter = new Chapter(chapterData);
         newChapter.author = req.user.userId;
         return newChapter.save();
@@ -824,6 +836,61 @@ const mergeFork = async (req, res) => {
   }
 };
 
+const restoreMergeHistory = async (req, res) => {
+  try {
+    const { history_id } = req.params;
+
+    const mergeHistory = await MergeHistory.findById(history_id);
+
+    const story = await Story.findById(mergeHistory.story);
+
+    story.chapters = mergeHistory.chapters;
+
+    await story.save();
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const declinePullRequest = async (req, res) => {
+  try {
+    const { req_id } = req.params;
+
+    const pull = await PullRequest.findById(req_id).populate({
+      path: "fork",
+      populate: "story",
+    });
+
+    if (!pull) {
+      throw new Error("You already declined this request.");
+    }
+
+    await Story.updateOne(
+      { _id: pull.fork.story._id },
+      { $pull: { pullRequests: pull._id } },
+      { runValidators: true }
+    );
+
+    const notification = await CollabNotification.findOne({
+      request: pull._id,
+    });
+
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $pull: { collabNotifications: notification._id } },
+      { runValidators: true }
+    );
+
+    await pull.remove();
+    await notification.remove();
+    res.status(StatusCodes.OK).json({ msg: "success" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 export {
   getMyStories,
   createStory,
@@ -840,6 +907,8 @@ export {
   declineCollaboratorAccess,
   revokeCollaboratorAccess,
   mergeFork,
+  restoreMergeHistory,
+  declinePullRequest,
 };
 
 /* 

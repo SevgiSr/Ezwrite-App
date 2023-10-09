@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 import socket from "../socket.js";
 import { UserContext } from "../context/userContext";
 import ModalCenter from "./ModalCenter";
-import StoryCardDetailed from "./";
+import StoryCardDetailed, { Alert } from "./";
 import Cover from "./Cover";
 import { GoEye } from "react-icons/go";
 import { StoryContext } from "../context/storyContext";
@@ -29,7 +29,7 @@ const ProfileNavbar = ({ links, profileData }) => {
     sendNotification,
   } = useContext(ProfileContext);
 
-  const { requestCollab } = useContext(StoryContext);
+  const { requestCollab, alertState } = useContext(StoryContext);
 
   const [isCollabModalOpen, setIsCollabModalOpen] = useState(false);
 
@@ -84,6 +84,7 @@ const ProfileNavbar = ({ links, profileData }) => {
 
   return (
     <StyledProfileNavbar>
+      <Alert state={alertState} />
       <ModalCenter
         isOpen={isCollabModalOpen}
         setIsOpen={setIsCollabModalOpen}
@@ -97,7 +98,7 @@ const ProfileNavbar = ({ links, profileData }) => {
                   <Story story={story} />
                   <button
                     onClick={() => handleSendCollabRequest(story._id)}
-                    className="btn"
+                    className="btn btn-basic"
                     type="button"
                   >
                     Ask to collaborate

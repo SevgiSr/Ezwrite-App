@@ -34,7 +34,7 @@ const StyledComment = styled.div`
         color: var(--font2);
       }
       .reply {
-        color: #ff6122;
+        color: var(--text-main);
       }
     }
   }

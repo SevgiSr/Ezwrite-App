@@ -1,6 +1,7 @@
 import { UserContext } from "./userContext";
 import React, { useReducer, useContext } from "react";
 
+import { alertReducer, initialAlertState } from "./reducers/alertReducer";
 import {
   BEGIN,
   EDIT_MY_CHAPTER_SUCCESS,
@@ -16,10 +17,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import {
-  initialMutationState,
-  mutationAlertReducer,
-} from "./reducers/mutationAlertReducer";
 import myForkReducer from "./reducers/myForkReducer";
 
 const initialForkState = {
@@ -42,9 +39,9 @@ export const MyForkContext = React.createContext();
 
 export const MyForkProvider = ({ children }) => {
   const [forkState, dispatch] = useReducer(myForkReducer, initialForkState);
-  const [mutationState, mutationDispatch] = useReducer(
-    mutationAlertReducer,
-    initialMutationState
+  const [alertState, alertDispatch] = useReducer(
+    alertReducer,
+    initialAlertState
   );
 
   const { authFetch } = useContext(UserContext);
@@ -196,10 +193,10 @@ export const MyForkProvider = ({ children }) => {
         ),
       {
         onMutate: () => {
-          mutationDispatch({ type: MUTATION_BEGIN });
+          alertDispatch({ type: BEGIN });
         },
         onSuccess: () => {
-          mutationDispatch({ type: MUTATION_SUCCESS });
+          alertDispatch({ type: SUCCESS });
           queryClient.invalidateQueries(["myForks"]);
         },
       }
@@ -225,10 +222,10 @@ export const MyForkProvider = ({ children }) => {
   const useAddForkChapter = () => {
     return useMutation((data) => addForkChapter(data.fork_id), {
       onMutate: () => {
-        mutationDispatch({ type: MUTATION_BEGIN });
+        alertDispatch({ type: BEGIN });
       },
       onSuccess: (data) => {
-        mutationDispatch({ type: MUTATION_SUCCESS });
+        alertDispatch({ type: SUCCESS });
         queryClient.invalidateQueries([`myForks`]);
       },
     });
@@ -256,13 +253,13 @@ export const MyForkProvider = ({ children }) => {
   return (
     <MyForkContext.Provider
       value={{
+        alertState,
         getMyForks,
         deleteFork,
         saveForkChapter,
         restoreForkChapterHistory,
         addForkChapter,
         deleteForkChapter,
-        mutationState,
         setEditForkChapter,
         forkState,
         sendPullRequest,

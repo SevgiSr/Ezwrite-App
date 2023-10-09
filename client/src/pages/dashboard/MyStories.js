@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
 import {
+  Alert,
   MyStory,
   Story,
   StoryCardMini,
@@ -20,7 +21,7 @@ import { VscRepoForked } from "react-icons/vsc";
 
 function MyStories({ show }) {
   const navigate = useNavigate();
-  const { mutationState } = useContext(MyStoryContext);
+  const { alertState } = useContext(MyStoryContext);
   const location = useLocation();
   const tab = location.pathname.split("/")[3];
 
@@ -48,7 +49,7 @@ function MyStories({ show }) {
               },
             ]}
           />
-          {mutationState.isLoading && (
+          {alertState.isLoading && (
             <div className="header-loader">
               <Dna
                 visible={true}
@@ -67,6 +68,7 @@ function MyStories({ show }) {
         </button>
       </nav>
       <Outlet />
+      {alertState.showAlert && <Alert state={alertState} />}
     </StyledMyStories>
   );
 }
@@ -127,7 +129,7 @@ function StoriesFallback() {
   return (
     <div style={{ margin: "5rem 0" }}>
       <FallingLines
-        color="#ff6122"
+        color="var(--accent)"
         width="100"
         visible={true}
         ariaLabel="falling-lines-loading"

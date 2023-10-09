@@ -20,7 +20,7 @@ const Navbar = () => {
   const {
     storyState,
     useAddChapter,
-    mutationState: mutationStateStory,
+    alertState: mutationStateStory,
     useDeleteChapter,
     usePublishChapter,
     useUnpublishChapter,
@@ -29,7 +29,7 @@ const Navbar = () => {
 
   const {
     forkState,
-    mutationState: mutationStateFork,
+    alertState: mutationStateFork,
     useAddForkChapter,
     useDeleteForkChapter,
     useRestoreForkChapterHistory,

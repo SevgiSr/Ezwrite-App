@@ -10,14 +10,15 @@ function CollabRequest({ collab, isOverview }) {
   const { grantCollaboratorAccess, useDeclineCollaboratorAccess } =
     useContext(MyStoryContext);
   const declineCollaboratorAccessMutation = useDeclineCollaboratorAccess();
+
   const handleAcceptRequestClick = (collab) => {
     grantCollaboratorAccess(collab.story._id, collab.user._id);
   };
-  const handleDeclineRequestClick = (collab) => {
+  const handleDeclineRequestClick = (collab_id) => {
     //mutating because I want to invaalidate queries on success
     console.log("decline click");
     declineCollaboratorAccessMutation.mutate({
-      collab,
+      req_id: collab_id,
     });
   };
   return (
@@ -39,14 +40,14 @@ function CollabRequest({ collab, isOverview }) {
           <div className="collab-text">wants to collaborate in this story.</div>
           <div className="actions">
             <button
-              className="collab-btn btn"
+              className="collab-btn btn btn-basic"
               type="button"
-              onClick={() => handleDeclineRequestClick(collab)}
+              onClick={() => handleDeclineRequestClick(collab._id)}
             >
               Decline Request
             </button>
             <button
-              className="collab-btn btn"
+              className="collab-btn btn btn-basic"
               type="button"
               onClick={() => handleAcceptRequestClick(collab)}
             >

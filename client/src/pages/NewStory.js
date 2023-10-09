@@ -8,7 +8,7 @@ import { AiFillPicture } from "react-icons/ai";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, useCreateStory } = useContext(MyStoryContext);
+  const { storyState, useCreateStory, alertState } = useContext(MyStoryContext);
 
   const createStoryMutation = useCreateStory();
 
@@ -46,7 +46,6 @@ function NewStory() {
 
   return (
     <StyledNewStory>
-      {storyState.showAlert && <Alert />}
       <div className="cover">
         {imageUrl ? (
           <div

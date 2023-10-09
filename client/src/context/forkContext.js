@@ -16,19 +16,9 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import {
-  initialMutationState,
-  mutationAlertReducer,
-} from "./reducers/mutationAlertReducer";
-
 export const ForkContext = React.createContext();
 
 export const ForkProvider = ({ children }) => {
-  const [mutationState, mutationDispatch] = useReducer(
-    mutationAlertReducer,
-    initialMutationState
-  );
-
   const { authFetch } = useContext(UserContext);
 
   const getFork = async (fork_id) => {

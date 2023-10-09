@@ -21,7 +21,7 @@ const StyledStories = styled.div`
 
     .active {
       color: var(--font1);
-      border-bottom: 5px solid #ff6122;
+      border-bottom: 5px solid var(--accent);
     }
   }
 

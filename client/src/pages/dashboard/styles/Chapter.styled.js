@@ -11,14 +11,23 @@ const StyledChapter = styled.div`
   .chapter-header {
     position: fixed;
     top: 51px;
-    left: 0;
+    left: 230px;
     right: 0;
     z-index: 2;
-    width: 100%;
+    width: calc(100% - 230px);
     margin-bottom: 4rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background-color: var(--background3);
+
+    .is-fork {
+      color: var(--font2);
+      font-size: 15px;
+      font-weight: 600;
+      margin-right: auto;
+      margin-left: 15px;
+    }
 
     .progress {
       position: absolute;
@@ -45,9 +54,9 @@ const StyledChapter = styled.div`
     }
 
     .active {
-      border-left: 3px solid #ff6122;
+      border-left: 3px solid var(--accent);
       div {
-        color: #ff6122;
+        color: var(--text-main);
       }
     }
 
@@ -62,6 +71,7 @@ const StyledChapter = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: center;
+      cursor: pointer;
 
       :hover {
         background-color: var(--background5);
@@ -97,13 +107,11 @@ const StyledChapter = styled.div`
       align-items: center;
       button {
         margin-right: 2.5rem;
-        background-color: var(--background3);
       }
 
       .add-list-btn {
         font-size: 20px;
         padding: 5px 15px;
-        background-color: var(--button-main);
       }
 
       .add-list-menu {
@@ -125,22 +133,19 @@ const StyledChapter = styled.div`
             cursor: pointer;
             color: var(--font1);
           }
-
-          .icon {
-          }
         }
 
         .new-reading-list {
           display: flex;
           button {
             margin: 0;
-            background-color: var(--button-main);
           }
         }
       }
 
       .vote {
-        color: #e64809;
+        color: var(--text-main);
+        background-color: transparent;
         font-size: 15px;
         font-weight: 700;
         border: none;
@@ -156,7 +161,7 @@ const StyledChapter = styled.div`
       }
 
       .active-true {
-        color: #e64809;
+        color: var(--text-main);
       }
 
       .active-false {
@@ -267,6 +272,12 @@ const StyledChapter = styled.div`
       form {
         background-color: transparent;
       }
+    }
+  }
+  @media (max-width: 900px) {
+    .chapter-header {
+      left: 0;
+      width: 100%;
     }
   }
 `;

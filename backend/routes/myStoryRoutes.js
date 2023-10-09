@@ -16,6 +16,8 @@ import {
   revokeCollaboratorAccess,
   mergeFork,
   declineCollaboratorAccess,
+  declinePullRequest,
+  restoreMergeHistory,
 } from "../controllers/myStoryController.js";
 
 import Story from "../db/models/Story.js";
@@ -94,22 +96,30 @@ router.route("/suggestions").get(getTags);
 // Routes that include specific actions should come first
 router.route("/update/:story_id").post(updateStory);
 router.route("/delete/:story_id").delete(deleteStory);
+
 // collabs
+router
+  .route("/collaborations/collab/:req_id")
+  .delete(declineCollaboratorAccess);
+router.route("/collaborations/pull/:req_id").delete(declinePullRequest);
 
 router.route("/collaborations/forks/:fork_id").patch(mergeFork);
+router.route("/collaborations/history/:history_id").patch(restoreMergeHistory);
 router
   .route("/collaborations/:story_id/user/:user_id")
-  .patch(grantCollaboratorAccess)
-  .delete(declineCollaboratorAccess);
+  .patch(grantCollaboratorAccess);
 
 // Then we have routes that also include chapter id
-router.route("/:story_id/:chapter_id").patch(saveChapter).delete(deleteChapter);
+router.route("/stories/:story_id").patch(createChapter);
+router
+  .route("/stories/:story_id/chapters/:chapter_id")
+  .patch(saveChapter)
+  .delete(deleteChapter);
 router.route("/publish/:story_id/:chapter_id").patch(publishChapter);
 router.route("/unpublish/:story_id/:chapter_id").patch(unpublishChapter);
 router.route("/history/:story_id/:chapter_id").patch(restoreChapterHistory);
 
 // Then the more general routes with only story id
-router.route("/:story_id").patch(createChapter);
 
 // And finally, the most general path
 

@@ -27,13 +27,20 @@ const alertReducer = (state, action) => {
     };
   }
   if (action.type === SUCCESS) {
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: "success",
-      alertText: action.payload?.msg,
-    };
+    if (action.payload?.showAlert) {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "success",
+        alertText: action.payload?.msg,
+      };
+    } else {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
   }
 
   if (action.type === ERROR) {
@@ -41,7 +48,7 @@ const alertReducer = (state, action) => {
       ...state,
       isLoading: false,
       showAlert: true,
-      alertType: "danger",
+      alertType: "error",
       alertText: action.payload?.msg,
     };
   }

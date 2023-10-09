@@ -128,7 +128,7 @@ const StyledNavbar = styled.header`
             font-size: 15px;
             top: 0;
             left: 3px;
-            background-color: #ff6122;
+            background-color: var(--accent);
             width: 17px;
             height: 17px;
             color: #fff;

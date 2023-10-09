@@ -17,7 +17,7 @@ import { AiOutlineFieldTime, AiOutlineInfoCircle } from "react-icons/ai";
 import { BiEditAlt, BiGitPullRequest } from "react-icons/bi";
 import { ImFilesEmpty } from "react-icons/im";
 import getDate from "../../utils/getDate";
-import { BsFillEyeFill } from "react-icons/bs";
+import { RxCounterClockwiseClock } from "react-icons/rx";
 
 function ManageStory() {
   const { story_id } = useParams();
@@ -178,15 +178,25 @@ function ManageCollabs() {
 }
 
 function ManageHistory() {
-  const { storyState } = useContext(MyStoryContext);
+  const { storyState, useRestoreMergeHistory, alertState } =
+    useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
   const { story } = storyState;
+
+  const restoreMergeHistoryMutation = useRestoreMergeHistory();
+
+  const handleRestoreClick = (history_id) => {
+    console.log("restoree");
+    restoreMergeHistoryMutation.mutate({ history_id });
+  };
+
+  console.log(alertState);
 
   if (!story) return null;
 
   return (
     <div className="history-container">
-      {story.forkHistory?.length === 0 ? (
+      {story.mergeHistory?.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
             <AiOutlineFieldTime />
@@ -197,14 +207,27 @@ function ManageHistory() {
         </div>
       ) : (
         <div className="history">
-          {story.forkHistory?.map((h) => {
+          {story.mergeHistory?.map((h) => {
             return (
               <div className="history-record" key={h._id}>
-                {h}
+                <div className="history-date">{getDate(h.createdAt)}</div>
+                <button
+                  className="btn btn-basic revert-btn"
+                  onClick={() => handleRestoreClick(h._id)}
+                >
+                  <div className="icon">
+                    <RxCounterClockwiseClock />
+                  </div>
+                  Revert Changes
+                </button>
               </div>
             );
           })}
         </div>
+      )}
+
+      {alertState.showAlert && (
+        <h1 style={{ color: "red" }}>Alertt {alertState.alertText}</h1>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import axios from "axios";
 
 import {
   BEGIN,
+  CLEAR_ALERT,
   ERROR,
   GET_CHAPTER_SUCCESS,
   GET_STORIES_SUCCESS,
@@ -34,6 +35,12 @@ export const StoryProvider = ({ children }) => {
     alertReducer,
     initialAlertState
   );
+
+  const clearAlert = () => {
+    setTimeout(() => {
+      alertDispatch({ type: CLEAR_ALERT });
+    }, 5000);
+  };
 
   const getByCategory = async (category) => {
     try {
@@ -384,11 +391,22 @@ Given that the backend seems to handle only one request at a time (as evidenced 
         `/stories/collaborations/${story_id}/${user_id}`
       );
       const { ntCollab } = data;
-      console.log(ntCollab);
+      alertDispatch({
+        type: SUCCESS,
+        payload: { showAlert: true, msg: "Request sent succesfully!" },
+      });
       return ntCollab;
     } catch (error) {
-      console.log(error);
+      const backendMessage =
+        error.response && error.response.data
+          ? error.response.data.msg
+          : error.message;
+      alertDispatch({
+        type: ERROR,
+        payload: { msg: backendMessage },
+      });
     }
+    clearAlert();
   };
 
   /* PROGRESS MUTATIONS */

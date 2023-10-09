@@ -103,7 +103,7 @@ function Notifications() {
 function NotificationsFallback() {
   return (
     <div className="fallback">
-      <ClipLoader color="#ff6122" size={50} />
+      <ClipLoader color="var(--accent)" size={50} />
     </div>
   );
 }

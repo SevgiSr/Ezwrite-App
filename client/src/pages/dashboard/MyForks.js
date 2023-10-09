@@ -174,7 +174,7 @@ function StoriesFallback() {
   return (
     <div style={{ margin: "5rem 0" }}>
       <FallingLines
-        color="#ff6122"
+        color="var(--accent)"
         width="100"
         visible={true}
         ariaLabel="falling-lines-loading"

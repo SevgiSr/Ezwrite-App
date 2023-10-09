@@ -78,6 +78,7 @@ export const UserProvider = ({ children }) => {
       alertDispatch({ type: CLEAR_ALERT });
     }, 3000);
   };
+
   const addUserToLocalStorage = ({ user, token }) => {
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);

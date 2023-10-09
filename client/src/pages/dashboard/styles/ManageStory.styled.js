@@ -72,6 +72,30 @@ const StyledManageStory = styled.div`
     }
   }
 
+  .history-container {
+    .history-record {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px;
+      background-color: var(--background2);
+
+      .history-date {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--font2);
+      }
+
+      .revert-btn {
+        display: flex;
+        align-items: center;
+        .icon {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
   @media only screen and (min-width: 1280px) {
     display: grid;
     grid-template-columns: 300px 1fr;

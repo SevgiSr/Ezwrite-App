@@ -59,9 +59,12 @@ const StorySchema = new mongoose.Schema(
         ref: "CollabRequest",
       },
     ],
-    forkHistory: {
-      type: Array,
-    },
+    mergeHistory: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "MergeHistory",
+      },
+    ],
 
     progress: [
       {

@@ -7,13 +7,21 @@ import { MyStoryContext } from "../../context/myStoryContext";
 import Cover from "../Cover";
 
 function PullRequest({ pull, isOverview }) {
-  const { mergeFork } = useContext(MyStoryContext);
+  const { useMergeFork, useDeclinePullRequest } = useContext(MyStoryContext);
+  const declinePullRequestMutation = useDeclinePullRequest();
+  const mergeForkMutation = useMergeFork();
+
   const navigate = useNavigate();
-  const handleMergeChanges = async (fork) => {
-    await mergeFork(fork._id);
-    navigate(`/myworks/${fork.story._id}/${fork.story.chapters[0]}/writing`);
+
+  const handleMergeClick = async (fork) => {
+    mergeForkMutation.mutate({ fork_id: fork._id });
+    // navigate(`/myworks/${fork.story._id}/${fork.story.chapters[0]}/writing`);
   };
-  console.log(pull);
+
+  const handleDeclineClick = async (pull_id) => {
+    declinePullRequestMutation.mutate({ req_id: pull_id });
+  };
+
   return (
     <StyledPullRequest>
       {isOverview ? (
@@ -62,9 +70,15 @@ function PullRequest({ pull, isOverview }) {
             </Link>
             <button
               className="btn btn-basic"
-              onClick={() => handleMergeChanges(pull.fork)}
+              onClick={() => handleMergeClick(pull.fork)}
             >
               Merge Changes
+            </button>
+            <button
+              className="btn btn-grey"
+              onClick={() => handleDeclineClick(pull._id)}
+            >
+              Decline Changes
             </button>
           </div>
         </div>

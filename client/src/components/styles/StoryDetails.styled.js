@@ -17,7 +17,7 @@ const StyledStoryDetails = styled.div`
     }
     h1 {
       color: var(--font1);
-      border-bottom: 5px solid #ff6122;
+      border-bottom: 5px solid var(--text-main);
       width: fit-content;
       margin-bottom: 2rem;
     }

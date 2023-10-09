@@ -38,10 +38,10 @@ const StyledProfileNavbar = styled.div`
   }
 
   .collab-modal {
-    padding: 20px 15px;
     .collab-title {
-      margin: 0 auto;
-      width: fit-content;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      text-align: center;
       font-size: 23px;
     }
 
