@@ -26,6 +26,7 @@ const StyledEditStoryDetails = styled.div`
         .icon {
           font-size: 30px;
           margin-right: 10px;
+          color: var(--font1);
         }
       }
     }
@@ -107,13 +108,28 @@ const StyledEditStoryDetails = styled.div`
     header {
       border-bottom: 1px solid #eee;
       padding: 0 20px;
+      margin-bottom: 1.7rem;
+
+      ul {
+        list-style-type: none;
+        display: flex;
+        li {
+          font-size: 18px;
+          color: var(--font2);
+          font-weight: 600;
+          padding: 10px 10px;
+          margin: 10px 5px;
+          border-radius: 10px;
+          cursor: pointer;
+        }
+
+        .active {
+          background-color: var(--background3);
+        }
+      }
     }
     .details {
       width: 100%;
-    }
-    button {
-      padding: 8px 20px;
-      margin: 20px 10px;
     }
     .row {
       display: flex;

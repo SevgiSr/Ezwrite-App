@@ -158,20 +158,20 @@ function EditStoryDetails() {
       </div>
       <div className="chapters-main">
         <header>
-          <NavLinks
-            links={[
-              {
-                to: "",
-                label: "Story Details",
-                handleClick: () => setNavbar("details"),
-              },
-              {
-                to: "",
-                label: "Table of Contents",
-                handleClick: () => setNavbar("contents"),
-              },
-            ]}
-          />
+          <ul>
+            <li
+              onClick={() => setNavbar("details")}
+              className={navbar === "details" && "active"}
+            >
+              Story Details
+            </li>
+            <li
+              onClick={() => setNavbar("contents")}
+              className={navbar === "contents" && "active"}
+            >
+              Table of Contents
+            </li>
+          </ul>
         </header>
 
         {navbar === "details" && (
@@ -208,7 +208,7 @@ function Navbar({ handleCancel }) {
         </div>
       </header>
       <div className="buttons">
-        <button onClick={handleCancel} className="white-button btn">
+        <button onClick={handleCancel} className="btn btn-grey">
           Cancel
         </button>
         <button form="story-details" className="btn btn-main">
