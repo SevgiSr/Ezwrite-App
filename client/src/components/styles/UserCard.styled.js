@@ -43,7 +43,7 @@ const StyledUserCard = styled.article`
     .info {
       display: flex;
       justify-content: space-around;
-      background-color: var(--background3);
+      background-color: var(--background4);
       color: var(--font2);
       padding: 10px 0;
       width: 100%;

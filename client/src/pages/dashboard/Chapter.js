@@ -215,7 +215,7 @@ function Chapter() {
                 <Conversation
                   conv={comment}
                   dest={state.chapter._id}
-                  location={state.story._id}
+                  location={isFork ? fork_id : story_id}
                   useAddConvComment={
                     isFork ? useAddForkConvComment : useAddConvComment
                   }

@@ -14,7 +14,7 @@ const StyledRespondParent = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--background3);
+    background-color: var(--background4);
     position: relative;
 
     .icon {
@@ -28,7 +28,7 @@ const StyledRespondParent = styled.div`
       line-height: 24px;
       color: var(--font1);
       background-color: var(--background4);
-      width: 84%;
+      width: 88%;
       height: 45px;
       border: none;
       padding: 0.5rem 0.8rem;

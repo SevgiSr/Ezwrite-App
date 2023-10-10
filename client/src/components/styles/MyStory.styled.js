@@ -84,6 +84,9 @@ const StyledMyStory = styled.div`
       font-size: 20px;
       padding: 3px 5px;
       border: 1px solid #6f6f6f;
+      > .icon {
+        margin-left: 5px;
+      }
     }
     .more-menu {
       overflow: hidden;

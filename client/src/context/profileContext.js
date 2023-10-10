@@ -180,7 +180,7 @@ export const ProfileProvider = ({ children }) => {
 
   const addConvComment = async (conv_id, comment_content) => {
     try {
-      await authFetch.post(`/conversations/${conv_id}`, {
+      await authFetch.post(`/user/conversations/${conv_id}`, {
         comment_content,
       });
     } catch (error) {
@@ -190,8 +190,9 @@ export const ProfileProvider = ({ children }) => {
 
   const deleteConvComment = async (conv_id, comment_id) => {
     try {
-      console.log("deleting in");
-      await authFetch.delete(`/conversations/${conv_id}/${comment_id}`);
+      await authFetch.delete(
+        `/user/conversations/${conv_id}/comments/${comment_id}`
+      );
     } catch (error) {
       console.log(error);
     }
@@ -326,18 +327,16 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const useAddProfileConv = () => {
-    return useMutation(
-      (data) => addProfileConv(data.dest, data.comment, data.updatedParagraph),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["conversations"]);
-        },
-      }
-    );
+    return useMutation((data) => addProfileConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["conversations"]);
+      },
+    });
   };
 
   const useDeleteProfileConv = () => {
     return useMutation((data) => deleteProfileConv(data.dest, data.conv_id), {
+      //dest in here is username
       onSuccess: () => {
         queryClient.invalidateQueries(["conversations"]);
       },
@@ -346,6 +345,7 @@ export const ProfileProvider = ({ children }) => {
 
   const useAddConvComment = () => {
     return useMutation((data) => addConvComment(data.dest, data.comment), {
+      //dest here is conv_id. that's why we thought about adding location
       onSuccess: () => {
         queryClient.invalidateQueries(["conversations"]);
       },
@@ -354,7 +354,7 @@ export const ProfileProvider = ({ children }) => {
 
   const useDeleteConvComment = () => {
     return useMutation(
-      (data) => deleteConvComment(data.conv_id, data.comment_id),
+      (data) => deleteConvComment(data.conv_id, data.comment_id), //dest is conv_id
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["conversations"]);

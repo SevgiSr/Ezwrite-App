@@ -5,6 +5,10 @@ import Notification from "../db/models/Notification.js";
 import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
 import { getStoryVotes, getStoryViews } from "./storyController.js";
+import {
+  handleAddConvComment,
+  handleDeleteConvComment,
+} from "./commentControllers.js";
 
 const getAllUsers = async (req, res) => {
   try {
@@ -189,6 +193,15 @@ const deleteProfileConv = async (req, res) => {
   }
 };
 
+const addConvComment = async (req, res) => {
+  await handleAddConvComment(req, res);
+};
+
+//FOR ALL OF CONVERSATIONS' SUBCOMMENTS
+const deleteConvComment = async (req, res) => {
+  await handleDeleteConvComment(req, res);
+};
+
 const editProfile = async (req, res) => {
   try {
     const { profileInfo } = req.body;
@@ -226,4 +239,6 @@ export {
   getProfileSettings,
   deleteProfileConv,
   getAllUsers,
+  addConvComment,
+  deleteConvComment,
 };

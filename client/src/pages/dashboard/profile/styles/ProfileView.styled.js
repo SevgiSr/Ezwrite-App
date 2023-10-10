@@ -40,21 +40,21 @@ const StyledProfileView = styled.header`
   }
 
   .edit-mode {
-    width: 100vw;
     z-index: 1000;
     nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: end;
       height: 60px;
-      position: fixed;
-      top: 0;
       z-index: 1000;
       background-color: var(--background3);
-      width: 100vw;
       button {
-        margin-right: 50px;
-        padding: 10px;
+        margin-right: 15px;
       }
     }
     #edit-overlay {
@@ -64,7 +64,7 @@ const StyledProfileView = styled.header`
       z-index: 1;
       opacity: 0.5;
       width: 100%;
-      height: 370px;
+      height: 340px;
       background: #099;
     }
   }
@@ -87,6 +87,7 @@ const StyledProfileView = styled.header`
       display: flex;
       align-items: end;
       .profile-picture {
+        position: relative;
         border: 15px solid var(--background3);
         border-radius: 100%;
         .icon {
@@ -98,17 +99,17 @@ const StyledProfileView = styled.header`
           display: none;
         }
         .upload-picture {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 1999;
           background-color: transparent;
           cursor: pointer;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          position: absolute;
         }
       }
 
@@ -123,11 +124,11 @@ const StyledProfileView = styled.header`
           input {
             padding: 6px 15px;
             position: absolute;
-            left: -10px;
+            left: 0;
             top: 0;
             right: 0;
             bottom: 0;
-            width: 100%;
+            width: 180%;
             z-index: 1999;
             background: rgba(255, 255, 255, 0.667);
             border-radius: 5px;

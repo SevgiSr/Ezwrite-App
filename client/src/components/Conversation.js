@@ -18,7 +18,7 @@ import { ClipLoader } from "react-spinners";
 
 const Conversation = ({
   conv,
-  dest,
+  dest, //username
   location = null,
   useAddConvComment,
   useDeleteConv,
@@ -124,7 +124,7 @@ const Conversation = ({
           20
         )}...</strong>`}
         sender={userState.user._id}
-        location={story_id}
+        location={location}
         route={location?.pathname}
         to={conv.author.name}
         dest={conv._id}

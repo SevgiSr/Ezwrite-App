@@ -75,7 +75,7 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
             <button className="btn btn-main" form="edit-profile" type="submit">
               Save Changes
             </button>
-            <button className="white-button" onClick={handleClick}>
+            <button className="btn btn-grey" onClick={handleClick}>
               Cancel Changes
             </button>
           </nav>
@@ -170,13 +170,21 @@ function ProfileView({ handleChange, state, profileData, refetch }) {
             </li>
             <li>
               <button className="info-btn">
-                <p className="count">0</p>
+                <p className="count">
+                  {
+                    profileData.profile.stories?.filter(
+                      (story) => story.visibility === "published"
+                    )?.length
+                  }
+                </p>
                 <p className="label">works</p>
               </button>
             </li>
             <li>
               <button className="info-btn">
-                <p className="count">1</p>
+                <p className="count">
+                  {profileData.profile.readingLists?.length}
+                </p>
                 <p className="label">reading lists</p>
               </button>
             </li>

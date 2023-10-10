@@ -92,9 +92,9 @@ const ProfileNavbar = ({ links, profileData }) => {
         content={
           <div className="collab-modal">
             <h3 className="collab-title">{username}'s Stories</h3>
-            {profileData.profile.stories.map((story) => {
+            {profileData.profile.stories?.map((story) => {
               return (
-                <div className="collab-stories-row">
+                <div className="collab-stories-row" key={story._id}>
                   <Story story={story} />
                   <button
                     onClick={() => handleSendCollabRequest(story._id)}
