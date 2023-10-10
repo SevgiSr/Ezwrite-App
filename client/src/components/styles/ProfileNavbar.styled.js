@@ -35,6 +35,10 @@ const StyledProfileNavbar = styled.div`
   .buttons {
     display: flex;
     border: var(--background3);
+    .follow {
+      background-color: #00b2b2;
+      color: var(--font1);
+    }
   }
 
   .collab-modal {

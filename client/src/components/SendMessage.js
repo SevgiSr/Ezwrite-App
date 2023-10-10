@@ -5,9 +5,10 @@ import { useParams } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
 import { ProfileContext } from "../context/profileContext";
 import socket from "../socket.js";
+import { UserContext } from "../context/userContext";
 
-const SendMessage = ({ messageContent, setMessageContent }) => {
-  const { sendMessage } = useContext(ProfileContext);
+const SendMessage = ({ messageContent, setMessageContent, handleSubmit }) => {
+  const { userState } = useContext(UserContext);
 
   const initialState = { msgBox: "", sendBtn: "" };
   const [show, setShow] = useState(initialState);
@@ -40,42 +41,23 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
     };
   }, []);
 
-  const handleChange = (e) => {
-    setMessageContent(e.target.value);
-  };
-  const { username } = useParams();
-  const user = JSON.parse(localStorage.getItem("user"));
-  const room = JSON.stringify([user.name, username].sort());
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setMessageContent("");
-    const message = {
-      author: {
-        _id: user._id,
-        name: user.name,
-      },
-      content: messageContent,
-    };
-    socket.emit("send message", {
-      message,
-      room,
-    });
-    sendMessage(username, message.content);
-  };
   return (
     <StyledSendMessage>
       <form onSubmit={handleSubmit}>
-        <ProfilePicture filename={user._id} width="10%" height="10%" />
+        <ProfilePicture
+          filename={userState.user._id}
+          width="50px"
+          height="50px"
+        />
         <textarea
           className={show.msgBox}
           ref={texareaRef}
           value={messageContent}
-          onChange={handleChange}
+          onChange={(e) => setMessageContent(e.target.value)}
           name="msgBox"
           id=""
           cols="30"
-          rows="10"
+          rows="1"
           placeholder="Type your message..."
         ></textarea>
         <button
@@ -84,7 +66,7 @@ const SendMessage = ({ messageContent, setMessageContent }) => {
           name="sendBtn"
           type="submit"
         >
-          Submit
+          Send
         </button>
       </form>
     </StyledSendMessage>

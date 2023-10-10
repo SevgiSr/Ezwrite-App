@@ -202,20 +202,10 @@ function Navbar() {
             }
             menu={
               <>
-                <Link
-                  to=""
-                  className="dropdown-item"
-                  style={{ borderBottom: "1px solid #eee" }}
-                >
+                <Link to="" className="dropdown-item">
                   <span>Profile Info</span>
                 </Link>
 
-                <Link to={`/notifications`} className="dropdown-item">
-                  <span>
-                    {ntCount !== 0 && <div className="nt-count">{ntCount}</div>}
-                    Notifications
-                  </span>
-                </Link>
                 <Link to={`/settings`} className="dropdown-item">
                   <span>Settings</span>
                 </Link>

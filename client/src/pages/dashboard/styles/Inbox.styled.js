@@ -24,7 +24,7 @@ const StyledInbox = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 500px;
+      width: 100%;
       text-decoration: none;
       padding: 1rem 0.5rem;
       border-top: 1px solid var(--font2);

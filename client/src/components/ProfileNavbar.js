@@ -116,7 +116,7 @@ const ProfileNavbar = ({ links, profileData }) => {
 
         {!profileData.isMainUser && (
           <div className="buttons">
-            <button onClick={handleSendCollabClick} className="btn">
+            <button onClick={handleSendCollabClick} className="btn btn-basic">
               Collaborate
             </button>
             {profileData.isFollowing ? (
@@ -126,7 +126,7 @@ const ProfileNavbar = ({ links, profileData }) => {
                   unfollowProfileMutation.isLoading ||
                   followProfileMutation.isLoading
                 }
-                className="following profile-button btn"
+                className="following profile-btn btn btn-basic"
               >
                 <span className="icon">
                   <BsPersonCheckFill />
@@ -140,7 +140,7 @@ const ProfileNavbar = ({ links, profileData }) => {
                   followProfileMutation.isLoading ||
                   unfollowProfileMutation.isLoading
                 }
-                className="follow profile-button btn"
+                className="follow profile-btn btn"
               >
                 <span className="icon">
                   <BsPersonPlusFill />
@@ -150,7 +150,7 @@ const ProfileNavbar = ({ links, profileData }) => {
             )}
             <button
               onClick={handleMessageClick}
-              className="message profile-button btn"
+              className="message profile-btn btn btn-basic"
             >
               <span className="icon">
                 <AiFillMessage />

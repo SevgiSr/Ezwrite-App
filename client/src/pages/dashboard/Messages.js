@@ -6,16 +6,20 @@ import socket from "../../socket.js";
 import { useParams } from "react-router-dom";
 import { ProfileContext } from "../../context/profileContext";
 import { Message } from "../../components/index.js";
+import { UserContext } from "../../context/userContext";
 
 function Messages() {
   const [messageContent, setMessageContent] = useState("");
   const [messages, setMessages] = useState([]);
   const [mainUser, setMainUser] = useState("");
 
+  const { username } = useParams();
+
   const { profileState, sendMessage, openMessages } =
     useContext(ProfileContext);
+  const { userState } = useContext(UserContext);
 
-  const { username } = useParams();
+  const room = JSON.stringify([userState.user.name, username].sort());
 
   useEffect(() => {
     setMessages(profileState.messages);
@@ -56,28 +60,42 @@ function Messages() {
     };
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setMessageContent("");
+    const message = {
+      author: {
+        _id: userState.user._id,
+        name: userState.user.name,
+      },
+      content: messageContent,
+    };
+    setMessages((prev) => [...prev, message]);
+    socket.emit("send message", {
+      message,
+      room,
+    });
+    sendMessage(username, message.content);
+  };
+
   let i = 0;
 
   return (
     <StyledMessages>
-      <div className="parent">
-        <div className="messages card">
-          {messages?.map((msg) => {
-            i++;
-            return (
-              <Message
-                key={i}
-                msg={msg}
-                isSelf={mainUser === msg.author.name}
-              />
-            );
-          })}
-        </div>
-        <SendMessage
-          messageContent={messageContent}
-          setMessageContent={setMessageContent}
-        />
+      <h3 className="title">Your conversation with {username}</h3>
+      <div className="messages">
+        {messages?.map((msg) => {
+          i++;
+          return (
+            <Message key={i} msg={msg} isSelf={mainUser === msg.author.name} />
+          );
+        })}
       </div>
+      <SendMessage
+        messageContent={messageContent}
+        setMessageContent={setMessageContent}
+        handleSubmit={handleSubmit}
+      />
     </StyledMessages>
   );
 }
