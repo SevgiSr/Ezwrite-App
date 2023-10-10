@@ -75,8 +75,6 @@ function Chapter() {
     enabled: isFork,
   });
 
-  console.log(status, forkStatus, isLoading, isForkLoading);
-
   const setProgressMutation = useSetProgress();
   const setCurrentChapterMutation = useSetCurrentChapter();
 
@@ -110,7 +108,7 @@ function Chapter() {
         }
       }
     }
-  }, [location, isFetching]);
+  }, [location, isFetching, status]);
 
   useEffect(() => {
     if (isFork) {
@@ -123,7 +121,7 @@ function Chapter() {
         }
       }
     }
-  }, [location, isForkFetching]);
+  }, [location, isForkFetching, forkStatus]);
 
   useEffect(() => {
     if (!isFork) {

@@ -431,7 +431,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           );
           const newCache = data.chapters.map((chapter) => chapter.title);
           console.log(newCache);
-          setChapter(currentChapter, data.story);
+          setChapter(data.story, data.story.chapters, currentChapter);
           queryClient.setQueryData(["progress", variables.story_id], data);
         },
       }
