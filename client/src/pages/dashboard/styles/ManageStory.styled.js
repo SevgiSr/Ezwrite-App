@@ -22,6 +22,7 @@ const StyledManageStory = styled.div`
       margin: 10px 0;
       font-size: 25px;
       font-weight: 600;
+      text-align: center;
     }
     .edit-story-btn {
       display: flex;
@@ -43,11 +44,17 @@ const StyledManageStory = styled.div`
   .chapters-container {
     .chapters {
       .chapter {
+        text-decoration: none;
+        color: var(--font1);
         padding: 13px 20px;
         background-color: var(--background2);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        :hover {
+          background-color: var(--background1);
+        }
+
         header {
           display: flex;
           align-items: center;

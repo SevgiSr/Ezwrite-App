@@ -5,7 +5,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { CollabRequest, Cover, PullRequest } from "../../components";
+import { Alert, CollabRequest, Cover, PullRequest } from "../../components";
 import StyledManageStory from "./styles/ManageStory.styled";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
@@ -93,7 +93,11 @@ function ManageChapters() {
         <div className="chapters">
           {story.chapters?.map((chapter) => {
             return (
-              <div className="chapter" key={chapter._id}>
+              <Link
+                to={`/myworks/${story._id}/${chapter._id}/writing`}
+                className="chapter"
+                key={chapter._id}
+              >
                 <header>
                   <div className="title">{chapter.title}</div>
                   <div className="status">{chapter.visibility}</div>
@@ -101,7 +105,7 @@ function ManageChapters() {
                 <div className="updated">
                   Updated - {getDate(chapter.updatedAt)}
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -111,7 +115,7 @@ function ManageChapters() {
 }
 
 function ManagePulls() {
-  const { storyState } = useContext(MyStoryContext);
+  const { storyState, alertState } = useContext(MyStoryContext);
   const { story } = storyState;
   const { userState } = useContext(UserContext);
 
@@ -119,6 +123,7 @@ function ManagePulls() {
 
   return (
     <div className="pulls-container">
+      <Alert state={alertState} />
       {story.pullRequests?.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
@@ -144,7 +149,7 @@ function ManagePulls() {
 }
 
 function ManageCollabs() {
-  const { storyState } = useContext(MyStoryContext);
+  const { storyState, alertState } = useContext(MyStoryContext);
   const { userState } = useContext(UserContext);
   const { story } = storyState;
 
@@ -152,6 +157,7 @@ function ManageCollabs() {
 
   return (
     <div className="collabs-container">
+      <Alert state={alertState} />
       {story.collabRequests?.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
@@ -186,16 +192,14 @@ function ManageHistory() {
   const restoreMergeHistoryMutation = useRestoreMergeHistory();
 
   const handleRestoreClick = (history_id) => {
-    console.log("restoree");
     restoreMergeHistoryMutation.mutate({ history_id });
   };
-
-  console.log(alertState);
 
   if (!story) return null;
 
   return (
     <div className="history-container">
+      <Alert state={alertState} />
       {story.mergeHistory?.length === 0 ? (
         <div className="no-content-container">
           <div className="icon">
@@ -213,6 +217,7 @@ function ManageHistory() {
                 <div className="history-date">{getDate(h.createdAt)}</div>
                 <button
                   className="btn btn-basic revert-btn"
+                  type="button"
                   onClick={() => handleRestoreClick(h._id)}
                 >
                   <div className="icon">
@@ -224,10 +229,6 @@ function ManageHistory() {
             );
           })}
         </div>
-      )}
-
-      {alertState.showAlert && (
-        <h1 style={{ color: "red" }}>Alertt {alertState.alertText}</h1>
       )}
     </div>
   );

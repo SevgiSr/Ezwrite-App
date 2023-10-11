@@ -42,6 +42,8 @@ const StyledProfileNavbar = styled.div`
   }
 
   .collab-modal {
+    max-height: 650px;
+    overflow: auto;
     .collab-title {
       margin-bottom: 1.5rem;
       width: 100%;

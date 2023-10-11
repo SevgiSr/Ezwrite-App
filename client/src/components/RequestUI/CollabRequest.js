@@ -7,12 +7,16 @@ import StoryCardMini from "../StoryUI/StoryCardMini";
 import Cover from "../Cover";
 
 function CollabRequest({ collab, isOverview }) {
-  const { grantCollaboratorAccess, useDeclineCollaboratorAccess } =
+  const { useGrantCollaboratorAccess, useDeclineCollaboratorAccess } =
     useContext(MyStoryContext);
   const declineCollaboratorAccessMutation = useDeclineCollaboratorAccess();
+  const grantCollaboratorAccessMutation = useGrantCollaboratorAccess();
 
   const handleAcceptRequestClick = (collab) => {
-    grantCollaboratorAccess(collab.story._id, collab.user._id);
+    grantCollaboratorAccessMutation.mutate({
+      story_id: collab.story._id,
+      user_id: collab.user._id,
+    });
   };
   const handleDeclineRequestClick = (collab_id) => {
     //mutating because I want to invaalidate queries on success

@@ -27,6 +27,7 @@ import CollabRequest from "./RequestUI/CollabRequest";
 import PullRequest from "./RequestUI/PullRequest";
 import DynamicInput from "./DynamicInput";
 import NavLinks from "./NavLinks";
+import MyFork from "./MyFork";
 
 export {
   Navbar,
@@ -58,4 +59,5 @@ export {
   PullRequest,
   DynamicInput,
   NavLinks,
+  MyFork,
 };

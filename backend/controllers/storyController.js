@@ -819,6 +819,10 @@ const requestCollab = async (req, res) => {
 
     const story = await Story.findById(story_id);
 
+    if (story.collaborators.includes(user_id)) {
+      throw new Error("You're already a collaborator!");
+    }
+
     const existingRequest = await CollabRequest.findOne({
       story: story_id,
       user: mainUser._id,

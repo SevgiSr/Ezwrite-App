@@ -847,6 +847,8 @@ const restoreMergeHistory = async (req, res) => {
     story.chapters = mergeHistory.chapters;
 
     await story.save();
+
+    res.status(StatusCodes.OK).json({ msg: "success" });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);

@@ -223,6 +223,9 @@ const StyledChapter = styled.div`
         cursor: pointer;
         .icon {
           color: var(--icons);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .count {
           position: absolute;

@@ -7,7 +7,7 @@ const StyledStoryCardDetailed = styled.div`
   border: 1px solid #6f6f6f;
   border-radius: 10px;
   width: 470px;
-  height: 280px;
+  height: 320px;
   display: flex;
 
   div {
@@ -83,9 +83,8 @@ const StyledStoryCardDetailed = styled.div`
       color: var(--font1);
       overflow: hidden;
       word-wrap: break-word;
-      margin-top: 7px;
       font-size: 12px;
-      line-height: 21px;
+      line-height: 18px;
     }
   }
 `;

@@ -6,7 +6,7 @@ function UserLine({ user }) {
   return (
     <StyledUserLine>
       <div className="flex-item">
-        <ProfilePicture filename={user._id} width="35px" />
+        <ProfilePicture filename={user._id} width="35px" height="35px" />
       </div>
       <div className="flex-item">
         <Link to={`/user/${user.name}`} className="name">

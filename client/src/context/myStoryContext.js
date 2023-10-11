@@ -249,7 +249,6 @@ export const MyStoryProvider = ({ children }) => {
         `/myStories/collaborations/${story_id}/user/${user_id}`
       );
       const { fork } = data;
-      console.log(fork);
       return fork;
     } catch (error) {
       console.log(error);
@@ -268,9 +267,9 @@ export const MyStoryProvider = ({ children }) => {
   const restoreMergeHistory = async (history_id) => {
     try {
       await authFetch.patch(`/myStories/collaborations/history/${history_id}`);
+      console.log("made merge history");
     } catch (error) {
-      console.log(error);
-      console.log(error.response.data.msg);
+      throw error;
     }
   };
 
@@ -410,6 +409,31 @@ export const MyStoryProvider = ({ children }) => {
     );
   };
 
+  const useGrantCollaboratorAccess = () => {
+    return useMutation(
+      (data) => grantCollaboratorAccess(data.story_id, data.user_id),
+      {
+        onSuccess: (data) => {
+          alertDispatch({
+            type: SUCCESS,
+            payload: { showAlert: true, msg: "You've accepted request!" },
+          });
+          clearAlert();
+          queryClient.invalidateQueries(["myStories"]);
+          queryClient.invalidateQueries(["notifications", "collab"]);
+        },
+        onError: (error) => {
+          const backendMessage =
+            error.response && error.response.data
+              ? error.response.data.msg
+              : error.message;
+          alertDispatch({ type: ERROR, payload: { msg: backendMessage } });
+          clearAlert();
+        },
+      }
+    );
+  };
+
   const useDeclineCollaboratorAccess = () => {
     return useMutation((data) => declineCollaboratorAccess(data.req_id), {
       /*  onMutate: (variables) => {
@@ -436,24 +460,21 @@ export const MyStoryProvider = ({ children }) => {
 
   const useDeclinePullRequest = () => {
     return useMutation((data) => declinePullRequest(data.req_id), {
-      /*  onMutate: (variables) => {
-        console.log("MUTATION BEGINS");
-        const stories = queryClient.getQueryData(["myStories"]);
-        console.log(variables);
-        const newStories = stories.map((story) => {
-          const newStory = { ...story }; // Shallow copy
-          newStory.collabRequests = story.collabRequests.filter(
-            (cr) => String(cr._id) !== String(variables.collab._id)
-          );
-          return newStory;
-        });
-        queryClient.setQueryData(["myStories"], () => [...newStories]);
-        console.log("SET QUERY DATA");
-      }, */
       onSuccess: (data) => {
-        console.log("DECLINE SUCCESS");
         queryClient.invalidateQueries(["myStories"]);
         queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+      onError: (error) => {
+        console.log(error);
+        const backendMessage =
+          error.response && error.response.data
+            ? error.response.data.msg
+            : error.message;
+        alertDispatch({
+          type: ERROR,
+          payload: { msg: backendMessage },
+        });
+        clearAlert();
       },
     });
   };
@@ -461,30 +482,54 @@ export const MyStoryProvider = ({ children }) => {
   const useMergeFork = () => {
     return useMutation((data) => mergeFork(data.fork_id), {
       onSuccess: (data) => {
+        alertDispatch({
+          type: SUCCESS,
+          payload: {
+            showAlert: true,
+            msg: "You've successfully merged the fork!",
+          },
+        });
+        clearAlert();
         queryClient.invalidateQueries(["myStories"]);
         queryClient.invalidateQueries(["notifications", "collab"]);
+      },
+      onError: (error) => {
+        console.log(error);
+        const backendMessage =
+          error.response && error.response.data
+            ? error.response.data.msg
+            : error.message;
+        alertDispatch({
+          type: ERROR,
+          payload: { msg: backendMessage },
+        });
+        clearAlert();
       },
     });
   };
 
   const useRestoreMergeHistory = () => {
     return useMutation((data) => restoreMergeHistory(data.history_id), {
-      onMutate: () => {
-        console.log("begin!!!");
-        alertDispatch({ type: BEGIN });
-      },
       onSuccess: (data) => {
-        console.log("success!!");
+        console.log("success!");
         alertDispatch({
           type: SUCCESS,
+          payload: {
+            showAlert: true,
+            msg: "You've successfully restored your story history!",
+          },
         });
-
-        console.log("dispatched success");
+        clearAlert();
         queryClient.invalidateQueries(["myStories"]);
       },
       onError: (error) => {
-        console.log("an error!");
-        //alertDispatch({ type: ERROR, payload: { msg: error.msg } });
+        console.log(error);
+        const backendMessage =
+          error.response && error.response.data
+            ? error.response.data.msg
+            : error.message;
+        alertDispatch({ type: ERROR, payload: { msg: backendMessage } });
+        clearAlert();
       },
     });
   };
@@ -506,7 +551,6 @@ export const MyStoryProvider = ({ children }) => {
         addChapter,
         updateStory,
         sendGptPrompt,
-        grantCollaboratorAccess,
         declineCollaboratorAccess,
 
         useCreateStory,
@@ -517,6 +561,7 @@ export const MyStoryProvider = ({ children }) => {
         useDeleteChapter,
         usePublishChapter,
         useUnpublishChapter,
+        useGrantCollaboratorAccess,
         useDeclineCollaboratorAccess,
         useDeclinePullRequest,
         useMergeFork,
