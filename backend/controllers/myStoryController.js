@@ -15,7 +15,7 @@ import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 import mongoose from "mongoose";
 
-import { client, trie } from "../server.js";
+import { redisClient, trie } from "../server.js";
 
 import { BadRequestError } from "../errors/index.js";
 import fs from "fs";
@@ -47,15 +47,15 @@ const getTags = async (req, res) => {
     const suggestions = trie.searchPrefix(prefix);
     console.log("suggestions: ", suggestions);
 
-    await client.set("test", "value", function (err, reply) {
+    await redisClient.set("test", "value", function (err, reply) {
       console.log(err); // Check if there's an error
       console.log(reply); // If connected properly, it should log 'OK'
     });
-    console.log(client);
+    console.log(redisClient);
     const getTagCount = async (tag) => {
       try {
         console.log("getting count for tag: ", tag);
-        const count = await client.hGet("tags", tag);
+        const count = await redisClient.hGet("tags", tag);
         console.log("got count: ", count);
         return { tag, count: Number(count) };
       } catch (err) {

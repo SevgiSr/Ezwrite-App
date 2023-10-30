@@ -17,6 +17,7 @@ const UserCard = ({ user }) => {
     useFollowProfile,
     useUnfollowProfile,
     sendNotification,
+    addToFollowerFeed,
   } = useContext(ProfileContext);
 
   const followProfileMutation = useFollowProfile();
@@ -43,10 +44,10 @@ const UserCard = ({ user }) => {
     }
   };
 
-  const handleFollowClick = () => {
+  const handleFollowClick = async () => {
     if (localUser.name === user.name) return;
     console.log("following...");
-    followProfileMutation.mutate({ username: user.name });
+    await followProfileMutation.mutateAsync({ username: user.name });
 
     const notification = {
       text: `${localUser.name} has followed you.`,
@@ -62,7 +63,8 @@ const UserCard = ({ user }) => {
       room: user.name,
     });
 
-    sendNotification(user.name, notification);
+    const nt_id = await sendNotification(user.name, notification);
+    addToFollowerFeed("Notification", nt_id);
   };
 
   const handleUnfollowClick = () => {

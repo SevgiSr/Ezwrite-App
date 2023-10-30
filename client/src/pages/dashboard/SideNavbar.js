@@ -30,7 +30,7 @@ function SideNavbar() {
             </Link>
           </li>
           <li>
-            <Link to="" className="link">
+            <Link to="/feed" className="link">
               <div className="icon">
                 <FaUserClock />
               </div>

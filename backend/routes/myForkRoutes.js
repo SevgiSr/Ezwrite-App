@@ -28,24 +28,20 @@ router.route("/pull/:fork_id").patch(sendPullRequest);
 router.route("/history/:fork_id/:chapter_id").patch(restoreChapterHistory);
 
 router
-  .route("/:fork_id/chapters/:chapter_id/conversations/:conv_id")
+  .route("/chapters/:chapter_id/conversations/:conv_id")
   .delete(deleteChapterConv);
-router
-  .route("/:fork_id/chapters/:chapter_id/conversations")
-  .post(addChapterConv);
+router.route("/chapters/:chapter_id/conversations").post(addChapterConv);
 
 router
-  .route("/:fork_id/paragraphs/:paragraph_id/conversations/:conv_id")
+  .route("/paragraphs/:paragraph_id/conversations/:conv_id")
   .delete(deleteParagraphConv);
 
-router
-  .route("/:fork_id/paragraphs/:paragraph_id/conversations")
-  .post(addParagraphConv);
+router.route("/paragraphs/:paragraph_id/conversations").post(addParagraphConv);
 
-router.route("/:fork_id/conversations/:conv_id").post(addConvComment);
 router
-  .route("/:fork_id/conversations/:conv_id/comments/:comment_id")
+  .route("/conversations/:conv_id/comments/:comment_id")
   .delete(deleteConvComment);
+router.route("/conversations/:conv_id").post(addConvComment);
 
 router.route("/:fork_id/:chapter_id").patch(saveChapter).delete(deleteChapter);
 

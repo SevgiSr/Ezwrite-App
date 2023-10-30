@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledConversations = styled.div`
+const StyledPosts = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -11,4 +11,4 @@ const StyledConversations = styled.div`
   }
 `;
 
-export default StyledConversations;
+export default StyledPosts;

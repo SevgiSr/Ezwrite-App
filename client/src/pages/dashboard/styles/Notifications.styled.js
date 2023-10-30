@@ -33,39 +33,6 @@ const StyledNotifications = styled.div`
     .unread {
       border: 1.3px solid var(--dark-orange);
     }
-    .notification {
-      color: var(--font1);
-      background-color: var(--background5);
-      box-shadow: 0 8px 12px rgb(18 18 18 / 16%);
-      margin-bottom: 1.5rem;
-      padding: 10px 20px;
-      display: flex;
-      align-items: start;
-
-      &:hover {
-        background-color: var(--background4);
-      }
-
-      header {
-        margin-bottom: 5px;
-      }
-
-      .icon {
-        margin-right: 5px;
-      }
-      .date {
-        font-size: 13px;
-        line-height: 18px;
-        color: var(--font2);
-      }
-      .profilePicture {
-        margin-right: 10px;
-        margin-top: 6px;
-      }
-      .content {
-        font-size: 14px;
-      }
-    }
   }
 `;
 

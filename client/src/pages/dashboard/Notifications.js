@@ -10,6 +10,7 @@ import { UserContext } from "../../context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { ClipLoader } from "react-spinners";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { Notification } from "../../components";
 
 function Notifications() {
   const { getNotifications, useReadNotifications } = useContext(ProfileContext);
@@ -52,45 +53,7 @@ function Notifications() {
           ) : (
             <>
               {notifications?.map((nt) => {
-                return (
-                  <Link
-                    key={nt._id}
-                    to={nt.route}
-                    style={{ textDecoration: "none" }}
-                    className={"notification " + (!nt.isRead && "unread")}
-                  >
-                    <div className="profilePicture">
-                      <ProfilePicture
-                        filename={nt.sender?._id}
-                        width="35px"
-                        height="35px"
-                      />
-                    </div>
-                    <div>
-                      <header
-                        dangerouslySetInnerHTML={{
-                          __html: `<div>${
-                            nt.text ? he.decode(nt.text) : ""
-                          }</div>`,
-                        }}
-                      ></header>
-                      <div className="row">
-                        {nt.type === "story" && (
-                          <div className="icon">
-                            <FaComment />
-                          </div>
-                        )}
-                        {nt.type === "profile" && (
-                          <div className="icon">
-                            <FaEnvelope />
-                          </div>
-                        )}
-                        <div className="date">{getDate(nt.createdAt)}</div>
-                      </div>
-                      <div className="content">{nt.content}</div>
-                    </div>
-                  </Link>
-                );
+                return <Notification key={nt._id} nt={nt} />;
               })}
             </>
           )}

@@ -93,9 +93,9 @@ export const UserProvider = ({ children }) => {
     alertDispatch({ type: BEGIN });
     try {
       //user created in db. token created and sent back
-      const response = await axios.post("/api/auth/register", currentUser);
+      const { data } = await axios.post("/api/auth/register", currentUser);
 
-      const { user, token } = response.data;
+      const { user, token } = data;
 
       dispatch({
         type: REGISTER_USER_SUCCESS,

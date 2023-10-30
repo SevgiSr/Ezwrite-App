@@ -1,24 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { ProfileContext } from "../../../context/profileContext";
 import { Conversation } from "../../../components";
-import StyledConversations from "./styles/Conversations.styled";
 import Respond from "../../../components/Respond";
 import { UserContext } from "../../../context/userContext";
-import { useQuery } from "@tanstack/react-query";
+import StyledPosts from "./styles/Posts.styled";
 
-function Conversations() {
+function Posts() {
   const { username } = useParams();
   const {
-    profileState,
     useAddProfileConv,
     useDeleteProfileConv,
     useAddConvComment,
     useDeleteConvComment,
   } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
-  const location = useLocation();
-  const { convs } = useOutletContext();
+  const mainUser = userState.user.name;
+  const { convs, profileData } = useOutletContext();
 
   /*
   -loads at first time you click on conversations
@@ -30,25 +28,41 @@ function Conversations() {
   }, []); 
   */
 
+  console.log(profileData);
+
   return (
-    <StyledConversations>
+    <StyledPosts>
       <div id="parent">
         <Respond
           text={`<strong>${userState.user.name}</strong> posted a message to your feed`}
-          activity={`<strong>${userState.user.name}</strong> posted a message to <strong>${profileState.profile.name}</strong>'s feed`}
+          activity={`<strong>${userState.user.name}</strong> posted a message to <strong>${profileData.profile.name}</strong>'s feed`}
           sender={userState.user._id}
-          route={location.pathname}
           to={username}
           dest={username}
           useAddConv={useAddProfileConv}
+          type={profileData.isMainUser ? "Post" : "Notification"} // if it's main user posting comment on profile, it is a post
         />
         <div className="column-reverse">
           {convs?.map((conv) => {
+            const commentAuthor = conv.author.name;
+
+            //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
+            const toArray = [];
+            if (mainUser !== commentAuthor) {
+              toArray.push(commentAuthor);
+            }
+
+            if (mainUser !== username) {
+              toArray.push(username);
+            }
             return (
               <div key={conv._id} id={conv._id} className="conv">
                 <Conversation
                   conv={conv}
+                  text={`<strong>${userState.user.name}</strong> responded to <strong>${conv.author.name}</strong>'s comment on <strong>${username}</strong>'s feed`}
+                  activity={`<strong>${userState.user.name}</strong> responded to <strong>${conv.author.name}</strong>'s comment on <strong>${username}</strong>'s feed`}
                   dest={username}
+                  sendTo={toArray.length === 0 ? null : toArray}
                   useAddConvComment={useAddConvComment}
                   useDeleteConv={useDeleteProfileConv}
                   useDeleteConvComment={useDeleteConvComment}
@@ -58,8 +72,8 @@ function Conversations() {
           })}
         </div>
       </div>
-    </StyledConversations>
+    </StyledPosts>
   );
 }
 
-export default Conversations;
+export default Posts;

@@ -6,6 +6,9 @@ import User from "../db/models/User.js";
 import Notification from "../db/models/Notification.js";
 import mongoose from "mongoose";
 import CollabNotification from "../db/models/CollabNotification.js";
+import FeedItem from "../db/models/FeedItem.js";
+import { redisClient } from "../server.js";
+
 const getPrivateConvs = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate({
@@ -105,14 +108,14 @@ const readNotifications = async (req, res) => {
 
 const sendNotification = async (req, res) => {
   try {
-    const { nt } = req.body;
+    const { rooms, nt } = req.body;
 
     const notification = await Notification.create({
       ...nt,
     });
 
-    await User.updateOne(
-      { name: req.params.username },
+    await User.updateMany(
+      { name: { $in: rooms } },
       { $push: { notifications: notification._id } },
       { runValidators: true }
     );
@@ -123,7 +126,7 @@ const sendNotification = async (req, res) => {
       { runValidators: true }
     );
 
-    res.status(StatusCodes.OK).json({ notification });
+    res.status(StatusCodes.OK).json({ nt_id: notification._id });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -172,6 +175,63 @@ const readCollabNotifications = async (req, res) => {
         { $set: { isRead: true } }
       );
     }
+    res.status(StatusCodes.OK).json({ msg: "success" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const addToFollowerFeed = async (req, res) => {
+  try {
+    const { type, itemId, exclude } = req.body;
+    const user = await User.findById(req.user.userId).populate("followers");
+
+    let followers;
+    if (exclude) {
+      followers = user.followers.filter((f) => !exclude.includes(f.name));
+    } else {
+      followers = user.followers;
+    }
+
+    for (const follower of followers) {
+      const redisKey = `feed:${follower._id}`;
+      const score = Date.now();
+      const post = await FeedItem.create({ type: type, item: itemId });
+      await redisClient.zAdd(redisKey, {
+        score: score,
+        value: post._id.toString(),
+      });
+    }
+
+    res.status(StatusCodes.OK).json({ msg: "success" });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const getFeed = async (req, res) => {
+  try {
+    const postIds = await redisClient.zRange(`feed:${req.user.userId}`, 0, -1);
+    console.log(postIds);
+    postIds.reverse();
+    console.log(postIds);
+    const posts = await FeedItem.find({ _id: { $in: postIds } }).populate({
+      path: "item",
+      populate: [
+        { path: "author", strictPopulate: false },
+        { path: "sender", strictPopulate: false },
+        { path: "subcomments", populate: "author", strictPopulate: false },
+      ],
+    });
+
+    const orderedPosts = postIds
+      .map((id) => {
+        return posts.find((post) => post._id.toString() === id);
+      })
+      .filter(Boolean);
+    res.status(StatusCodes.OK).json({ posts: orderedPosts });
   } catch (error) {
     console.log(error);
     throw new Error(error.message);
@@ -187,4 +247,6 @@ export {
   readNotifications,
   getCollabNotifications,
   readCollabNotifications,
+  addToFollowerFeed,
+  getFeed,
 };

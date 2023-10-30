@@ -84,10 +84,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(compression());
 
-export const client = redis.createClient({
-  host: "localhost", // Replace with your Redis host
-  port: 6379, // Replace with your Redis port
-});
+export const redisClient = redis.createClient();
 
 export const trie = new Trie();
 const loadTagsToMemory = async (trie) => {
@@ -97,7 +94,7 @@ const loadTagsToMemory = async (trie) => {
     console.log(tags.map((tag) => tag.name));
     for (const tag of tags) {
       trie.insert(tag.name);
-      await client.hSet("tags", tag.name, String(tag.count));
+      await redisClient.hSet("tags", tag.name, String(tag.count));
     }
   } catch (error) {
     throw new Error(error.message);
@@ -169,7 +166,7 @@ const listener = (socket) => {
   });
 };
 
-client.on("error", (err) => console.log("Redis Client Error", err));
+redisClient.on("error", (err) => console.log("Redis Client Error", err));
 
 const port = process.env.PORT || 5000;
 
@@ -186,7 +183,7 @@ const start = async () => {
 
     httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
     io.on("connection", listener);
-    await client.connect();
+    await redisClient.connect();
     await loadTagsToMemory(trie);
   } catch (error) {
     console.log(error);

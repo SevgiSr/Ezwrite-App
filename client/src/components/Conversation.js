@@ -1,15 +1,11 @@
-import src from "../assets/pp.png";
 import ProfilePicture from "./ProfilePicture";
 import StyledConversation from "./styles/Conversation.styled";
 import Respond from "./Respond";
-import { ProfileContext } from "../context/profileContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import Comment from "./Comment";
 import { UserContext } from "../context/userContext";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import getDate from "../utils/getDate";
-import { useQuery } from "@tanstack/react-query";
-import { FiMoreHorizontal } from "react-icons/fi";
 import { DropdownMenu } from "./index";
 import { RiMoreFill } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
@@ -18,15 +14,17 @@ import { ClipLoader } from "react-spinners";
 
 const Conversation = ({
   conv,
+  text,
+  activity,
   dest, //username
-  location = null,
+  story_id = null,
+  sendTo,
   useAddConvComment,
   useDeleteConv,
   useDeleteConvComment,
 }) => {
   const { userState } = useContext(UserContext);
   const deleteConvMutation = useDeleteConv();
-  const { story_id } = useParams();
 
   /*
   I want convs to refetch when I add a comment under conv. 
@@ -37,8 +35,8 @@ const Conversation = ({
   */
 
   const handleDeleteClick = () => {
-    if (location) {
-      deleteConvMutation.mutate({ location, dest, conv_id: conv._id });
+    if (story_id) {
+      deleteConvMutation.mutate({ story_id, dest, conv_id: conv._id });
     } else {
       deleteConvMutation.mutate({ dest, conv_id: conv._id });
     }
@@ -100,7 +98,7 @@ const Conversation = ({
             <Comment
               key={sc._id}
               comment={sc}
-              location={location}
+              story_id={story_id} // if conv has story_id means it should affect story's score
               conv_id={conv._id}
               useDeleteConvComment={useDeleteConvComment}
             />
@@ -109,26 +107,14 @@ const Conversation = ({
       </StyledConversation>
 
       <Respond
-        text={`<strong>${
-          userState.user.name
-        }</strong> responded to your comment in <strong>${conv.content.slice(
-          0,
-          20
-        )}...</strong>`}
-        activity={`<strong>${
-          userState.user.name
-        }</strong> responded to <strong>${
-          conv.author.name
-        }</strong>'s comment in <strong>${conv.content.slice(
-          0,
-          20
-        )}...</strong>`}
+        text={text}
+        activity={activity}
         sender={userState.user._id}
-        location={location}
-        route={location?.pathname}
-        to={conv.author.name}
+        story_id={story_id}
+        to={sendTo}
         dest={conv._id}
         useAddConv={useAddConvComment}
+        isFeed={false}
       />
     </>
   );

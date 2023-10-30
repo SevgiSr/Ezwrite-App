@@ -11,16 +11,15 @@ import { ClipLoader } from "react-spinners";
 const Comment = ({
   comment,
   conv_id,
-  location = null,
+  story_id = null,
   useDeleteConvComment,
 }) => {
   const deleteConvCommentMutation = useDeleteConvComment();
 
   const handleDeleteClick = () => {
-    console.log("deleting...");
-    if (location) {
+    if (story_id) {
       deleteConvCommentMutation.mutate({
-        location,
+        story_id,
         conv_id: conv_id,
         comment_id: comment._id,
       });
@@ -86,37 +85,5 @@ const Comment = ({
     </>
   );
 };
-
-/* 
-const Comment = ({ comment }) => {
-  return (
-    <>
-      <StyledComment>
-        <ProfilePicture
-          filename={comment?.author?._id}
-          id="avatar"
-          width="30px"
-          height="30px"
-        />
-        <div className="main">
-          <div className="content">
-            <div className="username">{comment?.author?.name}</div>
-            <div className="text">{comment.content}</div>
-          </div>
-
-          <div className="info">
-            <span className="date">{getDate(comment.createdAt)}</span>
-            <span>.</span>
-            <span className="reply">Reply</span>
-          </div>
-        </div>
-      </StyledComment>
-    </>
-  );
-};
-
-
-
-*/
 
 export default Comment;

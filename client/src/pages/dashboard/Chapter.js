@@ -16,9 +16,8 @@ import { BsFillStarFill } from "react-icons/bs";
 import { FaComment, FaCommentAlt } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 import DropdownMenu from "../../components/DropdownMenu";
-import he from "he";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ClipLoader, SyncLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import { ForkContext } from "../../context/forkContext";
 
 function Chapter() {
@@ -42,11 +41,14 @@ function Chapter() {
     getFork,
   } = useContext(ForkContext);
 
+  const storyAuthor = state.story.author?.name;
+
   const { story_id, fork_id, chapter_id } = useParams();
   const location = useLocation();
   const isFork = location.pathname.split("/")[1] === "fork";
 
   const { userState } = useContext(UserContext);
+  const mainUser = userState.user.name;
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
   const scrollRef = useRef(null);
@@ -181,12 +183,13 @@ function Chapter() {
             <div className="count">{state.chapter.comments?.length}</div>
           </div>
         </div>
-        {state.chapter.paragraphs?.map((paragraph, index) => {
+        {state.chapter.paragraphs?.map((paragraph) => {
           return (
             <Paragraph
-              key={`comments-${index}`}
+              key={paragraph._id}
               paragraph={paragraph}
-              index={index}
+              storyAuthor={storyAuthor}
+              mainUser={mainUser}
             />
           );
         })}
@@ -199,21 +202,34 @@ function Chapter() {
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             sender={userState.user._id}
-            location={isFork ? fork_id : story_id}
-            route={location.pathname}
+            story_id={isFork ? null : story_id}
             dest={chapter_id}
-            to={state.story.author?.name}
+            to={mainUser === storyAuthor ? null : storyAuthor}
             useAddConv={isFork ? useAddForkChapterConv : useAddChapterConv}
           />
         </div>
         <div className="column-reverse">
           {state.chapter.comments?.map((comment) => {
+            const commentAuthor = comment.author.name;
+
+            //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
+            const toArray = [];
+            if (mainUser !== commentAuthor) {
+              toArray.push(commentAuthor);
+            }
+
+            if (mainUser !== storyAuthor) {
+              toArray.push(storyAuthor);
+            }
             return (
               <div key={comment._id}>
                 <Conversation
                   conv={comment}
+                  text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+                  activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
                   dest={state.chapter._id}
-                  location={isFork ? fork_id : story_id}
+                  story_id={isFork ? null : story_id}
+                  sendTo={toArray.length === 0 ? null : toArray}
                   useAddConvComment={
                     isFork ? useAddForkConvComment : useAddConvComment
                   }
@@ -233,12 +249,12 @@ function Chapter() {
   );
 }
 
-function Paragraph({ paragraph, index }) {
+function Paragraph({ paragraph, storyAuthor, mainUser }) {
   const [openModal, setOpenModal] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { userState } = useContext(UserContext);
   const location = useLocation();
-  const { story_id, fork_id } = useParams();
+  const { story_id } = useParams();
   const isFork = location.pathname.split("/")[1] === "fork";
 
   const {
@@ -320,26 +336,35 @@ function Paragraph({ paragraph, index }) {
             key={"paragraph-" + paragraph._id}
             text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
             activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            type="story"
             sender={userState.user._id}
-            location={isFork ? fork_id : story_id}
-            route={location.pathname}
+            story_id={isFork ? null : story_id}
             dest={paragraph._id}
-            to={state.story.author.name}
+            to={mainUser === storyAuthor ? null : storyAuthor}
             useAddConv={isFork ? useAddForkParagraphConv : useAddParagraphConv}
           />
           <div className="column-reverse">
             {paragraph.comments?.map((comment) => {
-              if (!comment) {
-                return null;
+              const commentAuthor = comment.author.name;
+
+              //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
+              const toArray = [];
+              if (mainUser !== commentAuthor) {
+                toArray.push(commentAuthor);
+              }
+
+              if (mainUser !== storyAuthor) {
+                toArray.push(storyAuthor);
               }
               return (
                 <div key={"paragraph-" + comment._id}>
                   <Conversation
                     id={comment._id}
                     conv={comment}
+                    text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+                    activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
                     dest={paragraph._id}
-                    location={state.story._id}
+                    story_id={isFork ? null : story_id}
+                    sendTo={toArray.length === 0 ? null : toArray}
                     useAddConvComment={
                       isFork ? useAddForkConvComment : useAddConvComment
                     }

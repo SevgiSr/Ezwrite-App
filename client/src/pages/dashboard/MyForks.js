@@ -2,28 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import StyledMyForks from "./styles/MyForks.styled";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { MyStoryContext } from "../../context/myStoryContext";
 import NavLinks from "../../components/NavLinks";
-import { useState } from "react";
 import { UserContext } from "../../context/userContext";
-import { MdGroup, MdOutlineTimerOff } from "react-icons/md";
-import {
-  DropdownMenu,
-  ModalCenter,
-  MyFork,
-  MyStory,
-  StoryCardMini,
-  StoryCardRanked,
-  UserLine,
-  UserLineMini,
-} from "../../components";
+import { MdOutlineTimerOff } from "react-icons/md";
+import { MyFork, UserLineMini } from "../../components";
 import { FallingLines } from "react-loader-spinner";
-import { FiChevronDown, FiMoreHorizontal } from "react-icons/fi";
-import Cover from "../../components/Cover";
 import { MyForkContext } from "../../context/myForkContext";
-import { FaTrashAlt } from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
-import { BiGitRepoForked } from "react-icons/bi";
 import { VscRepoForked } from "react-icons/vsc";
 
 function MyForks() {
@@ -155,12 +139,12 @@ function Pending() {
                 <div className="content">
                   You've requested to collaborate in{" "}
                   <span className="user">
-                    <UserLineMini user={r.author} />
+                    <UserLineMini user={r.user} />
                   </span>
                   's story
                 </div>
-                <Link className="story" to={`/story/${r._id}`}>
-                  <strong>{r.title}</strong>
+                <Link className="story" to={`/story/${r.story._id}`}>
+                  <strong>{r.story.title}</strong>
                 </Link>
               </div>
             );

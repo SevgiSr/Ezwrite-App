@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 
 import {
   Writing,
-  Landing,
   Register,
   NewStory,
   EditStoryDetails,
@@ -11,10 +10,10 @@ import {
 
 import {
   About,
-  Conversations,
   Following,
   Activity,
   ProfileLayout,
+  Posts,
 } from "./pages/dashboard/profile";
 
 import {
@@ -43,6 +42,7 @@ import {
   ManageCollabs,
   MobileSideNavbar,
   Collaborations,
+  Feed,
 } from "./pages/dashboard";
 
 function App() {
@@ -63,7 +63,7 @@ function App() {
           <Route path="/more-nav" element={<MobileSideNavbar />} />
           <Route path="/user/:username" element={<ProfileLayout />}>
             <Route index element={<About />} />
-            <Route path="conversations" element={<Conversations />} />
+            <Route path="posts" element={<Posts />} />
             <Route path="following" element={<Following />} />
             <Route path="activity" element={<Activity />} />
           </Route>
@@ -90,6 +90,7 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/browse" element={<Browse />} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/manage/:story_id" element={<ManageStory />}>
             <Route index element={<ManageChapters />} />
             <Route path="pull-requests" element={<ManagePulls />} />

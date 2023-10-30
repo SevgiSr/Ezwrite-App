@@ -8,8 +8,13 @@ import StyledUserCardMini from "../styles/UserCardMini.styled";
 import socket from "../../socket.js";
 
 const UserCardMini = ({ user }) => {
-  const { alertState, followProfile, unfollowProfile, sendNotification } =
-    useContext(ProfileContext);
+  const {
+    alertState,
+    followProfile,
+    unfollowProfile,
+    sendNotification,
+    addToFollowerFeed,
+  } = useContext(ProfileContext);
 
   const [followState, setFollowState] = useState("");
 
@@ -33,9 +38,9 @@ const UserCardMini = ({ user }) => {
       setFollowState("follow");
     }
   };
-  const handleFollowClick = () => {
+  const handleFollowClick = async () => {
     if (localUser.name === user.name) return;
-    followProfile(user.name);
+    await followProfile(user.name);
     const notification = {
       type: "You have a new follower.",
       content: `${localUser.name} has followed you.`,
@@ -45,7 +50,8 @@ const UserCardMini = ({ user }) => {
       room: user.name,
     });
 
-    sendNotification(user.name, notification);
+    const nt_id = await sendNotification(user.name, notification);
+    addToFollowerFeed("Notification", nt_id);
   };
 
   const handleUnfollowClick = () => {

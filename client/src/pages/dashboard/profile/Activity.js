@@ -5,6 +5,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import getDate from "../../../utils/getDate";
 import StyledActivity from "./styles/Activity.styled";
 import Cover from "../../../components/Cover";
+import { Notification } from "../../../components";
 
 function Activity() {
   const { profileData } = useOutletContext();
@@ -13,57 +14,7 @@ function Activity() {
     <StyledActivity>
       <div className="column-reverse">
         {profileData.profile.activity?.map((nt) => {
-          return (
-            <Link
-              key={nt._id}
-              to={nt.route}
-              style={{ textDecoration: "none" }}
-              className="notification"
-            >
-              <div className="profilePicture">
-                <ProfilePicture
-                  filename={nt.sender._id}
-                  width="35px"
-                  height="35px"
-                />
-              </div>
-              <div style={{ marginRight: "13px" }}>
-                <header
-                  dangerouslySetInnerHTML={{
-                    __html: `<div>${he.decode(nt.activity)}</div>`,
-                  }}
-                ></header>
-                <div className="row">
-                  {(nt.type === "conversation" || nt.type === "chapter") && (
-                    <div className="icon">
-                      <FaComment />
-                    </div>
-                  )}
-                  {nt.type === "profile" && (
-                    <div className="icon">
-                      <FaEnvelope />
-                    </div>
-                  )}
-                  <div className="date">{getDate(nt.createdAt)}</div>
-                </div>
-                <div className="content">{nt.content}</div>
-              </div>
-              {nt.type === "profile" && (
-                <div style={{ marginLeft: "auto" }}>
-                  <ProfilePicture
-                    filename={nt.location}
-                    width="45px"
-                    height="45px"
-                  />
-                </div>
-              )}
-              {nt.type === "story" && (
-                <div style={{ marginLeft: "auto" }} className="story">
-                  <Cover filename={nt.location} width="45px" />
-                </div>
-              )}
-            </Link>
-          );
+          return <Notification key={nt._id} nt={nt} isActivity={true} />;
         })}
       </div>
     </StyledActivity>

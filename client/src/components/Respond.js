@@ -6,22 +6,21 @@ import { useEffect } from "react";
 import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
-import { RiSendPlaneFill } from "react-icons/ri";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipLoader, SyncLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 function Respond({
   text,
   activity,
-  type,
+  type = "Notification",
   sender,
-  location = null,
-  route,
+  story_id = null,
+  route = null,
   to,
   dest,
   useAddConv,
+  isFeed = true,
 }) {
-  const { sendNotification, profileState } = useContext(ProfileContext);
+  const { sendNotification, addToFollowerFeed } = useContext(ProfileContext);
   const { userState } = useContext(UserContext);
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
@@ -68,13 +67,21 @@ function Respond({
     if (!comment) return;
     setShow(initialState);
 
-    if (location) {
-      await addConvMutation.mutateAsync({ location, dest, comment });
+    let conv_id;
+    if (story_id) {
+      // story_id by default is null, I only pass story id for calculating story's score
+      // if you're making comment in a story, I need story_id to calculate score
+      conv_id = await addConvMutation.mutateAsync({ story_id, dest, comment });
     } else {
-      await addConvMutation.mutateAsync({ dest, comment });
+      conv_id = await addConvMutation.mutateAsync({ dest, comment });
     }
 
     setComment("");
+
+    if (!to) {
+      return; //if no one needs to be notifyed or feeded, return
+    }
+
     const notification = {
       text: text,
       activity: activity,
@@ -82,12 +89,21 @@ function Respond({
       route: route,
       content: comment,
     };
-    console.log(notification.text);
-    socket.emit("send notification", {
-      notification,
-      room: to,
-    });
-    sendNotification(to, notification);
+    if (type === "Notification") {
+      const rooms = Array.isArray(to) ? to : Array.of(to);
+      rooms.forEach((room) =>
+        socket.emit("send notification", {
+          notification,
+          room: room,
+        })
+      );
+
+      const nt_id = await sendNotification(rooms, notification);
+      if (isFeed) await addToFollowerFeed("Notification", nt_id, rooms); // add notification to followers' feed, I dont want to add to feed of whoever received the notification
+    } else if (type === "Post") {
+      // if it' somebody making a post, dont send notification just add to the feed (it was notifying me for making comment on my profile)
+      if (isFeed) await addToFollowerFeed("Post", conv_id); // add post to followers' feed
+    }
   };
 
   return (

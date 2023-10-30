@@ -37,8 +37,9 @@ const getPendingForkRequests = async (req, res) => {
     //you need pendingForkRequests field because there's no way of fetching requests sent by us that weren't approved yet
     const user = await User.findById(req.user.userId).populate({
       path: "pendingForkRequests",
-      populate: { path: "story", populate: "author" },
+      populate: [{ path: "story", populate: "author" }, { path: "user" }],
     });
+
     res
       .status(StatusCodes.OK)
       .json({ pendingForkRequests: user.pendingForkRequests });

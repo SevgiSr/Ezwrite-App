@@ -27,6 +27,7 @@ const ProfileNavbar = ({ links, profileData }) => {
     useFollowProfile,
     useUnfollowProfile,
     sendNotification,
+    addToFollowerFeed,
   } = useContext(ProfileContext);
 
   const { requestCollab, alertState } = useContext(StoryContext);
@@ -42,20 +43,22 @@ const ProfileNavbar = ({ links, profileData }) => {
   const navigate = useNavigate();
   const { username } = useParams();
 
-  const handleFollowClick = () => {
+  const handleFollowClick = async () => {
     console.log(user.name, username);
     if (user.name === username) return;
-    followProfileMutation.mutate({ username });
+    await followProfileMutation.mutateAsync({ username });
     const notification = {
       type: "You have a new follower.",
       content: `${user.name} has followed you.`,
+      route: `/user/${user.name}`,
     };
     socket.emit("send notification", {
       notification,
       room: username,
     });
 
-    sendNotification(username, notification);
+    const nt_id = await sendNotification(username, notification);
+    addToFollowerFeed("Notification", nt_id);
   };
 
   const handleUnfollowClick = () => {
@@ -71,9 +74,9 @@ const ProfileNavbar = ({ links, profileData }) => {
     setIsCollabModalOpen(true);
   };
 
-  const handleSendCollabRequest = (story_id) => {
+  const handleSendCollabRequest = async (story_id) => {
     // you need to save to backend first, because we have some checks on there
-    const ntCollab = requestCollab(story_id, user._id);
+    const ntCollab = await requestCollab(story_id, user._id);
     if (ntCollab) {
       socket.emit("send collab notification", {
         notification: ntCollab,

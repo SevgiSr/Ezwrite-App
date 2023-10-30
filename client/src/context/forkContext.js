@@ -32,10 +32,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const addChapterConv = async (fork_id, chapter_id, comment_content) => {
+  const addChapterConv = async (chapter_id, comment_content) => {
     try {
       const { data } = await authFetch.post(
-        `/myForks/${fork_id}/chapters/${chapter_id}/conversations`,
+        `/myForks/chapters/${chapter_id}/conversations`,
         {
           comment_content,
         }
@@ -48,10 +48,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const deleteChapterConv = async (fork_id, chapter_id, conv_id) => {
+  const deleteChapterConv = async (chapter_id, conv_id) => {
     try {
       await authFetch.delete(
-        `/myForks/${fork_id}/chapters/${chapter_id}/conversations/${conv_id}`
+        `/myForks/chapters/${chapter_id}/conversations/${conv_id}`
       );
     } catch (error) {
       console.log(error);
@@ -59,10 +59,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const addParagraphConv = async (fork_id, paragraph_id, comment_content) => {
+  const addParagraphConv = async (paragraph_id, comment_content) => {
     try {
       const { data } = await authFetch.post(
-        `/myForks/${fork_id}/paragraphs/${paragraph_id}/conversations`,
+        `/myForks/paragraphs/${paragraph_id}/conversations`,
         {
           comment_content,
         }
@@ -75,10 +75,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const deleteParagraphConv = async (fork_id, paragraph_id, conv_id) => {
+  const deleteParagraphConv = async (paragraph_id, conv_id) => {
     try {
       await authFetch.delete(
-        `/myForks/${fork_id}/paragraphs/${paragraph_id}/conversations/${conv_id}`
+        `/myForks/paragraphs/${paragraph_id}/conversations/${conv_id}`
       );
     } catch (error) {
       console.log(error);
@@ -86,10 +86,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const addConvComment = async (fork_id, conv_id, comment_content) => {
+  const addConvComment = async (conv_id, comment_content) => {
     try {
       const { data } = await authFetch.post(
-        `/myForks/${fork_id}/conversations/${conv_id}`,
+        `/myForks/conversations/${conv_id}`,
         {
           comment_content,
         }
@@ -102,10 +102,10 @@ export const ForkProvider = ({ children }) => {
     }
   };
 
-  const deleteConvComment = async (fork_id, conv_id, comment_id) => {
+  const deleteConvComment = async (conv_id, comment_id) => {
     try {
       await authFetch.delete(
-        `/myForks/${fork_id}/conversations/${conv_id}/comments/${comment_id}`
+        `/myForks/conversations/${conv_id}/comments/${comment_id}`
       );
     } catch (error) {
       console.log(error);
@@ -117,63 +117,48 @@ export const ForkProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
   const useAddForkChapterConv = () => {
-    return useMutation(
-      (data) => addChapterConv(data.location, data.dest, data.comment),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["fork"]);
-        },
-      }
-    );
+    return useMutation((data) => addChapterConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["fork"]);
+      },
+    });
   };
 
   const useDeleteForkChapterConv = () => {
-    return useMutation(
-      (data) => deleteChapterConv(data.location, data.dest, data.conv_id),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["fork"]);
-        },
-      }
-    );
+    return useMutation((data) => deleteChapterConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["fork"]);
+      },
+    });
   };
 
   const useAddForkParagraphConv = () => {
-    return useMutation(
-      (data) => addParagraphConv(data.location, data.dest, data.comment),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["fork"]);
-        },
-      }
-    );
+    return useMutation((data) => addParagraphConv(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["fork"]);
+      },
+    });
   };
 
   const useDeleteForkParagraphConv = () => {
-    return useMutation(
-      (data) => deleteParagraphConv(data.location, data.dest, data.conv_id),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["fork"]);
-        },
-      }
-    );
+    return useMutation((data) => deleteParagraphConv(data.dest, data.conv_id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["fork"]);
+      },
+    });
   };
 
   const useAddForkConvComment = () => {
-    return useMutation(
-      (data) => addConvComment(data.location, data.dest, data.comment),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["fork"]);
-        },
-      }
-    );
+    return useMutation((data) => addConvComment(data.dest, data.comment), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["fork"]);
+      },
+    });
   };
 
   const useDeleteForkConvComment = () => {
     return useMutation(
-      (data) => deleteConvComment(data.location, data.conv_id, data.comment_id),
+      (data) => deleteConvComment(data.conv_id, data.comment_id),
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["fork"]);

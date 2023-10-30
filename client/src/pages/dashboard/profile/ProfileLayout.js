@@ -75,8 +75,8 @@ function SharedLayout() {
         links={[
           { to: "", label: "About", className: "profile-nav-link" },
           {
-            to: "conversations/",
-            label: "Conversations",
+            to: "posts/",
+            label: "Posts",
             className: "profile-nav-link",
           },
           {

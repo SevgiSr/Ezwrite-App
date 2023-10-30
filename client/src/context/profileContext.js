@@ -160,9 +160,14 @@ export const ProfileProvider = ({ children }) => {
 
   const addProfileConv = async (profile_name, comment_content) => {
     try {
-      await authFetch.post(`/user/${profile_name}/conversations`, {
-        comment_content,
-      });
+      const { data } = await authFetch.post(
+        `/user/${profile_name}/conversations`,
+        {
+          comment_content,
+        }
+      );
+      const { conv_id } = data;
+      return conv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -262,11 +267,14 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
-  const sendNotification = async (username, notification) => {
+  const sendNotification = async (rooms, notification) => {
     try {
-      await authFetch.post(`/messages/notifications/${username}`, {
+      const { data } = await authFetch.post(`/messages/notifications`, {
+        rooms,
         nt: notification,
       });
+      const { nt_id } = data;
+      return nt_id;
     } catch (error) {
       console.log(error);
     }
@@ -285,6 +293,30 @@ export const ProfileProvider = ({ children }) => {
   const readNotifications = async () => {
     try {
       await authFetch.patch(`/messages/notifications`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToFollowerFeed = async (type, itemId, to) => {
+    try {
+      console.log(type, itemId, to);
+      await authFetch.post("/messages/feed", {
+        type: type === "Post" ? "Comment" : type,
+        itemId,
+        exclude: to,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFeed = async () => {
+    try {
+      const { data } = await authFetch.get("/messages/feed");
+      const { posts } = data;
+      console.log(posts);
+      return posts;
     } catch (error) {
       console.log(error);
     }
@@ -339,6 +371,7 @@ export const ProfileProvider = ({ children }) => {
       //dest in here is username
       onSuccess: () => {
         queryClient.invalidateQueries(["conversations"]);
+        queryClient.invalidateQueries(["feed"]);
       },
     });
   };
@@ -348,6 +381,7 @@ export const ProfileProvider = ({ children }) => {
       //dest here is conv_id. that's why we thought about adding location
       onSuccess: () => {
         queryClient.invalidateQueries(["conversations"]);
+        queryClient.invalidateQueries(["feed"]);
       },
     });
   };
@@ -358,6 +392,7 @@ export const ProfileProvider = ({ children }) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["conversations"]);
+          queryClient.invalidateQueries(["feed"]);
         },
       }
     );
@@ -422,6 +457,8 @@ export const ProfileProvider = ({ children }) => {
         sendMessage,
         getNotifications,
         sendNotification,
+        addToFollowerFeed,
+        getFeed,
 
         useAddProfileConv,
         useAddConvComment,

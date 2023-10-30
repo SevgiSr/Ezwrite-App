@@ -5,10 +5,12 @@ import Notification from "../db/models/Notification.js";
 import Comment from "../db/models/Comment.js";
 import ReadingList from "../db/models/ReadingList.js";
 import { getStoryVotes, getStoryViews } from "./storyController.js";
+
 import {
   handleAddConvComment,
   handleDeleteConvComment,
 } from "./commentControllers.js";
+import FeedItem from "../db/models/FeedItem.js";
 
 const getAllUsers = async (req, res) => {
   try {
@@ -161,7 +163,7 @@ const addProfileConv = async (req, res) => {
       { runValidators: true }
     );
 
-    res.status(StatusCodes.OK).json({ newConv: newConv });
+    res.status(StatusCodes.OK).json({ conv_id: newConv._id });
   } catch (error) {
     throw new Error(error.message);
   }

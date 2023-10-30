@@ -28,6 +28,8 @@ import PullRequest from "./RequestUI/PullRequest";
 import DynamicInput from "./DynamicInput";
 import NavLinks from "./NavLinks";
 import MyFork from "./MyFork";
+import Notification from "./Notification";
+import Post from "./Post";
 
 export {
   Navbar,
@@ -60,4 +62,6 @@ export {
   DynamicInput,
   NavLinks,
   MyFork,
+  Notification,
+  Post,
 };

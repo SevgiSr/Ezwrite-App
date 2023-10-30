@@ -14,6 +14,7 @@ import WorkspaceLayout from "./WorkspaceLayout";
 import { MyStories, Stories } from "./MyStories";
 import { MyForks, ForkedStories, Pending } from "./MyForks";
 import MobileSideNavbar from "./MobileSideNavbar";
+import Feed from "./Feed.js";
 import {
   ManageStory,
   ManageChapters,
@@ -50,4 +51,5 @@ export {
   ManageCollabs,
   MobileSideNavbar,
   Collaborations,
+  Feed,
 };

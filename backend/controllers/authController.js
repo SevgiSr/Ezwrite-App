@@ -24,11 +24,10 @@ const register = async (req, res) => {
     const user = await User.create({ name, password });
 
     const token = user.createJWT();
+    user.password = undefined;
     //password is send back cuz of .create
     res.status(StatusCodes.CREATED).json({
-      user: {
-        name: user.name,
-      },
+      user,
       token,
     });
   } catch (error) {

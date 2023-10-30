@@ -15,7 +15,6 @@ import { Conversation, Tag } from "../../components";
 function Story() {
   const {
     state,
-    getStory,
     getProgress,
     setChapter,
     useAddStoryConv,
@@ -24,6 +23,9 @@ function Story() {
     useDeleteConvComment,
   } = useContext(StoryContext);
   const { userState } = useContext(UserContext);
+  const storyAuthor = state.story.author?.name;
+  const mainUser = userState.user.name;
+
   const { story_id } = useParams();
   const location = useLocation();
 
@@ -92,24 +94,37 @@ function Story() {
           <div className="comments">
             <Respond
               id={story_id}
-              text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
-              activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}`}
+              text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}</strong>`}
+              activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}</strong>`}
               sender={userState.user._id}
-              location={story_id}
-              route={location.pathname}
+              story_id={story_id}
               dest={story_id}
-              to={state.story.author?.name}
+              to={mainUser === storyAuthor ? null : storyAuthor} // if author comments on their own story, notify no one, else notify author
               useAddConv={useAddStoryConv}
             />
             <div className="column-reverse">
               {state.story.comments?.map((comment) => {
+                const commentAuthor = comment.author.name;
+
+                //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
+                const toArray = [];
+                if (mainUser !== commentAuthor) {
+                  toArray.push(commentAuthor);
+                }
+
+                if (mainUser !== storyAuthor) {
+                  toArray.push(storyAuthor);
+                }
                 return (
                   <div key={comment._id} className="comment">
                     <Conversation
                       key={comment._id}
                       conv={comment}
+                      text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title}</strong>`}
+                      activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title}</strong>`}
+                      story_id={story_id} // this is for changing story's score
                       dest={state.story._id}
-                      location={story_id}
+                      sendTo={toArray.length === 0 ? null : toArray} //this is for respond that's inside of conv
                       useAddConvComment={useAddConvComment}
                       useDeleteConv={useDeleteStoryConv}
                       useDeleteConvComment={useDeleteConvComment}
