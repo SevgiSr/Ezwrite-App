@@ -163,7 +163,7 @@ const addProfileConv = async (req, res) => {
       { runValidators: true }
     );
 
-    res.status(StatusCodes.OK).json({ conv_id: newConv._id });
+    res.status(StatusCodes.OK).json({ newConv_id: newConv._id });
   } catch (error) {
     throw new Error(error.message);
   }

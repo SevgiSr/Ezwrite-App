@@ -26,7 +26,7 @@ const handleAddChapterConv = async (req, res, countScore) => {
       await countScore(req.params.story_id);
     }
 
-    res.status(StatusCodes.OK).json({ newConv });
+    res.status(StatusCodes.OK).json({ newConv_id: newConv._id });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -78,7 +78,7 @@ const handleAddParagraphConv = async (req, res, countScore) => {
       await countScore(req.params.story_id);
     }
 
-    res.status(StatusCodes.OK).json({ comment });
+    res.status(StatusCodes.OK).json({ newConv_id: comment._id });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -133,7 +133,7 @@ const handleAddConvComment = async (req, res, countScore) => {
     if (countScore) {
       await countScore(story_id);
     }
-    res.status(StatusCodes.OK).json({ newConv });
+    res.status(StatusCodes.OK).json({ newConv_id: newConv._id });
   } catch (error) {
     throw new Error(error.message);
   }

@@ -40,8 +40,8 @@ export const ForkProvider = ({ children }) => {
           comment_content,
         }
       );
-      const { newConv } = data;
-      return newConv;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -67,8 +67,8 @@ export const ForkProvider = ({ children }) => {
           comment_content,
         }
       );
-      const { comment } = data;
-      return comment;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -94,9 +94,8 @@ export const ForkProvider = ({ children }) => {
           comment_content,
         }
       );
-      const { newConv } = data;
-
-      return newConv;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
     }

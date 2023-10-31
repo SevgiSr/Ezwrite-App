@@ -560,7 +560,7 @@ const addStoryConv = async (req, res) => {
 
     await updateStoryScore(req.params.id);
 
-    res.status(StatusCodes.OK).json({ newConv });
+    res.status(StatusCodes.OK).json({ newConv_id: newConv._id });
   } catch (error) {
     throw new Error(error.message);
   }

@@ -47,6 +47,8 @@ function Chapter() {
   const location = useLocation();
   const isFork = location.pathname.split("/")[1] === "fork";
 
+  const [isScrollParagraph, setIsScrollParagraph] = useState(false);
+
   const { userState } = useContext(UserContext);
   const mainUser = userState.user.name;
   //for incrementing view count
@@ -125,6 +127,21 @@ function Chapter() {
     }
   }, [location, isForkFetching, forkStatus]);
 
+  const convRefs = useRef({});
+
+  useEffect(() => {
+    const hashValue = location.hash.substring(1);
+    const [prefix, conv_id] = hashValue?.split("-");
+    if (prefix === "chapter" && conv_id) {
+      if (convRefs.current[conv_id]) {
+        convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (prefix === "paragraph" && conv_id) {
+      console.log("setting paragraph scroll");
+      setIsScrollParagraph(true);
+    }
+  }, [location]);
+
   useEffect(() => {
     if (!isFork) {
       const timer = setTimeout(() => {
@@ -190,6 +207,11 @@ function Chapter() {
               paragraph={paragraph}
               storyAuthor={storyAuthor}
               mainUser={mainUser}
+              conv_id={
+                isScrollParagraph
+                  ? location.hash.substring(1).split("-")[1]
+                  : null
+              }
             />
           );
         })}
@@ -204,6 +226,7 @@ function Chapter() {
             sender={userState.user._id}
             story_id={isFork ? null : story_id}
             dest={chapter_id}
+            route={location.pathname + "#chapter-"}
             to={mainUser === storyAuthor ? null : storyAuthor}
             useAddConv={isFork ? useAddForkChapterConv : useAddChapterConv}
           />
@@ -222,12 +245,19 @@ function Chapter() {
               toArray.push(storyAuthor);
             }
             return (
-              <div key={comment._id}>
+              <div
+                key={comment._id}
+                ref={(el) => {
+                  convRefs.current[comment._id] = el;
+                }}
+              >
                 <Conversation
                   conv={comment}
                   text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
                   activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
                   dest={state.chapter._id}
+                  route={location.pathname + "#chapter-"}
+                  commentRefs={convRefs}
                   story_id={isFork ? null : story_id}
                   sendTo={toArray.length === 0 ? null : toArray}
                   useAddConvComment={
@@ -249,7 +279,7 @@ function Chapter() {
   );
 }
 
-function Paragraph({ paragraph, storyAuthor, mainUser }) {
+function Paragraph({ paragraph, storyAuthor, mainUser, conv_id }) {
   const [openModal, setOpenModal] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { userState } = useContext(UserContext);
@@ -277,6 +307,8 @@ function Paragraph({ paragraph, storyAuthor, mainUser }) {
 
   const contentRef = useRef(null);
 
+  const convRefs = useRef({});
+
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.innerHTML = paragraph.content;
@@ -291,6 +323,27 @@ function Paragraph({ paragraph, storyAuthor, mainUser }) {
       setOpenModal(false);
     }
   };
+
+  useEffect(() => {
+    console.log(conv_id, convRefs.current[conv_id]);
+    if (conv_id && convRefs.current[conv_id]) {
+      setOpenModal(true);
+    }
+  }, [conv_id]);
+
+  useEffect(() => {
+    if (openModal && conv_id && convRefs.current[conv_id]) {
+      const element = convRefs.current[conv_id];
+      const modal = modalRef.current;
+      if (element && modal) {
+        const elementRect = element.getBoundingClientRect();
+        const modalRect = modal.getBoundingClientRect();
+        const offset = elementRect.top - modalRect.top;
+
+        modal.scrollTop = offset;
+      }
+    }
+  }, [conv_id, openModal]);
 
   useEffect(() => {
     window.addEventListener("click", listener);
@@ -326,63 +379,65 @@ function Paragraph({ paragraph, storyAuthor, mainUser }) {
         </div>
       </button>
 
-      {openModal && (
-        <div
-          ref={modalRef}
-          key={"modal-" + paragraph._id}
-          className={"comments-modal " + (openModal ? "open-modal" : "")}
-        >
-          <Respond
-            key={"paragraph-" + paragraph._id}
-            text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-            sender={userState.user._id}
-            story_id={isFork ? null : story_id}
-            dest={paragraph._id}
-            to={mainUser === storyAuthor ? null : storyAuthor}
-            useAddConv={isFork ? useAddForkParagraphConv : useAddParagraphConv}
-          />
-          <div className="column-reverse">
-            {paragraph.comments?.map((comment) => {
-              const commentAuthor = comment.author.name;
+      <div
+        ref={modalRef}
+        key={"modal-" + paragraph._id}
+        className={"comments-modal " + (openModal ? "open-modal" : "")}
+      >
+        <Respond
+          text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+          activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+          sender={userState.user._id}
+          story_id={isFork ? null : story_id}
+          dest={paragraph._id}
+          route={location.pathname + "#paragraph-"}
+          to={mainUser === storyAuthor ? null : storyAuthor}
+          useAddConv={isFork ? useAddForkParagraphConv : useAddParagraphConv}
+        />
+        <div className="column-reverse">
+          {paragraph.comments?.map((comment) => {
+            const commentAuthor = comment.author.name;
 
-              //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
-              const toArray = [];
-              if (mainUser !== commentAuthor) {
-                toArray.push(commentAuthor);
-              }
+            //if ure commentator, notify author, if ure author notify commentator if ure both notify nobody
+            const toArray = [];
+            if (mainUser !== commentAuthor) {
+              toArray.push(commentAuthor);
+            }
 
-              if (mainUser !== storyAuthor) {
-                toArray.push(storyAuthor);
-              }
-              return (
-                <div key={"paragraph-" + comment._id}>
-                  <Conversation
-                    id={comment._id}
-                    conv={comment}
-                    text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-                    activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
-                    dest={paragraph._id}
-                    story_id={isFork ? null : story_id}
-                    sendTo={toArray.length === 0 ? null : toArray}
-                    useAddConvComment={
-                      isFork ? useAddForkConvComment : useAddConvComment
-                    }
-                    useDeleteConv={
-                      isFork
-                        ? useDeleteForkParagraphConv
-                        : useDeleteParagraphConv
-                    }
-                    useDeleteConvComment={
-                      isFork ? useDeleteForkConvComment : useDeleteConvComment
-                    }
-                  />
-                </div>
-              );
-            })}
-          </div>
+            if (mainUser !== storyAuthor) {
+              toArray.push(storyAuthor);
+            }
+            return (
+              <div
+                key={"paragraph-" + comment._id}
+                ref={(el) => {
+                  convRefs.current[comment._id] = el;
+                }}
+              >
+                <Conversation
+                  conv={comment}
+                  text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+                  activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
+                  dest={paragraph._id}
+                  route={location.pathname + "#paragraph-"}
+                  commentRefs={convRefs}
+                  story_id={isFork ? null : story_id}
+                  sendTo={toArray.length === 0 ? null : toArray}
+                  useAddConvComment={
+                    isFork ? useAddForkConvComment : useAddConvComment
+                  }
+                  useDeleteConv={
+                    isFork ? useDeleteForkParagraphConv : useDeleteParagraphConv
+                  }
+                  useDeleteConvComment={
+                    isFork ? useDeleteForkConvComment : useDeleteConvComment
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 }

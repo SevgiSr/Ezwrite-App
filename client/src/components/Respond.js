@@ -7,6 +7,7 @@ import socket from "../socket.js";
 import { ProfileContext } from "../context/profileContext";
 import { UserContext } from "../context/userContext";
 import { ClipLoader } from "react-spinners";
+import { useLocation } from "react-router-dom";
 
 function Respond({
   text,
@@ -14,7 +15,7 @@ function Respond({
   type = "Notification",
   sender,
   story_id = null,
-  route = null,
+  route,
   to,
   dest,
   useAddConv,
@@ -25,6 +26,7 @@ function Respond({
   const [comment, setComment] = useState("");
   const initialState = { comment: "", share: "" };
   const [show, setShow] = useState(initialState);
+  const location = useLocation();
 
   //addComment can be adding a comment to the profile or a book or adding a comment to a conversation
   //inactive ones won't be refetching anyways, so this is not wasteful
@@ -82,11 +84,12 @@ function Respond({
       return; //if no one needs to be notifyed or feeded, return
     }
 
+    let newRoute = route + conv_id;
     const notification = {
       text: text,
       activity: activity,
       sender: sender,
-      route: route,
+      route: newRoute,
       content: comment,
     };
     if (type === "Notification") {

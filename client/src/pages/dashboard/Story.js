@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { StoryContext } from "../../context/storyContext";
 import StyledStory from "./styles/Story.styled";
@@ -29,6 +29,8 @@ function Story() {
   const { story_id } = useParams();
   const location = useLocation();
 
+  console.log(location.pathname);
+
   const {
     data: progress = {},
     isLoading,
@@ -38,6 +40,18 @@ function Story() {
     queryKey: ["progress", story_id],
     queryFn: () => getProgress(story_id),
   });
+
+  const convRefs = useRef({});
+
+  useEffect(() => {
+    const hashValue = location.hash.substring(1);
+    const [prefix, conv_id] = hashValue?.split("-");
+    if (prefix === "story" && conv_id) {
+      if (convRefs.current[conv_id]) {
+        convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!isFetching && status === "success") {
@@ -93,12 +107,12 @@ function Story() {
         <section className="comments-section">
           <div className="comments">
             <Respond
-              id={story_id}
               text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}</strong>`}
               activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title}</strong>`}
               sender={userState.user._id}
               story_id={story_id}
               dest={story_id}
+              route={location.pathname + "#story-"}
               to={mainUser === storyAuthor ? null : storyAuthor} // if author comments on their own story, notify no one, else notify author
               useAddConv={useAddStoryConv}
             />
@@ -116,14 +130,21 @@ function Story() {
                   toArray.push(storyAuthor);
                 }
                 return (
-                  <div key={comment._id} className="comment">
+                  <div
+                    key={comment._id}
+                    className="comment"
+                    ref={(el) => {
+                      convRefs.current[comment._id] = el;
+                    }}
+                  >
                     <Conversation
-                      key={comment._id}
                       conv={comment}
                       text={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title}</strong>`}
                       activity={`<strong>${userState.user.name}</strong> responded to <strong>${comment.author.name}</strong>'s comment on <strong>${state.story.title}</strong>`}
                       story_id={story_id} // this is for changing story's score
                       dest={state.story._id}
+                      route={location.pathname + "#story-"}
+                      commentRefs={convRefs}
                       sendTo={toArray.length === 0 ? null : toArray} //this is for respond that's inside of conv
                       useAddConvComment={useAddConvComment}
                       useDeleteConv={useDeleteStoryConv}

@@ -251,10 +251,10 @@ const StyledChapter = styled.div`
       }
     }
     .comments-modal {
+      display: none;
       width: 500px;
       background-color: var(--background2);
       overflow-y: scroll;
-      display: flex;
       flex-direction: column;
       position: fixed;
       top: 0;
@@ -263,9 +263,10 @@ const StyledChapter = styled.div`
       z-index: 1000;
       border-radius: 5px;
       padding: 30px;
+      scroll-behavior: smooth;
     }
     .open-modal {
-      display: block;
+      display: flex;
     }
   }
 

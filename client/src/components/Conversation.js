@@ -1,7 +1,7 @@
 import ProfilePicture from "./ProfilePicture";
 import StyledConversation from "./styles/Conversation.styled";
 import Respond from "./Respond";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import Comment from "./Comment";
 import { UserContext } from "../context/userContext";
 import { useParams } from "react-router-dom";
@@ -18,6 +18,8 @@ const Conversation = ({
   activity,
   dest, //username
   story_id = null,
+  route,
+  commentRefs,
   sendTo,
   useAddConvComment,
   useDeleteConv,
@@ -95,13 +97,21 @@ const Conversation = ({
         <div id="content">{conv.content}</div>
         {conv.subcomments?.map((sc) => {
           return (
-            <Comment
-              key={sc._id}
-              comment={sc}
-              story_id={story_id} // if conv has story_id means it should affect story's score
-              conv_id={conv._id}
-              useDeleteConvComment={useDeleteConvComment}
-            />
+            <div
+              className="subcomment"
+              ref={(el) => {
+                commentRefs.current[sc._id] = el;
+              }}
+            >
+              <Comment
+                id={sc._id}
+                key={sc._id}
+                comment={sc}
+                story_id={story_id} // if conv has story_id means it should affect story's score
+                conv_id={conv._id}
+                useDeleteConvComment={useDeleteConvComment}
+              />
+            </div>
           );
         })}
       </StyledConversation>
@@ -113,6 +123,7 @@ const Conversation = ({
         story_id={story_id}
         to={sendTo}
         dest={conv._id}
+        route={route}
         useAddConv={useAddConvComment}
         isFeed={false}
       />

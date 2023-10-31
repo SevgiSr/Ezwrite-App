@@ -7,7 +7,6 @@ import getDate from "../utils/getDate";
 import Cover from "./Cover";
 
 function Notification({ nt, isActivity = false }) {
-  console.log(nt);
   return (
     <StyledNotification>
       <Link

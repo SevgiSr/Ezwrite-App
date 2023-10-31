@@ -182,8 +182,9 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       const { data } = await authFetch.post(`/stories/story/${story_id}`, {
         comment_content,
       });
-      const { newConv } = data;
-      return newConv;
+      const { newConv_id } = data;
+      console.log(newConv_id);
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -207,8 +208,8 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           comment_content,
         }
       );
-      const { newConv } = data;
-      return newConv;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -234,8 +235,8 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           comment_content,
         }
       );
-      const { comment } = data;
-      return comment;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -308,9 +309,8 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           comment_content,
         }
       );
-      const { newConv } = data;
-
-      return newConv;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
     }

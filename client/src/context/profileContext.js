@@ -166,8 +166,8 @@ export const ProfileProvider = ({ children }) => {
           comment_content,
         }
       );
-      const { conv_id } = data;
-      return conv_id;
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
       console.log(error.response.data.msg);
@@ -185,9 +185,11 @@ export const ProfileProvider = ({ children }) => {
 
   const addConvComment = async (conv_id, comment_content) => {
     try {
-      await authFetch.post(`/user/conversations/${conv_id}`, {
+      const { data } = await authFetch.post(`/user/conversations/${conv_id}`, {
         comment_content,
       });
+      const { newConv_id } = data;
+      return newConv_id;
     } catch (error) {
       console.log(error);
     }

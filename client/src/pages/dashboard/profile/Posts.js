@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { ProfileContext } from "../../../context/profileContext";
 import { Conversation } from "../../../components";
@@ -17,18 +17,19 @@ function Posts() {
   const { userState } = useContext(UserContext);
   const mainUser = userState.user.name;
   const { convs, profileData } = useOutletContext();
+  const location = useLocation();
 
-  /*
-  -loads at first time you click on conversations
-  -second time you switch away and get back to it it doesn't load (like caching)
-  -when someone else posts conv it doesn't update until you refresh
+  const convRefs = useRef({});
 
   useEffect(() => {
-    getProfileConv(username);
-  }, []); 
-  */
-
-  console.log(profileData);
+    const hashValue = location.hash.substring(1);
+    const [prefix, conv_id] = hashValue?.split("-");
+    if (prefix === "profile" && conv_id) {
+      if (convRefs.current[conv_id]) {
+        convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, []);
 
   return (
     <StyledPosts>
@@ -39,6 +40,7 @@ function Posts() {
           sender={userState.user._id}
           to={username}
           dest={username}
+          route={location.pathname + "#profile-"}
           useAddConv={useAddProfileConv}
           type={profileData.isMainUser ? "Post" : "Notification"} // if it's main user posting comment on profile, it is a post
         />
@@ -56,12 +58,20 @@ function Posts() {
               toArray.push(username);
             }
             return (
-              <div key={conv._id} id={conv._id} className="conv">
+              <div
+                key={conv._id}
+                ref={(el) => {
+                  convRefs.current[conv._id] = el;
+                }}
+                className="conv"
+              >
                 <Conversation
                   conv={conv}
                   text={`<strong>${userState.user.name}</strong> responded to <strong>${conv.author.name}</strong>'s comment on <strong>${username}</strong>'s feed`}
                   activity={`<strong>${userState.user.name}</strong> responded to <strong>${conv.author.name}</strong>'s comment on <strong>${username}</strong>'s feed`}
                   dest={username}
+                  route={location.pathname + "#profile-"}
+                  commentRefs={convRefs}
                   sendTo={toArray.length === 0 ? null : toArray}
                   useAddConvComment={useAddConvComment}
                   useDeleteConv={useDeleteProfileConv}
