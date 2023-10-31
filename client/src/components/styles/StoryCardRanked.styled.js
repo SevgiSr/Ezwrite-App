@@ -1,20 +1,12 @@
 import styled from "styled-components";
 
 const StyledStoryCardRanked = styled.div`
-  /*   width: 100%;
-  .title {
-    width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    overflow: hidden;
-  } */
-
   position: relative;
 
   .story-ranked {
-    background-color: var(--background3);
-    padding: 10px 15px;
+    padding: 15px 20px;
     border-radius: 15px;
+    background-color: var(--background2);
     cursor: pointer;
 
     .title {
@@ -22,12 +14,41 @@ const StyledStoryCardRanked = styled.div`
       text-align: center;
       position: relative;
       color: var(--font2);
-      background-color: var(--background3);
     }
 
-    .rank {
-      span {
-        background-color: #d4af37;
+    .rank-container {
+      position: absolute;
+      top: -13px;
+      left: -13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .rank-icon {
+        transform: rotate(-20deg);
+        position: relative;
+        color: #d4af37;
+        font-size: 50px;
+
+        .rank {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+          color: var(--font1);
+          font-weight: 600;
+          font-size: 21px;
+          text-shadow: 2px 2px 3px black;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .rank-cat {
+        font-size: 18px;
+        color: var(--font1);
+        font-weight: 600;
+        text-shadow: 2px 2px 3px black;
       }
     }
   }

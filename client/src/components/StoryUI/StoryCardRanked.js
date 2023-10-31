@@ -4,10 +4,11 @@ import Metadata from "../Metadata";
 import UserLine from "../UserUI/UserLine";
 import StyledStoryCardRanked from "../styles/StoryCardRanked.styled";
 import StoryModal from "../StoryModal";
+import { BsFillStarFill } from "react-icons/bs";
 
 function StoryCardRanked({ story }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log(story.rank);
+
   return (
     <StyledStoryCardRanked>
       <div className={"details-modal " + (isModalOpen && "close")}>
@@ -24,8 +25,12 @@ function StoryCardRanked({ story }) {
       </div>
 
       <div className="story-ranked" onClick={() => setIsModalOpen(true)}>
-        <div className="rank">
-          <span>1st</span> in {story.rank}
+        <div className="rank-container">
+          <div className="rank-icon icon">
+            <BsFillStarFill />
+            <div className="rank">1st</div>
+          </div>
+          <div className="rank-cat">in {story.rank}</div>
         </div>
         <div className="cover">
           <Cover filename={story._id} width="135px" />

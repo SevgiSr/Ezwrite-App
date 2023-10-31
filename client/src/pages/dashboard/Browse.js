@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
-import StyledBrowse from "./styles/Browser.styled";
+import StyledBrowse from "./styles/Browse.styled";
 import { useQuery } from "@tanstack/react-query";
 import { StoryContext } from "../../context/storyContext";
-import { useContext } from "react";
-import { StoryCardDetailed, StoryCardRanked } from "../../components";
+import { useContext, useState } from "react";
+import { StoryCardDetailed, StoryCardRanked, Tag } from "../../components";
 
 function Browse() {
   const { getAllStories } = useContext(StoryContext);
+  const [nav, setNav] = useState("category");
 
   const { data: stories = [], isStoriesLoading } = useQuery(
     ["all", "stories"],
@@ -16,13 +17,33 @@ function Browse() {
   if (isStoriesLoading) return null;
   return (
     <StyledBrowse>
-      <Categories stories={stories} />
-      <Tags stories={stories} />
+      <header>
+        <h1>Browse</h1>
+      </header>
+      <div className="browse-container">
+        <nav>
+          <div
+            className={"nav-link " + (nav === "category" && "active")}
+            onClick={() => setNav("category")}
+          >
+            By Category
+          </div>
+          <div
+            className={"nav-link " + (nav === "tag" && "active")}
+            onClick={() => setNav("tag")}
+          >
+            By Tag
+          </div>
+        </nav>
+
+        {nav === "category" ? <Categories stories={stories} /> : <Tags />}
+      </div>
     </StyledBrowse>
   );
 }
 
 function Categories({ stories }) {
+  if (!stories) return null;
   return (
     <section className="explore-categories">
       <div className="category-list list">
@@ -74,11 +95,7 @@ function Tags() {
     <section className="explore-tags">
       <div className="tag-list list">
         {tags?.map((tag) => {
-          return (
-            <div className="tag">
-              {tag.name} ({tag.count})
-            </div>
-          );
+          return <Tag tag={tag} fontSize={"15px"} />;
         })}
       </div>
 
