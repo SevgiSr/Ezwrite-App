@@ -40,6 +40,7 @@ const StyledManageStory = styled.div`
 
   .story-nav {
     margin-bottom: 12px;
+    font-size: 17px;
   }
   .chapters-container {
     .chapters {
@@ -64,16 +65,15 @@ const StyledManageStory = styled.div`
           }
           .status {
             background-color: var(--background1);
-
             font-size: 12px;
             border-radius: 10px;
             padding: 7px 12px;
             margin-left: 10px;
           }
-
-          .updated {
-            color: var(--font2);
-          }
+        }
+        .updated {
+          color: var(--font2);
+          margin-left: 10px;
         }
       }
     }
@@ -99,6 +99,35 @@ const StyledManageStory = styled.div`
         .icon {
           margin-right: 5px;
         }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 540px) {
+    .story-nav {
+      font-size: 14px;
+    }
+
+    .chapters-container {
+      header {
+        .title {
+          font-size: 14px !important;
+        }
+      }
+    }
+
+    .info {
+      .story-title {
+        font-size: 18px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 720px) {
+    .story-nav {
+      .links {
+        justify-content: center;
+        text-align: center;
       }
     }
   }

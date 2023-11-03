@@ -9,13 +9,21 @@ import { MyFork, UserLineMini } from "../../components";
 import { FallingLines } from "react-loader-spinner";
 import { MyForkContext } from "../../context/myForkContext";
 import { VscRepoForked } from "react-icons/vsc";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function MyForks() {
   const navigate = useNavigate();
   const location = useLocation();
   const tab = location.pathname.split("/")[3];
 
-  console.log(location.pathname === "/workspace/myForks/");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <StyledMyForks>
@@ -35,7 +43,7 @@ function MyForks() {
                 active: location.pathname === "/workspace/myForks/",
               },
               {
-                label: "Pending Fork Requests",
+                label: windowWidth > 540 ? "Pending Fork Requests" : "Pending",
                 to: "pending",
                 active: tab === "pending",
               },

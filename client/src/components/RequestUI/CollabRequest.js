@@ -5,10 +5,21 @@ import { MyStoryContext } from "../../context/myStoryContext";
 import { Link } from "react-router-dom";
 import StoryCardMini from "../StoryUI/StoryCardMini";
 import Cover from "../Cover";
+import { useState } from "react";
+import { useEffect } from "react";
+import { BsCheck, BsCheck2, BsCheckLg, BsXLg } from "react-icons/bs";
 
 function CollabRequest({ collab, isOverview }) {
   const { useGrantCollaboratorAccess, useDeclineCollaboratorAccess } =
     useContext(MyStoryContext);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const declineCollaboratorAccessMutation = useDeclineCollaboratorAccess();
   const grantCollaboratorAccessMutation = useGrantCollaboratorAccess();
 
@@ -48,14 +59,26 @@ function CollabRequest({ collab, isOverview }) {
               type="button"
               onClick={() => handleDeclineRequestClick(collab._id)}
             >
-              Decline Request
+              {windowWidth > 790 ? (
+                "Decline Request"
+              ) : (
+                <div className="icon decline-icon">
+                  <BsXLg />
+                </div>
+              )}
             </button>
             <button
               className="collab-btn btn btn-basic"
               type="button"
               onClick={() => handleAcceptRequestClick(collab)}
             >
-              Accept Request
+              {windowWidth > 790 ? (
+                "Accept Request"
+              ) : (
+                <div className="icon accept-icon">
+                  <BsCheckLg />
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -74,9 +97,19 @@ const StyledCollabRequest = styled.div`
 
   .collab-text {
     margin: 0 10px;
+    color: var(--font2);
   }
   .actions {
+    display: flex;
     margin-left: auto;
+    button {
+      .decline-icon {
+        color: red;
+      }
+      .accept-icon {
+        color: green;
+      }
+    }
   }
 
   .overview {
@@ -92,6 +125,30 @@ const StyledCollabRequest = styled.div`
   .detailed {
     display: flex;
     align-items: center;
+  }
+
+  @media only screen and (max-width: 540px) {
+    .collab-text {
+      font-size: 12px;
+    }
+    .actions {
+      button {
+        font-size: 12px;
+        .icon {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 790px) {
+    .actions {
+      button {
+        .icon {
+          margin-right: 0;
+        }
+      }
+    }
   }
 `;
 

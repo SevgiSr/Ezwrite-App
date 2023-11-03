@@ -31,7 +31,7 @@ const StoryDetails = ({
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
-        {title}
+        {title && <h1>{title}</h1>}
         <div className="item title">
           <label htmlFor="title">Title</label>
           <input

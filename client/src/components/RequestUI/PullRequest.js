@@ -1,15 +1,25 @@
 import styled from "styled-components";
 import UserLineMini from "../UserUI/UserLineMini";
 import { Link, useNavigate } from "react-router-dom";
-import { BsFillEyeFill } from "react-icons/bs";
+import { BsCheckLg, BsFillEyeFill, BsXLg } from "react-icons/bs";
 import { useContext } from "react";
 import { MyStoryContext } from "../../context/myStoryContext";
 import Cover from "../Cover";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function PullRequest({ pull, isOverview }) {
   const { useMergeFork, useDeclinePullRequest } = useContext(MyStoryContext);
   const declinePullRequestMutation = useDeclinePullRequest();
   const mergeForkMutation = useMergeFork();
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -72,13 +82,25 @@ function PullRequest({ pull, isOverview }) {
               className="btn btn-basic"
               onClick={() => handleMergeClick(pull.fork)}
             >
-              Merge Changes
+              {windowWidth > 790 ? (
+                "Merge Changes"
+              ) : (
+                <div className="icon accept-icon">
+                  <BsCheckLg />
+                </div>
+              )}
             </button>
             <button
               className="btn btn-grey"
               onClick={() => handleDeclineClick(pull._id)}
             >
-              Decline Changes
+              {windowWidth > 790 ? (
+                "Decline Changes"
+              ) : (
+                <div className="icon decline-icon">
+                  <BsXLg />
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -152,6 +174,44 @@ const StyledPullRequest = styled.div`
       .icon {
         margin-right: 5px;
         font-size: 18px;
+      }
+    }
+    .decline-icon {
+      color: red;
+    }
+    .accept-icon {
+      color: green;
+    }
+  }
+
+  @media only screen and (max-width: 540px) {
+    .collab-text {
+      font-size: 12px;
+    }
+    .actions {
+      flex-direction: column;
+      align-items: center;
+
+      .btn {
+        margin-bottom: 5px;
+      }
+
+      button {
+        font-size: 12px;
+        .icon {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 790px) {
+    .actions {
+      button {
+        background-color: var(--background4);
+        .icon {
+          margin-right: 0;
+        }
       }
     }
   }

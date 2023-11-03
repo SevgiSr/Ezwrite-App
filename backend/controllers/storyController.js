@@ -10,6 +10,8 @@ import ReadingList from "../db/models/ReadingList.js";
 import Trie from "../utils/Trie.js";
 import Tag from "../db/models/Tag.js";
 import { v4 as uuidv4 } from "uuid";
+import { redisClient } from "../server.js";
+
 import {
   handleAddChapterConv,
   handleAddConvComment,
@@ -273,23 +275,43 @@ const getCategorySuggestions = async (req, res) => {
 
 const getTagSuggestions = async (req, res) => {
   try {
-    const tags = await Tag.find()
-      .sort({ count: -1 }) // Sort in descending order by count
-      .limit(10); // Limit to 10 documents
+    // Fetch tags from Redis
+    const tags = await redisClient.hGetAll("tags");
 
-    let stories = [];
-    for (const tag of tags) {
-      const story = await Story.findOne({ tags: { $in: tag } })
-        .sort({ score: -1 })
-        .populate("author progress tags");
-
-      if (story) {
-        story.rank = tag.name;
-        stories.push(story);
-      }
+    if (!tags) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Tags not found" });
     }
 
-    res.status(StatusCodes.OK).json({ tags, stories });
+    // Transform tags into an array of objects
+    const tagsArray = Object.values(tags).map((tag) => JSON.parse(tag));
+
+    // Sort tags by count and slice the first 20
+    const sortedTags = tagsArray.sort((a, b) => b.count - a.count).slice(0, 20);
+
+    let stories = [];
+
+    // Use Promise.all to perform all the async operations concurrently, rather than in sequence
+    await Promise.all(
+      sortedTags.map(async (tag) => {
+        const foundStories = await Story.find({ tags: { $in: [tag._id] } })
+          .sort({ score: -1 })
+          .limit(5)
+          .populate("author progress tags");
+
+        if (foundStories && foundStories.length > 0) {
+          const newStories = foundStories.map((story) => {
+            const newStory = story.toObject();
+            newStory.rank = tag.name;
+            return newStory;
+          });
+          stories.push(...newStories);
+        }
+      })
+    );
+
+    res.status(StatusCodes.OK).json({ tags: tagsArray, stories });
   } catch (error) {
     throw new Error(error.message);
   }

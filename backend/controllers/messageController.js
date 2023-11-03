@@ -214,9 +214,6 @@ const addToFollowerFeed = async (req, res) => {
 const getFeed = async (req, res) => {
   try {
     const postIds = await redisClient.zRange(`feed:${req.user.userId}`, 0, -1);
-    console.log(postIds);
-    postIds.reverse();
-    console.log(postIds);
     const posts = await FeedItem.find({ _id: { $in: postIds } }).populate({
       path: "item",
       populate: [

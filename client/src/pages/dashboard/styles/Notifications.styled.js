@@ -18,7 +18,6 @@ const StyledNotifications = styled.div`
     justify-content: space-between;
 
     h1 {
-      color: #222;
       font-weight: 600;
       margin-bottom: 1.7rem;
       color: #6f6f6f;

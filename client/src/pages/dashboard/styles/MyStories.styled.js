@@ -7,6 +7,7 @@ const StyledMyStories = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
+    font-size: 17px;
 
     .header-loader {
       margin-left: 1rem;

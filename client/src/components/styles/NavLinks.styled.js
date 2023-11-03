@@ -10,17 +10,13 @@ const StyledNavLinks = styled.nav`
     .link {
       text-decoration: none;
       color: var(--font2);
-      line-height: 58px;
-      font-size: 17px;
       font-weight: 500;
       margin-right: 2rem;
       border-bottom: 4px solid transparent;
+      padding: 10px 0;
     }
 
     @media only screen and (max-width: 1000px) {
-      .link {
-        font-size: 17px;
-      }
     }
 
     .link:hover {

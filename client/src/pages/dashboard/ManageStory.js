@@ -18,12 +18,21 @@ import { BiEditAlt, BiGitPullRequest } from "react-icons/bi";
 import { ImFilesEmpty } from "react-icons/im";
 import getDate from "../../utils/getDate";
 import { RxCounterClockwiseClock } from "react-icons/rx";
+import { useState } from "react";
 
 function ManageStory() {
   const { story_id } = useParams();
   const location = useLocation();
   const { getMyStories, setMyStory, storyState } = useContext(MyStoryContext);
   const { story } = storyState;
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const {
     data: myStories = [],
@@ -48,7 +57,10 @@ function ManageStory() {
   return (
     <StyledManageStory>
       <div className="info">
-        <Cover filename={story._id} width="210px" />
+        <Cover
+          filename={story._id}
+          width={windowWidth > 540 ? "210px" : "160px"}
+        />
         <div className="story-title">{story.title}</div>
         <Link className="btn btn-link edit-story-btn" to={`/${story._id}`}>
           <div className="icon">

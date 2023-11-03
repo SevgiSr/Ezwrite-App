@@ -16,10 +16,9 @@ const StyledStoryDetails = styled.div`
       width: fit-content;
     }
     h1 {
-      color: var(--font1);
-      border-bottom: 5px solid var(--text-main);
-      width: fit-content;
-      margin-bottom: 2rem;
+      color: #6f6f6f;
+      font-weight: 600;
+      margin-bottom: 1.7rem;
     }
     label {
       font-size: 21px;
@@ -30,7 +29,7 @@ const StyledStoryDetails = styled.div`
     }
     #title,
     #desc {
-      border: 1px solid #eee;
+      border: 1px solid #6f6f6f;
       padding: 10px 20px;
       background-color: var(--background4);
       color: var(--font1);
@@ -55,6 +54,7 @@ const StyledStoryDetails = styled.div`
     .tags-items {
       display: flex;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
     .tag-item {
       display: flex;
@@ -67,6 +67,7 @@ const StyledStoryDetails = styled.div`
       font-size: 13px;
       font-weight: 700;
       margin-right: 10px;
+      margin-bottom: 10px;
       .icon {
         margin-left: 5px;
         font-size: 10px;

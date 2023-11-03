@@ -1,19 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { AiFillDislike } from "react-icons/ai";
-import { BsFillStarFill } from "react-icons/bs";
-import { FaBars, FaComment, FaTrash } from "react-icons/fa";
-import { GoEye } from "react-icons/go";
+import { FaBars, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Cover from "../components/Cover";
-import NavLinks from "../components/NavLinks";
 import { MyStoryContext } from "../context/myStoryContext";
 import StyledEditStoryDetails from "./styles/EditStoryDetails.styled";
-import {
-  ClipLoader,
-  PulseLoader,
-  RotateLoader,
-  SyncLoader,
-} from "react-spinners";
+import { ClipLoader, SyncLoader } from "react-spinners";
 import getDate from "../utils/getDate";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,7 +16,6 @@ function EditStoryDetails() {
   const {
     storyState,
     alertState,
-    addChapter,
     getMyStories,
     setMyStory,
     updateCover,

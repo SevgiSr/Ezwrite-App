@@ -6,15 +6,21 @@ import { useContext, useState } from "react";
 import { StoryCardDetailed, StoryCardRanked, Tag } from "../../components";
 
 function Browse() {
-  const { getAllStories } = useContext(StoryContext);
+  const { getAllStories, getTagSuggestions } = useContext(StoryContext);
   const [nav, setNav] = useState("category");
 
-  const { data: stories = [], isStoriesLoading } = useQuery(
+  const { data: catStories = [], isCatLoading } = useQuery(
     ["all", "stories"],
     () => getAllStories()
   );
 
-  if (isStoriesLoading) return null;
+  const { data: { stories, tags } = {}, isTagLoading } = useQuery(
+    ["suggestions", "tags"],
+    () => getTagSuggestions()
+  );
+
+  if (isCatLoading || isTagLoading) return null;
+
   return (
     <StyledBrowse>
       <header>
@@ -36,43 +42,70 @@ function Browse() {
           </div>
         </nav>
 
-        {nav === "category" ? <Categories stories={stories} /> : <Tags />}
+        {nav === "category" ? (
+          <Categories stories={catStories} />
+        ) : (
+          <Tags stories={stories} tags={tags} />
+        )}
       </div>
     </StyledBrowse>
   );
 }
 
 function Categories({ stories }) {
-  if (!stories) return null;
   return (
     <section className="explore-categories">
       <div className="category-list list">
         <div className="column">
           <div className="symbol">😍</div>
-          <Link to={"/stories/fantasy"}>Fantasy</Link>
-          <Link to={"/stories/romance"}>Romance</Link>
-          <Link to={"/stories/action"}>Action</Link>
-          <Link to={"/stories/fanfiction"}>Fanfinction</Link>
+          <Link className="link" to={"/stories/fantasy"}>
+            Fantasy
+          </Link>
+          <Link className="link" to={"/stories/romance"}>
+            Romance
+          </Link>
+          <Link className="link" to={"/stories/action"}>
+            Action
+          </Link>
+          <Link className="link" to={"/stories/fanfiction"}>
+            Fanfinction
+          </Link>
         </div>
         <div className="column">
           <div className="symbol">💀</div>
-          <Link to={"/stories/horror"}>Horror</Link>
-          <Link to={"/stories/mystery"}>Mystery</Link>
-          <Link to={"/stories/paranormal"}>Paranormal</Link>
-          <Link to={"/stories/vampire"}>Vampire/Werewolf</Link>
+          <Link className="link" to={"/stories/horror"}>
+            Horror
+          </Link>
+          <Link className="link" to={"/stories/mystery"}>
+            Mystery
+          </Link>
+          <Link className="link" to={"/stories/paranormal"}>
+            Paranormal
+          </Link>
+          <Link className="link" to={"/stories/vampire"}>
+            Vampire/Werewolf
+          </Link>
         </div>
         <div className="column">
           <div className="symbol">🤓</div>
-          <Link to={"/stories/educational"}>Educational</Link>
-          <Link to={"/stories/debate"}>Debate</Link>
-          <Link to={"/stories/humor"}>Humor</Link>
-          <Link to={"/stories/nonFiction"}>Non-fiction</Link>
+          <Link className="link" to={"/stories/educational"}>
+            Educational
+          </Link>
+          <Link className="link" to={"/stories/debate"}>
+            Debate
+          </Link>
+          <Link className="link" to={"/stories/humor"}>
+            Humor
+          </Link>
+          <Link className="link" to={"/stories/nonFiction"}>
+            Non-fiction
+          </Link>
         </div>
       </div>
       <div className="story-list">
-        {stories.map((story) => {
+        {stories.map((story, index) => {
           return (
-            <div key={story._id} className="story">
+            <div key={index} className="story">
               <StoryCardRanked story={story} />
             </div>
           );
@@ -82,27 +115,19 @@ function Categories({ stories }) {
   );
 }
 
-function Tags() {
-  const { getTagSuggestions } = useContext(StoryContext);
-  const { data: { stories, tags } = {}, isStoriesLoading } = useQuery(
-    ["suggestions", "tags"],
-    () => getTagSuggestions()
-  );
-
-  if (isStoriesLoading) return null;
-
+function Tags({ stories, tags }) {
   return (
     <section className="explore-tags">
       <div className="tag-list list">
-        {tags?.map((tag) => {
-          return <Tag tag={tag} fontSize={"15px"} />;
+        {tags?.map((tag, index) => {
+          return <Tag key={index} tag={tag} fontSize={"14px"} />;
         })}
       </div>
 
       <div className="story-list">
-        {stories?.map((story) => {
+        {stories?.map((story, index) => {
           return (
-            <div key={story._id} className="story">
+            <div key={index} className="story">
               <StoryCardRanked story={story} />
             </div>
           );

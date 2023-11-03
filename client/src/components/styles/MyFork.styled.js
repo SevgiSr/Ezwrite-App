@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledMyFork = styled.div`
   display: flex;
-  padding: 20px 30px;
+  padding: 20px 15px;
   position: relative;
 
   .story-title {
@@ -61,6 +61,14 @@ const StyledMyFork = styled.div`
     text-align: start;
     margin-right: 2rem;
     color: var(--font2);
+    padding: 0 10px;
+    flex: 1;
+    overflow: hidden;
+    .story-title {
+      max-width: 100%; /* Ensure it doesn’t overflow parent */
+      word-wrap: break-word; /* Wrap content as necessary */
+      display: block;
+    }
   }
 
   .buttons {
@@ -68,8 +76,12 @@ const StyledMyFork = styled.div`
     display: flex;
     flex-direction: column;
     align-items: end;
+    .send-btn {
+      .icon {
+        font-size: 17px;
+      }
+    }
     .edit-chapters-btn {
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
 
@@ -101,6 +113,82 @@ const StyledMyFork = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: end;
+  }
+
+  header {
+    h1 {
+      color: #6f6f6f;
+      font-weight: 600;
+      margin-bottom: 1.7rem;
+      font-size: 21px;
+    }
+  }
+
+  .pull-form {
+    .form-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.3rem;
+
+      input,
+      textarea {
+        background-color: var(--background5);
+        border: none;
+        padding: 10px 15px;
+        font-size: 17px;
+        color: var(--font1);
+        width: 100%;
+      }
+
+      label {
+        color: var(--font2);
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 0.8rem;
+      }
+    }
+  }
+
+  .modal-content {
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    .buttons {
+      margin-top: 1.7rem;
+
+      .cancel-btn {
+        color: #222;
+        background-color: #eee;
+        border-color: #eee;
+      }
+      .cancel-btn:hover {
+        color: #222;
+        background-color: #e1e1e1;
+        border-color: #e1e1e1;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 640px) {
+    .buttons {
+      .send-btn {
+        .text {
+          display: none;
+        }
+        .icon {
+          margin-right: 0;
+        }
+      }
+      .edit-chapters-btn {
+        .text {
+          display: none;
+        }
+        .down-icon {
+          margin: 0 !important;
+        }
+      }
+    }
   }
 `;
 

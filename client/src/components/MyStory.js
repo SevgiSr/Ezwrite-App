@@ -10,6 +10,7 @@ import DropdownMenu from "./DropdownMenu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalCenter from "./ModalCenter";
 import getDate from "../utils/getDate.js";
+import { VscRepoForked } from "react-icons/vsc";
 
 const MyStory = ({ story }) => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const MyStory = ({ story }) => {
         <Link className="story-title" to={`/manage/${story._id}`}>
           {story.title}
         </Link>
-        <div className="publish-count">3 Taslak</div>
+        <div className="publish-count">{story.chapterCount.draft} Draft</div>
         <div className="update-date">
           <div className="date">Updated - {getDate(story.updatedAt)}</div>
         </div>
@@ -53,10 +54,13 @@ const MyStory = ({ story }) => {
       </div>
       <div className="buttons">
         <button
-          className="btn btn-basic"
+          className="btn btn-basic manage-btn"
           onClick={() => navigate(`/manage/${story._id}`)}
         >
-          Manage Story
+          <span className="icon">
+            <VscRepoForked />
+          </span>
+          <div className="text">Manage Story</div>
         </button>
         <div>
           <DropdownMenu

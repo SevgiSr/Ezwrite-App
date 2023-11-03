@@ -41,9 +41,7 @@ const StyledWorkspaceLayout = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
-    .link {
-      font-size: 23px;
-    }
+    font-size: 17px;
   }
 `;
 

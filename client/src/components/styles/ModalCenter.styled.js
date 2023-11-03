@@ -6,7 +6,7 @@ const StyledModalCenter = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Changed from 50% to -50% */
-    width: ${(props) => (props.width ? props.width : "550px")};
+    max-width: ${(props) => (props.width ? props.width : "550px")};
     z-index: 1000;
     background-color: var(--background3);
     border-radius: 5px;

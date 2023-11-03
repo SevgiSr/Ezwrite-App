@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledMyStory = styled.div`
   display: flex;
-  padding: 20px 30px;
+  padding: 20px 15px;
   position: relative;
 
   .story-title {
@@ -20,9 +20,8 @@ const StyledMyStory = styled.div`
   .chapters-dropdown {
     width: 100%;
     border-radius: 0;
-
     max-height: 250px;
-    max-width: 300px;
+    width: 200px;
     overflow: auto;
     background-color: var(--background2);
     scrollbar-color: var(--background5);
@@ -63,6 +62,14 @@ const StyledMyStory = styled.div`
     text-align: start;
     margin-right: 2rem;
     color: var(--font2);
+    padding: 0 10px;
+    flex: 1;
+    overflow: hidden;
+    .story-title {
+      max-width: 100%; /* Ensure it doesn’t overflow parent */
+      word-wrap: break-word; /* Wrap content as necessary */
+      display: block;
+    }
   }
 
   .buttons {
@@ -70,8 +77,13 @@ const StyledMyStory = styled.div`
     display: flex;
     flex-direction: column;
     align-items: end;
+    flex-shrink: 0;
+    .manage-btn {
+      .icon {
+        font-size: 17px;
+      }
+    }
     .edit-chapters-btn {
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
 
@@ -122,6 +134,27 @@ const StyledMyStory = styled.div`
         color: #222;
         background-color: #e1e1e1;
         border-color: #e1e1e1;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 640px) {
+    .buttons {
+      .manage-btn {
+        .text {
+          display: none;
+        }
+        .icon {
+          margin-right: 0;
+        }
+      }
+      .edit-chapters-btn {
+        .text {
+          display: none;
+        }
+        .down-icon {
+          margin: 0 !important;
+        }
       }
     }
   }

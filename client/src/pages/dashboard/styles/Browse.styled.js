@@ -79,6 +79,11 @@ const StyledBrowse = styled.div`
       .column {
         display: flex;
         flex-direction: column;
+
+        .link:hover {
+          background-color: var(--background2);
+        }
+
         > * {
           text-decoration: none;
           color: #fff;

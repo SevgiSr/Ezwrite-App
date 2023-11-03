@@ -10,7 +10,8 @@ const StyledStoryCardRanked = styled.div`
     cursor: pointer;
 
     .title {
-      font-size: 19px;
+      font-size: 16px;
+      margin-top: 5px;
       text-align: center;
       position: relative;
       color: var(--font2);

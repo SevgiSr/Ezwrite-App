@@ -9,6 +9,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import ModalCenter from "./ModalCenter";
 import StyledMyFork from "./styles/MyFork.styled";
 import getDate from "../utils/getDate";
+import { VscGitMerge } from "react-icons/vsc";
 
 function MyFork({ fork }) {
   const { useDeleteFork, sendPullRequest } = useContext(MyForkContext);
@@ -44,10 +45,13 @@ function MyFork({ fork }) {
       <div className="buttons">
         <div>
           <button
-            className="btn btn-basic"
+            className="btn btn-basic send-btn"
             onClick={() => setIsPullModalOpen(true)}
           >
-            Send Updates to Author
+            <div className="icon">
+              <VscGitMerge />
+            </div>
+            <div className="text">Send Updates to Author</div>
           </button>
         </div>
         <div>
@@ -108,11 +112,9 @@ function MyFork({ fork }) {
         content={
           <>
             <div className="warning">
-              <h2>Are you sure you want to permanently delete your story?</h2>
-              Deleting your story is permanent and cannot be undone. If you're
-              unsure, it's better to unpublish your story. Unpublished stories
-              can only be seen by you, so they don't get any new reads, votes,
-              or comments.
+              <h2>Are you sure you want to permanently delete your fork?</h2>
+              Deleting your fork is permanent and cannot be undone. You'll lose
+              your access to original story.
             </div>
             <div className="buttons flex-row">
               <button className="btn btn-main" onClick={handleDeleteClick}>
@@ -135,6 +137,9 @@ function MyFork({ fork }) {
         setIsOpen={setIsPullModalOpen}
         content={
           <>
+            <header>
+              <h1>Send Updates To Author</h1>
+            </header>
             <form className="pull-form">
               <div className="form-item">
                 <label htmlFor="title">Request Title</label>

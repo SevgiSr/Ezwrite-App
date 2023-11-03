@@ -7,6 +7,7 @@ const StyledMyForks = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
+    font-size: 17px;
   }
 
   .stories-container {
@@ -48,33 +49,6 @@ const StyledMyForks = styled.div`
 
     .content {
       font-size: 14px;
-    }
-  }
-
-  .pull-form {
-    display: flex;
-    flex-direction: column;
-
-    .form-item {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1.3rem;
-
-      input,
-      textarea {
-        background-color: var(--background5);
-        border: none;
-        padding: 10px 15px;
-        font-size: 17px;
-        color: var(--font1);
-      }
-
-      label {
-        color: var(--font2);
-        font-weight: 600;
-        font-size: 18px;
-        margin-bottom: 0.8rem;
-      }
     }
   }
 `;

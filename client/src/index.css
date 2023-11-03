@@ -40,7 +40,6 @@ html {
 
 
 
-
 :root {
   /* fonts */
 
@@ -261,7 +260,7 @@ html {
   text-align: center;
   color: var(--font2);
   background-color: var(--background4);
-  padding: 5px 15px;
+  padding: 0.3em 1.15em;
   font-size: 14px;
   line-height: 18px;
   border-radius: 6px;

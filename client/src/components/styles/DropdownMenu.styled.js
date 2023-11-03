@@ -12,6 +12,7 @@ const StyledDropdownMenu = styled.div`
 
   .dropdown-menu {
     position: absolute;
+    right: 0;
     background-color: var(--background5);
     border: transparent;
     border-radius: 0.25rem;

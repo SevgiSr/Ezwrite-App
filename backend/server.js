@@ -94,7 +94,12 @@ const loadTagsToMemory = async (trie) => {
     console.log(tags.map((tag) => tag.name));
     for (const tag of tags) {
       trie.insert(tag.name);
-      await redisClient.hSet("tags", tag.name, String(tag.count));
+      const tagObject = {
+        _id: tag._id,
+        name: tag.name,
+        count: tag.count,
+      };
+      await redisClient.hSet("tags", tag.name, JSON.stringify(tagObject));
     }
   } catch (error) {
     throw new Error(error.message);
