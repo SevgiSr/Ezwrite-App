@@ -40,6 +40,14 @@ function EditStoryDetails() {
 
   const [timestamp, setTimestamp] = useState(Date.now());
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // REMOVED BACKEND REQUEST THAT IS MADE FOR EACH AND SINGLE STORY
 
   //Instead decided to store myStories in the cache and take out individual stories out of there.
@@ -127,7 +135,11 @@ function EditStoryDetails() {
                 <SyncLoader />
               </div>
             ) : (
-              <Cover filename={story_id} width="280px" timestamp={timestamp} />
+              <Cover
+                filename={story_id}
+                width={windowWidth > 1000 ? "280px" : "210px"}
+                timestamp={timestamp}
+              />
             )}
           </div>
           <h1 className="title">{story.title}</h1>
@@ -219,6 +231,14 @@ function Contents() {
   const addChapterMutation = useAddChapter();
   const deleteChapterMutation = useDeleteChapter();
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleNewPartClick = async () => {
     const data = await addChapterMutation.mutateAsync({
       story_id: story_id,
@@ -235,13 +255,13 @@ function Contents() {
       <button
         disabled={deleteChapterMutation.isLoading}
         onClick={handleNewPartClick}
-        className="btn btn-main"
+        className="btn btn-main new-part-btn"
       >
-        New Part
+        + New Part
       </button>
       {story.chapters?.map((chapter) => {
         return (
-          <div key={chapter._id} className="row">
+          <div key={chapter._id} className="chapter-row">
             <div className="bars-icon icon">
               <FaBars />
             </div>
@@ -253,12 +273,12 @@ function Contents() {
                 <h3 className="title">{chapter.title}</h3>
               </Link>
               <div className="info">
-                <div>
-                  <span className="visibility">Published - </span>
-                  <span className="last-update">
-                    {getDate(chapter.updatedAt)}
-                  </span>
-                </div>
+                <span className="visibility">Published - </span>
+                <span className="last-update">
+                  {getDate(chapter.updatedAt)}
+                </span>
+              </div>
+              {windowWidth <= 720 && (
                 <div className="metadata">
                   <Metadata
                     views={chapter.views}
@@ -267,8 +287,19 @@ function Contents() {
                     comments={chapter.chapterConvs}
                   />
                 </div>
-              </div>
+              )}
             </div>
+            {windowWidth > 720 && (
+              <div className="metadata">
+                <Metadata
+                  views={chapter.views}
+                  likes={chapter.votesCount.upvotes}
+                  dislikes={chapter.votesCount.downvotes}
+                  comments={chapter.chapterConvs}
+                />
+              </div>
+            )}
+
             <div className="options">
               {deleteChapterMutation.isLoading ? (
                 <ClipLoader color="rgb(0, 178, 178)" size={25} />

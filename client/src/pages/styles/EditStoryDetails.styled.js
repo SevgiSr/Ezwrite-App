@@ -4,8 +4,9 @@ const StyledEditStoryDetails = styled.div`
   display: flex;
   justify-content: center;
   align-items: start;
-  padding: 7rem 0;
-  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 8rem 20px;
   .story-navbar {
     z-index: 999;
     position: fixed;
@@ -37,8 +38,7 @@ const StyledEditStoryDetails = styled.div`
       }
     }
     button {
-      margin-right: 20px;
-      padding: 7px 13px;
+      margin-left: 10px;
     }
   }
 
@@ -63,7 +63,7 @@ const StyledEditStoryDetails = styled.div`
       .cover-overlay {
         background-color: #eee;
         width: 280px;
-        height: 437px;
+        height: calc(280px * (125 / 80));
 
         .pulse-loader {
           width: 100%;
@@ -102,8 +102,12 @@ const StyledEditStoryDetails = styled.div`
     }
   }
   .chapters-main {
-    width: 600px;
+    width: 100%;
     background-color: var(--background5);
+
+    .new-part-btn {
+      margin-left: 1.5rem;
+    }
 
     header {
       border-bottom: 1px solid #eee;
@@ -114,11 +118,11 @@ const StyledEditStoryDetails = styled.div`
         list-style-type: none;
         display: flex;
         li {
-          font-size: 18px;
+          font-size: 16px;
           color: var(--font2);
           font-weight: 600;
           padding: 10px 10px;
-          margin: 10px 5px;
+          margin: 10px 0;
           border-radius: 10px;
           cursor: pointer;
         }
@@ -131,16 +135,35 @@ const StyledEditStoryDetails = styled.div`
     .details {
       width: 100%;
     }
-    .row {
+    .chapter-row {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
       padding: 10px 30px;
       .bars-icon {
         font-size: 25px;
         margin-right: 20px;
       }
+      .chapter {
+        display: flex;
+        align-items: start;
+        justify-content: start;
+        .info {
+          color: var(--font2);
+        }
+        .metadata {
+          margin: 0;
+          margin-top: 10px;
+        }
+      }
+
+      .metadata {
+        margin: 0 auto;
+        max-width: 200px;
+      }
+
       .options {
-        position: relative;
-        right: -18px;
+        margin-left: auto;
         .dropdown-item {
           padding: 10px;
           display: flex;
@@ -153,7 +176,6 @@ const StyledEditStoryDetails = styled.div`
           }
         }
         button {
-          padding: 0 15px;
           margin: 0;
           border: none;
           cursor: pointer;
@@ -168,7 +190,6 @@ const StyledEditStoryDetails = styled.div`
       .chapter {
         display: flex;
         flex-direction: column;
-        width: 40vw;
         padding: 10px 0;
         .title {
           width: fit-content;
@@ -194,12 +215,61 @@ const StyledEditStoryDetails = styled.div`
     }
   }
 
+  @media only screen and (max-width: 540px) {
+    .story-navbar {
+      .story {
+        span {
+          font-size: 13px;
+        }
+        .title {
+          font-size: 18px;
+        }
+      }
+      button {
+        margin-left: 5px;
+      }
+    }
+
+    .chapters-main {
+      header {
+        ul {
+          justify-content: center;
+          li {
+            font-size: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 790px) {
+    .chapters-main {
+      .chapter-row {
+        padding: 10px 20px;
+        .chapter {
+          .title {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
   @media only screen and (max-width: 1000px) {
     flex-direction: column;
     align-items: center;
 
+    .story-manage {
+      margin-right: 0;
+      .cover {
+        .cover-overlay {
+          width: 210px;
+          height: calc(210px * (125 / 80));
+        }
+      }
+    }
+
     .chapters-main {
-      width: 90vw;
       margin-top: 2rem;
     }
   }

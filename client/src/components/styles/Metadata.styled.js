@@ -8,6 +8,7 @@ const StyledMetadata = styled.div`
   color: var(--font2);
   > * {
     display: flex;
+    margin-right: 10px;
     .icon {
       font-size: 16px;
       padding-right: 3px;
