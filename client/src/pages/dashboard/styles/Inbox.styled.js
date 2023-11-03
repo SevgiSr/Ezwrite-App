@@ -44,6 +44,12 @@ const StyledInbox = styled.div`
       }
     }
   }
+
+  @media only screen and (max-width: 540px) {
+    .inbox {
+      padding: 15px 20px;
+    }
+  }
 `;
 
 export default StyledInbox;

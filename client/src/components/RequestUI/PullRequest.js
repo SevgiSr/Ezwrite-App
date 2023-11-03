@@ -146,6 +146,7 @@ const StyledPullRequest = styled.div`
   }
 
   .pull-text {
+    color: var(--font2);
     margin-left: 10px;
   }
 

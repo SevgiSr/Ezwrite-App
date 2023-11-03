@@ -1,12 +1,14 @@
 import StyledMessages from "./styles/Messages.styled";
 import { useContext, useEffect } from "react";
 import { useState } from "react";
-import SendMessage from "../../components/SendMessage";
 import socket from "../../socket.js";
 import { useParams } from "react-router-dom";
 import { ProfileContext } from "../../context/profileContext";
 import { Message } from "../../components/index.js";
 import { UserContext } from "../../context/userContext";
+import { useRef } from "react";
+import ProfilePicture from "../../components/ProfilePicture";
+import styled from "styled-components";
 
 function Messages() {
   const [messageContent, setMessageContent] = useState("");
@@ -99,5 +101,123 @@ function Messages() {
     </StyledMessages>
   );
 }
+
+function SendMessage({ messageContent, setMessageContent, handleSubmit }) {
+  const { userState } = useContext(UserContext);
+
+  const initialState = { msgBox: "", sendBtn: "" };
+  const [show, setShow] = useState(initialState);
+
+  const stateRef = useRef(show);
+
+  const setShowState = (state) => {
+    stateRef.current = state;
+    setShow(state);
+  };
+
+  const texareaRef = useRef();
+  const buttonRef = useRef();
+
+  const listener = (e) => {
+    if (e.target !== buttonRef.current && e.target !== texareaRef.current) {
+      setShowState(initialState);
+    } else {
+      setShowState({
+        ...stateRef.current,
+        [e.target.name]: `${e.target.name}-show`,
+      });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", listener);
+    return () => {
+      window.removeEventListener("click", listener);
+    };
+  }, []);
+
+  return (
+    <StyledSendMessage>
+      <form onSubmit={handleSubmit}>
+        <ProfilePicture
+          filename={userState.user._id}
+          width="50px"
+          height="50px"
+        />
+        <textarea
+          className={show.msgBox}
+          ref={texareaRef}
+          value={messageContent}
+          onChange={(e) => setMessageContent(e.target.value)}
+          name="msgBox"
+          id=""
+          cols="30"
+          rows="1"
+          placeholder="Type your message..."
+        ></textarea>
+        <button
+          className={`${show.sendBtn} btn btn-main`}
+          ref={buttonRef}
+          name="sendBtn"
+          type="submit"
+        >
+          Send
+        </button>
+      </form>
+    </StyledSendMessage>
+  );
+}
+
+const StyledSendMessage = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+
+  form {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    textarea {
+      border-radius: 15px;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 24px;
+      color: var(--font1);
+      background-color: var(--background5);
+      width: 85%;
+      height: 45px;
+      border: none;
+      padding: 0.5rem 0.8rem;
+      -webkit-transition: height 0.5s;
+      resize: none;
+    }
+    button {
+      cursor: pointer;
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      border: none;
+      padding: 10px 10px;
+    }
+    .sendBtn-show {
+      display: block;
+    }
+
+    .msgBox-show {
+      height: 80px;
+      margin-bottom: 40px;
+    }
+    .msgBox-show ~ button {
+      display: block;
+    }
+  }
+`;
 
 export default Messages;

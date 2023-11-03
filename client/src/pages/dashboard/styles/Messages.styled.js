@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
 const StyledMessages = styled.div`
-  width: fit-content;
   margin: 0 auto;
-  margin-top: 2.5rem;
-
+  padding: 2.5rem 20px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 500px;
 
   .title {
     font-size: 18px;
@@ -19,9 +19,8 @@ const StyledMessages = styled.div`
   .messages {
     background-color: var(--background5);
     border-radius: 15px;
-    height: 600px;
+    height: 57vh;
     width: 100%;
-    box-sizing: border-box;
     padding: 1rem;
     font-size: 16px;
     font-weight: 400;
@@ -30,6 +29,12 @@ const StyledMessages = styled.div`
     display: flex;
     flex-direction: column;
     overflow: auto;
+  }
+
+  @media only screen and (max-width: 540px) {
+  }
+
+  @media only screen and (max-width: 790px) {
   }
 `;
 
