@@ -5,8 +5,10 @@ const StyledChapter = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100px 0;
+  padding: 100px 20px;
   color: var(--font1);
+  max-width: 600px;
+  margin: 0 auto;
 
   .chapter-header {
     position: fixed;
@@ -62,7 +64,6 @@ const StyledChapter = styled.div`
 
     .story-dropdown-btn {
       width: 300px;
-      height: 100%;
       background-color: var(--background3);
       color: var(--font1);
       padding: 5px 10px;
@@ -171,7 +172,7 @@ const StyledChapter = styled.div`
   }
 
   .chapter {
-    width: 600px;
+    width: 100%;
     word-wrap: break-word;
     color: var(--font1);
     margin-bottom: 100px;
@@ -252,7 +253,8 @@ const StyledChapter = styled.div`
     }
     .comments-modal {
       display: none;
-      width: 500px;
+      max-width: 500px;
+      width: 100%;
       background-color: var(--background2);
       overflow-y: scroll;
       flex-direction: column;
@@ -262,8 +264,13 @@ const StyledChapter = styled.div`
       bottom: 0;
       z-index: 1000;
       border-radius: 5px;
-      padding: 30px;
+      padding: 50px 10px;
       scroll-behavior: smooth;
+      .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
     }
     .open-modal {
       display: flex;
@@ -271,14 +278,74 @@ const StyledChapter = styled.div`
   }
 
   .comments-section {
-    width: 600px;
+    width: 100%;
     .respond-component {
       form {
         background-color: transparent;
       }
     }
   }
-  @media (max-width: 900px) {
+
+  @media only screen and (max-width: 520px) {
+    .chapter-header {
+      .story-dropdown-btn {
+        .story-card {
+          margin-right: 10px;
+        }
+      }
+
+      .actions {
+        button {
+          margin-right: 1.5rem;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 630px) {
+    .chapter {
+      .comments-modal {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 720px) {
+    .chapter-header {
+      .story-dropdown-btn {
+        width: fit-content;
+        .story-card {
+          margin-right: 30px;
+        }
+      }
+      .actions {
+        .vote {
+          .text {
+            display: none;
+          }
+          .icon {
+            font-size: 18px;
+            margin-right: 0;
+          }
+        }
+      }
+    }
+
+    .chapter {
+      .flex-row {
+        h1 {
+          font-size: 23px;
+        }
+      }
+      .paragraph {
+        .content {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  @media only screen and (max-width: 900px) {
     .chapter-header {
       left: 0;
       width: 100%;

@@ -46,7 +46,6 @@ const UserCard = ({ user }) => {
 
   const handleFollowClick = async () => {
     if (localUser.name === user.name) return;
-    console.log("following...");
     await followProfileMutation.mutateAsync({ username: user.name });
 
     const notification = {
@@ -68,7 +67,6 @@ const UserCard = ({ user }) => {
   };
 
   const handleUnfollowClick = () => {
-    console.log("unfollowing..");
     unfollowProfileMutation.mutate({ username: user.name });
   };
 

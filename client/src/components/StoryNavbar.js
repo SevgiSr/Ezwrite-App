@@ -121,170 +121,163 @@ const Navbar = () => {
   if (!state.chapter) return null;
   return (
     <StyledStoryNavbar>
-      <nav className="navbarContainer">
-        <section className="story-section">
-          <Link
-            to={
-              myWork === "story"
-                ? "/workspace/myStories/"
-                : "/workspace/myForks/"
-            }
-            className="back-btn"
-          >
-            <div className="icon">
-              <IoIosArrowBack />
-            </div>
-          </Link>
+      <section className="story-section">
+        <Link
+          to={
+            myWork === "story" ? "/workspace/myStories/" : "/workspace/myForks/"
+          }
+          className="back-btn"
+        >
+          <div className="icon">
+            <IoIosArrowBack />
+          </div>
+        </Link>
 
-          <DropdownMenu
-            buttonClass="write-dropdown-btn"
-            menuClass="write-dropdown-menu"
-            button={
-              <div className="story-card">
-                <Cover width="40px" filename={state.story._id} />
-                <div className="story-info">
-                  <p className="story-title">
-                    <span>{state.story.title}</span>
-                    <span className="icon">
-                      <FiChevronDown />
-                    </span>
-                  </p>
-                  <h4 className="chapter-title">{state.chapter.title}</h4>
-                  <p className="update-info">
-                    {state.chapter.visibility?.toUpperCase()}{" "}
-                    <span>(Saved)</span>
-                  </p>
-                </div>
+        <DropdownMenu
+          buttonClass="write-dropdown-btn"
+          menuClass="write-dropdown-menu"
+          button={
+            <div className="story-card">
+              <Cover width="40px" filename={state.story._id} />
+              <div className="story-info">
+                <p className="story-title">
+                  <span>{state.story.title}</span>
+                  <span className="icon">
+                    <FiChevronDown />
+                  </span>
+                </p>
+                <h4 className="chapter-title">{state.chapter.title}</h4>
+                <p className="update-info">
+                  {state.chapter.visibility?.toUpperCase()} <span>(Saved)</span>
+                </p>
               </div>
-            }
-            menu={
-              <>
-                {state.chapters?.map((chapter) => {
-                  return (
-                    <div
-                      key={chapter._id}
-                      className={
-                        `dropdown-item ` +
-                        (chapter._id === state.chapter._id && `active`)
+            </div>
+          }
+          menu={
+            <>
+              {state.chapters?.map((chapter) => {
+                return (
+                  <div
+                    key={chapter._id}
+                    className={
+                      `dropdown-item ` +
+                      (chapter._id === state.chapter._id && `active`)
+                    }
+                  >
+                    <Link
+                      className="link"
+                      to={
+                        (myWork === "story"
+                          ? `/myworks/${state.story._id}`
+                          : `/myforks/${fork_id}`) + `/${chapter._id}/writing`
                       }
                     >
-                      <Link
-                        className="link"
-                        to={
-                          (myWork === "story"
-                            ? `/myworks/${state.story._id}`
-                            : `/myforks/${fork_id}`) + `/${chapter._id}/writing`
-                        }
-                      >
-                        <div>{chapter.title}</div>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </>
-            }
-            extra={
-              <button
-                type="button"
-                onClick={handleNewPartClick}
-                className="btn btn-main new-part-btn"
-              >
-                + New Part
-              </button>
-            }
-          />
-        </section>
-
-        <section className="buttons">
-          {(mutationStateStory.isLoading || mutationStateFork.isLoading) && (
-            <div style={{ marginRight: "15px" }}>
-              <ClipLoader size={15} color="#fff" />
-            </div>
-          )}
-
-          <DropdownMenu
-            buttonClass="btn"
-            button={
-              <>
-                <div className="icon">
-                  <AiOutlineHistory />
-                </div>
-                History
-              </>
-            }
-            menu={
-              <>
-                {!state.chapter.history && (
-                  <div style={{ height: "50px", width: "100%" }}></div>
-                )}
-                {state.chapter.history?.map((history) => {
-                  return (
-                    <div key={history._id}>
-                      <div
-                        onClick={() => handleRestoreHistoryClick(history._id)}
-                      >
-                        {getDate(history?.createdAt)}
-                      </div>
-                    </div>
-                  );
-                })}
-              </>
-            }
-          />
-
-          {myWork === "story" &&
-            (state.chapter.visibility === "draft" ? (
-              <button
-                onClick={handlePublishClick}
-                type="submit"
-                className="btn btn-main"
-              >
-                Publish
-              </button>
-            ) : (
-              <button
-                onClick={handleUnpublishClick}
-                type="submit"
-                className="btn btn-main"
-              >
-                Unpublish
-              </button>
-            ))}
-
-          <button type="submit" id="saveButton" className="btn btn-grey">
-            Save
-          </button>
-          <button className="btn btn-grey">Preview</button>
-          <div className="options">
-            {deleteChapterMutation.isLoading ||
-            deleteForkChapterMutation.isLoading ? (
-              <ClipLoader color="rgb(0, 178, 178)" size={18} />
-            ) : (
-              <DropdownMenu
-                button={
-                  <div className="icon">
-                    <RiMoreFill />
+                      <div>{chapter.title}</div>
+                    </Link>
                   </div>
-                }
-                menu={
-                  <>
-                    <button
-                      onClick={handleDeleteClick}
-                      className="dropdown-item"
-                      type="button"
-                    >
-                      <div className="icon">
-                        <FaTrash />
-                      </div>
-                      Delete Chapter
-                    </button>
-                  </>
-                }
-              />
-            )}
+                );
+              })}
+            </>
+          }
+          extra={
+            <button
+              type="button"
+              onClick={handleNewPartClick}
+              className="btn btn-main new-part-btn"
+            >
+              + New Part
+            </button>
+          }
+        />
+      </section>
+
+      <section className="buttons">
+        {(mutationStateStory.isLoading || mutationStateFork.isLoading) && (
+          <div style={{ marginRight: "15px" }}>
+            <ClipLoader size={15} color="#fff" />
           </div>
-        </section>
-      </nav>
+        )}
+
+        <DropdownMenu
+          buttonClass="btn"
+          button={
+            <>
+              <div className="icon">
+                <AiOutlineHistory />
+              </div>
+              History
+            </>
+          }
+          menu={
+            <>
+              {!state.chapter.history && (
+                <div style={{ height: "50px", width: "100%" }}></div>
+              )}
+              {state.chapter.history?.map((history) => {
+                return (
+                  <div key={history._id}>
+                    <div onClick={() => handleRestoreHistoryClick(history._id)}>
+                      {getDate(history?.createdAt)}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          }
+        />
+
+        {myWork === "story" &&
+          (state.chapter.visibility === "draft" ? (
+            <button
+              onClick={handlePublishClick}
+              type="submit"
+              className="btn btn-main"
+            >
+              Publish
+            </button>
+          ) : (
+            <button
+              onClick={handleUnpublishClick}
+              type="submit"
+              className="btn btn-main"
+            >
+              Unpublish
+            </button>
+          ))}
+
+        <button type="submit" id="saveButton" className="btn btn-grey">
+          Save
+        </button>
+        <button className="btn btn-grey">Preview</button>
+        <div className="options">
+          {deleteChapterMutation.isLoading ||
+          deleteForkChapterMutation.isLoading ? (
+            <ClipLoader color="rgb(0, 178, 178)" size={18} />
+          ) : (
+            <DropdownMenu
+              button={
+                <div className="icon options-btn">
+                  <RiMoreFill />
+                </div>
+              }
+              menu={
+                <>
+                  <button
+                    onClick={handleDeleteClick}
+                    className="dropdown-item"
+                    type="button"
+                  >
+                    <div className="icon">
+                      <FaTrash />
+                    </div>
+                    Delete Chapter
+                  </button>
+                </>
+              }
+            />
+          )}
+        </div>
+      </section>
     </StyledStoryNavbar>
   );
 };

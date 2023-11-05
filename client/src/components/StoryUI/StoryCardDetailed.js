@@ -22,7 +22,6 @@ const StoryCardDetailed = ({ story }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log("click");
     setIsModalOpen(true);
   };
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

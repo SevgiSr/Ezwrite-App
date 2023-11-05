@@ -31,8 +31,6 @@ const MyStory = ({ story }) => {
 
   const handleDeleteClick = () => {
     setIsModalOpen(false);
-    console.log("deleting");
-    console.log(story.title);
     deleteStoryMutation.mutate({ story_id: story._id });
   };
 
@@ -137,7 +135,6 @@ const MyStory = ({ story }) => {
               <button
                 className="btn-grey btn"
                 onClick={() => {
-                  console.log(story.title);
                   setIsModalOpen(false);
                 }}
               >

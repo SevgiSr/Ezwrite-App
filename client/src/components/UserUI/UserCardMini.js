@@ -55,7 +55,6 @@ const UserCardMini = ({ user }) => {
   };
 
   const handleUnfollowClick = () => {
-    console.log("unfollowing..");
     unfollowProfile(user.name);
   };
 

@@ -44,7 +44,6 @@ const ProfileNavbar = ({ links, profileData }) => {
   const { username } = useParams();
 
   const handleFollowClick = async () => {
-    console.log(user.name, username);
     if (user.name === username) return;
     await followProfileMutation.mutateAsync({ username });
     const notification = {
@@ -62,7 +61,6 @@ const ProfileNavbar = ({ links, profileData }) => {
   };
 
   const handleUnfollowClick = () => {
-    console.log("unfollowing..");
     unfollowProfileMutation.mutate({ username });
   };
 

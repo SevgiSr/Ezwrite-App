@@ -29,8 +29,6 @@ function Story() {
   const { story_id } = useParams();
   const location = useLocation();
 
-  console.log(location.pathname);
-
   const {
     data: progress = {},
     isLoading,
@@ -56,14 +54,16 @@ function Story() {
   useEffect(() => {
     if (!isFetching && status === "success") {
       const { chapters, story } = progress;
+      console.log("setting chapter");
       setChapter(story, story.chapters, chapters[0]);
+      console.log(story, story.chapters, chapters[0]);
     }
   }, [location, isFetching]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-  if (!state.story || !state.chapter) return null;
+  if (!state.story) return null;
 
   return (
     <StyledStory>

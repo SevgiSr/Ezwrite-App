@@ -7,7 +7,7 @@ const StyledWriting = styled.div`
 
   #writer-editor {
     max-width: 900px;
-    width: auto;
+    width: 100%;
     margin: 0 auto;
     padding: 48px 90px;
     display: flex;
@@ -148,6 +148,27 @@ const StyledWriting = styled.div`
 
     resize: none;
     /*remove the resize handle on the bottom right*/
+  }
+
+  @media only screen and (max-width: 720px) {
+    #writer-editor {
+      padding: 70px 27px;
+    }
+
+    #editTitle {
+      font-size: 1.7rem;
+    }
+
+    #editStory {
+      font-size: 15px;
+    }
+
+    .active-paragraph {
+      .AI-icon {
+        left: -20px;
+        font-size: 12px;
+      }
+    }
   }
 `;
 

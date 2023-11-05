@@ -384,6 +384,12 @@ function Paragraph({ paragraph, storyAuthor, mainUser, conv_id }) {
         key={"modal-" + paragraph._id}
         className={"comments-modal " + (openModal ? "open-modal" : "")}
       >
+        <button
+          className="close-btn btn btn-basic"
+          onClick={() => setOpenModal(false)}
+        >
+          X
+        </button>
         <Respond
           text={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
           activity={`<strong>${userState.user.name}</strong> commented on <strong>${state.story.title} - ${state.chapter.title}</strong>`}
@@ -609,7 +615,7 @@ function ChapterHeader({ isChapterLoading, user }) {
                     className="btn btn-main"
                   >
                     {createListMutation.isLoading ? (
-                      <ClipLoader size={13} color="#fff" />
+                      <ClipLoader size={13} color="var(--btn-main)" />
                     ) : (
                       <span>+</span>
                     )}
@@ -683,7 +689,7 @@ function StoryDropdown() {
         button={
           <>
             <div className="story-card">
-              <Cover width="30px" filename={state.story._id} />
+              <Cover width="30px" filename={state.story._id} isStatic={true} />
               <div className="info">
                 <span className="title">{state.story.title}</span>
                 <span className="author">by {state.story?.author?.name}</span>

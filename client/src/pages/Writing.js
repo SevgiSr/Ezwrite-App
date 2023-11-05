@@ -1,28 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { handleKeyDown } from "../utils/handleKeyDown";
 import { AIForm, Navbar } from "../components";
 import { useContext } from "react";
 import { MyStoryContext } from "../context/myStoryContext";
 import { useLocation, useParams } from "react-router-dom";
-import he from "he";
 import { BsFillPencilFill } from "react-icons/bs";
-import { FaRegPaperPlane } from "react-icons/fa";
 import { createRoot } from "react-dom/client";
-import ReactDOM from "react-dom";
 import StyledWriting from "./styles/Writing.styled";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../context/userContext";
-import { Discuss } from "react-loader-spinner";
 import MediumEditor from "medium-editor";
 import "medium-editor/dist/css/medium-editor.css";
 import "../assets/edited-beagle.css";
 import { MyForkContext } from "../context/myForkContext";
 
 function Writing() {
-  const queryClient = useQueryClient();
   //dont change chapterBody at each typed character or cursor gets messed up - no onInput(aka. onChange)
   //just use it for saving and first loading times
-  const [chapterBody, setChapterBody] = useState("Type the text...");
   const [chapterTitle, setChapterTitle] = useState("");
   const [myWork, setMyWork] = useState("");
   const {

@@ -139,6 +139,7 @@ function EditStoryDetails() {
                 filename={story_id}
                 width={windowWidth > 1000 ? "280px" : "210px"}
                 timestamp={timestamp}
+                isStatic={true}
               />
             )}
           </div>

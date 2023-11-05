@@ -4,6 +4,7 @@ const StyledStory = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-bottom: 5rem;
 
   > * {
     width: 100%;
@@ -148,6 +149,11 @@ const StyledStory = styled.div`
       text-align: center;
       .info {
         margin-top: 1rem;
+        margin-left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
     }
     main {

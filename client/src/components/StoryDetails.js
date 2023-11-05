@@ -109,10 +109,8 @@ function TagsField({ tags, setTags }) {
   const handleTagInputChange = async (event) => {
     const newInput = event.target.value;
     setInput(newInput);
-    console.log(newInput);
     if (newInput.length > 0) {
       const tagCounts = await getTags(newInput);
-      console.log(tagCounts);
       setSuggestions(tagCounts);
     } else {
       setSuggestions([]);
