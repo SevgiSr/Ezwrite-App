@@ -80,7 +80,7 @@ const UserCard = ({ user }) => {
         to={`/user/${user.name}`}
         style={{ textDecoration: "none", color: "#222" }}
       >
-        <BackgroundPicture filename={user._id} height="102px" />
+        <BackgroundPicture filename={user._id} height="95px" />
         <div className="main">
           <div className="profilePicture">
             <ProfilePicture filename={user._id} width="70px" height="70px" />

@@ -153,7 +153,7 @@ const StyledProfileView = styled.header`
         display: flex;
 
         li {
-          margin: 0 1.2em;
+          margin: 0 1em;
           .info-btn {
             width: 100%;
             height: 100%;
@@ -259,6 +259,7 @@ const StyledProfileView = styled.header`
       }
       .icon {
         font-size: 23px;
+        margin-right: 0;
       }
     }
   }

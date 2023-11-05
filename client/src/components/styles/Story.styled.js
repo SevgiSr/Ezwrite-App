@@ -9,6 +9,20 @@ const StyledStory = styled.div`
   border-radius: 4px;
   width: 100%;
 
+  .title,
+  .meta-data,
+  .description {
+    max-width: 100%;
+  }
+
+  .description,
+  .author,
+  .title h3 {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
   .content {
     margin-left: 10px;
 
@@ -19,14 +33,13 @@ const StyledStory = styled.div`
       .visibility {
         margin-left: 10px;
         background-color: #6f6f6f;
-        padding: 3px 5px;
+        padding: 5px 8px;
         border-radius: 20px;
       }
       h3 {
         font-size: 18px;
         line-height: 28px;
         font-weight: 600;
-        width: fit-content;
         border-bottom: 2px solid transparent;
       }
       h3:hover {
@@ -43,7 +56,6 @@ const StyledStory = styled.div`
       color: var(--font2);
       display: flex;
       font-size: 12px;
-      width: fit-content;
       > * {
         display: flex;
         margin-right: 10px;
@@ -61,7 +73,6 @@ const StyledStory = styled.div`
       color: var(--font1);
       font-size: 12px;
       line-height: 21px;
-      word-break: break-word;
     }
   }
 

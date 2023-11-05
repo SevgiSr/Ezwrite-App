@@ -36,7 +36,7 @@ const StyledUserCard = styled.article`
     }
     .profile-button {
       width: 70%;
-      margin: 15px 0;
+      margin: 10px 0;
       display: flex;
       justify-content: center;
     }
@@ -52,10 +52,10 @@ const StyledUserCard = styled.article`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin: 0 10px;
-        font-size: 20px;
+        margin: 0 5px;
+        font-size: 16px;
         span {
-          font-size: 14px;
+          font-size: 13px;
         }
       }
     }

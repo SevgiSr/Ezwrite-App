@@ -6,7 +6,7 @@ function Cover({ width, filename, timestamp }) {
     return (
       <div
         style={{
-          width: width,
+          maxWidth: width,
           height: height,
           backgroundColor: "var(--font2)",
           boxShadow: "0 8px 12px rgb(8 8 8 / 18%)",

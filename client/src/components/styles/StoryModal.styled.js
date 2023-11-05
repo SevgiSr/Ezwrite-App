@@ -4,6 +4,7 @@ const StyledStoryModal = styled.div`
   .modal-content-custom {
     display: flex;
     flex-direction: row;
+    width: 100%;
 
     .modal-main {
       .metadata {
@@ -62,9 +63,15 @@ const StyledStoryModal = styled.div`
 
       .read-btn {
         margin-top: auto;
-        width: 98%;
+        max-width: 98%;
       }
     }
+  }
+
+  @media only screen and (max-width: 540px) {
+  }
+
+  @media only screen and (max-width: 720px) {
   }
 `;
 

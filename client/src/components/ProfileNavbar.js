@@ -115,7 +115,7 @@ const ProfileNavbar = ({ links, profileData }) => {
 
       {profileState.isEditMode && <div className="navbar-overlay"></div>}
       <div className="parent">
-        <NavLinks links={links} />
+        <NavLinks links={links} fontSize="17px" />
 
         {!profileData.isMainUser && (
           <div className="buttons">

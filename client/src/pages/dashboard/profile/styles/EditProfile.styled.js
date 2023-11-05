@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 const StyledEditProfile = styled.div`
   color: var(--font1);
-
   display: flex;
   justify-content: center;
+  padding: 10px 23px;
   form {
     width: 800px;
     margin-bottom: 3em;

@@ -1,13 +1,21 @@
 import styled from "styled-components";
 
 const StyledPosts = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   #parent {
-    width: 550px;
+    max-width: 550px;
+    width: 100%;
     margin-bottom: 150px;
+  }
+
+  .column-reverse {
+    width: 100%;
+
+    .conv {
+      width: 100%;
+    }
   }
 `;
 

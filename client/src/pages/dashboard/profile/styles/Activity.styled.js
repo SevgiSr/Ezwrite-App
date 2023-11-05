@@ -5,10 +5,9 @@ const StyledActivity = styled.div`
   align-items: center;
   justify-content: center;
   padding-bottom: 5rem;
-
-  .row {
-    display: flex;
-    align-items: center;
+  .column-reverse {
+    max-width: 650px;
+    width: 100%;
   }
 `;
 

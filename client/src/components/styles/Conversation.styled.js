@@ -5,6 +5,7 @@ const StyledConversation = styled.article`
   background-color: var(--background5);
   padding: 20px 20px;
   margin-top: 1.7rem;
+  width: 100%;
 
   header {
     display: flex;
