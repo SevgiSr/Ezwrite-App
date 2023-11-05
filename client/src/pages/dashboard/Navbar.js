@@ -5,19 +5,18 @@ import src from "./logo.png";
 import ProfilePicture from "../../components/ProfilePicture";
 import { UserContext } from "../../context/userContext";
 import { FiSearch } from "react-icons/fi";
-import { AiFillBell, AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
+import { AiFillCaretDown, AiOutlineMenu } from "react-icons/ai";
 import socket from "../../socket.js";
 import { useLocation } from "react-router-dom";
 import DropdownMenu from "../../components/DropdownMenu";
-import { BsEnvelope, BsFillEnvelopeFill, BsPencilSquare } from "react-icons/bs";
+import { BsFillEnvelopeFill, BsPencilSquare } from "react-icons/bs";
 import { BiArrowBack, BiNetworkChart } from "react-icons/bi";
-import { FaBell, FaUserClock } from "react-icons/fa";
-import { GiHamburgerMenu } from "react-icons/gi";
-import SideNavbar from "./SideNavbar";
+import { FaBell } from "react-icons/fa";
 import { ProfileContext } from "../../context/profileContext";
+import styled from "styled-components";
 
 function Navbar() {
-  const { userState, logoutUser } = useContext(UserContext);
+  const { logoutUser } = useContext(UserContext);
   const { queryClient } = useContext(ProfileContext);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -37,30 +36,6 @@ function Navbar() {
 
   ///////for query///////
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const navigate = useNavigate();
-
-  const [query, setQuery] = useState("");
-
-  const handleChange = (e) => {
-    setQuery(e.target.value);
-  };
-
-  const handleOpenSearch = () => {
-    setIsSearchOpen(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate(`/stories/search/${query}`);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
 
   //for notification
   useEffect(() => {
@@ -117,36 +92,28 @@ function Navbar() {
             </Link>
           </div>
 
-          <form id="search-form">
-            <button
-              type="button"
-              onClick={windowWidth > 1280 ? handleSubmit : handleOpenSearch}
-            >
-              <FiSearch />
-            </button>
-            <input
-              onChange={handleChange}
-              name="query"
-              value={query}
-              placeholder="Search..."
-              type="text"
-              onKeyDown={handleKeyDown}
+          {windowWidth > 540 && (
+            <SearchForm
+              windowWidth={windowWidth}
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
             />
-            {isSearchOpen && (
-              <SearchForm
-                handleChange={handleChange}
-                query={query}
-                setIsSearchOpen={setIsSearchOpen}
-                handleKeyDown={handleKeyDown}
-              />
-            )}
-          </form>
+          )}
         </nav>
       </div>
 
       <div className="section">
         <nav id="actions">
           <ul className="nav-items">
+            <li className="nav-item">
+              {windowWidth <= 540 && (
+                <SearchForm
+                  windowWidth={windowWidth}
+                  isSearchOpen={isSearchOpen}
+                  setIsSearchOpen={setIsSearchOpen}
+                />
+              )}
+            </li>
             <li className="nav-item">
               <Link to={`/workspace/myStories/`} className="nav-link">
                 <BsPencilSquare />
@@ -226,7 +193,143 @@ function Navbar() {
   );
 }
 
-function SearchForm({ handleChange, query, setIsSearchOpen, handleKeyDown }) {
+function SearchForm({ windowWidth, isSearchOpen, setIsSearchOpen }) {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleOpenSearch = () => {
+    setIsSearchOpen(true);
+  };
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/stories/search/${query}`);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  return (
+    <StyledSearchForm>
+      <button
+        type="button"
+        className="search-btn"
+        onClick={windowWidth > 1280 ? handleSubmit : handleOpenSearch}
+      >
+        <FiSearch />
+      </button>
+
+      <input
+        onChange={handleChange}
+        name="query"
+        value={query}
+        placeholder="Search..."
+        type="text"
+        onKeyDown={handleKeyDown}
+      />
+      {isSearchOpen && (
+        <SearchFormModal
+          handleChange={handleChange}
+          query={query}
+          setIsSearchOpen={setIsSearchOpen}
+          handleKeyDown={handleKeyDown}
+        />
+      )}
+    </StyledSearchForm>
+  );
+}
+
+const StyledSearchForm = styled.form`
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  margin-left: 30px;
+  z-index: 9999;
+
+  button {
+    border: none;
+    font-size: 23px;
+    color: var(--font2);
+    padding: 5px 7px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    :hover {
+      background-color: var(--background4);
+    }
+  }
+
+  input {
+    padding: 9px 13px;
+    border-radius: 9px;
+    width: 270px;
+    background-color: var(--background1);
+    color: var(--font1);
+    border: none;
+    margin-left: 5px;
+
+    ::placeholder {
+      color: var(--font2);
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+  .modal-search-form {
+    background-color: var(--background5);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    padding-left: 0;
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    display: flex;
+    input {
+      display: block;
+      width: 270px;
+    }
+  }
+
+  @media only screen and (max-width: 540px) {
+    margin-left: 0;
+    button {
+      font-size: 20px;
+      padding: 5px 16px;
+      background-color: transparent !important;
+    }
+
+    .modal-search-form {
+      input {
+        width: 150px;
+      }
+    }
+  }
+  @media only screen and (max-width: 1280px) {
+    input {
+      display: none;
+    }
+    button {
+      background-color: var(--background5);
+    }
+  }
+`;
+
+function SearchFormModal({
+  handleChange,
+  query,
+  setIsSearchOpen,
+  handleKeyDown,
+}) {
   return (
     <div className="modal-search-form">
       <button type="button" onClick={() => setIsSearchOpen(false)}>

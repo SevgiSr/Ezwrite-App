@@ -52,55 +52,6 @@ const StyledNavbar = styled.header`
         overflow: clip;
       }
     }
-
-    #search-form {
-      height: fit-content;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      position: relative;
-      margin-left: 30px;
-
-      button {
-        border: none;
-        font-size: 23px;
-        color: var(--font2);
-        padding: 5px 7px;
-
-        border-radius: 100%;
-        :hover {
-          background-color: var(--background4);
-        }
-      }
-
-      input {
-        padding: 9px 13px;
-        border-radius: 9px;
-        width: 270px;
-        background-color: var(--background1);
-        color: var(--font1);
-
-        ::placeholder {
-          color: var(--font2);
-          font-size: 15px;
-          font-weight: 500;
-        }
-      }
-      .modal-search-form {
-        background-color: var(--background5);
-        box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
-        padding: 10px 0;
-        border-radius: 10px;
-        position: absolute;
-        left: 0;
-        width: 330px;
-        display: flex;
-        z-index: 999;
-        input {
-          display: block;
-        }
-      }
-    }
   }
 
   #actions {
@@ -170,11 +121,6 @@ const StyledNavbar = styled.header`
     }
   }
 
-  #search-form input {
-    border: none;
-    margin-left: 5px;
-  }
-
   #profile-dropdown {
     position: relative;
     .pp {
@@ -208,6 +154,19 @@ const StyledNavbar = styled.header`
     }
   }
 
+  @media only screen and (max-width: 540px) {
+    #actions {
+      .nav-items {
+        .nav-item {
+          .nav-link {
+            font-size: 20px;
+            padding: 5px 16px;
+          }
+        }
+      }
+    }
+  }
+
   @media only screen and (max-width: 768px) {
     padding: 0;
     #write-dropdown,
@@ -217,16 +176,6 @@ const StyledNavbar = styled.header`
 
     .username {
       display: none;
-    }
-  }
-  @media only screen and (max-width: 1280px) {
-    #search-form {
-      input {
-        display: none;
-      }
-      button {
-        background-color: var(--background5);
-      }
     }
   }
 `;

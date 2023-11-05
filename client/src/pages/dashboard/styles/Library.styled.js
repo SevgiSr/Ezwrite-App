@@ -15,11 +15,11 @@ const StyledLibrary = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: start;
-    flex-wrap: wrap;
     margin-bottom: 20px;
 
     .continue-stories {
       display: flex;
+      flex-wrap: wrap;
     }
     .item {
       margin-right: 25px;

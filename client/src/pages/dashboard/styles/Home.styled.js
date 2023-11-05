@@ -73,6 +73,14 @@ const StyledHome = styled.div`
   /*   .row--item:hover {
     transform: scale(1.08);
   } */
+
+  @media only screen and (max-width: 540px) {
+    .items-row {
+      h2 {
+        font-size: 17px;
+      }
+    }
+  }
 `;
 
 export default StyledHome;

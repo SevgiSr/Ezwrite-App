@@ -236,19 +236,32 @@ const StyledProfileView = styled.header`
   }
 
   @media only screen and (max-width: 550px) {
-    .main-profile-info {
-      margin-right: auto;
-    }
+    #profile-info {
+      .main-profile-info {
+        margin-right: auto;
+        .profile-picture {
+          border: 10px solid var(--background3);
+        }
+        .usernames {
+          .profile-name {
+            font-size: 20px;
+          }
+          .username {
+            font-size: 13px;
+          }
+        }
+      }
 
-    //both flex children
-    //put pp on the left edge and metadata centered
-    .extra-profile-info {
-      margin: 0 auto;
-    }
-    .edit-profile-btn {
-      position: absolute;
-      top: -50px;
-      right: 0;
+      //both flex children
+      //put pp on the left edge and metadata centered
+      .extra-profile-info {
+        margin: 0 auto;
+      }
+      .edit-profile-btn {
+        position: absolute;
+        top: -50px;
+        right: 0;
+      }
     }
   }
 

@@ -44,7 +44,7 @@ function MobileSideNavbar() {
         )}
         {windowWidth <= 768 && (
           <li>
-            <Link to="" className="link">
+            <Link to="/collaborations" className="link">
               <div className="icon">
                 <BiNetworkChart />
               </div>
@@ -61,7 +61,7 @@ function MobileSideNavbar() {
           </Link>
         </li>
         <li>
-          <Link to="" className="link">
+          <Link to="/feed" className="link">
             <div className="icon">
               <FaUserClock />
             </div>
@@ -113,6 +113,14 @@ const StyledMobileSideNavbar = styled.nav`
         .icon {
           margin-right: 10px;
         }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 720px) {
+    ul {
+      li {
+        font-size: 20px;
       }
     }
   }
