@@ -47,7 +47,7 @@ function CollabRequest({ collab, isOverview }) {
           <div className="collab-text">
             wants to collaborate in your story <b>{collab.story.title}</b>
           </div>
-          <Cover filename={collab.story._id} width="30px" />
+          <Cover filename={collab.story._id} width="30px" isStatic={true} />
         </Link>
       ) : (
         <div className="detailed">

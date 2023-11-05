@@ -52,7 +52,7 @@ function PullRequest({ pull, isOverview }) {
               <div className="desc">{pull.description}</div>
             </div>
           </div>
-          <Cover filename={pull.fork.story._id} width="30px" />
+          <Cover filename={pull.fork.story._id} width="30px" isStatic={true} />
         </Link>
       ) : (
         <div className="detailed">

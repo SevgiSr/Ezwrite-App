@@ -8,10 +8,13 @@ import { useContext, useState } from "react";
 import ModalCenter from "../ModalCenter";
 import ProfilePicture from "../ProfilePicture";
 import UserLine from "../UserUI/UserLine";
-import Metadata from "../Metadata";
+import Metadata from "../MetadataUI/MetadataComments";
 import { UserContext } from "../../context/userContext";
 import Tag from "../Tag";
 import StoryModal from "../StoryModal";
+import MetadataDetailed from "../MetadataUI/MetadataDetailed";
+import { useEffect } from "react";
+import MetadataBasic from "../MetadataUI/MetadataBasic";
 
 const StoryCardDetailed = ({ story }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +25,13 @@ const StoryCardDetailed = ({ story }) => {
     console.log("click");
     setIsModalOpen(true);
   };
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const myProgress = story.progress.find((p) => p.user === userState.user._id);
 
@@ -37,39 +47,30 @@ const StoryCardDetailed = ({ story }) => {
         </div>
 
         <div className="author">
-          <UserLine user={story.author} />
+          <UserLine
+            user={story.author}
+            width={windowWidth > 540 ? "35px" : "21px"}
+          />
         </div>
 
-        <div className="meta-data">
-          <div>
-            <div className="icon">
-              <GoEye />
-              <span>Reads</span>
-            </div>
-            <div className="count">{story.views}</div>
-          </div>
-          <div>
-            <div className="icon">
-              <BsFillStarFill />
-              <span>Votes</span>
-            </div>
-            <div className="count">{story.votesCount.upvotes}</div>
-          </div>
-          <div>
-            <div className="icon">
-              <AiFillDislike />
-              <span>Downvotes</span>
-            </div>
-            <div className="count">{story.votesCount.downvotes}</div>
-          </div>
-          <div>
-            <div className="icon">
-              <AiOutlineBars />
-              <span>Parts</span>
-            </div>
-            <div className="count">{story.chapters.length}</div>
-          </div>
+        <div className="metadata">
+          {windowWidth > 540 ? (
+            <MetadataDetailed
+              views={story.views}
+              upvotes={story.votesCount.upvotes}
+              downvotes={story.votesCount.downvotes}
+              chapters={story.chapters.length}
+            />
+          ) : (
+            <MetadataBasic
+              views={story.views}
+              upvotes={story.votesCount.upvotes}
+              downvotes={story.votesCount.downvotes}
+              chapters={story.chapters.length}
+            />
+          )}
         </div>
+
         <div className="tags">
           {story.tags?.slice(0, 4).map((tag) => {
             return <Tag tag={tag} fontSize="10px" />;

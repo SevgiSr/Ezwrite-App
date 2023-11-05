@@ -69,6 +69,30 @@ const StyledStoryModal = styled.div`
   }
 
   @media only screen and (max-width: 540px) {
+    .modal-content-custom {
+      .modal-main {
+        .metadata {
+          font-size: 12px;
+          .icon {
+            font-size: 11px;
+          }
+        }
+        .cover {
+          .details-btn {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .modal-details {
+        .modal-title {
+          font-size: 17px;
+        }
+        .read-btn {
+          font-size: 13px;
+        }
+      }
+    }
   }
 
   @media only screen and (max-width: 720px) {

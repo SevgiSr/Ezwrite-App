@@ -8,7 +8,7 @@ import { ClipLoader, SyncLoader } from "react-spinners";
 import getDate from "../utils/getDate";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DropdownMenu, Metadata, StoryDetails } from "../components";
+import { DropdownMenu, MetadataComments, StoryDetails } from "../components";
 import { RiMoreFill } from "react-icons/ri";
 
 function EditStoryDetails() {
@@ -280,7 +280,7 @@ function Contents() {
               </div>
               {windowWidth <= 720 && (
                 <div className="metadata">
-                  <Metadata
+                  <MetadataComments
                     views={chapter.views}
                     likes={chapter.votesCount.upvotes}
                     dislikes={chapter.votesCount.downvotes}
@@ -291,7 +291,7 @@ function Contents() {
             </div>
             {windowWidth > 720 && (
               <div className="metadata">
-                <Metadata
+                <MetadataComments
                   views={chapter.views}
                   likes={chapter.votesCount.upvotes}
                   dislikes={chapter.votesCount.downvotes}

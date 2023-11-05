@@ -4,11 +4,11 @@ import { ProfileContext } from "../context/profileContext";
 import StyledProfilePicture from "./styles/ProfilePicture.styled";
 import src from "./Default.webp";
 
-const ProfilePicture = ({ width, height, filename, timestamp }) => {
+const ProfilePicture = ({ width, filename, timestamp }) => {
   const imageUrl = `/api/images/${filename}?t=${timestamp}`;
 
   return (
-    <StyledProfilePicture width={width} height={height}>
+    <StyledProfilePicture width={width}>
       <img
         src={imageUrl}
         alt="profile"

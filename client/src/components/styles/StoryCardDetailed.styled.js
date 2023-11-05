@@ -6,8 +6,9 @@ const StyledStoryCardDetailed = styled.div`
   padding: 1.5rem;
   border: 1px solid #6f6f6f;
   border-radius: 10px;
-  width: 470px;
-  height: 320px;
+  max-width: 483px;
+  width: 100%;
+  max-height: 320px;
   display: flex;
 
   div {
@@ -46,39 +47,6 @@ const StyledStoryCardDetailed = styled.div`
       margin: 10px 0;
     }
 
-    .meta-data {
-      color: var(--font2);
-      display: flex;
-      width: fit-content;
-      margin: 10px 0;
-      > * {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-right: 10px;
-        border-right: 1px solid var(--font2);
-        padding-right: 8px;
-
-        .count {
-          font-size: 12px;
-          font-weight: 700;
-        }
-        .icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-
-          span {
-            margin-left: 3px;
-          }
-        }
-      }
-      > :last-child {
-        border-right: none;
-      }
-    }
-
     .description {
       color: var(--font1);
       overflow: hidden;
@@ -86,6 +54,29 @@ const StyledStoryCardDetailed = styled.div`
       font-size: 12px;
       line-height: 18px;
     }
+  }
+
+  @media only screen and (max-width: 540px) {
+    padding: 1rem;
+    .content {
+      .title {
+        font-size: 17px;
+      }
+
+      .metadata {
+        > * {
+          margin-right: 5px;
+          font-size: 12px;
+
+          .icon {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 720px) {
   }
 `;
 

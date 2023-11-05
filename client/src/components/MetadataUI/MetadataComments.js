@@ -1,9 +1,9 @@
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
-import StyledMetadata from "./styles/Metadata.styled";
 import { GoEye } from "react-icons/go";
 import { FaComment } from "react-icons/fa";
+import styled from "styled-components";
 
-const Metadata = ({ views, upvotes, downvotes, comments }) => {
+const MetadataComments = ({ views, upvotes, downvotes, comments }) => {
   return (
     <StyledMetadata>
       <div>
@@ -34,4 +34,20 @@ const Metadata = ({ views, upvotes, downvotes, comments }) => {
   );
 };
 
-export default Metadata;
+const StyledMetadata = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  color: var(--font2);
+  > * {
+    display: flex;
+    margin-right: 10px;
+    .icon {
+      font-size: 16px;
+      padding-right: 3px;
+    }
+  }
+`;
+
+export default MetadataComments;

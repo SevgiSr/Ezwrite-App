@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledProfilePicture = styled.div`
   width: ${(props) => props.width};
-  height: ${(props) => props.height};
+  height: ${(props) => props.width};
 
   img {
     width: 100%;

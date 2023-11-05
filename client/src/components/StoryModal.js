@@ -1,16 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
 import Cover from "./Cover";
-import Metadata from "./Metadata";
+import Metadata from "./MetadataUI/MetadataComments";
 import ModalCenter from "./ModalCenter";
 import UserLine from "./UserUI/UserLine";
 import StyledStoryModal from "./styles/StoryModal.styled";
 import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function StoryModal({ story, isOpen, setIsOpen }) {
   const { userState } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const myProgress = story.progress.find((p) => p.user === userState.user._id);
 
@@ -42,9 +52,12 @@ function StoryModal({ story, isOpen, setIsOpen }) {
             </div>
             <div className="modal-details">
               <h3 className="modal-title">{story.title}</h3>
-              <div className="user-line">
-                <UserLine user={story.author} />
-              </div>
+              {windowWidth > 540 && (
+                <div className="user-line">
+                  <UserLine user={story.author} />
+                </div>
+              )}
+
               <div className="modal-description">
                 {story.description.slice(0, 368)}
                 {story.description.length > 370 && "..."}

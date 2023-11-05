@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Cover from "../Cover";
-import Metadata from "../Metadata";
+import Metadata from "../MetadataUI/MetadataComments";
 import UserLine from "../UserUI/UserLine";
 import StyledStoryCardRanked from "../styles/StoryCardRanked.styled";
 import StoryModal from "../StoryModal";

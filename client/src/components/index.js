@@ -16,7 +16,7 @@ import StoryDetails from "./StoryDetails";
 import LoadingScreen from "./LoadingScreen";
 import DropdownMenu from "./DropdownMenu";
 import ModalCenter from "./ModalCenter";
-import Metadata from "./Metadata";
+import MetadataComments from "./MetadataUI/MetadataComments";
 import UserLine from "./UserUI/UserLine";
 import UserLineMini from "./UserUI/UserLineMini";
 import Tag from "./Tag";
@@ -30,6 +30,8 @@ import NavLinks from "./NavLinks";
 import MyFork from "./MyFork";
 import Notification from "./Notification";
 import Post from "./Post";
+import MetadataDetailed from "./MetadataUI/MetadataDetailed";
+import MetadataBasic from "./MetadataUI/MetadataBasic";
 
 export {
   Navbar,
@@ -48,7 +50,7 @@ export {
   LoadingScreen,
   DropdownMenu,
   ModalCenter,
-  Metadata,
+  MetadataComments,
   UserLine,
   Tag,
   StoryModal,
@@ -64,4 +66,6 @@ export {
   MyFork,
   Notification,
   Post,
+  MetadataDetailed,
+  MetadataBasic,
 };

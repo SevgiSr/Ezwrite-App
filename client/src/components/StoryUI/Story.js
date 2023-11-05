@@ -5,7 +5,7 @@ import { AiFillDislike, AiOutlineBars, AiOutlineDown } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import Cover from "../Cover";
 import { useEffect, useState } from "react";
-import Metadata from "../Metadata";
+import Metadata from "../MetadataUI/MetadataComments";
 import ModalCenter from "../ModalCenter";
 import UserLine from "../UserUI/UserLine";
 import StoryModal from "../StoryModal";
