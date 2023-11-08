@@ -17,6 +17,10 @@ const StyledMyStory = styled.div`
     cursor: pointer;
   }
 
+  .visibility {
+    text-transform: uppercase;
+  }
+
   .chapters-dropdown {
     width: 100%;
     border-radius: 0;

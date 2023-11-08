@@ -30,6 +30,7 @@ import {
   removeFromReadingList,
   deleteReadingList,
   updateReadingListTitle,
+  getCategorySuggestions,
 } from "../controllers/storyController.js";
 
 router.route("/recommendations").get(getRecommendations);
@@ -39,6 +40,7 @@ router.route("/search/all").get(getAll);
 router.route("/search/:query").get(getByQuery);
 router.route("/search/tags/:tag").get(getByTag);
 router.route("/suggestions/tags").get(getTagSuggestions);
+router.route("/suggestions/category").get(getCategorySuggestions);
 router.route("/length/:length").get(getByLength);
 router.route("/date/:date").get(getByDate);
 router.route("/story/:story_id/:conv_id").delete(deleteStoryConv);

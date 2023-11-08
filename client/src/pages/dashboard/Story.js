@@ -10,7 +10,7 @@ import { AiFillDislike, AiOutlineBars } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import Respond from "../../components/Respond";
 import { UserContext } from "../../context/userContext";
-import { Conversation, Tag } from "../../components";
+import { Conversation, LoadingScreen, Tag } from "../../components";
 
 function Story() {
   const {
@@ -61,9 +61,8 @@ function Story() {
   }, [location, isFetching]);
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <LoadingScreen />;
   }
-  if (!state.story) return null;
 
   return (
     <StyledStory>

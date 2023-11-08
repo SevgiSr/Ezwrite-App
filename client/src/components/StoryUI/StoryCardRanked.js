@@ -6,6 +6,24 @@ import StyledStoryCardRanked from "../styles/StoryCardRanked.styled";
 import StoryModal from "../StoryModal";
 import { BsFillStarFill } from "react-icons/bs";
 
+function getOrdinalNumber(number) {
+  const exceptions = [11, 12, 13];
+  const lastDigit = number % 10;
+  let suffix = "th";
+
+  if (!exceptions.includes(number % 100)) {
+    if (lastDigit === 1) {
+      suffix = "st";
+    } else if (lastDigit === 2) {
+      suffix = "nd";
+    } else if (lastDigit === 3) {
+      suffix = "rd";
+    }
+  }
+
+  return `${number}${suffix}`;
+}
+
 function StoryCardRanked({ story }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -28,9 +46,9 @@ function StoryCardRanked({ story }) {
         <div className="rank-container">
           <div className="rank-icon icon">
             <BsFillStarFill />
-            <div className="rank">1st</div>
+            <div className="rank">{getOrdinalNumber(story.rankCount)}</div>
           </div>
-          <div className="rank-cat">in {story.rank}</div>
+          <div className="rank-cat">in {story.rankName}</div>
         </div>
         <div className="cover">
           <Cover filename={story._id} width="135px" />

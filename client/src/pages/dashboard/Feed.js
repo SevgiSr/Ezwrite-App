@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import StyledFeed from "./styles/Feed.styled";
 import { useContext } from "react";
 import { ProfileContext } from "../../context/profileContext";
-import { Conversation, Notification } from "../../components";
+import { Conversation, LoadingScreen, Notification } from "../../components";
 import { FaUserClock } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 
@@ -18,7 +18,9 @@ function Feed() {
 
   const { data: posts = [], isLoading } = useQuery(["feed"], () => getFeed());
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
   return (
     <StyledFeed>
       <div className="header">

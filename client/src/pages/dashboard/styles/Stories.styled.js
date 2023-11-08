@@ -26,14 +26,16 @@ const StyledStories = styled.div`
   }
 
   .stories-parent {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    grid-gap: 2rem;
-    h1 {
-      font-size: 30px;
-    }
-    .results {
-      font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    .results-container {
+      margin-bottom: 2rem;
+      h1 {
+        font-size: 30px;
+      }
+      .results {
+        font-size: 15px;
+      }
     }
   }
 
@@ -100,14 +102,11 @@ const StyledStories = styled.div`
   }
 
   .stories {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 2rem;
-
-    .card {
-      width: 700px;
-      background-color: var(--background5);
-      transition: background-color 180ms ease;
+    display: flex;
+    flex-wrap: wrap;
+    .story-item {
+      margin-right: 10px;
+      margin-bottom: 10px;
     }
   }
 

@@ -86,10 +86,12 @@ app.use(compression());
 
 export const redisClient = redis.createClient();
 
-export const trie = new Trie();
-const loadTagsToMemory = async (trie) => {
+export let trie;
+const loadTagsToMemory = async () => {
   try {
     console.log("loading tags");
+    trie = new Trie();
+    await redisClient.del("tags");
     const tags = await Tag.find({});
     console.log(tags.map((tag) => tag.name));
     for (const tag of tags) {
@@ -104,6 +106,22 @@ const loadTagsToMemory = async (trie) => {
   } catch (error) {
     throw new Error(error.message);
   }
+};
+
+// 10 minutes
+const REFRESH_INTERVAL = 10 * 60 * 1000; // 600000 milliseconds
+
+// Function to set up the interval
+const startTagsRefreshInterval = () => {
+  setInterval(async () => {
+    try {
+      console.log("Refreshing tags in memory and Redis...");
+      await loadTagsToMemory();
+      console.log("Tags refreshed successfully.");
+    } catch (error) {
+      console.error("Failed to refresh tags:", error);
+    }
+  }, REFRESH_INTERVAL);
 };
 
 ////  ROUTES  ////
@@ -189,7 +207,8 @@ const start = async () => {
     httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
     io.on("connection", listener);
     await redisClient.connect();
-    await loadTagsToMemory(trie);
+    await loadTagsToMemory();
+    startTagsRefreshInterval();
   } catch (error) {
     console.log(error);
   }

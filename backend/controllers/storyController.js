@@ -227,10 +227,10 @@ const addMyVote = async (progress, userId) => {
 const getByCategory = async (req, res) => {
   try {
     const { category } = req.params;
+    console.log(category);
     const stories = await Story.find({
-      category,
+      category: category.toString(),
     }).populate("author progress tags");
-
     res.status(StatusCodes.OK).json({ stories });
   } catch (error) {
     throw new Error(error.message);
@@ -264,11 +264,85 @@ const getByTag = async (req, res) => {
 
 const getCategorySuggestions = async (req, res) => {
   try {
-    const stories = await Story.find({
-      tags: { $in: tag },
-    }).populate("author progress tags");
+    console.log("getting category suggestions");
+    // Aggregating stories by category
+    const categoriesWithTopStories = await Story.aggregate([
+      {
+        $match: { visibility: "published" }, // Only include stories that are published
+      },
+      {
+        $sort: { score: -1 },
+      },
+      {
+        $group: {
+          _id: "$category",
+          stories: { $push: "$$ROOT" },
+        },
+      },
+      { $unwind: "$stories" }, // Unwind stories for individual lookups
+      {
+        $lookup: {
+          from: "users", // Replace with your actual authors collection name
+          localField: "stories.author",
+          foreignField: "_id",
+          as: "stories.author",
+        },
+      },
+      { $unwind: "$stories.author" },
+      {
+        $project: {
+          "stories.author.password": 0, // Exclude the password field from the author sub-document
+        },
+      },
+
+      {
+        $lookup: {
+          from: "progresses", // Replace with your actual progress collection name
+          localField: "stories.progress",
+          foreignField: "_id",
+          as: "stories.progress",
+        },
+      },
+      {
+        $lookup: {
+          from: "tags", // Replace with your actual tags collection name
+          localField: "stories.tags",
+          foreignField: "_id",
+          as: "stories.tags",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          topStories: { $push: "$stories" }, // Push the stories back after population
+        },
+      },
+      {
+        $project: {
+          topStories: { $slice: ["$topStories", 20] }, // Slice the top 5 stories
+        },
+      },
+    ]);
+
+    let stories = [];
+    // Add rankName and rankCount to each story
+    categoriesWithTopStories.map((category) => {
+      const newStories = category.topStories.map((story, index) => {
+        const newStory = { ...story };
+        newStory.rankName = category._id;
+        newStory.rankCount = index + 1;
+        return newStory;
+      });
+      stories.push(...newStories);
+    });
+
+    console.log(stories);
+
+    stories = stories.sort((a, b) => 0.5 - Math.random());
+
     res.status(StatusCodes.OK).json({ stories });
   } catch (error) {
+    console.log(error);
     throw new Error(error.message);
   }
 };
@@ -278,8 +352,6 @@ const getTagSuggestions = async (req, res) => {
     // Fetch tags from Redis
     const tags = await redisClient.hGetAll("tags");
 
-    console.log(tags);
-
     if (!tags) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -288,8 +360,6 @@ const getTagSuggestions = async (req, res) => {
 
     // Transform tags into an array of objects
     const tagsArray = Object.values(tags).map((tag) => JSON.parse(tag));
-
-    console.log(tagsArray);
 
     // Sort tags by count and slice the first 20
     const sortedTags = tagsArray.sort((a, b) => b.count - a.count).slice(0, 20);
@@ -305,9 +375,10 @@ const getTagSuggestions = async (req, res) => {
           .populate("author progress tags");
 
         if (foundStories && foundStories.length > 0) {
-          const newStories = foundStories.map((story) => {
+          const newStories = foundStories.map((story, index) => {
             const newStory = story.toObject();
-            newStory.rank = tag.name;
+            newStory.rankName = tag.name;
+            newStory.rankCount = index + 1;
             return newStory;
           });
           stories.push(...newStories);
@@ -926,4 +997,5 @@ export {
   getTagSuggestions,
   getRecommendations,
   requestCollab,
+  getCategorySuggestions,
 };

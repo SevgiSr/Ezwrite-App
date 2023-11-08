@@ -36,6 +36,7 @@ function Search() {
       getByQuery(params.query);
       setSearch("stories");
     } else if (params.category) {
+      console.log(params.category);
       getByCategory(params.category);
       setSearch("stories");
     } else if (params.tag) {
@@ -92,49 +93,14 @@ function Stories() {
   };
   return (
     <div className="stories-parent">
-      <div>
+      <div className="results-container">
         <h1>"{query}"</h1>
         <span className="results">{state.stories.length} results</span>
-        <div className="filters">
-          <div className="filter">
-            <h4 className="title">Length</h4>
-            <Option
-              id="any"
-              label="Any Length"
-              selectedValue={selectedLength}
-              onChange={handleLengthChange}
-            />
-            <Option
-              id="1-10"
-              label="1-10 Parts"
-              selectedValue={selectedLength}
-              onChange={handleLengthChange}
-            />
-            <Option
-              id="10-20"
-              label="10-20 Parts"
-              selectedValue={selectedLength}
-              onChange={handleLengthChange}
-            />
-            <Option
-              id="20-50"
-              label="20-50 Parts"
-              selectedValue={selectedLength}
-              onChange={handleLengthChange}
-            />
-            <Option
-              id="50-more"
-              label="50 Parts or more"
-              selectedValue={selectedLength}
-              onChange={handleLengthChange}
-            />
-          </div>
-        </div>
       </div>
       <div className="stories">
         {state.stories.map((story) => {
           return (
-            <div className="card">
+            <div className="story-item">
               <StoryCardDetailed key={story._id} story={story} />
             </div>
           );

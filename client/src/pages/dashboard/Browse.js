@@ -3,26 +3,33 @@ import StyledBrowse from "./styles/Browse.styled";
 import { useQuery } from "@tanstack/react-query";
 import { StoryContext } from "../../context/storyContext";
 import { useContext, useState } from "react";
-import { StoryCardDetailed, StoryCardRanked, Tag } from "../../components";
+import {
+  LoadingScreen,
+  StoryCardDetailed,
+  StoryCardRanked,
+  Tag,
+} from "../../components";
 
 function Browse() {
-  const { getAllStories, getTagSuggestions } = useContext(StoryContext);
+  const { getCategorySuggestions, getTagSuggestions } =
+    useContext(StoryContext);
   const [nav, setNav] = useState("category");
 
-  const { data: catStories = [], isCatLoading } = useQuery(
-    ["all", "stories"],
-    () => getAllStories()
+  const { data: catStories = [], isLoading: isCatLoading } = useQuery(
+    ["suggestions", "category"],
+    () => getCategorySuggestions(),
+    { refetchOnWindowFocus: false }
   );
 
-  const { data: { stories, tags } = {}, isTagLoading } = useQuery(
+  const { data: { stories, tags } = {}, isLoading: isTagLoading } = useQuery(
     ["suggestions", "tags"],
-    () => getTagSuggestions()
+    () => getTagSuggestions(),
+    { refetchOnWindowFocus: false }
   );
 
-  console.log(stories);
-  console.log(tags);
-
-  if (isCatLoading || isTagLoading) return null;
+  if (isCatLoading || isTagLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <StyledBrowse>
@@ -106,7 +113,7 @@ function Categories({ stories }) {
         </div>
       </div>
       <div className="story-list">
-        {stories?.map((story, index) => {
+        {stories.map((story, index) => {
           return (
             <div key={index} className="story">
               <StoryCardRanked story={story} />
@@ -128,7 +135,7 @@ function Tags({ stories, tags }) {
       </div>
 
       <div className="story-list">
-        {stories?.map((story, index) => {
+        {stories.map((story, index) => {
           return (
             <div key={index} className="story">
               <StoryCardRanked story={story} />

@@ -4,7 +4,7 @@ const StyledStoryCardRanked = styled.div`
   position: relative;
 
   .story-ranked {
-    padding: 15px 20px;
+    padding: 18px 20px;
     border-radius: 15px;
     background-color: var(--background2);
     cursor: pointer;
@@ -19,15 +19,15 @@ const StyledStoryCardRanked = styled.div`
 
     .rank-container {
       position: absolute;
-      top: -13px;
-      left: -13px;
+      top: -21px;
+      left: -15px;
       display: flex;
       align-items: center;
       justify-content: center;
       .rank-icon {
         transform: rotate(-20deg);
         position: relative;
-        color: #d4af37;
+        color: #b59410;
         font-size: 50px;
 
         .rank {
@@ -38,7 +38,7 @@ const StyledStoryCardRanked = styled.div`
           bottom: 0;
           color: var(--font1);
           font-weight: 600;
-          font-size: 21px;
+          font-size: 18px;
           text-shadow: 2px 2px 3px black;
           display: flex;
           align-items: center;

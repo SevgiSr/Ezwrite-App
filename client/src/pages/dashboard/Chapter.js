@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { StoryContext } from "../../context/storyContext";
 import StyledChapter from "./styles/Chapter.styled";
-import { Conversation } from "../../components";
+import { Conversation, LoadingScreen } from "../../components";
 import Respond from "../../components/Respond";
 import { FiChevronDown } from "react-icons/fi";
 import Cover from "../../components/Cover";
@@ -153,7 +153,7 @@ function Chapter() {
   }, []);
 
   if ((!isFork && isLoading) || (isFork && isForkLoading)) {
-    return <h1>loading...</h1>;
+    return <LoadingScreen />;
   }
 
   return (

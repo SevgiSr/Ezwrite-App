@@ -44,7 +44,7 @@ const MyStory = ({ story }) => {
         <Link className="story-title" to={`/manage/${story._id}`}>
           {story.title}
         </Link>
-        <div className="publish-count">{story.chapterCount.draft} Draft</div>
+        <div className="visibility">{story.visibility}</div>
         <div className="update-date">
           <div className="date">Updated - {getDate(story.updatedAt)}</div>
         </div>

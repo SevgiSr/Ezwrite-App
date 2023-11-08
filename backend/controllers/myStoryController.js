@@ -47,31 +47,28 @@ const getTags = async (req, res) => {
     const suggestions = trie.searchPrefix(prefix);
     console.log("suggestions: ", suggestions);
 
-    await redisClient.set("test", "value", function (err, reply) {
-      console.log(err); // Check if there's an error
-      console.log(reply); // If connected properly, it should log 'OK'
-    });
-    console.log(redisClient);
     const getTagCount = async (tag) => {
       try {
-        console.log("getting count for tag: ", tag);
-        const count = await redisClient.hGet("tags", tag);
-        console.log("got count: ", count);
-        return { tag, count: Number(count) };
+        console.log("getting details for tag: ", tag);
+        const tagDetailsString = await redisClient.hGet("tags", tag);
+        const tagDetails = JSON.parse(tagDetailsString); // Parse the JSON string to an object
+        console.log("got details: ", tagDetails);
+        return { tag, count: Number(tagDetails.count) }; // Access the count property of the object
       } catch (err) {
-        console.log("error getting count: ", err);
+        console.log("error getting details for tag: ", err);
         throw err;
       }
     };
 
     const tagCounts = await Promise.all(suggestions.map(getTagCount));
+    console.log(tagCounts);
     console.log("tagCounts before sorting: ", tagCounts);
     tagCounts.sort((a, b) => b.count - a.count);
     console.log("tagCounts after sorting: ", tagCounts);
-    res.json({ tagCounts });
+    res.status(StatusCodes.OK).json({ tagCounts });
   } catch (error) {
-    console.log("error in getTags: ", error);
-    res.status(500).json({ error: error.toString() });
+    console.log(err);
+    throw new Error(err.message);
   }
 };
 

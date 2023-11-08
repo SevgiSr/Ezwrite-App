@@ -3,7 +3,7 @@ import StyledLibrary from "./styles/Library.styled";
 import { useContext, useState } from "react";
 import { StoryContext } from "../../context/storyContext";
 import { UserContext } from "../../context/userContext";
-import { ReadingLists, StoryCardMini } from "../../components";
+import { LoadingScreen, ReadingLists, StoryCardMini } from "../../components";
 import { Link } from "react-router-dom";
 import Cover from "../../components/Cover";
 import { GoEye } from "react-icons/go";
@@ -26,7 +26,7 @@ function Library() {
   );
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <LoadingScreen />;
   }
 
   return (

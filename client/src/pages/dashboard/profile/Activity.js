@@ -6,17 +6,27 @@ import getDate from "../../../utils/getDate";
 import StyledActivity from "./styles/Activity.styled";
 import Cover from "../../../components/Cover";
 import { Notification } from "../../../components";
+import { FiActivity } from "react-icons/fi";
 
 function Activity() {
   const { profileData } = useOutletContext();
 
   return (
     <StyledActivity>
-      <div className="column-reverse">
-        {profileData.profile.activity?.map((nt) => {
-          return <Notification key={nt._id} nt={nt} isActivity={true} />;
-        })}
-      </div>
+      {profileData.profile.activity.length === 0 ? (
+        <div className="no-content-container">
+          <div className="icon">
+            <FiActivity />
+          </div>
+          <div className="text">This user doesn't have any activity.</div>
+        </div>
+      ) : (
+        <div className="column-reverse">
+          {profileData.profile.activity?.map((nt) => {
+            return <Notification key={nt._id} nt={nt} isActivity={true} />;
+          })}
+        </div>
+      )}
     </StyledActivity>
   );
 }
