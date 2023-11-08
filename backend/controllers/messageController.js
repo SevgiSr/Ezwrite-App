@@ -214,7 +214,10 @@ const addToFollowerFeed = async (req, res) => {
 const getFeed = async (req, res) => {
   try {
     const postIds = await redisClient.zRange(`feed:${req.user.userId}`, 0, -1);
-    const posts = await FeedItem.find({ _id: { $in: postIds } }).populate({
+    const reversedPostIds = postIds.reverse();
+    const posts = await FeedItem.find({
+      _id: { $in: reversedPostIds },
+    }).populate({
       path: "item",
       populate: [
         { path: "author", strictPopulate: false },
@@ -223,7 +226,7 @@ const getFeed = async (req, res) => {
       ],
     });
 
-    const orderedPosts = postIds
+    const orderedPosts = reversedPostIds
       .map((id) => {
         return posts.find((post) => post._id.toString() === id);
       })

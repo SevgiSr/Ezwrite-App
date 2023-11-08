@@ -47,8 +47,8 @@ const ProfileNavbar = ({ links, profileData }) => {
     if (user.name === username) return;
     await followProfileMutation.mutateAsync({ username });
     const notification = {
-      type: "You have a new follower.",
-      content: `${user.name} has followed you.`,
+      text: `${user.name} has followed you.`,
+      activity: `${user.name} has followed ${username}`,
       route: `/user/${user.name}`,
     };
     socket.emit("send notification", {

@@ -2,19 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import StyledFeed from "./styles/Feed.styled";
 import { useContext } from "react";
 import { ProfileContext } from "../../context/profileContext";
-import { Conversation, LoadingScreen, Notification } from "../../components";
+import { LoadingScreen, Notification, UserLineMini } from "../../components";
 import { FaUserClock } from "react-icons/fa";
-import { UserContext } from "../../context/userContext";
+import ProfilePicture from "../../components/ProfilePicture";
+import getDate from "../../utils/getDate";
+import styled from "styled-components";
 
 function Feed() {
-  const {
-    getFeed,
-    useDeleteProfileConv,
-    useAddConvComment,
-    useDeleteConvComment,
-  } = useContext(ProfileContext);
-
-  const { userState } = useContext(UserContext);
+  const { getFeed } = useContext(ProfileContext);
 
   const { data: posts = [], isLoading } = useQuery(["feed"], () => getFeed());
 
@@ -39,19 +34,7 @@ function Feed() {
         <div className="posts">
           {posts.map((post) => {
             if (post.type === "Comment") {
-              return (
-                <Conversation
-                  key={post._id}
-                  text={`<strong>${userState.user.name}</strong> responded to <strong>${post.item.author.name}</strong>`}
-                  activity={`<strong>${userState.user.name}</strong> responded to <strong>${post.item.author.name}</strong>`}
-                  conv={post.item}
-                  dest={post.item.author?.name}
-                  sendTo={post.item.author.name}
-                  useAddConvComment={useAddConvComment}
-                  useDeleteConv={useDeleteProfileConv}
-                  useDeleteConvComment={useDeleteConvComment}
-                />
-              );
+              return <Post key={post._id} conv={post.item} />;
             } else {
               return (
                 <Notification key={post._id} nt={post.item} isActivity={true} />
@@ -63,5 +46,47 @@ function Feed() {
     </StyledFeed>
   );
 }
+
+function Post({ conv }) {
+  return (
+    <StyledPost>
+      <header>
+        <div id="info">
+          <UserLineMini user={conv.author} />
+          <p>{getDate(conv.createdAt)}</p>
+        </div>
+      </header>
+      <div id="content">{conv.content}</div>
+    </StyledPost>
+  );
+}
+
+const StyledPost = styled.div`
+  color: var(--font1);
+  background-color: var(--background5);
+  padding: 20px 20px;
+  margin-top: 1.7rem;
+  width: 100%;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    #info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      p {
+        font-size: 13px;
+        line-height: 18px;
+        margin-left: 18px;
+        color: var(--font2);
+      }
+    }
+  }
+`;
 
 export default Feed;
