@@ -278,6 +278,8 @@ const getTagSuggestions = async (req, res) => {
     // Fetch tags from Redis
     const tags = await redisClient.hGetAll("tags");
 
+    console.log(tags);
+
     if (!tags) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -286,6 +288,8 @@ const getTagSuggestions = async (req, res) => {
 
     // Transform tags into an array of objects
     const tagsArray = Object.values(tags).map((tag) => JSON.parse(tag));
+
+    console.log(tagsArray);
 
     // Sort tags by count and slice the first 20
     const sortedTags = tagsArray.sort((a, b) => b.count - a.count).slice(0, 20);
@@ -434,7 +438,7 @@ const getProgress = async (req, res) => {
       },
     ]);
 
-    if (!progress || !progress.chapters || progress.chapters.length === 0) {
+    if (!progress) {
       console.log("no progress");
       const chapters = story.chapters.slice(0, 5);
 

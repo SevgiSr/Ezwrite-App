@@ -101,7 +101,7 @@ function ReadingList() {
       <div className="main">
         {readingList.stories?.map((story) => {
           return (
-            <div className="item" key={story._id}>
+            <div className="story-item" key={story._id}>
               <StoryCardDetailed key={story._id} story={story} />
               <div
                 className="remove-icon icon"

@@ -56,7 +56,7 @@ function Continue({ continueReading }) {
         <div className="continue-stories">
           {continueReading?.map((progress) => {
             return (
-              <div key={progress._id} className="item">
+              <div key={progress._id} className="continue-item">
                 <StoryCardMini story={progress.story} />
                 <div className="progress">
                   <div

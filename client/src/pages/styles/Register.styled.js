@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import svg from "./layer1.svg";
 const StyledRegister = styled.div`
+  padding: 0 1.2rem;
   .blob {
-    width: 600px;
+    max-width: 600px;
     height: 700px;
     position: fixed;
     z-index: -1;
@@ -45,8 +46,8 @@ const StyledRegister = styled.div`
   }
 
   .form {
-    height: 370px;
-    width: 500px;
+    min-height: 370px;
+    max-width: 500px;
     margin: 3rem auto;
     display: flex;
     flex-direction: column;

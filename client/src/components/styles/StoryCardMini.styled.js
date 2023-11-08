@@ -1,28 +1,38 @@
 import styled from "styled-components";
 
 const StyledStoryCardMini = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
   background-color: var(--background5);
   padding: 10px 15px;
   border-radius: 9px;
+  width: 100%;
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
   .title {
-    width: 100%; /* Set this to 100% so it takes up full width of parent */
-    word-wrap: break-word; /* Break words at the end of the line */
-    overflow-wrap: break-word; /* Same as word-wrap but more modern. Use both for maximum compatibility */
-    white-space: normal; /* Ensures text can break into a new line */
+    white-space: normal;
+    overflow-wrap: break-word;
     word-break: break-word;
     font-size: 13px;
     color: var(--font1);
     margin-top: 10px;
     text-decoration: underline transparent solid 2px;
-
     :hover {
       text-decoration: underline var(--text-main-orange) solid 2px;
+    }
+  }
+
+  @media only screen and (max-width: 540px) {
+    .title {
+      font-size: 11px;
     }
   }
 `;

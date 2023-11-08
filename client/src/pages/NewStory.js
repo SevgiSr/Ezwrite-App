@@ -10,7 +10,8 @@ import { IoIosArrowBack } from "react-icons/io";
 
 function NewStory() {
   const navigate = useNavigate();
-  const { storyState, useCreateStory, alertState } = useContext(MyStoryContext);
+  const { storyState, useCreateStory, alertState, showErrorAlert } =
+    useContext(MyStoryContext);
 
   const createStoryMutation = useCreateStory();
 
@@ -29,6 +30,12 @@ function NewStory() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(storyDetails.title, storyDetails.category);
+    if (!storyDetails.title || !storyDetails.category || !cover) {
+      showErrorAlert("Please fill in title category and cover fields.");
+      return;
+    }
+
     storyDetails.tags = tags;
     navigate("/workspace/myStories/");
     createStoryMutation.mutateAsync({ cover, storyDetails });
@@ -88,6 +95,7 @@ function NewStory() {
           />
         </div>
       </div>
+      <Alert state={alertState} />
     </StyledNewStory>
   );
 }

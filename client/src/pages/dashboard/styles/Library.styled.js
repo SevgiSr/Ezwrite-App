@@ -21,9 +21,9 @@ const StyledLibrary = styled.div`
       display: flex;
       flex-wrap: wrap;
     }
-    .item {
+    .continue-item {
       margin-right: 25px;
-
+      margin-bottom: 10px;
       .progress {
         position: relative;
         top: -5px;

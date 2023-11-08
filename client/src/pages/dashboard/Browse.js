@@ -19,6 +19,9 @@ function Browse() {
     () => getTagSuggestions()
   );
 
+  console.log(stories);
+  console.log(tags);
+
   if (isCatLoading || isTagLoading) return null;
 
   return (
@@ -103,7 +106,7 @@ function Categories({ stories }) {
         </div>
       </div>
       <div className="story-list">
-        {stories.map((story, index) => {
+        {stories?.map((story, index) => {
           return (
             <div key={index} className="story">
               <StoryCardRanked story={story} />

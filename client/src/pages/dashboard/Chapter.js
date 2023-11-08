@@ -92,7 +92,6 @@ function Chapter() {
       if (!isFork) {
         console.log("SAVING PROGRESS.....");
         setCurrentChapterMutation.mutate({ story_id, chapter_id });
-        console.log("saved progress");
       }
     };
   }, []);
@@ -137,7 +136,6 @@ function Chapter() {
         convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
       }
     } else if (prefix === "paragraph" && conv_id) {
-      console.log("setting paragraph scroll");
       setIsScrollParagraph(true);
     }
   }, [location]);
@@ -325,7 +323,6 @@ function Paragraph({ paragraph, storyAuthor, mainUser, conv_id }) {
   };
 
   useEffect(() => {
-    console.log(conv_id, convRefs.current[conv_id]);
     if (conv_id && convRefs.current[conv_id]) {
       setOpenModal(true);
     }

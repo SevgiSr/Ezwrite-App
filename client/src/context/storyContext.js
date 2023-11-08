@@ -109,6 +109,7 @@ export const StoryProvider = ({ children }) => {
       type: GET_CHAPTER_SUCCESS,
       payload: { story, chapters, chapter },
     });
+    queryClient.invalidateQueries(["library"]);
   };
 
   const getProgress = async (story_id) => {
@@ -430,10 +431,9 @@ Given that the backend seems to handle only one request at a time (as evidenced 
           const currentChapter = data.chapters.find(
             (chapter) => chapter._id === variables.chapter_id
           );
-          const newCache = data.chapters.map((chapter) => chapter.title);
-          console.log(newCache);
           setChapter(data.story, data.story.chapters, currentChapter);
           queryClient.setQueryData(["progress", variables.story_id], data);
+          queryClient.invalidateQueries(["library"]);
         },
       }
     );
@@ -447,6 +447,7 @@ Given that the backend seems to handle only one request at a time (as evidenced 
       {
         onSuccess: (data, variables) => {
           queryClient.invalidateQueries(["progress"]);
+          queryClient.invalidateQueries(["library"]);
         },
       }
     );

@@ -53,6 +53,11 @@ export const MyStoryProvider = ({ children }) => {
 
   const { authFetch } = useContext(UserContext);
 
+  const showErrorAlert = (message) => {
+    alertDispatch({ type: ERROR, payload: { msg: message } });
+    clearAlert();
+  };
+
   const getMyStories = async () => {
     try {
       const { data } = await authFetch.get("/myStories");
@@ -552,6 +557,7 @@ export const MyStoryProvider = ({ children }) => {
         updateStory,
         sendGptPrompt,
         declineCollaboratorAccess,
+        showErrorAlert,
 
         useCreateStory,
         useDeleteStory,

@@ -58,6 +58,9 @@ const StyledStoryCardDetailed = styled.div`
 
   @media only screen and (max-width: 540px) {
     padding: 1rem;
+    .cover {
+      margin-right: 5px;
+    }
     .content {
       .title {
         font-size: 17px;

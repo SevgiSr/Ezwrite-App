@@ -9,6 +9,7 @@ const StyledReadingList = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .main-header {
       margin-bottom: 1.7rem;
       h1 {
@@ -31,9 +32,11 @@ const StyledReadingList = styled.div`
 
   .main {
     display: flex;
-    .item {
+    flex-wrap: wrap;
+    .story-item {
       position: relative;
       margin-right: 15px;
+      margin-bottom: 15px;
       .remove-icon {
         position: absolute;
         top: 5px;
