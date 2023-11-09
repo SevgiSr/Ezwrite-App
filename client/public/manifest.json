@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Ezwrite",
+  "name": "Ezwrite (Write with you friends!)",
   "icons": [
     {
       "src": "favicon.ico",
