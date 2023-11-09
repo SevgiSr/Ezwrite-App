@@ -169,14 +169,6 @@ function Navbar() {
             }
             menu={
               <>
-                <Link to="" className="dropdown-item">
-                  <span>Profile Info</span>
-                </Link>
-
-                <Link to={`/settings`} className="dropdown-item">
-                  <span>Settings</span>
-                </Link>
-                <hr />
                 <Link
                   to={"/register"}
                   className="dropdown-item"
