@@ -19,6 +19,7 @@ import DropdownMenu from "../../components/DropdownMenu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClipLoader } from "react-spinners";
 import { ForkContext } from "../../context/forkContext";
+import { debounce } from "lodash";
 
 function Chapter() {
   const {
@@ -54,6 +55,7 @@ function Chapter() {
   //for incrementing view count
   const [viewTimer, setViewTimer] = useState(null);
   const scrollRef = useRef(null);
+  const isMounted = useRef(true); // Tracks the mounted state of the component
 
   const {
     data: { chapters, story, user } = {},
@@ -62,7 +64,7 @@ function Chapter() {
     status,
   } = useQuery({
     queryKey: ["progress", story_id],
-    queryFn: () => getProgress(story_id),
+    queryFn: ({ signal }) => getProgress(story_id, signal),
     refetchOnWindowFocus: false,
     enabled: !isFork,
   });
@@ -87,14 +89,22 @@ function Chapter() {
   // order of dependency array does not matter
   //it updates progress only if chapter is not in the progress. and it always navigates you to the first progress not where you was left last time
 
-  useEffect(() => {
+  /*   useEffect(() => {
+    // Cleanup logic for when the component unmounts
     return () => {
       if (!isFork) {
-        console.log("SAVING PROGRESS.....");
-        setCurrentChapterMutation.mutate({ story_id, chapter_id });
+        // Delay saving progress for a moment to ensure it's not called multiple times quickly
+
+        if (isMounted.current) {
+          // Only call the mutation if the component is still mounted
+          console.log("SAVING PROGRESS.....");
+          setCurrentChapterMutation.mutate({ story_id, chapter_id });
+        }
+
+        isMounted.current = false; // Set the flag to false when the component unmounts
       }
     };
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (!isFork) {
@@ -129,16 +139,18 @@ function Chapter() {
   const convRefs = useRef({});
 
   useEffect(() => {
-    const hashValue = location.hash.substring(1);
-    const [prefix, conv_id] = hashValue?.split("-");
-    if (prefix === "chapter" && conv_id) {
-      if (convRefs.current[conv_id]) {
-        convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+    if (status === "success") {
+      const hashValue = location.hash.substring(1);
+      const [prefix, conv_id] = hashValue?.split("-");
+      if (prefix === "chapter" && conv_id) {
+        if (convRefs.current[conv_id]) {
+          convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+        }
+      } else if (prefix === "paragraph" && conv_id) {
+        setIsScrollParagraph(true);
       }
-    } else if (prefix === "paragraph" && conv_id) {
-      setIsScrollParagraph(true);
     }
-  }, [location]);
+  }, [location, status, convRefs]);
 
   useEffect(() => {
     if (!isFork) {

@@ -59,7 +59,7 @@ const StyledBrowse = styled.div`
     margin-top: 3rem;
 
     .story {
-      margin: 15px 0;
+      margin: 15px 10px;
     }
   }
 

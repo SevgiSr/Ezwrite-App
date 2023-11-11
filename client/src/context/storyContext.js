@@ -120,13 +120,31 @@ export const StoryProvider = ({ children }) => {
     queryClient.invalidateQueries(["library"]);
   };
 
-  const getProgress = async (story_id) => {
+  const getProgress = async (story_id, signal) => {
     try {
-      const { data } = await authFetch.get(`/stories/progress/${story_id}`);
-      const { progress } = data;
-      return progress;
+      // Create an Axios CancelToken source
+      const source = axios.CancelToken.source();
+
+      // Link the signal to the CancelToken
+      if (signal) {
+        signal.onabort = () => {
+          source.cancel("Operation canceled by the user.");
+        };
+      }
+
+      const { data } = await authFetch.get(`/stories/progress/${story_id}`, {
+        cancelToken: source.token, // Attach the cancel token to your request
+      });
+
+      return data.progress;
     } catch (error) {
-      console.log(error);
+      if (axios.isCancel(error)) {
+        // Handle if the request was cancelled
+        console.log("Request canceled", error.message);
+      } else {
+        // Handle other errors
+        console.log(error);
+      }
     }
   };
 

@@ -4,17 +4,26 @@ const StyledStoryCardRanked = styled.div`
   position: relative;
 
   .story-ranked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 18px 20px;
     border-radius: 15px;
     background-color: var(--background2);
     cursor: pointer;
+    width: 170px;
 
     .title {
+      position: relative;
       font-size: 16px;
       margin-top: 5px;
       text-align: center;
-      position: relative;
       color: var(--font2);
+      white-space: normal; /* Allows the text to wrap */
+      overflow-wrap: break-word; /* Ensures the text wraps and breaks words as needed */
+      word-wrap: break-word; /* For older browsers */
+      word-break: break-word; /* To ensure proper word breaking */
     }
 
     .rank-container {
@@ -56,6 +65,7 @@ const StyledStoryCardRanked = styled.div`
 
   .details-modal {
     display: none;
+    flex-direction: column;
     position: absolute;
     padding: 10px 15px;
     width: 230px;
@@ -81,14 +91,12 @@ const StyledStoryCardRanked = styled.div`
 
     .description {
       text-align: center;
-      margin-top: 15px;
+      margin: 5px 0;
+      font-size: 12px;
+      overflow: hidden;
     }
 
     .metadata {
-      position: absolute;
-      bottom: 9px;
-      left: 7px;
-      right: 7px;
       background-color: var(--background2);
       padding: 3px 5px;
       border-radius: 20px;
@@ -96,11 +104,33 @@ const StyledStoryCardRanked = styled.div`
   }
 
   :hover .details-modal {
-    display: block;
+    display: flex;
   }
 
   .close {
     display: none !important;
+  }
+
+  @media only screen and (max-width: 540px) {
+    .story-ranked {
+      width: 120px;
+      padding: 13px 18px;
+      .title {
+        font-size: 12px;
+      }
+
+      .rank-container {
+        .rank-icon {
+          font-size: 40px;
+          .rank {
+            font-size: 15px;
+          }
+        }
+        .rank-cat {
+          font-size: 15px;
+        }
+      }
+    }
   }
 `;
 

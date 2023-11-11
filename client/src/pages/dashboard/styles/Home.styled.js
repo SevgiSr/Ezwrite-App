@@ -17,7 +17,7 @@ const StyledHome = styled.div`
   .row--left,
   .row--right {
     position: absolute;
-    z-index: 999;
+    z-index: 3;
     top: 0;
     bottom: 0;
     display: flex;

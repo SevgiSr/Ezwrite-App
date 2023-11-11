@@ -10,7 +10,7 @@ function StoryCardMini({ story }) {
   return (
     <StyledStoryCardMini>
       <Link to={`/story/${story._id}`} className="container">
-        <Cover filename={story._id} width={"85px"} />
+        <Cover filename={story._id} width={"85px"} isStatic={true} />
         <div className="title">{story.title}</div>
       </Link>
     </StyledStoryCardMini>

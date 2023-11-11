@@ -56,7 +56,7 @@ function Navbar() {
     //TASK: make notifications mutate
     socket.on("receive notification", (notification) => {
       setNtCount(ntCount + 1); // increments notification count on instant but you still cant see new nt
-      queryClient.invalidateQueries(["notifications"]); // invalidate queries so that I see the new notifications
+      // queryClient.invalidateQueries(["notifications"]); // invalidate queries so that I see the new notifications
     });
 
     socket.on("receive collab notification", (notification) => {

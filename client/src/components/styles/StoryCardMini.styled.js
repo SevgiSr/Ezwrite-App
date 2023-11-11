@@ -4,11 +4,10 @@ const StyledStoryCardMini = styled.div`
   background-color: var(--background5);
   padding: 10px 15px;
   border-radius: 9px;
-  width: 100%;
+  width: 130px;
 
   .container {
     width: 100%;
-    max-width: 100%;
     text-decoration: none;
     display: flex;
     flex-direction: column;
@@ -32,7 +31,7 @@ const StyledStoryCardMini = styled.div`
 
   @media only screen and (max-width: 540px) {
     .title {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 `;

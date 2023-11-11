@@ -6,9 +6,8 @@ const StyledStoryCardDetailed = styled.div`
   padding: 1.5rem;
   border: 1px solid #6f6f6f;
   border-radius: 10px;
-  max-width: 483px;
-  width: 100%;
-  max-height: 320px;
+  width: 483px;
+  height: 320px;
   display: flex;
 
   div {
@@ -47,23 +46,36 @@ const StyledStoryCardDetailed = styled.div`
       margin: 10px 0;
     }
 
+    .tags {
+      margin: 17px 0;
+    }
+
     .description {
       color: var(--font1);
       overflow: hidden;
       word-wrap: break-word;
       font-size: 12px;
-      line-height: 18px;
     }
   }
 
   @media only screen and (max-width: 540px) {
     padding: 1rem;
+    height: 230px;
+    width: 330px;
     .cover {
       margin-right: 5px;
     }
     .content {
       .title {
         font-size: 17px;
+        line-height: 18px;
+      }
+      .tags {
+        margin: 5px 0;
+      }
+
+      .description {
+        font-size: 11px;
       }
 
       .metadata {

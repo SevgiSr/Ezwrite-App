@@ -282,13 +282,31 @@ export const ProfileProvider = ({ children }) => {
     }
   };
 
-  const getNotifications = async () => {
+  const getNotifications = async (signal) => {
     try {
-      const { data } = await authFetch.get(`/messages/notifications`);
+      // Create an Axios CancelToken source
+      const source = axios.CancelToken.source();
+
+      // Link the signal to the CancelToken
+      if (signal) {
+        signal.onabort = () => {
+          source.cancel("Operation canceled by the user.");
+        };
+      }
+
+      const { data } = await authFetch.get(`/messages/notifications`, {
+        cancelToken: source.token,
+      });
       const { notifications } = data;
       return notifications;
     } catch (error) {
-      console.log(error);
+      if (axios.isCancel(error)) {
+        // Handle if the request was cancelled
+        console.log("Request notifications canceled", error.message);
+      } else {
+        // Handle other errors
+        console.log(error);
+      }
     }
   };
 

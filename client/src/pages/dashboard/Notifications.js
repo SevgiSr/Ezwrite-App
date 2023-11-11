@@ -10,27 +10,22 @@ import { UserContext } from "../../context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { ClipLoader } from "react-spinners";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { Notification } from "../../components";
+import { LoadingScreen, Notification } from "../../components";
 
 function Notifications() {
-  const { getNotifications, useReadNotifications } = useContext(ProfileContext);
+  const { getNotifications } = useContext(ProfileContext);
 
   const { data: notifications = [], isLoading } = useQuery(
     ["notifications"],
-    () => getNotifications(),
+    ({ signal }) => getNotifications(signal),
     {
       refetchOnWindowFocus: false,
     }
   );
 
-  const readNotificationsMutation = useReadNotifications();
-
-  useEffect(() => {
-    return async () => {
-      console.log("unmount");
-      await readNotificationsMutation.mutate();
-    };
-  }, []);
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <StyledNotifications>

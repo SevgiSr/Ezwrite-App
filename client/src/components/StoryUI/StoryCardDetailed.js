@@ -70,18 +70,37 @@ const StoryCardDetailed = ({ story }) => {
           )}
         </div>
 
-        <div className="tags">
-          {story.tags?.slice(0, 4).map((tag) => {
-            return <Tag tag={tag} fontSize="10px" />;
-          })}
-          {story.tags?.length > 4 && (
-            <span style={{ fontSize: "30px", lineHeight: "0" }}>...</span>
-          )}
-        </div>
-        <div className="description">
-          {story.description.slice(0, 159)}
-          {story.description.length > 361 && "..."}
-        </div>
+        {windowWidth > 540 ? (
+          <div className="tags">
+            {story.tags?.slice(0, 4).map((tag) => {
+              return <Tag key={tag._id} tag={tag} fontSize="10px" />;
+            })}
+            {story.tags?.length > 4 && (
+              <span style={{ fontSize: "30px", lineHeight: "0" }}>...</span>
+            )}
+          </div>
+        ) : (
+          <div className="tags">
+            {story.tags?.slice(0, 2).map((tag) => {
+              return <Tag key={tag._id} tag={tag} fontSize="9px" />;
+            })}
+            {story.tags?.length > 4 && (
+              <span style={{ fontSize: "18px", lineHeight: "0" }}>...</span>
+            )}
+          </div>
+        )}
+
+        {windowWidth > 540 ? (
+          <div className="description">
+            {story.description.slice(0, 159)}
+            {story.description.length > 159 && "..."}
+          </div>
+        ) : (
+          <div className="description">
+            {story.description.slice(0, 120)}
+            {story.description.length > 120 && "..."}
+          </div>
+        )}
       </div>
       <StoryModal
         isOpen={isModalOpen}

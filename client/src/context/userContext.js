@@ -58,17 +58,23 @@ export const UserProvider = ({ children }) => {
   );
 
   //response
-
   authFetch.interceptors.response.use(
     (response) => {
       return response;
     },
     (error) => {
-      //unauthorized
-      console.log(error);
-      if (error.response.status === 401) {
-        logoutUser();
+      if (axios.isCancel(error)) {
+        // This is a cancellation error, so we can either ignore it or log it as a debug message
+        console.debug("Request was canceled", error.message);
+      } else {
+        // Handle other errors
+        console.log(error);
+        if (error.response?.status === 401) {
+          logoutUser();
+        }
       }
+      // For cancellation errors, you may not want to reject the promise
+      // If you still want to reject, ensure that you are handling these gracefully where the promise is consumed
       return Promise.reject(error);
     }
   );

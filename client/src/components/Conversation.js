@@ -98,6 +98,7 @@ const Conversation = ({
         {conv.subcomments?.map((sc) => {
           return (
             <div
+              key={sc._id}
               className="subcomment"
               ref={(el) => {
                 commentRefs.current[sc._id] = el;
@@ -105,7 +106,6 @@ const Conversation = ({
             >
               <Comment
                 id={sc._id}
-                key={sc._id}
                 comment={sc}
                 story_id={story_id} // if conv has story_id means it should affect story's score
                 conv_id={conv._id}

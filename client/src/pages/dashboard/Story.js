@@ -42,14 +42,16 @@ function Story() {
   const convRefs = useRef({});
 
   useEffect(() => {
-    const hashValue = location.hash.substring(1);
-    const [prefix, conv_id] = hashValue?.split("-");
-    if (prefix === "story" && conv_id) {
-      if (convRefs.current[conv_id]) {
-        convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+    if (status === "success") {
+      const hashValue = location.hash.substring(1);
+      const [prefix, conv_id] = hashValue?.split("-");
+      if (prefix === "story" && conv_id) {
+        if (convRefs.current[conv_id]) {
+          convRefs.current[conv_id].scrollIntoView({ behavior: "smooth" });
+        }
       }
     }
-  }, []);
+  }, [location, status, convRefs]);
 
   useEffect(() => {
     if (!isFetching && status === "success") {

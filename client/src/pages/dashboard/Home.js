@@ -123,8 +123,8 @@ const ScrollRow = ({ items }) => {
           <>
             {items.map((item) => {
               return (
-                <div className="row--item" ref={itemRef} key={item._id}>
-                  <StoryCardDetailed key={uuidv4()} story={item} />
+                <div className="row--item" ref={itemRef} key={uuidv4()}>
+                  <StoryCardDetailed story={item} />
                 </div>
               );
             })}
