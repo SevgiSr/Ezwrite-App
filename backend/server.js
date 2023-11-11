@@ -69,7 +69,7 @@ app.use(morgan("dev"));
 ////////////
 const __dirname = dirname(fileURLToPath(import.meta.url));
 //only when ready to deploy
-/* app.use(express.static(path.resolve(__dirname, "../client/build"))); */
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 ///////////
 //now -node server and I can access app in localhost:5000
 
@@ -137,9 +137,9 @@ app.use("/api/images", imageRoutes);
 app.use("/api/gpt", gptRoutes);
 
 //  react route
-/* app.get("*", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
-}); */
+});
 
 //middleware
 //not-found looks for requests that do not match any of current route.
@@ -151,7 +151,7 @@ app.use(errorHandlerMiddleware);
 const httpServer = createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5000",
   },
 });
 
